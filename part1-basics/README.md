@@ -9,7 +9,7 @@
 ### ✅ Завершено
 
 1. **[01_setup_environment.md](./01_setup_environment.md)** — Установка и настройка окружения
-   - Установка Go 1.22+
+   - Установка Go 1.23+
    - Настройка GOPATH, GOROOT, Go Modules
    - IDE: GoLand vs VSCode
    - Инструменты: go fmt, go vet, golangci-lint

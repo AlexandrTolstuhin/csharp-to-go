@@ -1,7 +1,7 @@
 # 🚀 Переход с C# на Go: Курс для Senior разработчика
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Go Version](https://img.shields.io/badge/Go-1.22+-00ADD8?logo=go)](https://go.dev/)
+[![Go Version](https://img.shields.io/badge/Go-1.23+-00ADD8?logo=go)](https://go.dev/)
 [![Progress](https://img.shields.io/badge/Progress-23%25-orange)](./STRUCTURE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/AlexandrTolstuhin/csharp-to-go?style=social)](https://github.com/AlexandrTolstuhin/csharp-to-go)
 
@@ -30,7 +30,7 @@
 ### [Часть 1: Основы Go (Быстрый старт)](./part1-basics/)
 
 #### 1.1 [Установка и настройка окружения](./part1-basics/01_setup_environment.md)
-- ✅ Установка Go 1.22+
+- ✅ Установка Go 1.23+
 - Настройка GOPATH, GOROOT, Go Modules
 - IDE: GoLand vs VSCode
 - Инструменты: go fmt, go vet, golangci-lint
