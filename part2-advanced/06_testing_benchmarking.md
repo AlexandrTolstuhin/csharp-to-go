@@ -51,9 +51,7 @@
   - [11.3 goleak: обнаружение утечек](#113-goleak-обнаружение-утечек)
 - [Практические примеры](#практические-примеры)
   - [Пример 1: UserService с полным покрытием](#пример-1-userservice-с-полным-покрытием)
-  - [Пример 2: JSON Parser с fuzzing и benchmarks](#пример-2-json-parser-с-fuzzing-и-benchmarks)
-  - [Пример 3: Rate Limiter с concurrent тестами](#пример-3-rate-limiter-с-concurrent-тестами)
-  - [Пример 4: REST API с testcontainers](#пример-4-rest-api-с-testcontainers)
+  - [Пример 2: Rate Limiter с concurrent тестами](#пример-2-rate-limiter-с-concurrent-тестами)
 - [Чек-лист](#чек-лист)
 
 ---
