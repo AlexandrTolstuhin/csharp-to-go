@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.22+-00ADD8?logo=go)](https://go.dev/)
-[![Progress](https://img.shields.io/badge/Progress-20%25-orange)](./STRUCTURE.md)
+[![Progress](https://img.shields.io/badge/Progress-23%25-orange)](./STRUCTURE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/AlexandrTolstuhin/csharp-to-go?style=social)](https://github.com/AlexandrTolstuhin/csharp-to-go)
 
 > Комплексный курс по изучению Go для опытного C# разработчика с фокусом на async/await, concurrency, производительность и продакшн-ready практики.
@@ -94,12 +94,16 @@
 - ✅ Трассировка: go tool trace, GODEBUG=schedtrace
 - ✅ Оптимизация под планировщик
 
-#### 2.3 Сборка мусора (GC) _(в разработке)_
-- Tri-color mark-and-sweep
-- Отличия от .NET GC
-- GOGC и GOMEMLIMIT
-- Escape analysis
-- Профилирование памяти (pprof)
+#### 2.3 [Сборка мусора (GC)](./part2-advanced/03_gc.md)
+- ✅ Tri-color mark-and-sweep алгоритм
+- ✅ Архитектура Go GC vs .NET GC (generational vs concurrent)
+- ✅ Write barriers и concurrent GC
+- ✅ GOGC и GOMEMLIMIT — настройка памяти
+- ✅ Escape Analysis: Stack vs Heap аллокации
+- ✅ Профилирование с pprof и GODEBUG=gctrace
+- ✅ Оптимизация под GC (избегание аллокаций)
+- ✅ sync.Pool для переиспользования объектов
+- ✅ Практика: JSON парсинг, мониторинг GC, настройка для контейнеров
 
 #### 2.4 Примитивы синхронизации _(в разработке)_
 - sync.Mutex, sync.RWMutex
