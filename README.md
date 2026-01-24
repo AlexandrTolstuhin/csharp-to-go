@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.23+-00ADD8?logo=go)](https://go.dev/)
-[![Progress](https://img.shields.io/badge/Progress-26%25-orange)](./STRUCTURE.md)
+[![Progress](https://img.shields.io/badge/Progress-28%25-orange)](./STRUCTURE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/AlexandrTolstuhin/csharp-to-go?style=social)](https://github.com/AlexandrTolstuhin/csharp-to-go)
 
 > Комплексный курс по изучению Go для опытного C# разработчика с фокусом на async/await, concurrency, производительность и продакшн-ready практики.
@@ -118,12 +118,15 @@
 - ✅ **golang.org/x/sync**: errgroup, semaphore, singleflight
 - ✅ Практика: Rate Limiter, метрики, Connection Pool
 
-#### 2.5 Обработка ошибок _(в разработке)_
-- error как интерфейс
-- Wrapping ошибок
-- errors.Is() и errors.As()
-- Sentinel vs typed errors
-- Panic/recover
+#### 2.5 [Обработка ошибок (продвинутый уровень)](./part2-advanced/05_error_handling.md)
+- ✅ Sentinel errors vs Typed errors (когда что использовать)
+- ✅ Custom error types с метаданными
+- ✅ Fluent API для построения ошибок
+- ✅ Panic/recover (правила безопасного использования)
+- ✅ Error wrapping chains
+- ✅ Стратегии по слоям (Repository/Service/Handler)
+- ✅ Логирование и observability (slog, expected vs unexpected)
+- ✅ Production паттерны (retry, DLQ, context cancellation, tracing)
 
 #### 2.6 Тестирование и бенчмаркинг _(в разработке)_
 - testing package

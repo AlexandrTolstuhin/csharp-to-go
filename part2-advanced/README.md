@@ -6,7 +6,7 @@
 
 ## Статус
 
-🚧 **В разработке** - 57% (4 из 7 разделов)
+🚧 **В разработке** - 71% (5 из 7 разделов)
 
 ## Материалы
 
@@ -57,14 +57,19 @@
    - **golang.org/x/sync**: errgroup, semaphore, singleflight
    - 3 практических примера: Rate Limiter, метрики, Connection Pool
 
-### 🚧 В разработке
+5. **[05_error_handling.md](./05_error_handling.md)** — Обработка ошибок (продвинутый уровень)
+   - Sentinel errors vs Typed errors (когда что использовать)
+   - Custom error types с метаданными (коды, HTTP маппинг)
+   - Fluent API для построения ошибок
+   - Panic/recover: правила безопасного использования
+   - Error wrapping chains (построение контекста)
+   - Стратегии по слоям: Repository/Service/Handler
+   - Логирование: где и как (structured logging с slog)
+   - Expected vs Unexpected errors
+   - Production паттерны: retry, MultiError, context cancellation
+   - 4 практических примера: REST API, Background Job, gRPC, tracing
 
-### 2.5 Обработка ошибок
-- error как интерфейс
-- Wrapping: fmt.Errorf с %w
-- errors.Is() и errors.As()
-- Sentinel errors vs typed errors
-- Panic/recover (когда использовать)
+### 🚧 В разработке
 
 ### 2.6 Тестирование и бенчмаркинг
 - testing package
