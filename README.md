@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.23+-00ADD8?logo=go)](https://go.dev/)
-[![Progress](https://img.shields.io/badge/Progress-23%25-orange)](./STRUCTURE.md)
+[![Progress](https://img.shields.io/badge/Progress-26%25-orange)](./STRUCTURE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/AlexandrTolstuhin/csharp-to-go?style=social)](https://github.com/AlexandrTolstuhin/csharp-to-go)
 
 > Комплексный курс по изучению Go для опытного C# разработчика с фокусом на async/await, concurrency, производительность и продакшн-ready практики.
@@ -105,12 +105,17 @@
 - ✅ sync.Pool для переиспользования объектов
 - ✅ Практика: JSON парсинг, мониторинг GC, настройка для контейнеров
 
-#### 2.4 Примитивы синхронизации _(в разработке)_
-- sync.Mutex, sync.RWMutex
-- sync.WaitGroup, sync.Once
-- sync.Pool
-- sync/atomic
-- errgroup, semaphore, singleflight
+#### 2.4 [Примитивы синхронизации](./part2-advanced/04_sync_primitives.md)
+- ✅ Mutex vs C# lock (defer для разблокировки)
+- ✅ RWMutex vs ReaderWriterLockSlim
+- ✅ Deadlock и как его избежать
+- ✅ WaitGroup vs Task.WhenAll (с errgroup)
+- ✅ Once vs Lazy<T> (singleton инициализация)
+- ✅ Cond vs Monitor.Wait/Pulse (предпочтение каналам)
+- ✅ Atomic операции: atomic.Int64, atomic.Value
+- ✅ sync.Map vs ConcurrentDictionary
+- ✅ Выбор правильного примитива
+- ✅ Практика: Rate Limiter, метрики, Connection Pool
 
 #### 2.5 Обработка ошибок _(в разработке)_
 - error как интерфейс
