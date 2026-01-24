@@ -6,7 +6,7 @@
 
 ## Статус
 
-🚧 **В разработке** - 71% (5 из 7 разделов)
+🚧 **В разработке** - 86% (6 из 7 разделов)
 
 ## Материалы
 
@@ -69,16 +69,20 @@
    - Production паттерны: retry, MultiError, context cancellation
    - 4 практических примера: REST API, Background Job, gRPC, tracing
 
-### 🚧 В разработке
+6. **[06_testing_benchmarking.md](./06_testing_benchmarking.md)** — Тестирование и бенчмаркинг
+   - testing package: func TestXxx(t *testing.T) vs xUnit/NUnit
+   - Table-driven tests (идиоматичный Go паттерн)
+   - Subtests: t.Run() и t.Parallel()
+   - Мокирование: ручные моки, gomock, testify
+   - Benchmarks: func BenchmarkXxx(b *testing.B) vs BenchmarkDotNet
+   - Fuzzing (Go 1.18+): автогенерация входных данных
+   - Integration tests: httptest, testcontainers
+   - Race detector: go test -race
+   - Coverage: go test -cover
+   - Идиоматичные паттерны: t.Helper(), golden files, build tags
+   - 2 практических примера: UserService, Rate Limiter
 
-### 2.6 Тестирование и бенчмаркинг
-- testing package
-- Table-driven tests
-- Subtests и t.Run()
-- Benchmarks
-- Fuzzing (Go 1.18+)
-- Моки: gomock, testify
-- Integration tests с testcontainers
+### 🚧 В разработке
 
 ### 2.7 Профилирование и оптимизация
 - pprof: CPU и memory

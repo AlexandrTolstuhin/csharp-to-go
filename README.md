@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.23+-00ADD8?logo=go)](https://go.dev/)
-[![Progress](https://img.shields.io/badge/Progress-28%25-orange)](./STRUCTURE.md)
+[![Progress](https://img.shields.io/badge/Progress-30%25-orange)](./STRUCTURE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/AlexandrTolstuhin/csharp-to-go?style=social)](https://github.com/AlexandrTolstuhin/csharp-to-go)
 
 > Комплексный курс по изучению Go для опытного C# разработчика с фокусом на async/await, concurrency, производительность и продакшн-ready практики.
@@ -128,10 +128,16 @@
 - ✅ Логирование и observability (slog, expected vs unexpected)
 - ✅ Production паттерны (retry, DLQ, context cancellation, tracing)
 
-#### 2.6 Тестирование и бенчмаркинг _(в разработке)_
-- testing package
-- Table-driven tests
-- Benchmarks
+#### 2.6 [Тестирование и бенчмаркинг](./part2-advanced/06_testing_benchmarking.md)
+- ✅ testing package vs xUnit/NUnit (func TestXxx(t *testing.T))
+- ✅ Table-driven tests (идиоматичный Go паттерн)
+- ✅ Subtests: t.Run(), t.Parallel()
+- ✅ Мокирование: ручные моки, gomock, testify
+- ✅ Benchmarks: func BenchmarkXxx(b *testing.B) vs BenchmarkDotNet
+- ✅ Fuzzing (Go 1.18+): автогенерация входных данных
+- ✅ Integration tests: httptest, testcontainers
+- ✅ Race detector: go test -race
+- ✅ Coverage и идиоматичные паттерны
 - Fuzzing (Go 1.18+)
 - Моки и интеграционные тесты
 
