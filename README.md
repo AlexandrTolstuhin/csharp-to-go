@@ -115,6 +115,7 @@
 - ✅ Atomic операции: atomic.Int64, atomic.Value
 - ✅ sync.Map vs ConcurrentDictionary
 - ✅ Выбор правильного примитива
+- ✅ **golang.org/x/sync**: errgroup, semaphore, singleflight
 - ✅ Практика: Rate Limiter, метрики, Connection Pool
 
 #### 2.5 Обработка ошибок _(в разработке)_

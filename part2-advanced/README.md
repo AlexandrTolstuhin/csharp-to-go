@@ -54,6 +54,7 @@
    - Atomic операции: atomic.Int64, atomic.Value
    - sync.Map vs ConcurrentDictionary (write-once сценарии)
    - Выбор правильного примитива (блок-схема)
+   - **golang.org/x/sync**: errgroup, semaphore, singleflight
    - 3 практических примера: Rate Limiter, метрики, Connection Pool
 
 ### 🚧 В разработке
