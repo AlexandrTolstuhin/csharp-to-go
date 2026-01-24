@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.22+-00ADD8?logo=go)](https://go.dev/)
-[![Progress](https://img.shields.io/badge/Progress-10%25-orange)](./STRUCTURE.md)
+[![Progress](https://img.shields.io/badge/Progress-20%25-orange)](./STRUCTURE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/AlexandrTolstuhin/csharp-to-go?style=social)](https://github.com/AlexandrTolstuhin/csharp-to-go)
 
 > Комплексный курс по изучению Go для опытного C# разработчика с фокусом на async/await, concurrency, производительность и продакшн-ready практики.
@@ -55,36 +55,44 @@
 - Паттерны оптимизации
 - Профилирование
 
-#### 1.3 Ключевые отличия от C# _(в разработке)_
-- Отсутствие классов и наследования
-- Error handling vs Exceptions
-- Композиция vs наследование
-- Zero values
-- Видимость через регистр
+#### 1.3 [Ключевые отличия от C#](./part1-basics/03_key_differences.md)
+- ✅ Философия языков (C# vs Go)
+- ✅ Отсутствие классов и наследования
+- ✅ Error handling vs Exceptions
+- ✅ Композиция vs наследование
+- ✅ Zero values
+- ✅ Видимость через регистр
+- ✅ **Идиоматичные различия** (nil, LINQ vs циклы, async/await vs goroutines, конструкторы, generics, properties)
+- ✅ Практические примеры (HTTP handlers, работа с БД)
 
-#### 1.4 Практика: мини-проекты _(в разработке)_
-- CLI-утилита
-- HTTP-сервер
-- JSON парсер
+#### 1.4 [Практика: мини-проекты](./part1-basics/04_practice.md)
+- ✅ CLI-утилита для работы с файлами
+- ✅ HTTP-сервер с JSON API
+- ✅ Конкурентная обработка данных
+- ✅ Парсер логов
 
 ---
 
 ### [Часть 2: Продвинутые темы](./part2-advanced/)
 
-#### 2.1 Горутины и каналы _(в разработке)_
-- Сравнение с C# async/await
-- Goroutines vs Task
-- Channels vs CancellationToken
-- Select statement
-- Паттерны: fan-in, fan-out, pipeline, worker pool
-- Graceful shutdown
+#### 2.1 [Горутины и каналы](./part2-advanced/01_goroutines_channels.md)
+- ✅ Goroutines vs C# Task/Thread
+- ✅ Каналы vs C# Channel<T>
+- ✅ Буферизированные и небуферизированные каналы
+- ✅ Select statement (vs Task.WhenAny)
+- ✅ Context и cancellation (vs CancellationToken)
+- ✅ Паттерны: Worker Pool, Fan-Out/Fan-In, Pipeline, Semaphore
+- ✅ errgroup для обработки ошибок
+- ✅ Утечки горутин и их предотвращение
 
-#### 2.2 Go Runtime и планировщик _(в разработке)_
-- Архитектура GMP
-- Work-stealing алгоритм
-- Preemption
-- GOMAXPROCS
-- go tool trace
+#### 2.2 [Go Runtime и планировщик](./part2-advanced/02_runtime_scheduler.md)
+- ✅ Архитектура GMP (Goroutine, Machine, Processor)
+- ✅ Work-stealing алгоритм
+- ✅ Cooperative vs Signal-based preemption
+- ✅ GOMAXPROCS и его влияние
+- ✅ Сравнение с .NET ThreadPool
+- ✅ Трассировка: go tool trace, GODEBUG=schedtrace
+- ✅ Оптимизация под планировщик
 
 #### 2.3 Сборка мусора (GC) _(в разработке)_
 - Tri-color mark-and-sweep
