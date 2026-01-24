@@ -13,6 +13,10 @@
 - [sync.Map: потокобезопасная карта](#syncmap-потокобезопасная-карта)
 - [Выбор правильного примитива](#выбор-правильного-примитива)
 - [Практические примеры](#практические-примеры)
+- [golang.org/x/sync: расширенные примитивы](#golangorgxsync-расширенные-примитивы)
+  - [errgroup: WaitGroup с обработкой ошибок](#errgroup-waitgroup-с-обработкой-ошибок)
+  - [semaphore: взвешенный семафор](#semaphore-взвешенный-семафор)
+  - [singleflight: дедупликация вызовов](#singleflight-дедупликация-вызовов)
 - [Чек-лист](#чек-лист)
 
 ---
@@ -1195,6 +1199,375 @@ func main() {
 
 ---
 
+## golang.org/x/sync: расширенные примитивы
+
+Пакет `golang.org/x/sync` предоставляет дополнительные примитивы синхронизации, не вошедшие в стандартную библиотеку.
+
+### errgroup: WaitGroup с обработкой ошибок
+
+Мы уже видели `errgroup` в примерах выше. Это расширение `WaitGroup` с поддержкой ошибок и cancellation.
+
+**Установка**:
+```bash
+go get golang.org/x/sync/errgroup
+```
+
+**Основные возможности**:
+
+```go
+import "golang.org/x/sync/errgroup"
+
+// 1. Базовое использование
+func ProcessFiles(files []string) error {
+    g := new(errgroup.Group)
+
+    for _, file := range files {
+        file := file // Для Go < 1.22
+        g.Go(func() error {
+            return processFile(file)
+        })
+    }
+
+    // Wait() вернёт первую ошибку (если была)
+    return g.Wait()
+}
+
+// 2. С контекстом и cancellation
+func DownloadWithTimeout(ctx context.Context, urls []string) error {
+    g, ctx := errgroup.WithContext(ctx)
+
+    for _, url := range urls {
+        url := url
+        g.Go(func() error {
+            // Если одна горутина вернёт ошибку, ctx будет отменён
+            return download(ctx, url)
+        })
+    }
+
+    return g.Wait()
+}
+
+// 3. Ограничение конкурентности с SetLimit (Go 1.20+)
+func ProcessWithLimit(items []string) error {
+    g := new(errgroup.Group)
+    g.SetLimit(10) // Максимум 10 горутин одновременно
+
+    for _, item := range items {
+        item := item
+        g.Go(func() error {
+            return processItem(item)
+        })
+    }
+
+    return g.Wait()
+}
+```
+
+**Сравнение с C#**:
+```csharp
+// C# (Task.WhenAll с обработкой ошибок)
+public async Task ProcessFilesAsync(List<string> files)
+{
+    var tasks = files.Select(file => ProcessFileAsync(file));
+
+    try
+    {
+        await Task.WhenAll(tasks);
+    }
+    catch (Exception ex)
+    {
+        // Только первое исключение (как в errgroup)
+        throw;
+    }
+}
+```
+
+> 💡 **Идиома Go**: Используйте `errgroup` вместо `WaitGroup`, если нужна обработка ошибок или автоматический cancellation.
+
+---
+
+### semaphore: взвешенный семафор
+
+`semaphore.Weighted` — это семафор с поддержкой весов (можно захватывать N слотов за раз).
+
+**Установка**:
+```bash
+go get golang.org/x/sync/semaphore
+```
+
+**Использование**:
+```go
+import "golang.org/x/sync/semaphore"
+
+func RateLimitedDownload(ctx context.Context, urls []string, maxConcurrent int64) error {
+    sem := semaphore.NewWeighted(maxConcurrent)
+    g, ctx := errgroup.WithContext(ctx)
+
+    for _, url := range urls {
+        url := url
+        g.Go(func() error {
+            // Захватываем 1 слот (блокируемся, если достигнут лимит)
+            if err := sem.Acquire(ctx, 1); err != nil {
+                return err
+            }
+            defer sem.Release(1)
+
+            return download(ctx, url)
+        })
+    }
+
+    return g.Wait()
+}
+
+// Пример с весами: тяжёлые файлы занимают больше слотов
+func DownloadWithWeights(ctx context.Context, files []FileInfo, maxWeight int64) error {
+    sem := semaphore.NewWeighted(maxWeight)
+    g, ctx := errgroup.WithContext(ctx)
+
+    for _, file := range files {
+        file := file
+        g.Go(func() error {
+            weight := file.Size / (1024 * 1024) // MB
+            if weight < 1 {
+                weight = 1
+            }
+
+            if err := sem.Acquire(ctx, weight); err != nil {
+                return err
+            }
+            defer sem.Release(weight)
+
+            return downloadFile(ctx, file)
+        })
+    }
+
+    return g.Wait()
+}
+```
+
+**Сравнение с C#**:
+```csharp
+// C# (SemaphoreSlim)
+var semaphore = new SemaphoreSlim(10);
+
+foreach (var url in urls)
+{
+    await semaphore.WaitAsync();
+    _ = Task.Run(async () =>
+    {
+        try
+        {
+            await DownloadAsync(url);
+        }
+        finally
+        {
+            semaphore.Release();
+        }
+    });
+}
+```
+
+**Альтернатива: буферизированный канал** (более идиоматично для Go):
+```go
+func RateLimitedDownload(urls []string, maxConcurrent int) {
+    sem := make(chan struct{}, maxConcurrent)
+
+    for _, url := range urls {
+        sem <- struct{}{} // Захватываем слот
+        go func(url string) {
+            defer func() { <-sem }() // Освобождаем
+            download(url)
+        }(url)
+    }
+
+    // Ждём, пока все завершатся
+    for i := 0; i < cap(sem); i++ {
+        sem <- struct{}{}
+    }
+}
+```
+
+> 💡 **Идиома Go**: Для простых сценариев используйте **буферизированный канал** как семафор. `semaphore.Weighted` нужен только для взвешенных слотов или интеграции с `context`.
+
+---
+
+### singleflight: дедупликация вызовов
+
+`singleflight.Group` устраняет дублирование одновременных вызовов одной и той же функции. Полезно для кэширования.
+
+**Установка**:
+```bash
+go get golang.org/x/sync/singleflight
+```
+
+**Проблема**:
+```go
+// ❌ БЕЗ singleflight: 1000 одновременных запросов = 1000 вызовов БД
+func (c *Cache) GetUser(id int) (*User, error) {
+    if user := c.get(id); user != nil {
+        return user, nil
+    }
+
+    // Если кэш пуст, все горутины пойдут в БД!
+    user, err := db.Query("SELECT * FROM users WHERE id = ?", id)
+    if err != nil {
+        return nil, err
+    }
+
+    c.set(id, user)
+    return user, nil
+}
+```
+
+**Решение с singleflight**:
+```go
+import "golang.org/x/sync/singleflight"
+
+type Cache struct {
+    mu    sync.RWMutex
+    data  map[int]*User
+    group singleflight.Group
+}
+
+func (c *Cache) GetUser(id int) (*User, error) {
+    // Проверяем кэш
+    c.mu.RLock()
+    if user := c.data[id]; user != nil {
+        c.mu.RUnlock()
+        return user, nil
+    }
+    c.mu.RUnlock()
+
+    // Дедупликация: только ОДНА горутина выполнит запрос в БД
+    key := fmt.Sprintf("user:%d", id)
+    v, err, shared := c.group.Do(key, func() (interface{}, error) {
+        user, err := db.Query("SELECT * FROM users WHERE id = ?", id)
+        if err != nil {
+            return nil, err
+        }
+
+        // Сохраняем в кэш
+        c.mu.Lock()
+        c.data[id] = user
+        c.mu.Unlock()
+
+        return user, nil
+    })
+
+    if err != nil {
+        return nil, err
+    }
+
+    // shared == true, если результат получен от другой горутины
+    return v.(*User), nil
+}
+```
+
+**Пример: защита от cache stampede**:
+```go
+type APICache struct {
+    mu    sync.RWMutex
+    cache map[string][]byte
+    group singleflight.Group
+    ttl   time.Duration
+}
+
+func (c *APICache) Get(ctx context.Context, url string) ([]byte, error) {
+    // Проверяем кэш
+    c.mu.RLock()
+    if data, ok := c.cache[url]; ok {
+        c.mu.RUnlock()
+        return data, nil
+    }
+    c.mu.RUnlock()
+
+    // Дедупликация запросов
+    v, err, _ := c.group.Do(url, func() (interface{}, error) {
+        // Только одна горутина выполнит HTTP запрос
+        resp, err := http.Get(url)
+        if err != nil {
+            return nil, err
+        }
+        defer resp.Body.Close()
+
+        data, err := io.ReadAll(resp.Body)
+        if err != nil {
+            return nil, err
+        }
+
+        // Кэшируем
+        c.mu.Lock()
+        c.cache[url] = data
+        c.mu.Unlock()
+
+        // Автоматическое удаление через TTL
+        time.AfterFunc(c.ttl, func() {
+            c.mu.Lock()
+            delete(c.cache, url)
+            c.mu.Unlock()
+        })
+
+        return data, nil
+    })
+
+    if err != nil {
+        return nil, err
+    }
+
+    return v.([]byte), nil
+}
+```
+
+**Методы singleflight.Group**:
+
+| Метод | Описание |
+|-------|----------|
+| `Do(key, fn)` | Выполняет `fn` для ключа, дедуплицируя одновременные вызовы. Возвращает `(result, error, shared)`. |
+| `DoChan(key, fn)` | Асинхронная версия, возвращает канал с результатом. |
+| `Forget(key)` | Забывает ключ (следующий вызов выполнит `fn` снова). |
+
+**Сравнение с C#**:
+```csharp
+// C# (нет встроенного аналога, можно реализовать через SemaphoreSlim + Dictionary)
+public class SingleFlight<TKey, TValue>
+{
+    private readonly ConcurrentDictionary<TKey, SemaphoreSlim> _locks = new();
+
+    public async Task<TValue> DoAsync(TKey key, Func<Task<TValue>> fn)
+    {
+        var semaphore = _locks.GetOrAdd(key, _ => new SemaphoreSlim(1, 1));
+
+        await semaphore.WaitAsync();
+        try
+        {
+            return await fn();
+        }
+        finally
+        {
+            semaphore.Release();
+            _locks.TryRemove(key, out _);
+        }
+    }
+}
+```
+
+> 💡 **Когда использовать singleflight**:
+> - Защита от **cache stampede** (когда кэш истекает под нагрузкой)
+> - Дедупликация дорогих операций (БД, внешние API)
+> - Снижение нагрузки при одновременных запросах одних данных
+
+---
+
+### Сравнительная таблица: golang.org/x/sync
+
+| Примитив | Назначение | Аналог в C# | Когда использовать |
+|----------|-----------|-------------|-------------------|
+| `errgroup.Group` | WaitGroup + ошибки + cancellation | `Task.WhenAll` + exception handling | Конкурентная обработка с ошибками |
+| `semaphore.Weighted` | Взвешенный семафор | `SemaphoreSlim` | Ограничение конкурентности (особенно с весами) |
+| `singleflight.Group` | Дедупликация вызовов | Нет (реализовать вручную) | Защита от cache stampede |
+
+---
+
 ## Чек-лист
 
 После изучения этого раздела вы должны:
@@ -1210,6 +1583,9 @@ func main() {
 - [ ] Понимать, когда `sync.Map` эффективнее `map + RWMutex`
 - [ ] Выбирать правильный примитив синхронизации для задачи
 - [ ] Знать про sharding и padding для оптимизации метрик
+- [ ] Использовать `errgroup` для конкурентной обработки с ошибками
+- [ ] Применять `semaphore.Weighted` для ограничения конкурентности (или буферизированный канал)
+- [ ] Использовать `singleflight.Group` для защиты от cache stampede
 
 ---
 
