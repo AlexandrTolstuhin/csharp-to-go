@@ -49,7 +49,7 @@
 
 ---
 
-### [Часть 3: Web API разработка](./part3-web-api/) — **В разработке (60%)**
+### [Часть 3: Web API разработка](./part3-web-api/) — **В разработке (80%)**
 
 - **3.1** [HTTP в Go](./part3-web-api/01_http_server.md)
   - ✅ net/http: Handler, HandlerFunc, ServeMux
@@ -66,10 +66,10 @@
   - ✅ GORM, миграции
   - ✅ Repository Pattern
 
-#### 3.4 Валидация и сериализация _(в разработке)_
-- encoding/json
-- go-playground/validator
-- Protocol Buffers
+- **3.4** [Валидация и сериализация](./part3-web-api/04_validation_serialization.md)
+  - ✅ encoding/json, easyjson, sonic
+  - ✅ go-playground/validator
+  - ✅ Protocol Buffers
 
 #### 3.5 Документация API _(в разработке)_
 - Swagger/OpenAPI с swaggo
@@ -182,6 +182,6 @@
 
 ---
 
-**Версия**: 0.3.3
+**Версия**: 0.3.4
 **Последнее обновление**: 2026-01-25
-**Статус**: Части 1-2 завершены (33%), Часть 3 в разработке (разделы 3.1-3.3 завершены)
+**Статус**: Части 1-2 завершены (33%), Часть 3 в разработке (разделы 3.1-3.4 завершены)
