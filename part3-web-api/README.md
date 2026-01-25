@@ -6,7 +6,7 @@
 
 ## Статус
 
-🚧 **В разработке** (40%)
+🚧 **В разработке** (60%)
 
 ## Материалы
 
@@ -30,19 +30,16 @@
 - Configuration: env vars, viper
 - 3 практических примера
 
-### 🚧 В разработке
-
-#### 3.3 Работа с данными
-- Standard Go Project Layout
-- Flat structure vs DDD
-- Clean Architecture в Go
-- Dependency Injection (Wire, Fx, manual)
-
-#### 3.3 Работа с данными _(в разработке)_
-- PostgreSQL: database/sql, pgx
-- ORM vs Query Builder vs Raw SQL
-- sqlc: type-safe SQL
+#### 3.3 [Работа с данными](./03_database.md)
+- database/sql: connection pool, queries, transactions
+- pgx: batch, COPY, Listen/Notify
+- sqlc: type-safe SQL, code generation
+- GORM: когда нужен ORM
 - Миграции: golang-migrate, goose
+- Repository Pattern
+- 3 практических примера
+
+### 🚧 В разработке
 
 #### 3.4 Валидация и сериализация _(в разработке)_
 - encoding/json

@@ -49,23 +49,22 @@
 
 ---
 
-### [Часть 3: Web API разработка](./part3-web-api/) — **В разработке (40%)**
+### [Часть 3: Web API разработка](./part3-web-api/) — **В разработке (60%)**
 
 - **3.1** [HTTP в Go](./part3-web-api/01_http_server.md)
   - ✅ net/http: Handler, HandlerFunc, ServeMux
   - ✅ Middleware pattern
   - ✅ Роутеры: chi, gin, echo, fiber
-  - ✅ 3 практических примера
 
 - **3.2** [Структура проекта](./part3-web-api/02_project_structure.md)
-  - ✅ Flat structure и Standard Go Project Layout
+  - ✅ Standard Go Project Layout
   - ✅ Clean Architecture в Go
   - ✅ Dependency Injection (Manual, Wire, Fx)
-  - ✅ Configuration
 
-#### 3.3 Работа с данными _(в разработке)_
-- PostgreSQL (pgx, sqlc, GORM)
-- Миграции
+- **3.3** [Работа с данными](./part3-web-api/03_database.md)
+  - ✅ database/sql, pgx, sqlc
+  - ✅ GORM, миграции
+  - ✅ Repository Pattern
 
 #### 3.4 Валидация и сериализация _(в разработке)_
 - encoding/json
@@ -183,6 +182,6 @@
 
 ---
 
-**Версия**: 0.3.2
+**Версия**: 0.3.3
 **Последнее обновление**: 2026-01-25
-**Статус**: Части 1-2 завершены (33%), Часть 3 в разработке (разделы 3.1-3.2 завершены)
+**Статус**: Части 1-2 завершены (33%), Часть 3 в разработке (разделы 3.1-3.3 завершены)
