@@ -6,34 +6,42 @@
 
 ## Статус
 
-🚧 **В разработке**
+🚧 **В разработке** (20%)
 
-## Планируемые материалы
+## Материалы
 
-### 3.1 HTTP в Go
+### ✅ Завершено
+
+#### 3.1 [HTTP в Go](./01_http_server.md)
 - net/http: Handler и HandlerFunc
-- Роутеры: chi, gin, echo, fiber
+- ServeMux и роутинг (включая Go 1.22+)
+- Работа с Request и Response
+- Graceful Shutdown
 - Middleware pattern
-- Context и передача данных
+- Популярные роутеры: chi, gin, echo, fiber
+- Context в HTTP handlers
+- 3 практических примера
 
-### 3.2 Структура проекта
+### 🚧 В разработке
+
+#### 3.2 Структура проекта
 - Standard Go Project Layout
 - Flat structure vs DDD
 - Clean Architecture в Go
 - Dependency Injection (Wire, Fx, manual)
 
-### 3.3 Работа с данными
+#### 3.3 Работа с данными
 - PostgreSQL: database/sql, pgx
 - ORM vs Query Builder vs Raw SQL
 - sqlc: type-safe SQL
 - Миграции: golang-migrate, goose
 
-### 3.4 Валидация и сериализация
+#### 3.4 Валидация и сериализация
 - encoding/json
 - go-playground/validator
 - Protocol Buffers
 
-### 3.5 Документация API
+#### 3.5 Документация API
 - Swagger/OpenAPI с swaggo
 - OpenAPI-first подход
 

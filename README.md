@@ -49,12 +49,13 @@
 
 ---
 
-### [Часть 3: Web API разработка](./part3-web-api/)
+### [Часть 3: Web API разработка](./part3-web-api/) — **В разработке (20%)**
 
-#### 3.1 HTTP в Go _(в разработке)_
-- net/http
-- Роутеры: chi, gin, echo
-- Middleware pattern
+- **3.1** [HTTP в Go](./part3-web-api/01_http_server.md)
+  - ✅ net/http: Handler, HandlerFunc, ServeMux
+  - ✅ Middleware pattern
+  - ✅ Роутеры: chi, gin, echo, fiber
+  - ✅ 3 практических примера
 
 #### 3.2 Структура проекта _(в разработке)_
 - Standard Go Project Layout
@@ -63,8 +64,16 @@
 
 #### 3.3 Работа с данными _(в разработке)_
 - PostgreSQL (pgx, sqlc, GORM)
-- Валидация (go-playground/validator)
-- OpenAPI/Swagger
+- Миграции
+
+#### 3.4 Валидация и сериализация _(в разработке)_
+- encoding/json
+- go-playground/validator
+- Protocol Buffers
+
+#### 3.5 Документация API _(в разработке)_
+- Swagger/OpenAPI с swaggo
+- OpenAPI-first подход
 
 ---
 
@@ -173,6 +182,6 @@
 
 ---
 
-**Версия**: 0.3.0
+**Версия**: 0.3.1
 **Последнее обновление**: 2026-01-25
-**Статус**: Части 1-2 завершены (33%), Часть 3 в разработке
+**Статус**: Части 1-2 завершены (33%), Часть 3 в разработке (раздел 3.1 завершён)
