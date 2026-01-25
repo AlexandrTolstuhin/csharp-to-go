@@ -6,13 +6,11 @@
 
 ## Статус
 
-🚧 **В разработке** (80%)
+✅ **Завершено** (100%)
 
 ## Материалы
 
-### ✅ Завершено
-
-#### 3.1 [HTTP в Go](./01_http_server.md)
+### 3.1 [HTTP в Go](./01_http_server.md)
 - net/http: Handler и HandlerFunc
 - ServeMux и роутинг (включая Go 1.22+)
 - Работа с Request и Response
@@ -22,7 +20,7 @@
 - Context в HTTP handlers
 - 3 практических примера
 
-#### 3.2 [Структура проекта](./02_project_structure.md)
+### 3.2 [Структура проекта](./02_project_structure.md)
 - Flat structure для микросервисов
 - Standard Go Project Layout
 - Clean Architecture в Go
@@ -30,7 +28,7 @@
 - Configuration: env vars, viper
 - 3 практических примера
 
-#### 3.3 [Работа с данными](./03_database.md)
+### 3.3 [Работа с данными](./03_database.md)
 - database/sql: connection pool, queries, transactions
 - pgx: batch, COPY, Listen/Notify
 - sqlc: type-safe SQL, code generation
@@ -39,7 +37,7 @@
 - Repository Pattern
 - 3 практических примера
 
-#### 3.4 [Валидация и сериализация](./04_validation_serialization.md)
+### 3.4 [Валидация и сериализация](./04_validation_serialization.md)
 - encoding/json: struct tags, custom marshal
 - Быстрые библиотеки: easyjson, sonic
 - go-playground/validator
@@ -47,15 +45,28 @@
 - Protocol Buffers
 - 3 практических примера
 
-### 🚧 В разработке
-
-#### 3.5 Документация API _(в разработке)_
-- Swagger/OpenAPI с swaggo
-- OpenAPI-first подход
+### 3.5 [Документация API](./05_api_documentation.md)
+- OpenAPI Specification
+- swaggo: документация из кода
+- oapi-codegen: OpenAPI-first подход
+- Swagger UI интеграция
+- Версионирование API
+- CI/CD интеграция
+- 2 практических примера
 
 ## Время изучения
 
 **Примерно**: 2-3 недели
+
+## Ключевые навыки
+
+После изучения этой части вы сможете:
+
+- Создавать production-ready HTTP API
+- Организовывать код по Clean Architecture
+- Работать с PostgreSQL через pgx и sqlc
+- Валидировать входные данные
+- Генерировать документацию Swagger
 
 ---
 

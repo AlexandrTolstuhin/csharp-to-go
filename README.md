@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.23+-00ADD8?logo=go)](https://go.dev/)
-[![Progress](https://img.shields.io/badge/Progress-33%25-orange)](./STRUCTURE.md)
+[![Progress](https://img.shields.io/badge/Progress-50%25-yellow)](./STRUCTURE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/AlexandrTolstuhin/csharp-to-go?style=social)](https://github.com/AlexandrTolstuhin/csharp-to-go)
 
 > Комплексный курс по изучению Go для опытного C# разработчика с фокусом на async/await, concurrency, производительность и продакшн-ready практики.
@@ -49,31 +49,13 @@
 
 ---
 
-### [Часть 3: Web API разработка](./part3-web-api/) — **В разработке (80%)**
+### [Часть 3: Web API разработка](./part3-web-api/) — **Завершено**
 
 - **3.1** [HTTP в Go](./part3-web-api/01_http_server.md)
-  - ✅ net/http: Handler, HandlerFunc, ServeMux
-  - ✅ Middleware pattern
-  - ✅ Роутеры: chi, gin, echo, fiber
-
 - **3.2** [Структура проекта](./part3-web-api/02_project_structure.md)
-  - ✅ Standard Go Project Layout
-  - ✅ Clean Architecture в Go
-  - ✅ Dependency Injection (Manual, Wire, Fx)
-
 - **3.3** [Работа с данными](./part3-web-api/03_database.md)
-  - ✅ database/sql, pgx, sqlc
-  - ✅ GORM, миграции
-  - ✅ Repository Pattern
-
 - **3.4** [Валидация и сериализация](./part3-web-api/04_validation_serialization.md)
-  - ✅ encoding/json, easyjson, sonic
-  - ✅ go-playground/validator
-  - ✅ Protocol Buffers
-
-#### 3.5 Документация API _(в разработке)_
-- Swagger/OpenAPI с swaggo
-- OpenAPI-first подход
+- **3.5** [Документация API](./part3-web-api/05_api_documentation.md)
 
 ---
 
@@ -182,6 +164,6 @@
 
 ---
 
-**Версия**: 0.3.4
+**Версия**: 0.4.0
 **Последнее обновление**: 2026-01-25
-**Статус**: Части 1-2 завершены (33%), Часть 3 в разработке (разделы 3.1-3.4 завершены)
+**Статус**: Части 1-3 завершены (50%), Часть 4 следующая
