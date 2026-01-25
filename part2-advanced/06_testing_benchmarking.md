@@ -2495,11 +2495,11 @@ func BenchmarkRateLimiter(b *testing.B) {
 ## Следующие шаги
 
 После изучения тестирования переходите к:
-- **[2.7 Профилирование и оптимизация](./07_profiling.md)** (следующий раздел) — pprof, go tool trace, анализ производительности
+- **[2.7 Профилирование и оптимизация](./07_profiling_optimization.md)** (следующий раздел) — pprof CPU, go tool trace, workflow профилирования, оптимизация production-кода
 - **[Часть 3: Web & API](../part3-web-api/)** — построение production-ready HTTP сервисов
 
 ---
 
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: 2.5 Обработка ошибок](./05_error_handling.md) | [Вперёд: 2.7 Профилирование →](./07_profiling.md)
+[← Назад: 2.5 Обработка ошибок](./05_error_handling.md) | [Вперёд: 2.7 Профилирование и оптимизация →](./07_profiling_optimization.md)
