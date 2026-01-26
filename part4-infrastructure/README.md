@@ -6,7 +6,7 @@
 
 ## Статус
 
-🚧 **В разработке** — 14% (1 из 7 разделов)
+🚧 **В разработке** — 29% (2 из 7 разделов)
 
 ## Завершённые материалы
 
@@ -20,12 +20,18 @@
 - Security: SSL/TLS, Row-Level Security, secrets management
 - Observability: Prometheus метрики, OpenTelemetry instrumentation
 
-## Планируемые материалы
+### 4.2 [Кэширование](./02_caching.md) ✅
+- Redis (go-redis v9): подключение, операции, pipelining, транзакции, Pub/Sub
+- Распределённые блокировки (Redlock): redsync
+- In-memory: go-cache, ristretto v2, bigcache — сравнение и выбор
+- Абстракция: eko/gocache (chain cache, loadable, metrics)
+- Паттерны: Cache-Aside, Write-Through/Behind, Read-Through
+- Cache stampede prevention (singleflight)
+- Multi-level кэширование (L1 ristretto + L2 Redis + Pub/Sub инвалидация)
+- Production: мониторинг, сериализация, GC impact, circuit breaker
+- 3 практических примера: Redis cache layer, multi-level cache, session storage
 
-### 4.2 Кэширование
-- Redis: go-redis
-- In-memory: go-cache, ristretto
-- Distributed caching patterns
+## Планируемые материалы
 
 ### 4.3 Очереди сообщений
 - Kafka: segmentio/kafka-go
