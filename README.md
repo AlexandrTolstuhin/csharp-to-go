@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.23+-00ADD8?logo=go)](https://go.dev/)
-[![Progress](https://img.shields.io/badge/Progress-50%25-yellow)](./STRUCTURE.md)
+[![Progress](https://img.shields.io/badge/Progress-53%25-yellow)](./STRUCTURE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/AlexandrTolstuhin/csharp-to-go?style=social)](https://github.com/AlexandrTolstuhin/csharp-to-go)
 
 > Комплексный курс по изучению Go для опытного C# разработчика с фокусом на async/await, concurrency, производительность и продакшн-ready практики.
@@ -61,10 +61,14 @@
 
 ### [Часть 4: Инфраструктура и интеграции](./part4-infrastructure/)
 
-#### 4.1 Базы данных _(в разработке)_
-- PostgreSQL: pgx, sqlc
-- Миграции
-- Connection pooling
+#### 4.1 [Production PostgreSQL](./part4-infrastructure/01_production_postgresql.md)
+- ✅ Advanced pgx: конфигурация, custom types, tracing hooks
+- ✅ Production connection pooling: pgxpool vs PgBouncer
+- ✅ Продвинутый sqlc: CTE, dynamic queries, batch
+- ✅ Zero-downtime migrations
+- ✅ Query performance и оптимизация
+- ✅ High availability: replicas, retry, circuit breaker
+- ✅ Security и Observability
 
 #### 4.2 Кэширование _(в разработке)_
 - Redis
@@ -164,6 +168,6 @@
 
 ---
 
-**Версия**: 0.4.0
-**Последнее обновление**: 2026-01-25
-**Статус**: Части 1-3 завершены (50%), Часть 4 следующая
+**Версия**: 0.4.1
+**Последнее обновление**: 2026-01-26
+**Статус**: Части 1-3 завершены, Часть 4 в разработке (1/7 разделов)
