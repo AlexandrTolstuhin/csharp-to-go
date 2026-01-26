@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.23+-00ADD8?logo=go)](https://go.dev/)
-[![Progress](https://img.shields.io/badge/Progress-56%25-yellow)](./STRUCTURE.md)
+[![Progress](https://img.shields.io/badge/Progress-58%25-yellow)](./STRUCTURE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/AlexandrTolstuhin/csharp-to-go?style=social)](https://github.com/AlexandrTolstuhin/csharp-to-go)
 
 > Комплексный курс по изучению Go для опытного C# разработчика с фокусом на async/await, concurrency, производительность и продакшн-ready практики.
@@ -76,10 +76,13 @@
 - ✅ Паттерны: Cache-Aside, stampede prevention, multi-level cache
 - ✅ Production: мониторинг, сериализация, GC impact
 
-#### 4.3 Очереди сообщений _(в разработке)_
-- Kafka
-- RabbitMQ
-- NATS
+#### 4.3 [Очереди сообщений](./part4-infrastructure/03_message_queues.md)
+- ✅ Kafka (segmentio/kafka-go): producer, consumer, consumer groups, production config, DLT
+- ✅ RabbitMQ (amqp091-go): exchanges, publisher confirms, prefetch, reconnection, DLX
+- ✅ NATS (nats.go): Core pub/sub, JetStream, push/pull consumers, KV Store
+- ✅ Redis Streams: consumer groups, acknowledgment, claiming
+- ✅ Паттерны: идемпотентность, Outbox, Saga, graceful shutdown
+- ✅ Production: Prometheus, OpenTelemetry, health checks
 
 #### 4.4 gRPC _(в разработке)_
 - Protocol Buffers
@@ -170,6 +173,6 @@
 
 ---
 
-**Версия**: 0.4.2
+**Версия**: 0.4.3
 **Последнее обновление**: 2026-01-26
-**Статус**: Части 1-3 завершены, Часть 4 в разработке (2/7 разделов)
+**Статус**: Части 1-3 завершены, Часть 4 в разработке (3/7 разделов)

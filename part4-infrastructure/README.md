@@ -6,7 +6,7 @@
 
 ## Статус
 
-🚧 **В разработке** — 29% (2 из 7 разделов)
+🚧 **В разработке** — 43% (3 из 7 разделов)
 
 ## Завершённые материалы
 
@@ -31,13 +31,17 @@
 - Production: мониторинг, сериализация, GC impact, circuit breaker
 - 3 практических примера: Redis cache layer, multi-level cache, session storage
 
-## Планируемые материалы
+### 4.3 [Очереди сообщений](./03_message_queues.md) ✅
+- Kafka (segmentio/kafka-go): producer, consumer, consumer groups, production config, DLT
+- RabbitMQ (amqp091-go): exchanges/queues/bindings, publisher confirms, prefetch, reconnection, DLX
+- NATS (nats.go): Core pub/sub, JetStream, push/pull consumers, KV Store
+- Redis Streams: XADD/XREAD, consumer groups, acknowledgment, claiming
+- Сравнительная таблица и блок-схема выбора технологий
+- Паттерны: идемпотентность, graceful shutdown, retry, Outbox, Saga
+- Production: Prometheus метрики, OpenTelemetry trace propagation, health checks
+- 3 практических примера: event-driven order processing (Kafka), task queue (RabbitMQ), real-time notifications (NATS)
 
-### 4.3 Очереди сообщений
-- Kafka: segmentio/kafka-go
-- RabbitMQ: amqp091-go
-- NATS: nats.go
-- Redis Streams
+## Планируемые материалы
 
 ### 4.4 gRPC
 - Protocol Buffers
