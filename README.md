@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.23+-00ADD8?logo=go)](https://go.dev/)
-[![Progress](https://img.shields.io/badge/Progress-58%25-yellow)](./STRUCTURE.md)
+[![Progress](https://img.shields.io/badge/Progress-61%25-yellow)](./STRUCTURE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/AlexandrTolstuhin/csharp-to-go?style=social)](https://github.com/AlexandrTolstuhin/csharp-to-go)
 
 > Комплексный курс по изучению Go для опытного C# разработчика с фокусом на async/await, concurrency, производительность и продакшн-ready практики.
@@ -84,10 +84,11 @@
 - ✅ Паттерны: идемпотентность, Outbox, Saga, graceful shutdown
 - ✅ Production: Prometheus, OpenTelemetry, health checks
 
-#### 4.4 gRPC _(в разработке)_
-- Protocol Buffers
-- Unary и Streaming RPC
-- gRPC-Gateway
+#### 4.4 [gRPC](./part4-infrastructure/04_grpc.md)
+- ✅ Protocol Buffers для gRPC: API design, well-known types, buf tooling
+- ✅ Сервер и клиент gRPC: все 4 типа RPC, grpc.NewClient
+- ✅ Interceptors, gRPC-Gateway, ConnectRPC
+- ✅ Безопасность, тестирование, production concerns
 
 #### 4.5 Observability _(в разработке)_
 - Логирование: log/slog, zap, zerolog
@@ -173,6 +174,6 @@
 
 ---
 
-**Версия**: 0.4.3
-**Последнее обновление**: 2026-01-26
-**Статус**: Части 1-3 завершены, Часть 4 в разработке (3/7 разделов)
+**Версия**: 0.4.4
+**Последнее обновление**: 2026-01-27
+**Статус**: Части 1-3 завершены, Часть 4 в разработке (4/7 разделов)

@@ -6,7 +6,7 @@
 
 ## Статус
 
-🚧 **В разработке** — 43% (3 из 7 разделов)
+🚧 **В разработке** — 57% (4 из 7 разделов)
 
 ## Завершённые материалы
 
@@ -41,14 +41,22 @@
 - Production: Prometheus метрики, OpenTelemetry trace propagation, health checks
 - 3 практических примера: event-driven order processing (Kafka), task queue (RabbitMQ), real-time notifications (NATS)
 
-## Планируемые материалы
+### 4.4 [gRPC](./04_grpc.md) ✅
+- Protocol Buffers для gRPC: API design best practices, well-known types, сервисные определения
+- buf: современный tooling (lint, breaking, generate, BSR, CI/CD)
+- Сервер gRPC: Unary, Server Streaming, Client Streaming, Bidirectional Streaming, Graceful Shutdown
+- Клиент gRPC: grpc.NewClient, стримы, connection management
+- Контекст, дедлайны, metadata, коды ошибок, Rich Error Model
+- Interceptors: server/client, unary/stream, chaining, go-grpc-middleware v2
+- gRPC-Gateway: HTTP annotations, reverse proxy, Swagger/OpenAPI
+- ConnectRPC: современная альтернатива (HTTP/1.1, browser-friendly)
+- Health Checking Protocol, Server Reflection, grpcurl/grpcui
+- Безопасность: TLS, mTLS, JWT аутентификация
+- Тестирование: bufconn (in-memory), стримы, grpcurl
+- Production: Prometheus метрики, OpenTelemetry, load balancing, retry, keepalive
+- 3 практических примера: CRUD User Service, real-time стриминг цен, gRPC-Gateway + REST
 
-### 4.4 gRPC
-- Protocol Buffers
-- Unary и Streaming RPC
-- Interceptors
-- gRPC-Gateway
-- buf: современный tooling
+## Планируемые материалы
 
 ### 4.5 Observability
 - Логирование: log/slog, zap, zerolog
