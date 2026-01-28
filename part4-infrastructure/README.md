@@ -6,7 +6,7 @@
 
 ## Статус
 
-🚧 **В разработке** — 71% (5 из 7 разделов)
+🚧 **В разработке** — 86% (6 из 7 разделов)
 
 ## Завершённые материалы
 
@@ -74,12 +74,22 @@
 - Production: overhead бенчмарки, graceful shutdown, тестирование, безопасность
 - 3 практических примера: full observability setup, distributed tracing, Grafana Stack Docker Compose
 
-## Планируемые материалы
+### 4.6 [Конфигурация](./06_config.md) ✅
+- Стандартная библиотека: os.Getenv, os.LookupEnv, flag, pflag
+- caarlos0/env: struct-based ENV парсинг, custom parsers, вложенные структуры, file secrets, godotenv
+- kelseyhightower/envconfig: prefix-based подход, auto-naming, Usage()
+- Viper: файлы + env + flags + remote config, AutomaticEnv, WatchConfig, проблемы и ограничения
+- koanf: модульная альтернатива Viper (Providers + Parsers), hot reload
+- cleanenv: лёгкая альтернатива (файл + ENV)
+- Сравнительные таблицы и блок-схема выбора библиотеки
+- Валидация: fail fast, go-playground/validator, custom validation
+- Паттерны: 12-Factor App, multi-environment, immutable vs hot reload, Functional Options
+- Секреты: HashiCorp Vault, AWS Secrets Manager, K8s Secrets, маскирование в логах
+- Feature Flags: config-based, OpenFeature SDK, сторонние сервисы
+- Production: порядок инициализации, graceful reload (SIGHUP), тестирование (t.Setenv), observability
+- 3 практических примера: production-ready config (caarlos0/env + validator), multi-source config (koanf + hot reload), config с секретами (Vault + feature flags)
 
-### 4.6 Конфигурация
-- viper
-- envconfig
-- caarlos0/env
+## Планируемые материалы
 
 ### 4.7 Контейнеризация
 - Multi-stage Docker builds

@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.23+-00ADD8?logo=go)](https://go.dev/)
-[![Progress](https://img.shields.io/badge/Progress-64%25-yellow)](./STRUCTURE.md)
+[![Progress](https://img.shields.io/badge/Progress-67%25-yellow)](./STRUCTURE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/AlexandrTolstuhin/csharp-to-go?style=social)](https://github.com/AlexandrTolstuhin/csharp-to-go)
 
 > Комплексный курс по изучению Go для опытного C# разработчика с фокусом на async/await, concurrency, производительность и продакшн-ready практики.
@@ -97,8 +97,9 @@
 - ✅ Интеграция: корреляция логов/трейсов, Exemplars, context propagation
 - ✅ Health Checks, SLI/SLO, Production concerns
 
-#### 4.6 Конфигурация _(в разработке)_
-- viper, envconfig, caarlos0/env
+#### 4.6 [Конфигурация](./part4-infrastructure/06_config.md)
+- ✅ caarlos0/env, envconfig, Viper, koanf, cleanenv — сравнение и выбор
+- ✅ Валидация, секреты, feature flags, production patterns
 
 #### 4.7 Контейнеризация _(в разработке)_
 - Multi-stage Docker builds
@@ -179,6 +180,6 @@
 
 ---
 
-**Версия**: 0.4.5
+**Версия**: 0.4.6
 **Последнее обновление**: 2026-01-28
-**Статус**: Части 1-3 завершены, Часть 4 в разработке (5/7 разделов)
+**Статус**: Части 1-3 завершены, Часть 4 в разработке (6/7 разделов)
