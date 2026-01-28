@@ -6,7 +6,7 @@
 
 ## Статус
 
-🚧 **В разработке** — 86% (6 из 7 разделов)
+✅ **Завершено** — 100% (7 из 7 разделов)
 
 ## Завершённые материалы
 
@@ -89,13 +89,18 @@
 - Production: порядок инициализации, graceful reload (SIGHUP), тестирование (t.Setenv), observability
 - 3 практических примера: production-ready config (caarlos0/env + validator), multi-source config (koanf + hot reload), config с секретами (Vault + feature flags)
 
-## Планируемые материалы
-
-### 4.7 Контейнеризация
-- Multi-stage Docker builds
-- Distroless образы
-- Docker Compose
-- Kubernetes basics
+### 4.7 [Контейнеризация](./07_containerization.md) ✅
+- Multi-stage Docker builds для минимальных образов (~5-15 MB)
+- Scratch, Alpine, Distroless — сравнение и выбор базового образа
+- Безопасность: non-root, .dockerignore, Trivy сканирование, BuildKit secrets
+- Production Docker Patterns: HEALTHCHECK, graceful shutdown, логирование, сигналы
+- Docker Compose: структура, health checks, depends_on, profiles, hot reload с air
+- Kubernetes basics: Pod, Deployment, Service, Ingress, ConfigMaps, Secrets
+- Health Probes: liveness, readiness, startup — интеграция с K8s
+- Resource Limits: GOMEMLIMIT, automaxprocs, HPA автоскейлинг
+- CI/CD: GitHub Actions, multi-platform builds, Container Registry
+- Сравнение с .NET: ASP.NET Core Docker vs Go Docker, .NET Aspire vs Compose
+- 3 практических примера: production Dockerfile, Docker Compose для микросервисов, K8s Deployment
 
 ## Время изучения
 

@@ -3464,12 +3464,11 @@ func main() {
 
 ## Следующие шаги
 
-Переходите к [4.7 Контейнеризация](./07_docker.md) — multi-stage Docker builds, distroless-образы, Docker Compose и основы Kubernetes.
+Переходите к [4.7 Контейнеризация](./07_containerization.md) — multi-stage Docker builds, distroless-образы, Docker Compose и основы Kubernetes.
 
 ---
 
 **Вопросы?** Откройте issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: 4.5 Observability](./05_observability.md) | [Вперёд: 4.7 Контейнеризация →](./07_docker.md)
-```
+[← Назад: 4.5 Observability](./05_observability.md) | [Вперёд: 4.7 Контейнеризация →](./07_containerization.md)
 
