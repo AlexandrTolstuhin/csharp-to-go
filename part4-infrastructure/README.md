@@ -6,7 +6,7 @@
 
 ## Статус
 
-🚧 **В разработке** — 57% (4 из 7 разделов)
+🚧 **В разработке** — 71% (5 из 7 разделов)
 
 ## Завершённые материалы
 
@@ -56,13 +56,25 @@
 - Production: Prometheus метрики, OpenTelemetry, load balancing, retry, keepalive
 - 3 практических примера: CRUD User Service, real-time стриминг цен, gRPC-Gateway + REST
 
-## Планируемые материалы
+### 4.5 [Observability](./05_observability.md) ✅
+- Structured logging: log/slog (Go 1.21+), uber-go/zap, rs/zerolog — сравнение, бенчмарки, выбор
+- slog как стандартный интерфейс, zap/zerolog как backend
+- Production patterns: log rotation, PII redaction, dynamic log level
+- Метрики: prometheus/client_golang, VictoriaMetrics, типы метрик, custom buckets
+- HTTP Metrics Middleware (RED: Rate, Errors, Duration)
+- Бизнес-метрики, PromQL запросы, alerting rules, Grafana дашборды
+- Distributed Tracing: OpenTelemetry Go SDK, TracerProvider, Sampler, Propagator
+- Manual instrumentation: spans, attributes, events, ошибки, вложенные spans
+- Auto-instrumentation: otelhttp, otelgrpc, otelsql, redisotel
+- Jaeger, Zipkin, OpenTelemetry Collector (receivers → processors → exporters)
+- Интеграция трёх столпов: корреляция логов/трейсов, Exemplars, context propagation
+- Агрегация логов: Grafana Loki vs ELK Stack
+- Health Checks: liveness/readiness/startup probes, Kubernetes интеграция
+- SLI/SLO: error budgets, burn rate, SLI recording middleware
+- Production: overhead бенчмарки, graceful shutdown, тестирование, безопасность
+- 3 практических примера: full observability setup, distributed tracing, Grafana Stack Docker Compose
 
-### 4.5 Observability
-- Логирование: log/slog, zap, zerolog
-- Метрики: Prometheus
-- Трейсинг: OpenTelemetry
-- Jaeger, Zipkin
+## Планируемые материалы
 
 ### 4.6 Конфигурация
 - viper
