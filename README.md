@@ -59,54 +59,15 @@
 
 ---
 
-### [Часть 4: Инфраструктура и интеграции](./part4-infrastructure/)
+### [Часть 4: Инфраструктура и интеграции](./part4-infrastructure/) — **Завершено**
 
-#### 4.1 [Production PostgreSQL](./part4-infrastructure/01_production_postgresql.md)
-- ✅ Advanced pgx: конфигурация, custom types, tracing hooks
-- ✅ Production connection pooling: pgxpool vs PgBouncer
-- ✅ Продвинутый sqlc: CTE, dynamic queries, batch
-- ✅ Zero-downtime migrations
-- ✅ Query performance и оптимизация
-- ✅ High availability: replicas, retry, circuit breaker
-- ✅ Security и Observability
-
-#### 4.2 [Кэширование](./part4-infrastructure/02_caching.md)
-- ✅ Redis (go-redis v9): подключение, операции, pipelining, Pub/Sub, Redlock
-- ✅ In-memory: go-cache, ristretto v2, bigcache
-- ✅ Паттерны: Cache-Aside, stampede prevention, multi-level cache
-- ✅ Production: мониторинг, сериализация, GC impact
-
-#### 4.3 [Очереди сообщений](./part4-infrastructure/03_message_queues.md)
-- ✅ Kafka (segmentio/kafka-go): producer, consumer, consumer groups, production config, DLT
-- ✅ RabbitMQ (amqp091-go): exchanges, publisher confirms, prefetch, reconnection, DLX
-- ✅ NATS (nats.go): Core pub/sub, JetStream, push/pull consumers, KV Store
-- ✅ Redis Streams: consumer groups, acknowledgment, claiming
-- ✅ Паттерны: идемпотентность, Outbox, Saga, graceful shutdown
-- ✅ Production: Prometheus, OpenTelemetry, health checks
-
-#### 4.4 [gRPC](./part4-infrastructure/04_grpc.md)
-- ✅ Protocol Buffers для gRPC: API design, well-known types, buf tooling
-- ✅ Сервер и клиент gRPC: все 4 типа RPC, grpc.NewClient
-- ✅ Interceptors, gRPC-Gateway, ConnectRPC
-- ✅ Безопасность, тестирование, production concerns
-
-#### 4.5 [Observability](./part4-infrastructure/05_observability.md)
-- ✅ Structured logging: slog, zap, zerolog — сравнение и выбор
-- ✅ Метрики: Prometheus, PromQL, Grafana дашборды
-- ✅ Distributed Tracing: OpenTelemetry, Jaeger, OTel Collector
-- ✅ Интеграция: корреляция логов/трейсов, Exemplars, context propagation
-- ✅ Health Checks, SLI/SLO, Production concerns
-
-#### 4.6 [Конфигурация](./part4-infrastructure/06_config.md)
-- ✅ caarlos0/env, envconfig, Viper, koanf, cleanenv — сравнение и выбор
-- ✅ Валидация, секреты, feature flags, production patterns
-
-#### 4.7 [Контейнеризация](./part4-infrastructure/07_containerization.md)
-- ✅ Multi-stage Docker builds, scratch/alpine/distroless
-- ✅ Production Docker Patterns: health checks, graceful shutdown
-- ✅ Docker Compose для микросервисов
-- ✅ Kubernetes basics: Deployment, Service, Ingress, HPA
-- ✅ CI/CD интеграция: GitHub Actions, multi-platform builds
+- **4.1** [Production PostgreSQL](./part4-infrastructure/01_production_postgresql.md)
+- **4.2** [Кэширование](./part4-infrastructure/02_caching.md)
+- **4.3** [Очереди сообщений](./part4-infrastructure/03_message_queues.md)
+- **4.4** [gRPC](./part4-infrastructure/04_grpc.md)
+- **4.5** [Observability](./part4-infrastructure/05_observability.md)
+- **4.6** [Конфигурация](./part4-infrastructure/06_config.md)
+- **4.7** [Контейнеризация](./part4-infrastructure/07_containerization.md)
 
 ---
 
