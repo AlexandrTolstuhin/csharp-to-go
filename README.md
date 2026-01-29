@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.23+-00ADD8?logo=go)](https://go.dev/)
-[![Progress](https://img.shields.io/badge/Progress-76%25-green)](./STRUCTURE.md)
+[![Progress](https://img.shields.io/badge/Progress-80%25-green)](./STRUCTURE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/AlexandrTolstuhin/csharp-to-go?style=social)](https://github.com/AlexandrTolstuhin/csharp-to-go)
 
 > Комплексный курс по изучению Go для опытного C# разработчика с фокусом на async/await, concurrency, производительность и продакшн-ready практики.
@@ -115,10 +115,13 @@
 - ✅ net/http улучшения (Go 1.22+) — method routing, PathValue
 - ✅ Range over integers, clear(), min/max, cmp.Or
 
-#### 6.3 Инструменты _(в разработке)_
-- golangci-lint
-- staticcheck
-- govulncheck
+#### 6.3 [Инструменты](./part6-best-practices/03_tools.md)
+- ✅ golangci-lint — мета-линтер, конфигурация
+- ✅ staticcheck — глубокий статический анализ
+- ✅ govulncheck — проверка уязвимостей
+- ✅ go mod — управление зависимостями
+- ✅ air — hot reload
+- ✅ CI/CD Pipeline — GitHub Actions, GitLab CI
 
 #### 6.4 Производительность _(в разработке)_
 - Минимизация аллокаций
