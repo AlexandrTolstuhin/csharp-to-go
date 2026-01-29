@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.23+-00ADD8?logo=go)](https://go.dev/)
-[![Progress](https://img.shields.io/badge/Progress-70%25-green)](./STRUCTURE.md)
+[![Progress](https://img.shields.io/badge/Progress-73%25-green)](./STRUCTURE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/AlexandrTolstuhin/csharp-to-go?style=social)](https://github.com/AlexandrTolstuhin/csharp-to-go)
 
 > Комплексный курс по изучению Go для опытного C# разработчика с фокусом на async/await, concurrency, производительность и продакшн-ready практики.
@@ -101,10 +101,13 @@
 
 ### [Часть 6: Best Practices](./part6-best-practices/)
 
-#### 6.1 Код и архитектура _(в разработке)_
-- Accept interfaces, return structs
-- Маленькие интерфейсы
-- Composition over inheritance
+#### 6.1 [Код и архитектура](./part6-best-practices/01_code_architecture.md)
+- ✅ Accept interfaces, return structs
+- ✅ Маленькие интерфейсы (1-3 метода)
+- ✅ Composition over inheritance
+- ✅ Explicit is better than implicit
+- ✅ Организация пакетов
+- ✅ Типичные ошибки C# разработчиков
 
 #### 6.2 Современные возможности Go _(в разработке)_
 - Generics (Go 1.18+)
@@ -143,6 +146,6 @@
 
 ---
 
-**Версия**: 0.4.7
-**Последнее обновление**: 2026-01-28
-**Статус**: Части 1-4 завершены (100%)
+**Версия**: 0.5.0
+**Последнее обновление**: 2026-01-29
+**Статус**: Части 1-4 завершены, начата часть 6
