@@ -6,7 +6,7 @@
 
 ## Статус
 
-🚧 **В разработке** (60% — 3 из 5 разделов)
+🚧 **В разработке** (80% — 4 из 5 разделов)
 
 ## Материалы
 
@@ -44,12 +44,17 @@
 - Интеграция в IDE — VS Code, GoLand, командные настройки
 - CI/CD Pipeline — GitHub Actions, GitLab CI, pre-commit hooks
 
-### 6.4 Производительность _(в разработке)_
-- Избегать аллокаций в hot paths
-- sync.Pool для переиспользования
-- Правильный размер слайсов и map
-- Избегать interface{} в критичных местах
-- Профилирование до оптимизации
+### 6.4 [Производительность](./04_performance.md) ✅
+
+**Основные темы**:
+- Философия оптимизации — когда оптимизировать, cost/benefit анализ
+- Zero-Allocation Patterns — HTTP handlers, []byte vs string, sync.Pool продвинутые паттерны
+- Контроль Escape Analysis — правила размещения, предотвращение escape
+- Memory Layout и Alignment — struct padding, fieldalignment, cache-friendly структуры
+- Compiler Optimizations — inlining, bounds check elimination
+- Runtime в контейнерах — GOMAXPROCS, automaxprocs, GOMEMLIMIT
+- Production Memory Patterns — backpressure, rate limiting, graceful degradation
+- Real-World Case Studies — high-throughput JSON API, batch processing
 
 ### 6.5 Production Checklist _(в разработке)_
 - Graceful shutdown

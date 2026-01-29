@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.23+-00ADD8?logo=go)](https://go.dev/)
-[![Progress](https://img.shields.io/badge/Progress-80%25-green)](./STRUCTURE.md)
+[![Progress](https://img.shields.io/badge/Progress-83%25-green)](./STRUCTURE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/AlexandrTolstuhin/csharp-to-go?style=social)](https://github.com/AlexandrTolstuhin/csharp-to-go)
 
 > Комплексный курс по изучению Go для опытного C# разработчика с фокусом на async/await, concurrency, производительность и продакшн-ready практики.
@@ -123,10 +123,13 @@
 - ✅ air — hot reload
 - ✅ CI/CD Pipeline — GitHub Actions, GitLab CI
 
-#### 6.4 Производительность _(в разработке)_
-- Минимизация аллокаций
-- sync.Pool
-- Профилирование
+#### 6.4 [Производительность](./part6-best-practices/04_performance.md)
+- ✅ Философия оптимизации — когда оптимизировать
+- ✅ Zero-Allocation Patterns — sync.Pool, []byte, stack buffers
+- ✅ Memory Layout — struct padding, fieldalignment
+- ✅ Compiler Optimizations — inlining, BCE
+- ✅ Runtime в контейнерах — automaxprocs, GOMEMLIMIT
+- ✅ Production Memory Patterns — backpressure, graceful degradation
 
 ---
 
@@ -150,6 +153,6 @@
 
 ---
 
-**Версия**: 0.5.0
+**Версия**: 0.5.2
 **Последнее обновление**: 2026-01-29
-**Статус**: Части 1-4 завершены, начата часть 6
+**Статус**: Части 1-4 завершены, часть 6 на 80%
