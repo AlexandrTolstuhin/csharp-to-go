@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.23+-00ADD8?logo=go)](https://go.dev/)
-[![Progress](https://img.shields.io/badge/Progress-73%25-green)](./STRUCTURE.md)
+[![Progress](https://img.shields.io/badge/Progress-76%25-green)](./STRUCTURE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/AlexandrTolstuhin/csharp-to-go?style=social)](https://github.com/AlexandrTolstuhin/csharp-to-go)
 
 > Комплексный курс по изучению Go для опытного C# разработчика с фокусом на async/await, concurrency, производительность и продакшн-ready практики.
@@ -109,10 +109,11 @@
 - ✅ Организация пакетов
 - ✅ Типичные ошибки C# разработчиков
 
-#### 6.2 Современные возможности Go _(в разработке)_
-- Generics (Go 1.18+)
-- log/slog
-- Улучшения в Go 1.22+
+#### 6.2 [Современные возможности Go](./part6-best-practices/02_modern_go.md)
+- ✅ Generics (Go 1.18+) — constraints, когда использовать
+- ✅ slices/maps пакеты — сравнение с LINQ
+- ✅ net/http улучшения (Go 1.22+) — method routing, PathValue
+- ✅ Range over integers, clear(), min/max, cmp.Or
 
 #### 6.3 Инструменты _(в разработке)_
 - golangci-lint
