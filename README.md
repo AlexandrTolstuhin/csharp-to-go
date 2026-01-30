@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.23+-00ADD8?logo=go)](https://go.dev/)
-[![Progress](https://img.shields.io/badge/Progress-83%25-green)](./STRUCTURE.md)
+[![Progress](https://img.shields.io/badge/Progress-87%25-green)](./STRUCTURE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/AlexandrTolstuhin/csharp-to-go?style=social)](https://github.com/AlexandrTolstuhin/csharp-to-go)
 
 > Комплексный курс по изучению Go для опытного C# разработчика с фокусом на async/await, concurrency, производительность и продакшн-ready практики.
@@ -99,7 +99,7 @@
 
 ---
 
-### [Часть 6: Best Practices](./part6-best-practices/)
+### [Часть 6: Best Practices](./part6-best-practices/) — **Завершено**
 
 #### 6.1 [Код и архитектура](./part6-best-practices/01_code_architecture.md)
 - ✅ Accept interfaces, return structs
@@ -131,6 +131,14 @@
 - ✅ Runtime в контейнерах — automaxprocs, GOMEMLIMIT
 - ✅ Production Memory Patterns — backpressure, graceful degradation
 
+#### 6.5 [Production Checklist](./part6-best-practices/05_production_checklist.md)
+- ✅ Graceful shutdown — сигналы, shutdown order, Kubernetes
+- ✅ Health checks — liveness, readiness, startup probes
+- ✅ Structured logging — slog, маскирование, request ID
+- ✅ Metrics и tracing — Prometheus, OpenTelemetry
+- ✅ Resilience patterns — rate limiting, circuit breaker, retry
+- ✅ Configuration и security — 12-Factor, secrets, Docker
+
 ---
 
 ## Полезные ресурсы
@@ -153,6 +161,6 @@
 
 ---
 
-**Версия**: 0.5.2
-**Последнее обновление**: 2026-01-29
-**Статус**: Части 1-4 завершены, часть 6 на 80%
+**Версия**: 0.5.3
+**Последнее обновление**: 2026-01-30
+**Статус**: Части 1-4 и 6 завершены, часть 5 в планах

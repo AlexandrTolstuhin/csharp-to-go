@@ -6,7 +6,7 @@
 
 ## Статус
 
-🚧 **В разработке** (80% — 4 из 5 разделов)
+✅ **Завершено** (100% — 5 из 5 разделов)
 
 ## Материалы
 
@@ -56,17 +56,19 @@
 - Production Memory Patterns — backpressure, rate limiting, graceful degradation
 - Real-World Case Studies — high-throughput JSON API, batch processing
 
-### 6.5 Production Checklist _(в разработке)_
-- Graceful shutdown
-- Health checks (liveness, readiness)
-- Structured logging
-- Metrics exported
-- Tracing configured
-- Rate limiting
-- Circuit breakers
-- Proper error handling
-- Configuration from env
-- Minimal Docker images
+### 6.5 [Production Checklist](./05_production_checklist.md) ✅
+
+**Основные темы**:
+- Graceful shutdown — сигналы, signal.NotifyContext, shutdown order, Kubernetes интеграция
+- Health checks — liveness/readiness/startup probes, проверка зависимостей
+- Structured logging — slog production config, маскирование sensitive data, request ID
+- Metrics и monitoring — RED metrics, Prometheus экспорт, alerting
+- Distributed tracing — OpenTelemetry setup, sampling strategies
+- Resilience patterns — rate limiting, circuit breaker, retry, timeouts, bulkhead
+- Error handling — классификация ошибок, RFC 7807, panic recovery
+- Configuration — 12-Factor App, environment variables, secrets management
+- Docker images — multi-stage build, distroless, security scanning, non-root
+- Security checklist — input validation, SQL injection, security headers, govulncheck
 
 ## Время изучения
 
