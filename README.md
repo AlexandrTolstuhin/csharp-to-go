@@ -116,6 +116,7 @@
 - [Effective Go](https://go.dev/doc/effective_go)
 - [Go by Example](https://gobyexample.com)
 - [Go Blog](https://go.dev/blog)
+- [Go Source Code](https://cs.opensource.google/go/go)
 
 ### Style Guides
 - [Uber Go Style Guide](https://github.com/uber-go/guide/blob/master/style.md)
