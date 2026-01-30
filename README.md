@@ -101,43 +101,11 @@
 
 ### [Часть 6: Best Practices](./part6-best-practices/) — **Завершено**
 
-#### 6.1 [Код и архитектура](./part6-best-practices/01_code_architecture.md)
-- ✅ Accept interfaces, return structs
-- ✅ Маленькие интерфейсы (1-3 метода)
-- ✅ Composition over inheritance
-- ✅ Explicit is better than implicit
-- ✅ Организация пакетов
-- ✅ Типичные ошибки C# разработчиков
-
-#### 6.2 [Современные возможности Go](./part6-best-practices/02_modern_go.md)
-- ✅ Generics (Go 1.18+) — constraints, когда использовать
-- ✅ slices/maps пакеты — сравнение с LINQ
-- ✅ net/http улучшения (Go 1.22+) — method routing, PathValue
-- ✅ Range over integers, clear(), min/max, cmp.Or
-
-#### 6.3 [Инструменты](./part6-best-practices/03_tools.md)
-- ✅ golangci-lint — мета-линтер, конфигурация
-- ✅ staticcheck — глубокий статический анализ
-- ✅ govulncheck — проверка уязвимостей
-- ✅ go mod — управление зависимостями
-- ✅ air — hot reload
-- ✅ CI/CD Pipeline — GitHub Actions, GitLab CI
-
-#### 6.4 [Производительность](./part6-best-practices/04_performance.md)
-- ✅ Философия оптимизации — когда оптимизировать
-- ✅ Zero-Allocation Patterns — sync.Pool, []byte, stack buffers
-- ✅ Memory Layout — struct padding, fieldalignment
-- ✅ Compiler Optimizations — inlining, BCE
-- ✅ Runtime в контейнерах — automaxprocs, GOMEMLIMIT
-- ✅ Production Memory Patterns — backpressure, graceful degradation
-
-#### 6.5 [Production Checklist](./part6-best-practices/05_production_checklist.md)
-- ✅ Graceful shutdown — сигналы, shutdown order, Kubernetes
-- ✅ Health checks — liveness, readiness, startup probes
-- ✅ Structured logging — slog, маскирование, request ID
-- ✅ Metrics и tracing — Prometheus, OpenTelemetry
-- ✅ Resilience patterns — rate limiting, circuit breaker, retry
-- ✅ Configuration и security — 12-Factor, secrets, Docker
+- **6.1** [Код и архитектура](./part6-best-practices/01_code_architecture.md)
+- **6.2** [Современные возможности Go](./part6-best-practices/02_modern_go.md)
+- **6.3** [Инструменты](./part6-best-practices/03_tools.md)
+- **6.4** [Производительность](./part6-best-practices/04_performance.md)
+- **6.5** [Production Checklist](./part6-best-practices/05_production_checklist.md)
 
 ---
 
