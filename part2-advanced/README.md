@@ -33,6 +33,17 @@
    - Оптимизация под планировщик
    - 3 практических примера
 
+   **[02a_memory_allocator.md](./02a_memory_allocator.md)** — Аллокатор памяти Go
+   - Virtual Memory vs Physical Memory
+   - Memory Pages и page faults
+   - Архитектура: mheap → mcentral → mcache
+   - mspan, size classes (67 классов)
+   - Tiny allocator для мелких объектов
+   - Путь аллокации: fast path vs slow path
+   - Оптимизация структур под size classes
+   - Диагностика: runtime.MemStats, GODEBUG
+   - 3 практических примера
+
 3. **[03_gc.md](./03_gc.md)** — Сборка мусора (GC)
    - Архитектура Go GC vs .NET GC (concurrent vs generational)
    - Tri-color mark-and-sweep алгоритм

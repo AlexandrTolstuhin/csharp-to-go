@@ -41,6 +41,7 @@
 
 - **2.1** [Горутины и каналы](./part2-advanced/01_goroutines_channels.md)
 - **2.2** [Go Runtime и планировщик](./part2-advanced/02_runtime_scheduler.md)
+- **+** [Аллокатор памяти Go](./part2-advanced/02a_memory_allocator.md)
 - **2.3** [Сборка мусора (GC)](./part2-advanced/03_gc.md)
 - **2.4** [Примитивы синхронизации](./part2-advanced/04_sync_primitives.md)
 - **2.5** [Обработка ошибок (продвинутый уровень)](./part2-advanced/05_error_handling.md)

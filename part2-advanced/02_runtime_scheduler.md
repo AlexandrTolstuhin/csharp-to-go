@@ -1020,10 +1020,10 @@ func main() {
 
 ## Следующие шаги
 
-Переходите к [2.3 Сборка мусора (GC)](03_gc.md) для понимания того, как Go управляет памятью.
+Переходите к [2.2a Аллокатор памяти](02a_memory_allocator.md) для глубокого понимания того, как Go управляет памятью на низком уровне (virtual memory, mheap, mspan, size classes).
 
 ---
 
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: Горутины и каналы](01_goroutines_channels.md) | [Вперёд: Сборка мусора →](03_gc.md)
+[← Назад: Горутины и каналы](01_goroutines_channels.md) | [Вперёд: Аллокатор памяти →](02a_memory_allocator.md)
