@@ -48,32 +48,93 @@ GC, тестирование, контейнеры). Цель — обновит
 
 ---
 
+## Задача 0: Упразднение раздела 6.2 и распределение контента
+
+### Проблема
+
+`part6-best-practices/02_modern_go.md` является сборником "современных возможностей" Go 1.18-1.23,
+но эти темы уже частично раскрыты в соответствующих разделах курса или должны быть там.
+Держать их отдельно создаёт дублирование и разрывает тематический контекст.
+
+### Карта распределения контента
+
+| Блок из 6.2 | Куда переносится |
+|---|---|
+| **Generics (1.18+)**: constraints, type params, generic functions/types, когда использовать, performance | `part1-basics/03_key_differences.md` — в раздел про систему типов |
+| **slices/maps/cmp пакеты (1.21+)** | `part1-basics/02_syntax_basics.md` — в раздел про коллекции |
+| **log/slog (1.21)** | `part4-infrastructure/05_observability.md` — в раздел структурированного логирования |
+| **net/http улучшения (1.22+)**: метод-маршруты, PathValue, wildcards | `part3-web-api/01_http_server.md` — в раздел роутинга |
+| **Range over integers (1.22)** | `part1-basics/02_syntax_basics.md` — в раздел про циклы |
+| **clear(), min/max, cmp.Or (1.21-1.22)** | `part1-basics/02_syntax_basics.md` — в раздел встроенных функций |
+| **Iterators (1.23)** | `part1-basics/02_syntax_basics.md` — в раздел про range |
+| **Практические примеры** (Generic Repository, REST API) | Удаляются: Generic Repository частично войдёт в generics-блок в 1.3, REST API уже есть в части 3 |
+
+### Что удаляется
+- Файл `part6-best-practices/02_modern_go.md` — удалить полностью после переноса контента.
+
+### Что меняется в структуре part6
+После удаления 02_modern_go.md файлы часть 6 перенумеровываются:
+
+| Было | Станет |
+|---|---|
+| `02_modern_go.md` | удалён |
+| `03_tools.md` | `02_tools.md` |
+| `04_performance.md` | `03_performance.md` |
+| `05_production_checklist.md` | `04_production_checklist.md` |
+
+### Что нужно обновить после удаления
+
+- `part6-best-practices/README.md` — убрать раздел 6.2, обновить нумерацию и ссылки
+- Нижняя навигация в `part6-best-practices/01_code_architecture.md` — ссылка "вперёд" меняется на `02_tools.md`
+- Нижняя навигация в `02_tools.md` (бывший 03) — ссылка "назад" меняется на `01_code_architecture.md`
+- Нижняя навигация в `03_performance.md` (бывший 04) — ссылка "назад" меняется на `02_tools.md`
+- Нижняя навигация в `04_production_checklist.md` (бывший 05) — ссылка "назад" меняется на `03_performance.md`
+- Корневой `README.md` — обновить ссылки на файлы части 6
+
+### Примечание по контенту 1.24-1.26
+
+Запланированный новый контент из Go 1.24-1.26, который планировался для `02_modern_go.md`,
+теперь распределяется так:
+- Итераторы `strings.Lines`, `strings.SplitSeq` (1.24) → `part1-basics/02_syntax_basics.md`
+- `weak.Pointer[T]` (1.24) → `part2-advanced/03_gc.md` (тема управления памятью и GC)
+- Self-referential generics (1.26) → `part1-basics/03_key_differences.md` (раздел generics)
+
+---
+
 ## Файлы для обновления
 
 ### Обязательные (высокий приоритет)
 
 | Файл | Что добавить |
 |------|-------------|
-| `README.md` | Badge: `1.23+` → `1.26+` |
+| `README.md` | Badge: `1.23+` → `1.26+`; обновить ссылки части 6 |
 | `part2-advanced/04_sync_primitives.md` | `sync.Map` redesign (1.24), `WaitGroup.Go()` (1.25) |
-| `part2-advanced/03_gc.md` | Green Tea GC: 1.25 эксперимент → 1.26 default, Swiss Tables map (1.24) |
+| `part2-advanced/03_gc.md` | Green Tea GC: 1.25 эксперимент → 1.26 default, Swiss Tables map (1.24), `weak.Pointer` (1.24) |
 | `part2-advanced/06_testing_benchmarking.md` | `T.Context()`, `B.Loop()` (1.24), `testing/synctest` stable (1.25) |
 | `part4-infrastructure/07_containerization.md` | Container-aware GOMAXPROCS (1.25) |
+| `part1-basics/02_syntax_basics.md` | Контент из 6.2: slices/maps/cmp, range-over-int, clear/min/max, iterators; + generic type aliases (1.24), strings.Lines/SplitSeq (1.24) |
+| `part1-basics/03_key_differences.md` | Контент из 6.2: generics; + self-referential generics (1.26) |
+| `part3-web-api/01_http_server.md` | Контент из 6.2: net/http 1.22 routing |
+| `part4-infrastructure/05_observability.md` | Контент из 6.2: log/slog |
+| `part6-best-practices/README.md` | Удалить п.6.2, обновить нумерацию и ссылки |
 
 ### Средний приоритет
 
-| Файл | Что добавить |
+| Файл | Что сделать |
 |------|-------------|
-| `part6-best-practices/02_modern_go.md` | Итераторы strings/bytes (1.24), self-referential generics (1.26), `weak` package (1.24) |
+| `part6-best-practices/02_modern_go.md` | Удалить файл после переноса контента |
+| `part6-best-practices/03_tools.md` → `02_tools.md` | Переименовать, обновить навигацию, добавить `go fix` modernizers (1.26) |
+| `part6-best-practices/04_performance.md` → `03_performance.md` | Переименовать, обновить навигацию |
+| `part6-best-practices/05_production_checklist.md` → `04_production_checklist.md` | Переименовать, обновить навигацию |
+| `part6-best-practices/01_code_architecture.md` | Обновить навигацию: ссылка "вперёд" → `02_tools.md` |
 | `part2-advanced/07_profiling_optimization.md` | `FlightRecorder` (1.25), goroutine leak detection (1.26), новые scheduler metrics (1.26) |
 | `part3-web-api/04_validation_serialization.md` | JSON v2 (1.25 experimental), `io.ReadAll` 2x (1.26) |
-| `part1-basics/02_syntax_basics.md` | Generic type aliases (1.24) |
 
 ### Низкий приоритет (упомянуть вскользь)
 
 | Файл | Что добавить |
 |------|-------------|
-| `part6-best-practices/03_tools.md` | `go fix` modernizers (1.26) |
+| `part6-best-practices/02_tools.md` | `go fix` modernizers (1.26) |
 | `part2-advanced/02_runtime_scheduler.md` | Новые scheduler metrics (1.26) |
 | `part1-basics/01_setup_environment.md` | Версия установки: Go 1.26 |
 
@@ -162,31 +223,50 @@ func BenchmarkFoo(b *testing.B) {
 - Обновить секцию про `GOMAXPROCS` и убрать/отметить устаревшим рецепт с `uber-go/automaxprocs`
   (теперь встроено в runtime)
 
-### 6. `part6-best-practices/02_modern_go.md`
-**Lazy string/bytes iterators (Go 1.24)**:
-```go
-// Ленивый перебор строк — аналог C# LINQ lazy evaluation
-for line := range strings.Lines(text) {
-    process(line)
-}
+### 6. `part1-basics/02_syntax_basics.md` (основной приёмник контента из 6.2)
+Перенести из `02_modern_go.md`:
+- Раздел про `slices`/`maps`/`cmp` пакеты (Go 1.21+) — добавить в секцию коллекций
+- Range over integers (`for i := range 10`) — добавить в секцию циклов
+- `clear()`, `min/max`, `cmp.Or` — добавить в секцию встроенных функций
+- Iterators (Go 1.23) — добавить после range-over-integers
 
-// vs старый подход
-for _, line := range strings.Split(text, "\n") { ... }
-```
-Таблица новых итераторных функций: `Lines`, `SplitSeq`, `FieldsSeq`, `FieldsFuncSeq`.
+Добавить новый контент (Go 1.24):
+- Generic type aliases: `type MyMap[K comparable, V any] = map[K]V`
+- Итераторы `strings.Lines`, `strings.SplitSeq`, `bytes.Lines`, `bytes.SplitSeq` — аналог LINQ lazy evaluation
 
-**Self-referential generics (Go 1.26)**:
+### 6а. `part1-basics/03_key_differences.md`
+Перенести из `02_modern_go.md`:
+- Весь блок Generics (Go 1.18+): философия, синтаксис C# vs Go, type constraints,
+  generic functions/types, когда использовать, performance/GC
+
+Добавить новый контент (Go 1.26):
 ```go
-// Теперь работает (раньше — ошибка компиляции)
+// Self-referential generics — теперь работает (раньше — ошибка компиляции)
 type Adder[A Adder[A]] interface {
     Add(A) A
 }
 ```
 Сравнение с C# рекурсивными generic constraints (`where T : IComparable<T>`).
 
-**Пакет `weak` (Go 1.24)**:
-- Кратко: слабые ссылки через `weak.Pointer[T]`
-- Аналог: `WeakReference<T>` в C#
+### 6б. `part3-web-api/01_http_server.md`
+Перенести из `02_modern_go.md`:
+- Улучшения net/http (Go 1.22+): метод-маршруты `GET /path`, `PathValue()`, wildcards
+- Сравнение с ASP.NET Core, миграция с chi/gorilla
+(Проверить, что не дублирует уже существующий контент в этом файле — по TOC файл уже
+должен покрывать ServeMux 1.22, при дубле — объединить, не добавлять второй раз)
+
+### 6в. `part4-infrastructure/05_observability.md`
+Перенести из `02_modern_go.md`:
+- Раздел log/slog: обзор API, Handler интерфейс, миграция с других логгеров
+(Аналогично — проверить на дублирование с существующим контентом про slog в файле)
+
+### 6г. Удаление `part6-best-practices/02_modern_go.md`
+После переноса всего контента:
+- Удалить файл
+- Переименовать оставшиеся файлы part6 (03→02, 04→03, 05→04)
+- Обновить навигацию во всех файлах части 6
+- Обновить `part6-best-practices/README.md`
+- Обновить корневой `README.md` (ссылки на файлы части 6)
 
 ### 7. `part2-advanced/07_profiling_optimization.md`
 **`runtime/trace.FlightRecorder` (Go 1.25)**:
@@ -244,22 +324,36 @@ type MyMap[K comparable, V any] = map[K]V
 
 ## Порядок выполнения
 
-Рекомендуемая последовательность (по убыванию impact/сложности):
+Рекомендуемая последовательность. Сначала — распределение контента 6.2, затем — актуализация под 1.26.
 
-1. `README.md` — badge (5 мин)
-2. `04_sync_primitives.md` — WaitGroup.Go() + sync.Map (30 мин)
-3. `03_gc.md` — Green Tea GC default (20 мин)
-4. `06_testing_benchmarking.md` — T.Context(), B.Loop(), synctest (40 мин)
-5. `07_containerization.md` — GOMAXPROCS (20 мин)
-6. `02_modern_go.md` — итераторы, self-referential generics, weak (30 мин)
-7. `07_profiling_optimization.md` — FlightRecorder, leak detection (25 мин)
-8. `04_validation_serialization.md` — JSON v2, io.ReadAll (15 мин)
-9. `02_syntax_basics.md` — generic type aliases (15 мин)
-10. `01_setup_environment.md` — версия установки (5 мин)
-11. `03_tools.md` — go fix (10 мин)
-12. `.context-summary.md` — финальное обновление (10 мин)
+**Фаза 1: Распределение контента 6.2 по разделам**
 
-**Итого**: ~3.5 часа чистой работы по написанию.
+1. Прочитать `02_modern_go.md` целиком, зафиксировать все блоки
+2. `part1-basics/02_syntax_basics.md` — перенести slices/maps/cmp, range-over-int, clear/min/max, iterators (60 мин)
+3. `part1-basics/03_key_differences.md` — перенести generics-блок (45 мин)
+4. `part3-web-api/01_http_server.md` — перенести net/http 1.22 (проверить дубли, 20 мин)
+5. `part4-infrastructure/05_observability.md` — перенести log/slog (проверить дубли, 15 мин)
+6. Удалить `part6-best-practices/02_modern_go.md`
+7. Переименовать файлы part6: 03→02, 04→03, 05→04
+8. Обновить навигацию во всех файлах part6 (01, 02, 03, 04) + `part6/README.md`
+9. Обновить корневой `README.md` (ссылки части 6)
+
+**Фаза 2: Актуализация Go 1.24-1.26**
+
+10. `README.md` — badge `1.26+` (5 мин)
+11. `part2-advanced/04_sync_primitives.md` — WaitGroup.Go() + sync.Map (30 мин)
+12. `part2-advanced/03_gc.md` — Green Tea GC default + weak.Pointer (25 мин)
+13. `part2-advanced/06_testing_benchmarking.md` — T.Context(), B.Loop(), synctest (40 мин)
+14. `part4-infrastructure/07_containerization.md` — GOMAXPROCS (20 мин)
+15. `part1-basics/02_syntax_basics.md` — generic type aliases, strings.Lines/SplitSeq (20 мин)
+16. `part1-basics/03_key_differences.md` — self-referential generics (15 мин)
+17. `part2-advanced/07_profiling_optimization.md` — FlightRecorder, leak detection (25 мин)
+18. `part3-web-api/04_validation_serialization.md` — JSON v2, io.ReadAll (15 мин)
+19. `part6-best-practices/02_tools.md` — go fix modernizers (10 мин)
+20. `part1-basics/01_setup_environment.md` — версия установки (5 мин)
+21. `.context-summary.md` — финальное обновление (10 мин)
+
+**Итого**: ~5.5 часов чистой работы (Фаза 1 ~2 ч + Фаза 2 ~3.5 ч).
 
 ---
 
@@ -276,11 +370,22 @@ type MyMap[K comparable, V any] = map[K]V
 
 ## Проверка после обновления
 
+**Распределение 6.2:**
+- [ ] Файл `02_modern_go.md` удалён
+- [ ] Контент generics есть в `03_key_differences.md`, не дублируется
+- [ ] Контент slices/maps/range/iterators есть в `02_syntax_basics.md`, не дублируется
+- [ ] net/http 1.22 есть в `01_http_server.md`, не дублируется
+- [ ] log/slog есть в `05_observability.md`, не дублируется
+- [ ] Файлы part6 переименованы (нет пробелов в нумерации)
+- [ ] Все ссылки навигации в part6 ведут на правильные файлы
+- [ ] Корневой README.md не ссылается на удалённый `02_modern_go.md`
+
+**Актуализация 1.26:**
 - [ ] Badge в README.md показывает 1.26+
-- [ ] Все примеры кода скомпилированы мысленно (или проверены в go playground) для Go 1.26
-- [ ] WaitGroup.Go() пример корректен (метод добавлен именно в 1.25, не 1.24)
-- [ ] Секция GOMAXPROCS не вводит в заблуждение: automaxprocs всё ещё может быть полезен для Go < 1.25
-- [ ] Green Tea GC: чётко разделены — эксперимент в 1.25 vs default в 1.26
-- [ ] testing/synctest: чётко указано — experimental в 1.24, stable в 1.25
+- [ ] WaitGroup.Go() помечен как Go 1.25, не 1.24
+- [ ] Секция GOMAXPROCS не вводит в заблуждение: automaxprocs ещё актуален для Go < 1.25
+- [ ] Green Tea GC: эксперимент в 1.25 vs default в 1.26 — чётко разделены
+- [ ] testing/synctest: experimental в 1.24, stable в 1.25 — чётко указано
+- [ ] weak.Pointer размещён в GC-разделе, не в syntax-разделе
 - [ ] Создан коммит по завершении каждого файла (согласно CLAUDE.md)
 - [ ] Push на GitHub в конце сессии
