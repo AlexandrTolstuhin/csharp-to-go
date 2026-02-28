@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.23+-00ADD8?logo=go)](https://go.dev/)
-[![Progress](https://img.shields.io/badge/Progress-87%25-green)](./STRUCTURE.md)
+[![Progress](https://img.shields.io/badge/Progress-90%25-green)](./STRUCTURE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/AlexandrTolstuhin/csharp-to-go?style=social)](https://github.com/AlexandrTolstuhin/csharp-to-go)
 
 > Комплексный курс по изучению Go для опытного C# разработчика с фокусом на async/await, concurrency, производительность и продакшн-ready практики.
@@ -74,10 +74,17 @@
 
 ### [Часть 5: Практические проекты](./part5-projects/)
 
-#### Проект 1: URL Shortener _(в разработке)_
+#### [Проект 1: URL Shortener](./part5-projects/project1-url-shortener/) ✅
 **Сложность**: Beginner → Intermediate
 
-**Стек**: chi/net/http, PostgreSQL, Redis, Docker
+**Стек**: net/http + chi, PostgreSQL (pgx), Redis, Docker Compose
+
+- ✅ Доменная модель, интерфейсы, генерация Base62 кодов
+- ✅ PostgreSQL репозиторий (pgx v5), Redis cache-aside
+- ✅ HTTP API: net/http (Go 1.22+) → миграция на chi
+- ✅ Middleware: logging, recovery, rate limiting
+- ✅ Unit + handler + integration тесты, бенчмарки
+- ✅ Docker Compose, Dockerfile (scratch), graceful shutdown
 
 #### Проект 2: E-commerce Platform _(в разработке)_
 **Сложность**: Intermediate
@@ -131,6 +138,6 @@
 
 ---
 
-**Версия**: 0.5.3
-**Последнее обновление**: 2026-01-30
-**Статус**: Части 1-4 и 6 завершены, часть 5 в планах
+**Версия**: 0.6.0
+**Последнее обновление**: 2026-02-28
+**Статус**: Части 1-4 и 6 завершены, Часть 5 — Проект 1 завершён

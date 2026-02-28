@@ -6,29 +6,36 @@
 
 ## Статус
 
-🚧 **В разработке**
+🚧 **В разработке** (1/4 завершено)
 
 ## Проекты
 
-### Проект 1: URL Shortener
+### [Проект 1: URL Shortener](./project1-url-shortener/) ✅
 **Сложность**: Beginner → Intermediate
 
 **Цель**: Освоение базовых концепций
 
 **Технологии**:
-- net/http или chi
-- PostgreSQL + pgx
-- Redis для кэша
+- net/http (Go 1.22+) и chi
+- PostgreSQL + pgx v5
+- Redis для кэша (cache-aside)
 - Docker Compose
 
 **Функциональность**:
 - Создание короткой ссылки
 - Редирект по ключу
 - Статистика переходов
-- Rate limiting
+- Rate limiting (token bucket)
 - Health checks
 
-**Время**: ~1 неделя
+**Разделы**:
+1. [Доменная модель и сервисный слой](./project1-url-shortener/01_domain.md)
+2. [Хранилище: PostgreSQL и Redis](./project1-url-shortener/02_storage.md)
+3. [HTTP слой: net/http и chi](./project1-url-shortener/03_http.md)
+4. [Тестирование и бенчмарки](./project1-url-shortener/04_testing.md)
+5. [Деплой: Docker Compose и Production](./project1-url-shortener/05_deployment.md)
+
+**Время**: ~1 неделя | **Статус**: ✅ Завершено
 
 ---
 
