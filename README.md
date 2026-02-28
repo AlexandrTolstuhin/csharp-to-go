@@ -126,6 +126,9 @@
 - [Go Blog](https://go.dev/blog)
 - [Go Source Code](https://cs.opensource.google/go/go)
 
+### Интерактивное обучение
+- [Ultimate Go Tour (Ardan Labs)](https://tour.ardanlabs.com/tour)
+
 ### Style Guides
 - [Uber Go Style Guide](https://github.com/uber-go/guide/blob/master/style.md)
 - [Google Go Style Guide](https://google.github.io/styleguide/go/)
