@@ -129,6 +129,11 @@
 ### Интерактивное обучение
 - [Ultimate Go Tour (Ardan Labs)](https://tour.ardanlabs.com/tour)
 
+### Книги
+- Язык программирования Go — Донован, Керниган
+- Go: идиомы и паттерны проектирования — Джон Бодner
+- 100 ошибок Go и как их избежать — Теива Харшани
+
 ### Style Guides
 - [Uber Go Style Guide](https://github.com/uber-go/guide/blob/master/style.md)
 - [Google Go Style Guide](https://google.github.io/styleguide/go/)
