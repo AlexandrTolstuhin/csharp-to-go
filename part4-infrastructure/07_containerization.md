@@ -62,7 +62,6 @@
   - [Пример 1: Production Dockerfile с multi-stage и distroless](#пример-1-production-dockerfile-с-multi-stage-и-distroless)
   - [Пример 2: Docker Compose для микросервисов](#пример-2-docker-compose-для-микросервисов)
   - [Пример 3: Kubernetes Deployment с health checks и HPA](#пример-3-kubernetes-deployment-с-health-checks-и-hpa)
-- [Чек-лист](#чек-лист)
 
 ---
 
@@ -4106,80 +4105,6 @@ kubectl -n myapp rollout status deployment/myapp
 # Откат
 kubectl -n myapp rollout undo deployment/myapp
 ```
-
----
-
-## Чек-лист
-
-После изучения этого раздела вы должны уметь:
-
-### Docker basics
-
-- [ ] Понимать преимущества Go для контейнеров (статическая компиляция)
-- [ ] Использовать multi-stage builds для минимизации образа
-- [ ] Выбирать правильный базовый образ (scratch, distroless, alpine)
-- [ ] Кэшировать зависимости через отдельный `COPY go.mod go.sum`
-- [ ] Использовать `CGO_ENABLED=0` для статической линковки
-- [ ] Применять `-ldflags="-s -w"` для уменьшения размера
-
-### Безопасность
-
-- [ ] Запускать контейнер от non-root пользователя
-- [ ] Сканировать образы на уязвимости (Trivy, Docker Scout)
-- [ ] Использовать `.dockerignore` для исключения секретов
-- [ ] Применять BuildKit secrets для build-time секретов
-- [ ] Использовать `readOnlyRootFilesystem` в K8s
-
-### Production patterns
-
-- [ ] Добавлять HEALTHCHECK в Dockerfile
-- [ ] Реализовывать graceful shutdown (обработка SIGTERM)
-- [ ] Логировать в stdout/stderr (12-Factor)
-- [ ] Использовать exec форму ENTRYPOINT/CMD
-- [ ] Понимать проблему PID 1 и сигналов
-
-### Docker Compose
-
-- [ ] Структурировать compose.yaml для разных окружений
-- [ ] Использовать `depends_on` с `condition: service_healthy`
-- [ ] Настраивать healthcheck для всех зависимостей
-- [ ] Применять profiles для разделения dev/prod
-- [ ] Настраивать hot reload с air для разработки
-- [ ] Использовать named volumes для персистентных данных
-
-### Kubernetes
-
-- [ ] Понимать основные концепции: Pod, Deployment, Service, Ingress
-- [ ] Настраивать liveness, readiness, startup probes
-- [ ] Задавать resource requests и limits
-- [ ] Использовать GOMEMLIMIT и automaxprocs для Go
-- [ ] Настраивать ConfigMaps и Secrets
-- [ ] Применять HPA для автоскейлинга
-- [ ] Использовать rolling update стратегию
-
-### CI/CD
-
-- [ ] Настраивать GitHub Actions для сборки и push образов
-- [ ] Использовать BuildKit cache для ускорения сборки
-- [ ] Собирать multi-platform образы (amd64/arm64)
-- [ ] Версионировать образы через теги
-- [ ] Интегрировать сканирование уязвимостей в pipeline
-
----
-
-## Следующие шаги
-
-Поздравляем! Вы завершили **Часть 4: Инфраструктура и интеграции**. Теперь у вас есть полный набор знаний для создания production-ready Go приложений:
-
-- **4.1**: Production PostgreSQL с миграциями
-- **4.2**: Кэширование с Redis и in-memory
-- **4.3**: Очереди сообщений (Kafka, RabbitMQ, NATS)
-- **4.4**: gRPC для межсервисного взаимодействия
-- **4.5**: Observability (логирование, метрики, трейсинг)
-- **4.6**: Конфигурация и секреты
-- **4.7**: Контейнеризация (Docker, Compose, Kubernetes)
-
-Переходите к [Части 5: Проекты](../part5-projects/) для практического применения всех изученных концепций.
 
 ---
 

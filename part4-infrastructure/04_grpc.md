@@ -69,7 +69,6 @@
   - [Пример 1: CRUD User Service](#пример-1-crud-user-service)
   - [Пример 2: Real-Time стриминг цен](#пример-2-real-time-стриминг-цен)
   - [Пример 3: gRPC-Gateway + REST](#пример-3-grpc-gateway--rest)
-- [Чек-лист](#чек-лист)
 
 ---
 
@@ -3659,73 +3658,6 @@ curl "http://localhost:8080/api/v1/products?page_size=10&category=books"
 # Swagger документация
 curl http://localhost:8080/swagger.json
 ```
-
----
-
-## Чек-лист
-
-После изучения этого раздела вы должны:
-
-### Protocol Buffers и Tooling
-- [ ] Проектировать `.proto` файлы по best practices (naming, versioning, UNSPECIFIED enum)
-- [ ] Использовать Well-Known Types (`Timestamp`, `Duration`, `FieldMask`, `Wrappers`)
-- [ ] Настроить `buf` (buf.yaml, buf.gen.yaml) для проекта
-- [ ] Запускать `buf lint` для проверки proto-файлов
-- [ ] Использовать `buf breaking` для обнаружения несовместимых изменений
-- [ ] Генерировать Go-код через `buf generate`
-- [ ] Интегрировать buf в CI/CD pipeline
-
-### gRPC Сервер и Клиент
-- [ ] Создать gRPC сервер с регистрацией сервисов
-- [ ] Реализовать все 4 типа RPC: Unary, Server Streaming, Client Streaming, Bidirectional
-- [ ] Встраивать `Unimplemented*Server` для forward compatibility
-- [ ] Создать клиент через `grpc.NewClient()` (не устаревший `grpc.Dial`)
-- [ ] Работать с серверными и клиентскими стримами
-- [ ] Реализовать graceful shutdown с `GracefulStop()`
-
-### Контекст, ошибки и метаданные
-- [ ] Устанавливать дедлайны через `context.WithTimeout`
-- [ ] Передавать и читать metadata (заголовки)
-- [ ] Возвращать правильные gRPC коды ошибок (`codes.NotFound`, `codes.InvalidArgument`, etc.)
-- [ ] Использовать Rich Error Model с `errdetails`
-- [ ] Извлекать `status.Code()` из ошибок на клиенте
-
-### Interceptors
-- [ ] Написать Server Unary Interceptor (logging, auth, recovery)
-- [ ] Написать Server Stream Interceptor с обёрткой стрима
-- [ ] Написать Client Interceptor (auth token, retry)
-- [ ] Составить цепочку interceptors через `ChainUnaryInterceptor`
-- [ ] Использовать `go-grpc-middleware v2` для production interceptors
-
-### gRPC-Gateway и ConnectRPC
-- [ ] Добавить HTTP annotations в proto для REST маппинга
-- [ ] Настроить gRPC-Gateway reverse proxy
-- [ ] Генерировать OpenAPI/Swagger документацию из proto
-- [ ] Понимать, когда выбрать ConnectRPC vs classic gRPC
-
-### Безопасность и Health
-- [ ] Настроить TLS и mTLS для gRPC
-- [ ] Реализовать JWT аутентификацию через metadata / `PerRPCCredentials`
-- [ ] Зарегистрировать gRPC Health Checking Protocol
-- [ ] Включить Server Reflection для отладки (и защитить в production)
-
-### Тестирование
-- [ ] Тестировать gRPC сервисы через `bufconn` (in-memory)
-- [ ] Тестировать streaming RPC
-- [ ] Использовать `grpcurl` для ручного тестирования
-
-### Production
-- [ ] Настроить Prometheus метрики для gRPC
-- [ ] Интегрировать OpenTelemetry через `otelgrpc`
-- [ ] Настроить client-side load balancing (round_robin)
-- [ ] Настроить retry policy через service config
-- [ ] Настроить keepalive для серверной и клиентской стороны
-
----
-
-## Следующие шаги
-
-Переходите к [4.5 Observability](./05_observability.md) — логирование (slog, zap, zerolog), метрики (Prometheus), трейсинг (OpenTelemetry), Jaeger, Zipkin.
 
 ---
 

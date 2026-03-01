@@ -41,7 +41,6 @@
   - [Пример 1: Production-Ready Redis Cache Layer](#пример-1-production-ready-redis-cache-layer)
   - [Пример 2: Multi-Level Cache с singleflight](#пример-2-multi-level-cache-с-singleflight)
   - [Пример 3: Session Storage с Redis](#пример-3-session-storage-с-redis)
-- [Чек-лист](#чек-лист)
 
 ---
 
@@ -2473,48 +2472,6 @@ func main() {
     http.ListenAndServe(":8080", r)
 }
 ```
-
----
-
-## Чек-лист
-
-После изучения этого раздела вы должны уметь:
-
-### Redis
-- [ ] Подключить go-redis v9 с production-конфигурацией (пул, таймауты, TLS)
-- [ ] Выполнять основные операции (strings, hashes, lists, sets, sorted sets)
-- [ ] Обрабатывать `redis.Nil` как "ключ не найден" (не как ошибку)
-- [ ] Использовать Pipeline для батч-операций
-- [ ] Использовать TxPipeline + Watch для оптимистичных транзакций
-- [ ] Настроить Redis Cluster или Sentinel для высокой доступности
-- [ ] Реализовать распределённые блокировки через redsync
-
-### In-Memory кэширование
-- [ ] Выбрать подходящую библиотеку для вашего сценария
-- [ ] Понимать влияние разных библиотек на Go GC
-- [ ] Использовать ristretto для оптимального hit ratio
-- [ ] Использовать bigcache для миллионов записей (GC-friendly)
-- [ ] Знать когда `sync.Map` подходит, а когда нет
-
-### Паттерны
-- [ ] Реализовать Cache-Aside (lazy loading)
-- [ ] Предотвратить cache stampede с помощью `singleflight`
-- [ ] Использовать jittered TTL для предотвращения thundering herd
-- [ ] Выбрать стратегию инвалидации (TTL, event, version-based)
-- [ ] Реализовать multi-level кэш (L1 in-memory + L2 Redis)
-
-### Production
-- [ ] Мониторить hit/miss rate через Prometheus
-- [ ] Реализовать graceful degradation при недоступности Redis
-- [ ] Выбрать формат сериализации (JSON / msgpack / protobuf)
-- [ ] Настроить cache warming при деплое
-- [ ] Инструментировать Redis через OpenTelemetry
-
----
-
-## Следующие шаги
-
-Переходите к [4.3 Очереди сообщений](./03_message_queues.md) — Kafka, RabbitMQ, NATS, Redis Streams.
 
 ---
 

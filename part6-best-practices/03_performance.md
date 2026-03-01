@@ -39,7 +39,6 @@
   - [Пример 1: Zero-Allocation HTTP Service](#пример-1-zero-allocation-http-service)
   - [Пример 2: Memory-Efficient Data Pipeline](#пример-2-memory-efficient-data-pipeline)
   - [Пример 3: Production Performance Audit](#пример-3-production-performance-audit)
-- [Чек-лист](#чек-лист)
 
 ---
 
@@ -2899,66 +2898,6 @@ jobs:
           name: escape-analysis
           path: escapes.txt
 ```
-
----
-
-## Чек-лист
-
-После изучения этого раздела вы должны:
-
-### Философия оптимизации
-- [ ] Понимать, когда оптимизация оправдана (SLO, метрики)
-- [ ] Применять cost/benefit анализ перед оптимизацией
-- [ ] Знать признаки premature optimization
-- [ ] Всегда измерять до и после оптимизации
-
-### Zero-Allocation Patterns
-- [ ] Использовать `sync.Pool` для часто создаваемых объектов
-- [ ] Знать typed pool pattern с generics
-- [ ] Работать с `[]byte` вместо `string` в hot paths
-- [ ] Применять stack-allocated buffers для небольших данных
-- [ ] Понимать, когда sync.Pool вреден
-
-### Escape Analysis
-- [ ] Знать правила, вызывающие escape на heap
-- [ ] Применять паттерны предотвращения escape
-- [ ] Использовать `-gcflags="-m"` для анализа
-- [ ] Интегрировать escape check в CI
-
-### Memory Layout
-- [ ] Понимать struct padding и alignment
-- [ ] Использовать `fieldalignment` линтер
-- [ ] Знать про cache-friendly структуры
-- [ ] Применять hot/cold separation где уместно
-
-### Compiler Optimizations
-- [ ] Понимать inlining и его влияние
-- [ ] Знать паттерны для bounds check elimination
-- [ ] Помогать компилятору (const, простые циклы)
-- [ ] Использовать build tags для conditional compilation
-
-### Runtime в контейнерах
-- [ ] Понимать проблему GOMAXPROCS в контейнерах
-- [ ] Использовать `automaxprocs`
-- [ ] Настраивать `GOMEMLIMIT` в Kubernetes
-- [ ] Знать формулу: `GOMEMLIMIT = container_limit * 0.8`
-
-### Production Memory Patterns
-- [ ] Применять backpressure через bounded channels
-- [ ] Использовать semaphore для ограничения concurrency
-- [ ] Знать паттерны graceful degradation
-- [ ] Мониторить память и реагировать на проблемы
-
----
-
-## Следующие шаги
-
-Переходите к [6.5 Production Checklist](./05_production_checklist.md), где рассмотрим:
-- Graceful shutdown
-- Health checks (liveness, readiness)
-- Structured logging
-- Metrics и tracing
-- Rate limiting и circuit breakers
 
 ---
 

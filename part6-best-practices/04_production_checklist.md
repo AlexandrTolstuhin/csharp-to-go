@@ -60,7 +60,6 @@
   - [Пример 2: Complete main.go Template](#пример-2-complete-maingo-template)
   - [Пример 3: Kubernetes Manifests](#пример-3-kubernetes-manifests)
 - [Master Checklist](#master-checklist)
-- [Чек-лист](#чек-лист)
 
 ---
 
@@ -4614,79 +4613,6 @@ spec:
     [ ] PodDisruptionBudget
     [ ] HPA настроен
 ```
-
----
-
-## Чек-лист
-
-После изучения этого раздела вы должны:
-
-### Graceful Shutdown
-- [ ] Понимать важность graceful shutdown в production
-- [ ] Использовать `signal.NotifyContext` для обработки сигналов
-- [ ] Реализовывать правильный shutdown order
-- [ ] Настраивать `terminationGracePeriodSeconds` и `preStop` в Kubernetes
-
-### Health Checks
-- [ ] Различать liveness, readiness и startup probes
-- [ ] Реализовывать health endpoints с проверкой зависимостей
-- [ ] Настраивать Kubernetes probes с правильными thresholds
-- [ ] Понимать, когда возвращать "not ready" (shutdown, warmup)
-
-### Logging & Metrics
-- [ ] Настраивать structured logging с slog
-- [ ] Маскировать sensitive data в логах
-- [ ] Реализовывать RED metrics (Rate, Errors, Duration)
-- [ ] Экспортировать метрики для Prometheus
-
-### Distributed Tracing
-- [ ] Понимать, когда tracing необходим
-- [ ] Настраивать OpenTelemetry с sampling
-- [ ] Передавать trace context между сервисами
-
-### Resilience Patterns
-- [ ] Реализовывать rate limiting с `golang.org/x/time/rate`
-- [ ] Использовать circuit breaker (sony/gobreaker)
-- [ ] Применять retry с exponential backoff и jitter
-- [ ] Устанавливать timeouts на всех уровнях (server, client, DB)
-- [ ] Применять bulkhead pattern для изоляции
-
-### Error Handling
-- [ ] Классифицировать ошибки (operational, transient, fatal)
-- [ ] Возвращать ошибки в формате RFC 7807 Problem Details
-- [ ] Реализовывать panic recovery middleware
-- [ ] Интегрировать error tracking (Sentry)
-
-### Configuration
-- [ ] Загружать конфигурацию из environment variables
-- [ ] Валидировать конфигурацию при старте (fail fast)
-- [ ] Управлять secrets через Kubernetes Secrets или Vault
-
-### Docker & Security
-- [ ] Создавать минимальные Docker images (multi-stage, distroless)
-- [ ] Запускать контейнеры от non-root пользователя
-- [ ] Сканировать images и зависимости на уязвимости
-- [ ] Добавлять security headers к HTTP ответам
-- [ ] Использовать только параметризованные SQL запросы
-
----
-
-## Следующие шаги
-
-Поздравляем! Вы завершили **Часть 6: Best Practices**.
-
-Теперь у вас есть полный набор знаний для написания production-ready Go приложений:
-- Идиоматичный код и архитектура
-- Современные возможности Go
-- Инструменты разработки
-- Оптимизация производительности
-- Production checklist
-
-Переходите к **Части 5: Практические проекты** для закрепления знаний на реальных примерах:
-- CLI приложение
-- REST API сервис
-- Микросервисная архитектура
-- Интеграция с очередями сообщений
 
 ---
 

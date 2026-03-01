@@ -1659,45 +1659,6 @@ func (wp *WorkerPool) Stop() {
 
 ---
 
-## Чек-лист
-
-После завершения практики вы должны уметь:
-
-- [ ] Создавать CLI приложения с флагами и аргументами
-- [ ] Читать и записывать файлы эффективно
-- [ ] Парсить данные (CSV, JSON, логи)
-- [ ] Создавать HTTP серверы и API
-- [ ] Обрабатывать JSON запросы/ответы
-- [ ] Использовать goroutines для параллелизма
-- [ ] Работать с channels для коммуникации
-- [ ] Реализовывать паттерны: worker pool, pipeline
-- [ ] Обрабатывать ошибки правильно
-- [ ] Писать тесты для кода
-- [ ] Использовать context для cancellation
-- [ ] Делать graceful shutdown
-
----
-
-## Следующие шаги
-
-Поздравляем! Вы завершили **Часть 1: Основы Go**.
-
-### Что дальше?
-
-1. **Часть 2: Продвинутые темы** — горутины, каналы, планировщик, GC
-2. **Часть 3: Web & API** — веб-фреймворки, gRPC, WebSockets
-3. **Часть 4: Инфраструктура** — Docker, Kubernetes, мониторинг
-4. **Часть 5: Проекты** — реальные production-ready проекты
-
-### Дополнительные ресурсы
-
-- [Go by Example](https://gobyexample.com/)
-- [Effective Go](https://go.dev/doc/effective_go)
-- [Go Code Review Comments](https://github.com/golang/go/wiki/CodeReviewComments)
-- [100 Go Mistakes](https://100go.co/)
-
----
-
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
 [← Назад: Ключевые отличия от C#](03_key_differences.md) | [Вперёд: Часть 2 →](../part2-advanced/README.md)

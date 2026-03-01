@@ -33,7 +33,6 @@
   - [Пример 2: Диагностика memory leak через goroutine leak](#пример-2-диагностика-memory-leak-через-goroutine-leak)
   - [Пример 3: Latency spikes в микросервисе](#пример-3-latency-spikes-в-микросервисе)
   - [Пример 4: CI/CD pipeline для производительности](#пример-4-cicd-pipeline-для-производительности)
-- [Чек-лист](#чек-лист)
 
 ---
 
@@ -2381,64 +2380,6 @@ Handler-8           48.2kB ± 0%    72.1kB ± 0%   +49.6%  ⚠️
 
 ⚠️ **Performance regression detected!**
 ```
-
----
-
-## Чек-лист
-
-После изучения этого раздела вы должны уметь:
-
-### CPU профилирование
-- [ ] Подключить `net/http/pprof` к приложению
-- [ ] Собирать CPU профиль через HTTP endpoint или `go test -cpuprofile`
-- [ ] Анализировать профиль: `top`, `top -cum`, `list`, `web`
-- [ ] Интерпретировать flame graphs
-- [ ] Различать `flat` и `cum` (cumulative) время
-- [ ] Находить типичные CPU bottlenecks (аллокации, строки, JSON, mutex)
-
-### go tool trace
-- [ ] Собирать trace через `go test -trace` или HTTP endpoint
-- [ ] Анализировать Goroutine Analysis в браузере
-- [ ] Диагностировать latency spikes (GC паузы, mutex contention, I/O)
-- [ ] Использовать `trace.NewTask` и `trace.WithRegion` для своих событий
-
-### Workflow профилирования
-- [ ] Применять методологию: Measure → Identify → Optimize → Verify
-- [ ] Выбирать правильный инструмент по типу проблемы
-- [ ] Использовать `benchstat` для сравнения до/после
-
-### Оптимизация
-- [ ] Применять закон Амдала для приоритизации
-- [ ] Оптимизировать строковые операции (`strings.Builder`)
-- [ ] Оптимизировать JSON (easyjson, sonic)
-- [ ] Избегать `interface{}` в hot paths (generics)
-- [ ] Использовать preallocation для slices и maps
-
-### Production
-- [ ] Понимать концепцию Continuous Profiling
-- [ ] Интегрировать Pyroscope / Cloud Profiler / Datadog
-- [ ] Настроить CI/CD pipeline с benchmark regression detection
-
-### Сравнение с C#
-- [ ] Понимать аналоги: pprof ↔ dotTrace, trace ↔ Concurrency Visualizer
-- [ ] Применять знания из .NET: `strings.Builder` ↔ `StringBuilder`, `sync.Pool` ↔ `ArrayPool`
-
----
-
-## Следующие шаги
-
-Поздравляю! Вы завершили **Часть 2: Продвинутые темы**.
-
-Теперь вы понимаете:
-- Concurrency в Go (горутины, каналы, контекст)
-- Как работает Go Runtime и планировщик
-- Управление памятью и GC
-- Примитивы синхронизации
-- Идиоматичную обработку ошибок
-- Тестирование и бенчмаркинг
-- Профилирование и оптимизацию
-
-**Переходите к [Части 3: Web & API](../part3-web-api/)**, где мы применим эти знания для построения высоконагруженных веб-сервисов.
 
 ---
 

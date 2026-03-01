@@ -26,7 +26,6 @@
   - [Пример 1: REST API с net/http](#пример-1-rest-api-с-nethttp)
   - [Пример 2: REST API с chi](#пример-2-rest-api-с-chi)
   - [Пример 3: Middleware chain](#пример-3-middleware-chain)
-- [Чек-лист](#чек-лист)
 
 ---
 
@@ -2111,30 +2110,6 @@ curl http://localhost:8080/slow
 # Тест panic recovery
 curl http://localhost:8080/panic
 ```
-
----
-
-## Чек-лист
-
-После изучения этого раздела вы должны уметь:
-
-- [ ] Объяснить разницу между `http.Handler` и `http.HandlerFunc`
-- [ ] Создать HTTP сервер с использованием `net/http`
-- [ ] Работать с `Request` (query params, headers, body, cookies)
-- [ ] Формировать `Response` (статус, headers, JSON body)
-- [ ] Реализовать graceful shutdown
-- [ ] Написать собственный middleware
-- [ ] Создать цепочку middleware
-- [ ] Передавать данные через `context.Context`
-- [ ] Выбрать подходящий роутер для проекта
-- [ ] Использовать chi для создания REST API
-- [ ] Сравнить подходы Go и ASP.NET Core
-
----
-
-## Следующие шаги
-
-В следующем разделе мы рассмотрим [Структуру проекта](./02_project_structure.md) — как организовать код Go-приложения, используя Standard Go Project Layout и Clean Architecture.
 
 ---
 

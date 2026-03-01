@@ -21,7 +21,6 @@
 - [Практические примеры](#практические-примеры)
   - [Пример 1: REST API с swaggo](#пример-1-rest-api-с-swaggo)
   - [Пример 2: OpenAPI-first с генерацией](#пример-2-openapi-first-с-генерацией)
-- [Чек-лист](#чек-лист)
 
 ---
 
@@ -1286,38 +1285,6 @@ validate:
 serve-docs:
 	swagger-ui-watcher api/openapi.yaml
 ```
-
----
-
-## Чек-лист
-
-После изучения этого раздела вы должны уметь:
-
-- [ ] Писать OpenAPI спецификацию
-- [ ] Настроить swaggo для генерации документации
-- [ ] Документировать endpoints с помощью аннотаций
-- [ ] Описывать модели и схемы данных
-- [ ] Интегрировать Swagger UI
-- [ ] Использовать oapi-codegen для API-first подхода
-- [ ] Настроить аутентификацию в документации
-- [ ] Версионировать API
-- [ ] Интегрировать генерацию документации в CI/CD
-
----
-
-## Итоги Части 3
-
-Вы изучили основы web-разработки на Go:
-
-1. **HTTP в Go** — net/http, middleware, роутеры (chi)
-2. **Структура проекта** — Standard Layout, Clean Architecture, DI
-3. **Работа с данными** — pgx, sqlc, миграции, Repository
-4. **Валидация** — validator, JSON, Protocol Buffers
-5. **Документация** — swaggo, OpenAPI, Swagger UI
-
-### Следующие шаги
-
-Переходите к [Части 4: Инфраструктура](../part4-infrastructure/) — Redis, Kafka, gRPC, Observability.
 
 ---
 

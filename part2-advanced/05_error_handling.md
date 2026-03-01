@@ -38,7 +38,6 @@
   - [Пример 2: Background Job с retry и DLQ](#пример-2-background-job-с-retry-и-dlq)
   - [Пример 3: gRPC сервис с error details](#пример-3-grpc-сервис-с-error-details)
   - [Пример 4: Observability — distributed tracing](#пример-4-observability--distributed-tracing)
-- [Чек-лист](#чек-лист)
 
 ---
 
@@ -2081,52 +2080,6 @@ func ProcessOrder(ctx context.Context, orderID int) error {
 ```
 
 </details>
-
----
-
-## Чек-лист
-
-После изучения этого раздела вы должны:
-
-**Базовые концепции:**
-- [ ] Понимать разницу между sentinel и typed errors
-- [ ] Выбирать между sentinel/typed в зависимости от сценария
-- [ ] Создавать custom error types с метаданными
-- [ ] Использовать fluent API для построения ошибок (`WithMetadata`)
-- [ ] Знать, когда использовать panic (почти никогда для бизнес-логики)
-- [ ] Использовать recover только в defer и на краях системы
-- [ ] Помнить, что recover не ловит панику из другой горутины
-
-**Wrapping и unwrapping:**
-- [ ] Строить контекст через `fmt.Errorf("context: %w", err)`
-- [ ] Проверять ошибки через `errors.Is()` и `errors.As()`
-- [ ] Понимать trade-off между stdlib errors и pkg/errors (stack traces)
-
-**Архитектурные паттерны:**
-- [ ] Мапить БД ошибки на доменные в repository
-- [ ] Обогащать контекстом в service
-- [ ] Мапить на HTTP/gRPC в handler
-- [ ] Логировать один раз на краю системы (handler)
-- [ ] Различать expected и unexpected errors (404 vs 500)
-- [ ] Использовать structured logging (log/slog)
-
-**Production практики:**
-- [ ] Реализовывать retry с exponential backoff
-- [ ] Собирать ошибки из множества горутин (MultiError)
-- [ ] Использовать context для cascading cancellation
-- [ ] Добавлять метрики для ошибок (Prometheus counters)
-- [ ] Защищать HTTP/gRPC сервер через recover middleware
-
-**gRPC и rich errors:**
-- [ ] Мапить доменные ошибки на gRPC codes
-- [ ] Использовать error details (errdetails.BadRequest)
-- [ ] Извлекать details на клиенте через `status.Convert()`
-
----
-
-## Следующие шаги
-
-Переходите к [2.6 Тестирование и бенчмаркинг](06_testing_benchmarking.md)
 
 ---
 

@@ -67,7 +67,6 @@
   - [Пример 1: Production-ready config с caarlos0/env](#пример-1-production-ready-config-с-caarlos0env)
   - [Пример 2: Multi-source config с koanf и hot reload](#пример-2-multi-source-config-с-koanf-и-hot-reload)
   - [Пример 3: Config с секретами и feature flags](#пример-3-config-с-секретами-и-feature-flags)
-- [Чек-лист](#чек-лист)
 
 ---
 
@@ -3400,71 +3399,6 @@ func main() {
     logger.Info("приложение завершено")
 }
 ```
-
----
-
-## Чек-лист
-
-После изучения этого раздела вы должны уметь:
-
-**Стандартная библиотека:**
-- [ ] Использовать `os.LookupEnv` для проверки наличия переменной
-- [ ] Создавать типизированные обёртки для env-переменных
-- [ ] Работать с `flag` для CLI-аргументов
-- [ ] Понимать приоритет flag > env > default
-
-**caarlos0/env:**
-- [ ] Определять конфигурацию через struct tags (`env:`, `envDefault:`, `envPrefix:`)
-- [ ] Использовать `required`, `notEmpty`, `file`, `expand`, `unset`
-- [ ] Создавать custom parsers через `TextUnmarshaler`
-- [ ] Интегрировать с godotenv для development
-
-**envconfig:**
-- [ ] Использовать prefix-based подход (`envconfig.Process`)
-- [ ] Генерировать документацию через `envconfig.Usage`
-
-**Viper:**
-- [ ] Понимать приоритет источников (Set > flag > env > file > default)
-- [ ] Настраивать AutomaticEnv и SetEnvKeyReplacer
-- [ ] Знать ограничение AutomaticEnv + Unmarshal
-- [ ] Использовать WatchConfig для hot reload
-- [ ] Понимать когда Viper НЕ стоит использовать
-
-**koanf:**
-- [ ] Понимать модульную архитектуру Provider + Parser
-- [ ] Загружать конфигурацию из файла + env
-- [ ] Реализовывать hot reload с atomic.Pointer
-
-**Валидация:**
-- [ ] Валидировать конфигурацию при запуске (fail fast)
-- [ ] Использовать go-playground/validator для структурной валидации
-- [ ] Писать custom validation для бизнес-правил
-- [ ] Собирать множественные ошибки через errors.Join
-
-**Паттерны:**
-- [ ] Следовать 12-Factor App для конфигурации
-- [ ] Настраивать multi-environment (dev/staging/prod)
-- [ ] Выбирать между immutable config и hot reload
-- [ ] Применять Functional Options для библиотек
-
-**Безопасность:**
-- [ ] Не хранить секреты в config-файлах и коде
-- [ ] Использовать Vault/AWS SM для секретов в production
-- [ ] Применять тип Secret для маскирования в логах
-- [ ] Использовать file secrets для Docker/K8s
-
-**Production:**
-- [ ] Соблюдать правильный порядок инициализации
-- [ ] Реализовывать graceful reload по SIGHUP
-- [ ] Тестировать конфигурацию с t.Setenv
-- [ ] Логировать конфигурацию при старте (без секретов!)
-- [ ] Отслеживать перезагрузки через Prometheus-метрики
-
----
-
-## Следующие шаги
-
-Переходите к [4.7 Контейнеризация](./07_containerization.md) — multi-stage Docker builds, distroless-образы, Docker Compose и основы Kubernetes.
 
 ---
 

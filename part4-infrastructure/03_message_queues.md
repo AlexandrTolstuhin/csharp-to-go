@@ -46,7 +46,6 @@
   - [Пример 1: Event-Driven Order Processing (Kafka)](#пример-1-event-driven-order-processing-kafka)
   - [Пример 2: Task Queue с RabbitMQ](#пример-2-task-queue-с-rabbitmq)
   - [Пример 3: Real-Time Notifications (NATS)](#пример-3-real-time-notifications-nats)
-- [Чек-лист](#чек-лист)
 
 ---
 
@@ -3640,64 +3639,6 @@ func main() {
 ```
 
 > 💡 **Для C# разработчиков**: Этот пример — аналог SignalR с backplane на Azure Service Bus. В C# вы бы использовали `IHubContext<NotificationHub>` для отправки сообщений клиентам. В Go — gorilla/websocket (или nhooyr.io/websocket) + NATS JetStream.
-
----
-
-## Чек-лист
-
-После изучения этого раздела вы должны уметь:
-
-### Kafka
-- [ ] Подключить segmentio/kafka-go (Writer/Reader)
-- [ ] Отправлять сообщения с партиционированием по ключу
-- [ ] Использовать compression (Zstd/LZ4/Snappy) для уменьшения трафика
-- [ ] Настроить consumer group с manual commit (FetchMessage + CommitMessages)
-- [ ] Реализовать worker pool для параллельной обработки
-- [ ] Настроить TLS/SASL аутентификацию
-- [ ] Реализовать Dead Letter Topic с метаданными ошибки
-
-### RabbitMQ
-- [ ] Подключиться через amqp091-go, понимать разницу Connection vs Channel
-- [ ] Знать, что Channel **НЕ** goroutine-safe (один канал на горутину)
-- [ ] Настроить exchanges (direct, fanout, topic), queues и bindings
-- [ ] Использовать publisher confirms для гарантированной доставки
-- [ ] Настроить prefetch (Qos) для контроля backpressure
-- [ ] Реализовать ack/nack/reject с правильной стратегией
-- [ ] Реализовать **автоматическое переподключение** (в Go нет AutomaticRecoveryEnabled!)
-- [ ] Настроить Dead Letter Exchange (DLX) и retry через TTL
-
-### NATS
-- [ ] Использовать Core NATS для pub/sub и request/reply
-- [ ] Настроить queue groups для балансировки нагрузки
-- [ ] Создать JetStream stream с retention policy
-- [ ] Реализовать durable consumer (push или pull)
-- [ ] Использовать Key-Value Store для простых сценариев
-
-### Redis Streams
-- [ ] Добавлять сообщения через XADD (go-redis)
-- [ ] Настроить consumer group (XGROUP CREATE, XREADGROUP)
-- [ ] Подтверждать обработку через XACK
-- [ ] Обрабатывать «застрявшие» сообщения через XCLAIM/XAUTOCLAIM
-- [ ] Принимать решение: Redis Streams vs Kafka vs RabbitMQ vs NATS
-
-### Паттерны
-- [ ] Реализовать идемпотентный consumer (deduplication через БД)
-- [ ] Реализовать graceful shutdown с os.Signal + context + WaitGroup
-- [ ] Применять retry с exponential backoff и jitter
-- [ ] Реализовать Outbox Pattern для атомарности DB + MQ
-- [ ] Выбирать формат сериализации (JSON vs Protobuf vs Avro)
-
-### Production
-- [ ] Мониторить consumer lag, message rate, DLQ depth через Prometheus
-- [ ] Инструментировать producer/consumer через OpenTelemetry (trace propagation в headers)
-- [ ] Реализовать health checks для всех используемых брокеров
-- [ ] Понимать, что в Go нет аналога MassTransit — все паттерны реализуются явно
-
----
-
-## Следующие шаги
-
-Переходите к [4.4 gRPC](./04_grpc.md) — Protocol Buffers, Unary и Streaming RPC, Interceptors, gRPC-Gateway.
 
 ---
 

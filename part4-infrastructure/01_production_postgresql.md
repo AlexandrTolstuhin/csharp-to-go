@@ -47,7 +47,6 @@
   - [Пример 1: Production-Ready Connection Setup](#пример-1-production-ready-connection-setup)
   - [Пример 2: Zero-Downtime Migration](#пример-2-zero-downtime-migration)
   - [Пример 3: Read Replica Routing](#пример-3-read-replica-routing)
-- [Чек-лист](#чек-лист)
 
 ---
 
@@ -4150,70 +4149,6 @@ func (s *OrderService) List(ctx context.Context, limit, offset int) ([]Order, er
     return orders, rows.Err()
 }
 ```
-
----
-
-## Чек-лист
-
-После изучения этого раздела вы должны:
-
-### Connection & Configuration
-- [ ] Уметь настроить pgxpool с production-параметрами (timeouts, pool size, health checks)
-- [ ] Знать Runtime Parameters и когда их использовать
-- [ ] Понимать разницу между pgxpool и PgBouncer
-- [ ] Реализовать connection warming и graceful shutdown
-- [ ] Настроить мониторинг пула соединений
-
-### pgx Advanced
-- [ ] Использовать pgtype для PostgreSQL-specific типов
-- [ ] Реализовать QueryTracer для логирования и трейсинга
-- [ ] Настроить AfterConnect, BeforeAcquire, AfterRelease hooks
-- [ ] Понимать режимы prepared statement cache и их взаимодействие с PgBouncer
-
-### sqlc Advanced
-- [ ] Писать сложные SQL запросы (CTE, window functions, recursive CTE)
-- [ ] Использовать sqlc.narg() для optional filters
-- [ ] Использовать sqlc.slice() для array параметров
-- [ ] Реализовать транзакции через WithTx и TxManager
-- [ ] Настроить custom types и overrides в sqlc.yaml
-
-### Migrations
-- [ ] Понимать, какие ALTER TABLE операции блокируют таблицу
-- [ ] Применять 3-step pattern для добавления NOT NULL колонок
-- [ ] Использовать CREATE INDEX CONCURRENTLY
-- [ ] Реализовать Expand/Contract pattern для переименований
-- [ ] Знать atlas для declarative миграций
-
-### Performance
-- [ ] Запускать и читать EXPLAIN ANALYZE из Go кода
-- [ ] Понимать разницу между Seq Scan, Index Scan, Index Only Scan
-- [ ] Выбирать правильный тип индекса (B-tree, GIN, GiST, BRIN)
-- [ ] Использовать pg_stat_statements для мониторинга
-- [ ] Настраивать connection-level параметры (work_mem, statement_timeout)
-
-### High Availability
-- [ ] Реализовать routing между primary и replicas
-- [ ] Использовать multi-host connection strings
-- [ ] Реализовать retry с exponential backoff и jitter
-- [ ] Понимать паттерн Circuit Breaker для БД
-
-### Security
-- [ ] Настроить SSL/TLS с verify-ca или verify-full
-- [ ] Реализовать Row-Level Security для multi-tenant
-- [ ] Использовать secrets management (AWS SM, Vault, K8s Secrets)
-- [ ] Реализовать ротацию credentials
-
-### Observability
-- [ ] Собирать метрики из pg_stat_* представлений
-- [ ] Экспортировать метрики в Prometheus
-- [ ] Реализовать OpenTelemetry instrumentation для pgx
-- [ ] Настроить алерты для критических метрик
-
----
-
-## Следующие шаги
-
-Переходите к [4.2 Кэширование](./02_caching.md) — Redis, in-memory cache, distributed caching patterns.
 
 ---
 

@@ -31,7 +31,6 @@
   - [Пример 1: CRUD с pgx](#пример-1-crud-с-pgx)
   - [Пример 2: Type-safe queries с sqlc](#пример-2-type-safe-queries-с-sqlc)
   - [Пример 3: Repository с транзакциями](#пример-3-repository-с-транзакциями)
-- [Чек-лист](#чек-лист)
 
 ---
 
@@ -1534,28 +1533,6 @@ func (s *OrderService) CreateOrder(ctx context.Context, order Order) error {
     })
 }
 ```
-
----
-
-## Чек-лист
-
-После изучения этого раздела вы должны уметь:
-
-- [ ] Настроить connection pool в database/sql и pgx
-- [ ] Выполнять CRUD операции с параметризованными запросами
-- [ ] Работать с транзакциями и context
-- [ ] Использовать pgx для batch запросов и COPY
-- [ ] Настроить sqlc для генерации type-safe кода
-- [ ] Писать SQL запросы для sqlc
-- [ ] Применять миграции с golang-migrate или goose
-- [ ] Реализовать Repository pattern
-- [ ] Сравнить подходы Go и EF Core
-
----
-
-## Следующие шаги
-
-В следующем разделе мы рассмотрим [Валидацию и сериализацию](./04_validation_serialization.md) — JSON, validator и Protocol Buffers.
 
 ---
 
