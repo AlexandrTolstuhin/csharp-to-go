@@ -699,3 +699,8 @@ func getEnv(key, defaultValue string) string {
 | Конфигурация | `appsettings.json` + `IConfiguration` | `os.Getenv` |
 | Логирование | Serilog / NLog | `log/slog` (stdlib) |
 
+---
+
+**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
+
+[← Назад: Проект 1](./README.md) | [Вперёд: Хранилище →](./02_storage.md)

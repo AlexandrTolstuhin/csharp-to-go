@@ -627,3 +627,8 @@ http.ListenAndServe(cfg.Addr, r)
 | Статус код | `Results.StatusCode()` | `w.WriteHeader(status)` | То же |
 | DI в хэндлерах | Автоматически | Явно через struct поля | То же |
 
+---
+
+**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
+
+[← Назад: Хранилище](./02_storage.md) | [Вперёд: Тестирование →](./04_testing.md)

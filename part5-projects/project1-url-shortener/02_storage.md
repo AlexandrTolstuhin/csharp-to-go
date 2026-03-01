@@ -592,3 +592,8 @@ if err != nil {
 | Connection pool | Встроен в драйвер | `pgxpool.Pool` |
 | Prepared statements | Автоматически через EF | Автоматически в pgx |
 
+---
+
+**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
+
+[← Назад: Доменная модель](./01_domain.md) | [Вперёд: HTTP слой →](./03_http.md)

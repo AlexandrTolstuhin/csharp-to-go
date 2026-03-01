@@ -737,3 +737,8 @@ go test -short -cover ./...
 | Подтесты | `[Theory]` / `[InlineData]` | `t.Run("name", func)` |
 | Setup/Teardown | `IClassFixture` | `TestMain` / `t.Cleanup` |
 
+---
+
+**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
+
+[← Назад: HTTP слой](./03_http.md) | [Вперёд: Деплой →](./05_deployment.md)
