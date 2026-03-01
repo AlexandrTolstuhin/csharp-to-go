@@ -11,6 +11,7 @@
 - [Задача 6: Timeout и отмена через context](#задача-6-timeout-и-отмена-через-context)
 - [Задача 7: Что выведет код — deadlock и race](#задача-7-что-выведет-код--deadlock-и-race)
 - [Задача 8: Pub/Sub на каналах](#задача-8-pubsub-на-каналах)
+- [Задача 9: Батчевая запись с таймером](#задача-9-батчевая-запись-с-таймером)
 
 ---
 
@@ -931,6 +932,203 @@ func main() {
 - "Что происходит если подписчик медленный?" → non-blocking send, потеря сообщений или блокировка
 - "Как гарантировать доставку?" → буферизация или retry
 - "Как масштабировать?" → несколько брокеров + partitioning (как Kafka)
+
+---
+
+## Задача 9: Батчевая запись с таймером
+
+**Компания**: Авито, Wildberries, Озон (батч-запись в БД — реальная production задача)
+**Уровень**: Middle / Senior
+**Время**: 25-30 минут
+
+### Формулировка
+
+> Реализуй `BatchDataStorage` — обёртку над хранилищем, которая принимает одиночные записи через `Save(id int64)`, накапливает их в батч и сбрасывает в БД когда: (а) батч заполнен до `batchSize`, или (б) прошёл `flushInterval` с последнего сброса. Методы: `Save(id int64)`, `Close()` — ждёт завершения всех горутин.
+
+### Что проверяют
+
+- Паттерн "канал как очередь" для декаплинга продьюсеров от логики батчинга
+- `select` с двумя кейсами: данные и таймер — классическое применение
+- Корректный graceful shutdown: `close(ch)` → горутина флашит остаток → `close(done)`
+- Оптимизация: `batch[:0]` для сброса без аллокации
+
+**C# аналог**:
+```csharp
+// C# — TPL Dataflow BatchBlock или Channel<T> с BufferBlock
+var batchBlock = new BatchBlock<long>(batchSize);
+// Или вручную через System.Threading.Channels + PeriodicTimer
+```
+
+---
+
+### Наивное решение — только по размеру батча
+
+Начинаем с простого: сбрасываем только когда батч заполнен. Таймер пока не нужен.
+
+```go
+type BatchDataStorage struct {
+    db        DbDataStorage
+    batchSize int
+    ch        chan int64
+    done      chan struct{}
+}
+
+func NewBatchDataStorage(db DbDataStorage, batchSize int) *BatchDataStorage {
+    s := &BatchDataStorage{
+        db:        db,
+        batchSize: batchSize,
+        ch:        make(chan int64, batchSize*10), // буфер чтобы Save не блокировал
+        done:      make(chan struct{}),
+    }
+    go s.processBatches()
+    return s
+}
+
+func (s *BatchDataStorage) Save(id int64) {
+    s.ch <- id // продьюсер просто пишет в канал — он не знает о батчинге
+}
+
+func (s *BatchDataStorage) processBatches() {
+    defer close(s.done)
+
+    batch := make([]int64, 0, s.batchSize)
+
+    for id := range s.ch { // завершится когда ch закрыт
+        batch = append(batch, id)
+        if len(batch) >= s.batchSize {
+            s.db.Save(batch)
+            batch = batch[:0] // сброс без аллокации — переиспользуем backing array
+        }
+    }
+
+    // Флашим остаток после закрытия канала
+    if len(batch) > 0 {
+        s.db.Save(batch)
+    }
+}
+
+func (s *BatchDataStorage) Close() {
+    close(s.ch) // сигнал горутине: новых данных не будет
+    <-s.done    // ждём пока горутина завершит flush
+}
+```
+
+**Проблема наивного решения**: если данные поступают медленно, последний батч может застрять в памяти надолго. Например, пришло 3 записи из 10 — они будут ждать оставшихся 7 вечно.
+
+> 💡 Интервьюер обычно сам задаёт вопрос: "А что если данных мало и батч никогда не заполнится?" — это подводка к таймеру.
+
+---
+
+### Полное решение — батч по размеру ИЛИ по таймеру
+
+```go
+func (s *BatchDataStorage) processBatches() {
+    defer close(s.done)
+
+    batch := make([]int64, 0, s.batchSize)
+    timer := time.NewTimer(s.flushInterval)
+    defer timer.Stop()
+
+    flush := func() {
+        if len(batch) == 0 {
+            return
+        }
+        s.db.Save(batch)
+        batch = batch[:0] // переиспользуем память
+    }
+
+    for {
+        select {
+        case id, ok := <-s.ch:
+            if !ok {
+                // Канал закрыт: флашим остаток и выходим
+                flush()
+                return
+            }
+            batch = append(batch, id)
+            if len(batch) >= s.batchSize {
+                flush()
+                // Сбрасываем таймер: данные только что пришли,
+                // следующий flush не раньше чем через flushInterval
+                if !timer.Stop() {
+                    <-timer.C
+                }
+                timer.Reset(s.flushInterval)
+            }
+
+        case <-timer.C:
+            flush() // принудительный flush по таймауту
+            timer.Reset(s.flushInterval)
+        }
+    }
+}
+```
+
+### Типичные ошибки
+
+```go
+// ❌ time.Tick вместо time.NewTimer/NewTicker
+// time.Tick создаёт тикер который нельзя остановить — goroutine leak!
+ticker := time.Tick(interval) // утечка ресурсов
+
+// ✅ Правильно:
+timer := time.NewTimer(interval)
+defer timer.Stop()
+
+// ❌ Не флашим остаток при закрытии канала
+for id := range s.ch { ... }
+// после цикла batch может быть непустым!
+
+// ✅ Правильно: всегда flush после range
+for id := range s.ch { ... }
+if len(batch) > 0 { s.db.Save(batch) }
+
+// ❌ batch = nil — теряем аллоцированную память
+batch = nil       // GC должен собрать, затем снова аллоцируем
+// ✅ batch = batch[:0] — сохраняем capacity, одна аллокация на весь жизненный цикл
+
+// ❌ Close без ожидания — данные могут быть потеряны
+func (s *BatchDataStorage) Close() {
+    close(s.ch) // закрыли, но горутина ещё не завершила flush!
+}
+// ✅ Правильно: ждём done
+func (s *BatchDataStorage) Close() {
+    close(s.ch)
+    <-s.done
+}
+```
+
+### Диаграмма работы
+
+```mermaid
+sequenceDiagram
+    participant P as Продьюсеры (N горутин)
+    participant C as chan int64
+    participant G as processBatches()
+    participant D as DB
+
+    P->>C: Save(id) × много
+    loop select
+        C->>G: id (кейс данных)
+        G->>G: batch append
+        alt len(batch) == batchSize
+            G->>D: Save(batch) [по размеру]
+        end
+        Note over G: timer.C (кейс таймера)
+        G->>D: Save(batch) [по таймауту]
+    end
+    P->>C: close(ch)
+    C->>G: ok=false
+    G->>D: Save(остаток)
+    G->>G: close(done)
+```
+
+### Дополнительные вопросы
+
+- "Что если `db.Save` возвращает ошибку?" → логировать + retry с backoff или DLQ
+- "Что если продьюсеры быстрее консьюмера?" → буфер канала заполнится, `Save` заблокируется — добавить `select` с `ctx.Done()` или дроп с метрикой
+- "Как сделать несколько горутин-консьюмеров?" → каждая читает из одного канала (fan-out), но тогда нужна синхронизация батчей
+- "Как тестировать?" → мок `DbDataStorage` + `time.AfterFunc` для ускорения таймера в тестах
 
 ---
 
