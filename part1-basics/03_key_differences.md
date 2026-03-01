@@ -1721,6 +1721,165 @@ if value, ok := cache.Get("user1"); ok {
 
 > 💡 **В Go**: Generics появились недавно (1.18). Многие библиотеки до сих пор используют `interface{}` + type assertions.
 
+#### Почему Go так долго ждал generics
+
+Команда Go намеренно откладывала добавление generics:
+1. **Простота важнее**: Generics усложняют язык и компилятор
+2. **Интерфейсы работали**: Для большинства задач `interface{}` + type assertion было достаточно
+3. **Не хотели повторять ошибки**: Java generics с type erasure, C++ templates с cryptic errors
+
+> ⚠️ **Важно**: Generics в Go — это **не** замена интерфейсам. Это дополнительный инструмент для случаев, когда нужна **type safety без runtime overhead**.
+
+#### Type constraints
+
+Constraints (ограничения) определяют, какие типы могут использоваться как type parameters.
+
+```go
+import "cmp"
+
+// any — любой тип (аналог interface{})
+func Print[T any](value T) {
+    fmt.Println(value)
+}
+
+// comparable — типы, сравниваемые через == и !=
+func Contains[T comparable](slice []T, target T) bool {
+    for _, item := range slice {
+        if item == target {
+            return true
+        }
+    }
+    return false
+}
+
+// cmp.Ordered — типы с операторами <, >, <=, >= (Go 1.21+)
+func Min[T cmp.Ordered](a, b T) T {
+    if a < b {
+        return a
+    }
+    return b
+}
+```
+
+**Сравнение constraints: C# vs Go**
+
+| C# Constraint | Go Equivalent | Пример |
+|---------------|---------------|--------|
+| `where T : class` | Нет прямого аналога | — |
+| `where T : new()` | Нет прямого аналога | — |
+| `where T : IComparable<T>` | `[T cmp.Ordered]` | `Max[T cmp.Ordered](a, b T)` |
+| `where T : IEquatable<T>` | `[T comparable]` | `Contains[T comparable](...)` |
+| `where T : SomeInterface` | `[T SomeInterface]` | `[T io.Reader]` |
+| `where T : BaseClass` | Нет (нет наследования) | — |
+
+**Custom constraints:**
+
+```go
+// ~ означает "underlying type" — включает type aliases
+type Number interface {
+    ~int | ~int8 | ~int16 | ~int32 | ~int64 |
+    ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 |
+    ~float32 | ~float64
+}
+
+func Sum[T Number](numbers []T) T {
+    var total T
+    for _, n := range numbers {
+        total += n
+    }
+    return total
+}
+
+type MyInt int
+sum := Sum([]MyInt{1, 2, 3})  // Работает благодаря ~int
+```
+
+#### Когда использовать generics
+
+**Используйте generics для:**
+
+1. **Структур данных (контейнеров)**:
+```go
+type Set[T comparable] struct {
+    items map[T]struct{}
+}
+
+func NewSet[T comparable]() *Set[T] {
+    return &Set[T]{items: make(map[T]struct{})}
+}
+
+func (s *Set[T]) Add(item T) { s.items[item] = struct{}{} }
+func (s *Set[T]) Contains(item T) bool {
+    _, ok := s.items[item]
+    return ok
+}
+```
+
+2. **Утилит для работы с коллекциями**:
+```go
+func Filter[T any](slice []T, predicate func(T) bool) []T {
+    var result []T
+    for _, item := range slice {
+        if predicate(item) {
+            result = append(result, item)
+        }
+    }
+    return result
+}
+
+func Map[T, R any](slice []T, fn func(T) R) []R {
+    result := make([]R, len(slice))
+    for i, item := range slice {
+        result[i] = fn(item)
+    }
+    return result
+}
+```
+
+**НЕ используйте generics когда:**
+
+```go
+// ❌ Избыточно — достаточно конкретного типа
+func ProcessUsers[T User](users []T) { ... }
+// ✅ Проще
+func ProcessUsers(users []User) { ... }
+
+// ❌ Интерфейс понятнее
+func Process[T interface{ Process() error }](item T) error {
+    return item.Process()
+}
+// ✅ Классический Go-style
+type Processor interface {
+    Process() error
+}
+func Process(item Processor) error {
+    return item.Process()
+}
+
+// ❌ Over-engineering для 1-2 типов
+func FormatID[T int | int64 | string](id T) string { ... }
+// ✅ Два простых метода
+func FormatIntID(id int) string { ... }
+func FormatStringID(id string) string { ... }
+```
+
+> ⚠️ **Правило для C# разработчиков**: В Go простой код предпочтительнее clever-кода. Если не уверены — начните без generics. Добавите позже, если действительно понадобится.
+
+#### Performance и GC
+
+Go использует **частичную мономорфизацию** (GCShape stenciling):
+
+```go
+// Компилятор создаёт отдельные версии для:
+// - Non-pointer types (каждый размер отдельно)
+// - Pointer types (все указатели используют одну версию)
+
+// Process[int] и Process[int64] — разные версии
+// Process[*User] и Process[*Order] — одна версия (оба pointer)
+```
+
+Performance penalty от generics в Go **минимален** (~3%). Не избегайте generics из соображений производительности — используйте их там, где они улучшают читаемость и type safety.
+
 ### 6. Properties vs Getters/Setters
 
 **C#**:

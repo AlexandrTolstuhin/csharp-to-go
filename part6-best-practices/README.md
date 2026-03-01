@@ -6,7 +6,7 @@
 
 ## Статус
 
-✅ **Завершено** (100% — 5 из 5 разделов)
+✅ **Завершено** (100% — 4 из 4 разделов)
 
 ## Материалы
 
@@ -22,17 +22,7 @@
 - Типичные ошибки C# разработчиков
 - API Design — экспорт, версионирование, совместимость
 
-### 6.2 [Современные возможности Go](./02_modern_go.md) ✅
-
-**Основные темы**:
-- Generics (Go 1.18+) — синтаксис, constraints, когда использовать
-- slices и maps пакеты — сравнение с LINQ, основные функции
-- log/slog — краткий обзор, миграция с других логгеров
-- net/http улучшения (Go 1.22) — method routing, PathValue, миграция с chi
-- Range over integers (Go 1.22) — `for i := range n`
-- Другие возможности — clear(), min/max, cmp.Or, iterators
-
-### 6.3 [Инструменты](./03_tools.md) ✅
+### 6.2 [Инструменты](./02_tools.md) ✅
 
 **Основные темы**:
 - golangci-lint — мета-линтер, конфигурация .golangci.yml, обязательные линтеры
@@ -44,7 +34,7 @@
 - Интеграция в IDE — VS Code, GoLand, командные настройки
 - CI/CD Pipeline — GitHub Actions, GitLab CI, pre-commit hooks
 
-### 6.4 [Производительность](./04_performance.md) ✅
+### 6.3 [Производительность](./03_performance.md) ✅
 
 **Основные темы**:
 - Философия оптимизации — когда оптимизировать, cost/benefit анализ
@@ -56,7 +46,7 @@
 - Production Memory Patterns — backpressure, rate limiting, graceful degradation
 - Real-World Case Studies — high-throughput JSON API, batch processing
 
-### 6.5 [Production Checklist](./05_production_checklist.md) ✅
+### 6.4 [Production Checklist](./04_production_checklist.md) ✅
 
 **Основные темы**:
 - Graceful shutdown — сигналы, signal.NotifyContext, shutdown order, Kubernetes интеграция

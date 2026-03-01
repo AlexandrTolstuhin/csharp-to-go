@@ -2213,13 +2213,13 @@ func (s *Service) CreateUser(ctx context.Context, req CreateRequest) (*User, err
 
 ## Следующие шаги
 
-Переходите к [6.2 Современные возможности Go](./02_modern_go.md), где рассмотрим:
-- Generics (Go 1.18+): когда использовать
-- log/slog: структурированное логирование
-- Улучшения в Go 1.22+
+Переходите к [6.2 Инструменты Go](./02_tools.md), где рассмотрим:
+- Go toolchain: go build, go test, go mod
+- Линтеры и статический анализ
+- IDE-интеграция
 
 ---
 
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: Часть 5](../part5-projects/README.md) | [Вперёд: 6.2 Современные возможности Go →](./02_modern_go.md)
+[← Назад: Часть 5](../part5-projects/README.md) | [Вперёд: 6.2 Инструменты Go →](./02_tools.md)

@@ -1,4 +1,4 @@
-# 6.5 Production Checklist
+# 6.4 Production Checklist
 
 ## Содержание
 
@@ -4692,4 +4692,4 @@ spec:
 
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: 6.4 Производительность](./04_performance.md) | [К оглавлению](../README.md)
+[← Назад: 6.3 Производительность](./03_performance.md) | [К оглавлению](../README.md)

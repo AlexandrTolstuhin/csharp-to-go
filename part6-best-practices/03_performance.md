@@ -1,4 +1,4 @@
-# 6.4 Производительность
+# 6.3 Производительность
 
 ## Содержание
 - [Введение](#введение)
@@ -2964,4 +2964,4 @@ jobs:
 
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: 6.3 Инструменты](./03_tools.md) | [Вперёд: 6.5 Production Checklist →](./05_production_checklist.md)
+[← Назад: 6.2 Инструменты](./02_tools.md) | [Вперёд: 6.4 Production Checklist →](./04_production_checklist.md)

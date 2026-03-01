@@ -866,6 +866,59 @@ func main() {
 
 ---
 
+### Миграция с популярных логгеров на slog
+
+#### С logrus на slog
+
+```go
+// logrus (до)
+import "github.com/sirupsen/logrus"
+
+logrus.WithFields(logrus.Fields{
+    "user_id": 123,
+    "action":  "login",
+}).Info("user logged in")
+
+// slog (после)
+import "log/slog"
+
+slog.Info("user logged in",
+    slog.Int("user_id", 123),
+    slog.String("action", "login"),
+)
+
+// Scoped logger (аналог logrus.WithFields)
+// logrus
+entry := logrus.WithField("component", "UserService")
+entry.Info("профиль обновлён")
+
+// slog
+userLogger := logger.With(slog.String("component", "UserService"))
+userLogger.Info("профиль обновлён")
+```
+
+#### С zerolog на slog
+
+```go
+// zerolog (до)
+import "github.com/rs/zerolog/log"
+
+log.Info().
+    Int("user_id", 123).
+    Str("action", "login").
+    Msg("user logged in")
+
+// slog (после)
+slog.Info("user logged in",
+    slog.Int("user_id", 123),
+    slog.String("action", "login"),
+)
+```
+
+> 💡 **Рекомендация**: Для новых проектов используйте чистый `slog`. Миграция существующих проектов на slog — хорошая идея для унификации интерфейса. Если нужна производительность zerolog или zap — используйте их через zapslog-адаптер, сохраняя единый `slog` API.
+
+---
+
 ### Сравнительная таблица: slog vs zap vs zerolog
 
 | Аспект | log/slog | zap | zerolog |

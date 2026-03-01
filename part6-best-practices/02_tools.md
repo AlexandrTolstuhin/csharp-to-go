@@ -1,4 +1,4 @@
-# 6.3 Инструменты
+# 6.2 Инструменты
 
 ## Содержание
 
@@ -2346,4 +2346,4 @@ make install-tools
 
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: 6.2 Современные возможности Go](./02_modern_go.md) | [Вперёд: 6.4 Производительность →](./04_performance.md)
+[← Назад: 6.1 Архитектура кода](./01_code_architecture.md) | [Вперёд: 6.3 Производительность →](./03_performance.md)

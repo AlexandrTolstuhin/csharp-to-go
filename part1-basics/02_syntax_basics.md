@@ -8,7 +8,11 @@
   - [Массивы](#массивы)
   - [Слайсы](#слайсы-slices)
   - [Мапы](#мапы-maps)
+  - [Пакеты slices, maps и cmp (Go 1.21+)](#пакеты-slices-maps-и-cmp-go-121)
+  - [Современные встроенные функции (Go 1.21+)](#современные-встроенные-функции-go-121)
+  - [Iterators (Go 1.23)](#iterators-go-123)
 - [4. Управляющие конструкции](#4-управляющие-конструкции)
+  - [Range over integers (Go 1.22)](#range-over-integers-go-122)
 - [5. Функции и defer](#5-функции-и-defer)
 - [6. Указатели](#6-указатели)
 - [7. Структуры](#7-структуры-structs)
@@ -840,6 +844,234 @@ m.Range(func(key, value interface{}) bool {
 
 ---
 
+### Пакеты slices, maps и cmp (Go 1.21+)
+
+До Go 1.21 любая операция с коллекциями требовала ручных циклов. Для C# разработчиков, привыкших к LINQ, это было болезненно. Пакеты `slices` и `maps` решают эту проблему.
+
+#### Пакет slices
+
+| C# LINQ | Go slices | Описание |
+|---------|-----------|----------|
+| `.Contains(x)` | `slices.Contains(s, x)` | Проверка наличия элемента |
+| `.Any(predicate)` | `slices.ContainsFunc(s, fn)` | Есть ли элемент по условию |
+| `.OrderBy()` | `slices.Sort(s)` | Сортировка (in-place!) |
+| `.OrderByDescending()` | `slices.SortFunc(s, cmp)` | Сортировка с компаратором |
+| `.Reverse()` | `slices.Reverse(s)` | Разворот (in-place!) |
+| `.Distinct()` | `slices.Compact(s)` | Удаление последовательных дублей |
+| Clone() | `slices.Clone(s)` | Копирование slice |
+| `.Max()` | `slices.Max(s)` | Максимальный элемент |
+| `.Min()` | `slices.Min(s)` | Минимальный элемент |
+| `.SequenceEqual()` | `slices.Equal(s1, s2)` | Сравнение slices |
+| `.Take(n)` | `s[:n]` | Взять первые N (нативный синтаксис) |
+| `.Skip(n)` | `s[n:]` | Пропустить первые N |
+
+> ⚠️ **Важно**: Многие функции `slices` работают **in-place** (изменяют исходный slice). В LINQ методы всегда возвращают новую коллекцию.
+
+```go
+import "slices"
+
+numbers := []int{3, 1, 4, 1, 5, 9, 2, 6}
+
+// Поиск
+slices.Contains(numbers, 5)                    // true
+slices.Index(numbers, 4)                       // 2
+slices.IndexFunc(numbers, func(n int) bool {   // индекс первого > 4
+    return n > 4
+})
+
+// Сортировка (in-place!)
+slices.Sort(numbers)                           // [1, 1, 2, 3, 4, 5, 6, 9]
+slices.SortFunc(numbers, func(a, b int) int {
+    return b - a  // По убыванию
+})
+
+// Бинарный поиск (для отсортированных!)
+idx, found := slices.BinarySearch(numbers, 5)
+
+// Модификация
+slices.Reverse(numbers)                        // In-place разворот
+numbers = slices.Insert(numbers, 2, 100)       // Вставить 100 на позицию 2
+numbers = slices.Delete(numbers, 2, 4)         // Удалить элементы [2:4)
+
+// Удаление последовательных дубликатов (требует сортировки!)
+sorted := []int{1, 1, 2, 2, 2, 3}
+unique := slices.Compact(sorted)               // [1, 2, 3]
+
+// Копия и сравнение
+copy2 := slices.Clone(numbers)
+slices.Equal(slice1, slice2)                   // Поэлементное сравнение
+
+// Min/Max
+slices.Min(numbers)
+slices.Max(numbers)
+```
+
+> 💡 **Совет**: Для Filter, Map, Reduce — напишите свои generic-функции или используйте библиотеку `samber/lo`.
+
+#### Пакет maps
+
+```go
+import "maps"
+
+users := map[string]User{
+    "alice": {Name: "Alice", Age: 30},
+    "bob":   {Name: "Bob", Age: 25},
+}
+
+// Clone — полная копия map
+usersCopy := maps.Clone(users)
+
+// Copy — копирование в существующую map
+target := make(map[string]User)
+maps.Copy(target, users)
+
+// Equal — сравнение maps
+maps.Equal(map1, map2)
+
+// DeleteFunc — удаление по условию
+maps.DeleteFunc(users, func(key string, user User) bool {
+    return user.Age < 18
+})
+
+// Go 1.23+: итераторы для map
+for key := range maps.Keys(users) {
+    fmt.Println(key)
+}
+
+// Преобразование iterator в slice
+keys := slices.Collect(maps.Keys(users))
+values := slices.Collect(maps.Values(users))
+
+// Сортированные ключи
+keys = slices.Sorted(maps.Keys(users))
+```
+
+#### Пакет cmp
+
+```go
+import "cmp"
+
+// cmp.Less — безопасное сравнение (обрабатывает NaN для float)
+cmp.Less(1, 2)        // true
+cmp.Compare(1, 2)     // -1, Compare(2, 2)=0, Compare(3, 2)=1
+
+// cmp.Or — первое ненулевое значение (Go 1.22+)
+// Аналог: name ?? config.Name ?? "default" в C#
+name := cmp.Or(os.Getenv("NAME"), config.Name, "default")
+port := cmp.Or(os.Getenv("PORT"), "8080")
+```
+
+> 💡 **Важно**: `cmp.Or` оценивает все аргументы сразу (не lazy). Если нужна lazy evaluation — используйте обычные if-цепочки.
+
+---
+
+### Современные встроенные функции (Go 1.21+)
+
+#### clear() — очистка коллекций
+
+```go
+// Очистка map (очищает, но сохраняет buckets для переиспользования)
+m := map[string]int{"a": 1, "b": 2, "c": 3}
+clear(m)
+fmt.Println(len(m))  // 0
+
+// Очистка slice (заполняет zero values, длина не меняется!)
+s := []int{1, 2, 3, 4, 5}
+clear(s)
+fmt.Println(s)    // [0 0 0 0 0]
+fmt.Println(len(s))  // 5 — длина сохраняется!
+
+// Для полной очистки slice используйте s[:0]
+s = s[:0]
+```
+
+> ⚠️ **Внимание**: `clear(slice)` не меняет длину — только обнуляет элементы. Для очистки slice с нулевой длиной используйте `s = s[:0]`.
+
+#### min/max — встроенные generic функции
+
+```go
+// Go 1.21+: встроенные generic функции
+x := max(10, 20)             // 20
+y := min(3.14, 2.71)         // 2.71
+z := max("apple", "banana")  // "banana" (лексикографически)
+
+// Множество аргументов
+biggest := max(1, 5, 3, 9, 2)   // 9
+smallest := min(1, 5, 3, 9, 2)  // 1
+
+// Работают с любыми cmp.Ordered типами
+type MyInt int
+a, b := MyInt(10), MyInt(20)
+result := max(a, b)  // MyInt(20)
+```
+
+**Сравнение с C#**:
+```csharp
+// C#: Math.Max, Math.Min (только один тип за раз)
+int x = Math.Max(10, 20);
+// C# 9+: Math.Clamp, но нет multi-arg max
+```
+
+---
+
+### Iterators (Go 1.23)
+
+Go 1.23 добавил поддержку user-defined iterators через `range over functions`:
+
+```go
+import "iter"
+
+// Iterator — функция специального вида:
+// iter.Seq[V]   = func(yield func(V) bool)
+// iter.Seq2[K,V] = func(yield func(K, V) bool)
+
+// Пример: итератор по числам Фибоначчи
+func Fibonacci(n int) iter.Seq[int] {
+    return func(yield func(int) bool) {
+        a, b := 0, 1
+        for i := 0; i < n; i++ {
+            if !yield(a) {
+                return  // break в range-цикле
+            }
+            a, b = b, a+b
+        }
+    }
+}
+
+// Использование — как обычный range
+for num := range Fibonacci(10) {
+    fmt.Println(num)  // 0, 1, 1, 2, 3, 5, 8, 13, 21, 34
+}
+
+// Преобразование в slice
+fibs := slices.Collect(Fibonacci(10))
+```
+
+**Сравнение с C# IEnumerable:**
+
+| C# | Go 1.23 |
+|----|---------|
+| `IEnumerable<T>` | `iter.Seq[T]` |
+| `IEnumerator<T>` | `func(yield func(T) bool)` |
+| `yield return x` | `yield(x)` |
+| `yield break` | `return` |
+| `break` в foreach | `yield` вернул `false` |
+
+```csharp
+// C# iterator
+public static IEnumerable<int> Fibonacci(int n)
+{
+    int a = 0, b = 1;
+    for (int i = 0; i < n; i++)
+    {
+        yield return a;
+        (a, b) = (b, a + b);
+    }
+}
+```
+
+---
+
 ### Строки и производительность
 
 #### Строки иммутабельны, но это не всегда дешево
@@ -1120,6 +1352,56 @@ for i, r := range "Hello" {
 // Канал (будем изучать позже)
 for value := range channel {
     fmt.Println(value)
+}
+```
+
+#### Range over integers (Go 1.22)
+
+Одна из самых простых, но долгожданных возможностей:
+
+```go
+// До Go 1.22 — классический C-style цикл
+for i := 0; i < 10; i++ {
+    fmt.Println(i)
+}
+
+// Go 1.22+
+for i := range 10 {
+    fmt.Println(i)  // 0, 1, 2, ..., 9
+}
+
+// Когда индекс не нужен
+for range 5 {
+    doSomething()  // Выполнится 5 раз
+}
+```
+
+**Сравнение с C#**:
+```csharp
+// C#: Enumerable.Range(0, 10)
+foreach (var i in Enumerable.Range(0, 10))
+    Console.WriteLine(i);
+```
+
+**Ограничения**: `range N` всегда начинается с 0. Для произвольного диапазона используйте классический цикл: `for i := 5; i < 10; i++`.
+
+**Типичные use cases:**
+```go
+// Повторить действие N раз
+for range 3 {
+    retry()
+}
+
+// Инициализация slice
+items := make([]Item, 10)
+for i := range 10 {
+    items[i] = Item{ID: i}
+}
+
+// Генерация тестовых данных
+var testUsers []User
+for i := range 100 {
+    testUsers = append(testUsers, User{ID: i, Name: fmt.Sprintf("User %d", i)})
 }
 ```
 
@@ -1953,4 +2235,8 @@ fmt.Println(string(data))
 - [ ] Знаю, как обрабатывать ошибки (без exceptions)
 - [ ] Понимаю `defer` и его применение
 - [ ] Могу читать/писать JSON
+- [ ] Знаю пакеты `slices`, `maps`, `cmp` (Go 1.21+) как замену LINQ-операциям
+- [ ] Использую `for i := range N` вместо `for i := 0; i < N; i++` (Go 1.22)
+- [ ] Понимаю `clear()`, `min()`, `max()` (Go 1.21)
+- [ ] Знаю, что такое `iter.Seq[T]` и как создавать пользовательские итераторы (Go 1.23)
 - [ ] Понимаю видимость (public/private через регистр)

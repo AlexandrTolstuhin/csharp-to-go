@@ -110,10 +110,9 @@
 ### [Часть 6: Best Practices](./part6-best-practices/) — **Завершено**
 
 - **6.1** [Код и архитектура](./part6-best-practices/01_code_architecture.md)
-- **6.2** [Современные возможности Go](./part6-best-practices/02_modern_go.md)
-- **6.3** [Инструменты](./part6-best-practices/03_tools.md)
-- **6.4** [Производительность](./part6-best-practices/04_performance.md)
-- **6.5** [Production Checklist](./part6-best-practices/05_production_checklist.md)
+- **6.2** [Инструменты](./part6-best-practices/02_tools.md)
+- **6.3** [Производительность](./part6-best-practices/03_performance.md)
+- **6.4** [Production Checklist](./part6-best-practices/04_production_checklist.md)
 
 ---
 

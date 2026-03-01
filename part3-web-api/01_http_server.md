@@ -331,6 +331,63 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 
 > 💡 **Рекомендация**: Если ваш проект на Go 1.22+, стандартного `ServeMux` может быть достаточно для простых API. Для сложных проектов всё ещё рекомендуется chi.
 
+#### Миграция с chi на stdlib (Go 1.22+)
+
+**chi:**
+```go
+import "github.com/go-chi/chi/v5"
+
+r := chi.NewRouter()
+
+r.Use(middleware.Logger)
+r.Use(middleware.Recoverer)
+
+r.Get("/users/{id}", func(w http.ResponseWriter, r *http.Request) {
+    id := chi.URLParam(r, "id")
+    // ...
+})
+
+r.Route("/api", func(r chi.Router) {
+    r.Get("/health", healthHandler)
+})
+```
+
+**Go 1.22 stdlib:**
+```go
+mux := http.NewServeMux()
+
+// Middleware через wrapping
+handler := loggingMiddleware(recoveryMiddleware(mux))
+
+mux.HandleFunc("GET /users/{id}", func(w http.ResponseWriter, r *http.Request) {
+    id := r.PathValue("id")  // Вместо chi.URLParam
+    // ...
+})
+
+mux.HandleFunc("GET /api/health", healthHandler)
+
+http.ListenAndServe(":8080", handler)
+
+// Middleware — обёрточные функции
+func loggingMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        start := time.Now()
+        next.ServeHTTP(w, r)
+        slog.Info("request",
+            slog.String("method", r.Method),
+            slog.String("path", r.URL.Path),
+            slog.Duration("duration", time.Since(start)),
+        )
+    })
+}
+```
+
+**Когда всё ещё нужен chi:**
+- **Middleware ecosystem**: chi.Use() с готовыми middleware
+- **Route groups**: Вложенные группы с общими middleware
+- **Regex patterns**: Сложные паттерны маршрутизации
+- **Существующая кодовая база**: Если проект уже на chi — миграция может не стоить усилий
+
 ### Работа с Request
 
 `http.Request` содержит всю информацию о входящем запросе:
