@@ -4,119 +4,114 @@
 
 Глубокое погружение в concurrency, runtime, GC и производительность Go. Эта часть критически важна для понимания отличий от C# async/await.
 
-## Статус
-
-✅ **Завершено** - 100% (7 из 7 разделов)
-
+<!-- AUTO: MATERIALS -->
 ## Материалы
 
-### ✅ Завершено
+### 1. [2.1 Горутины и каналы](./01_goroutines_channels.md)
 
-1. **[01_goroutines_channels.md](./01_goroutines_channels.md)** — Горутины и каналы
-   - Goroutines vs C# Task/Thread
-   - Каналы vs C# Channel<T>
-   - Буферизированные и небуферизированные каналы
-   - Select statement
-   - Context и cancellation (vs CancellationToken)
-   - Паттерны: Worker Pool, Fan-Out/Fan-In, Pipeline, Semaphore
-   - errgroup для обработки ошибок
-   - Утечки горутин и их предотвращение
-   - 3 практических примера
+- Введение
+- Горутины vs C# Task/Thread
+- Каналы: основы
+- Буферизированные каналы
+- Select statement
+- Context и cancellation
+- Паттерны конкурентности
+- Утечки горутин
+- Практические примеры
 
-2. **[02_runtime_scheduler.md](./02_runtime_scheduler.md)** — Go Runtime и планировщик
-   - Архитектура GMP (Goroutine, Machine, Processor)
-   - Work-stealing алгоритм
-   - Cooperative vs Signal-based preemption
-   - GOMAXPROCS и его влияние
-   - Сравнение с .NET ThreadPool
-   - Трассировка: go tool trace, GODEBUG=schedtrace
-   - Оптимизация под планировщик
-   - 3 практических примера
+### 2. [2.2 Go Runtime и планировщик](./02_runtime_scheduler.md)
 
-   **[02a_memory_allocator.md](./02a_memory_allocator.md)** — Аллокатор памяти Go
-   - Virtual Memory vs Physical Memory
-   - Memory Pages и page faults
-   - Архитектура: mheap → mcentral → mcache
-   - mspan, size classes (67 классов)
-   - Tiny allocator для мелких объектов
-   - Путь аллокации: fast path vs slow path
-   - Оптимизация структур под size classes
-   - Диагностика: runtime.MemStats, GODEBUG
-   - 3 практических примера
+- Введение
+- Архитектура GMP
+- Work-Stealing алгоритм
+- Preemption (вытеснение)
+- GOMAXPROCS
+- Сравнение с .NET ThreadPool
+- Трассировка и диагностика
+- Оптимизация под планировщик
+- Практические примеры
 
-3. **[03_gc.md](./03_gc.md)** — Сборка мусора (GC)
-   - Архитектура Go GC vs .NET GC (concurrent vs generational)
-   - Tri-color mark-and-sweep алгоритм
-   - Write barriers и concurrent GC
-   - GOGC и GOMEMLIMIT — настройка памяти
-   - Escape Analysis: Stack vs Heap
-   - Профилирование: pprof, GODEBUG=gctrace, runtime.MemStats
-   - Оптимизация под GC (избегание аллокаций)
-   - sync.Pool для переиспользования объектов
-   - 3 практических примера
+### 3. [2.2a Аллокатор памяти Go (Memory Allocator Internals)](./02a_memory_allocator.md)
 
-4. **[04_sync_primitives.md](./04_sync_primitives.md)** — Примитивы синхронизации
-   - Mutex vs C# lock (defer для разблокировки)
-   - RWMutex vs ReaderWriterLockSlim
-   - Deadlock и как его избежать
-   - WaitGroup vs Task.WhenAll (с errgroup)
-   - Once vs Lazy<T> (singleton инициализация)
-   - Cond vs Monitor.Wait/Pulse (предпочтение каналам)
-   - Atomic операции: atomic.Int64, atomic.Value
-   - sync.Map vs ConcurrentDictionary (write-once сценарии)
-   - Выбор правильного примитива (блок-схема)
-   - **golang.org/x/sync**: errgroup, semaphore, singleflight
-   - 3 практических примера: Rate Limiter, метрики, Connection Pool
+- Введение
+- 1. Virtual Memory vs Physical Memory
+- 2. Страницы памяти (Memory Pages)
+- 3. Архитектура аллокатора Go
+- 4. mheap: Глобальная куча
+- 5. mspan: Единица управления памятью
+- 6. mcentral: Центральный кеш
+- 7. mcache: Per-P кеш
+- 8. Size Classes
+- 9. Путь аллокации: от new() до памяти
+- 10. Диагностика и мониторинг
+- Практические примеры
 
-5. **[05_error_handling.md](./05_error_handling.md)** — Обработка ошибок (продвинутый уровень)
-   - Sentinel errors vs Typed errors (когда что использовать)
-   - Custom error types с метаданными (коды, HTTP маппинг)
-   - Fluent API для построения ошибок
-   - Panic/recover: правила безопасного использования
-   - Error wrapping chains (построение контекста)
-   - Стратегии по слоям: Repository/Service/Handler
-   - Логирование: где и как (structured logging с slog)
-   - Expected vs Unexpected errors
-   - Production паттерны: retry, MultiError, context cancellation
-   - 4 практических примера: REST API, Background Job, gRPC, tracing
+### 4. [2.3 Сборка мусора (GC)](./03_gc.md)
 
-6. **[06_testing_benchmarking.md](./06_testing_benchmarking.md)** — Тестирование и бенчмаркинг
-   - testing package: func TestXxx(t *testing.T) vs xUnit/NUnit
-   - Table-driven tests (идиоматичный Go паттерн)
-   - Subtests: t.Run() и t.Parallel()
-   - Мокирование: ручные моки, gomock, testify
-   - Benchmarks: func BenchmarkXxx(b *testing.B) vs BenchmarkDotNet
-   - Fuzzing (Go 1.18+): автогенерация входных данных
-   - Integration tests: httptest, testcontainers
-   - Race detector: go test -race
-   - Coverage: go test -cover
-   - Идиоматичные паттерны: t.Helper(), golden files, build tags
-   - 2 практических примера: UserService, Rate Limiter
+- Введение
+- Архитектура GC в Go vs .NET
+- Tri-Color Mark-and-Sweep алгоритм
+- Write Barriers и concurrent GC
+- GOGC и GOMEMLIMIT
+- Escape Analysis: Stack vs Heap
+- Профилирование и диагностика
+- Оптимизация под GC
+- sync.Pool и переиспользование объектов
+- Практические примеры
 
-7. **[07_profiling_optimization.md](./07_profiling_optimization.md)** — Профилирование и оптимизация
-   - pprof: CPU профилирование (sampling, анализ, flame graphs)
-   - go tool trace: расширенный анализ (latency spikes, goroutine analysis)
-   - Комплексный workflow: Measure → Identify → Optimize → Verify
-   - Оптимизация production-кода (строки, JSON, interface{}, preallocation)
-   - Continuous Profiling (Pyroscope, Cloud Profiler, Datadog)
-   - CI/CD интеграция для отслеживания регрессий
-   - 4 практических примера: HTTP сервис, memory leak, latency spikes, CI/CD
+### 5. [2.4 Примитивы синхронизации](./04_sync_primitives.md)
 
-## Время изучения
+- Введение
+- Mutex: взаимное исключение
+- WaitGroup: ожидание завершения горутин
+- Once: однократное выполнение
+- Cond: условные переменные
+- Atomic операции
+- sync.Map: потокобезопасная карта
+- Выбор правильного примитива
+- Практические примеры
+- golang.org/x/sync: расширенные примитивы
 
-**Примерно**: 3-4 недели интенсивного обучения
+### 6. [2.5 Обработка ошибок (продвинутый уровень)](./05_error_handling.md)
 
-## Проверка знаний
+- Введение
+- Sentinel Errors vs Typed Errors
+- Custom Error Types с метаданными
+- Panic/Recover: когда и как использовать
+- Error Wrapping Chains
+- Стратегии обработки ошибок по слоям
+- Логирование ошибок
+- Идиоматичные паттерны для production
+- Практические примеры
 
-После изучения этой части вы должны уметь:
+### 7. [2.6 Тестирование и бенчмаркинг](./06_testing_benchmarking.md)
 
-- [x] Создавать конкурентные приложения с горутинами
-- [x] Использовать каналы для коммуникации
-- [x] Понимать работу планировщика Go
-- [x] Оптимизировать код с учетом GC
-- [x] Профилировать приложения
-- [x] Писать эффективные тесты и benchmarks
-- [x] Обрабатывать ошибки идиоматично
+- Введение
+- 1. testing package: основы
+- 2. Table-Driven Tests (идиоматичный Go)
+- 3. Subtests (t.Run)
+- 4. Мокирование и тестирование зависимостей
+- 5. Benchmarks: производительность
+- 6. Fuzzing (Go 1.18+)
+- 7. Integration Tests
+- 8. Race Detector
+- 9. Coverage (покрытие кода)
+- 10. Идиоматичные паттерны тестирования
+- 11. Тестирование конкурентного кода
+- 12. Новые возможности тестирования (Go 1.24-1.25)
+- Практические примеры
+
+### 8. [2.7 Профилирование и оптимизация](./07_profiling_optimization.md)
+
+- Введение
+- 1. pprof: CPU профилирование
+- 2. go tool trace: расширенный анализ
+- 3. Комплексный workflow профилирования
+- 4. Оптимизация production-кода
+- 5. Continuous Profiling
+- 5. Новые инструменты профилирования (Go 1.25-1.26)
+- Практические примеры
+<!-- /AUTO: MATERIALS -->
 
 ---
 

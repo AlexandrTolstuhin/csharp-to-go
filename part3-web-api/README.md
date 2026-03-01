@@ -4,69 +4,63 @@
 
 Разработка HTTP API на Go: от базового net/http до продакшн-ready приложений с правильной архитектурой.
 
-## Статус
-
-✅ **Завершено** (100%)
-
+<!-- AUTO: MATERIALS -->
 ## Материалы
 
-### 3.1 [HTTP в Go](./01_http_server.md)
-- net/http: Handler и HandlerFunc
-- ServeMux и роутинг (включая Go 1.22+)
-- Работа с Request и Response
-- Graceful Shutdown
-- Middleware pattern
-- Популярные роутеры: chi, gin, echo, fiber
-- Context в HTTP handlers
-- 3 практических примера
+### 1. [3.1 HTTP в Go: Создание веб-серверов](./01_http_server.md)
 
-### 3.2 [Структура проекта](./02_project_structure.md)
-- Flat structure для микросервисов
+- Введение
+- Философия: net/http vs ASP.NET Core
+- net/http: основы
+- Middleware Pattern
+- Популярные роутеры
+- Context в HTTP handlers
+- Практические примеры
+
+### 2. [3.2 Структура проекта Go](./02_project_structure.md)
+
+- Введение
+- Философия структуры в Go
+- Flat Structure (плоская структура)
 - Standard Go Project Layout
 - Clean Architecture в Go
-- Dependency Injection: Manual, Wire, Fx
-- Configuration: env vars, viper
-- 3 практических примера
+- Dependency Injection
+- Configuration
+- Практические примеры
 
-### 3.3 [Работа с данными](./03_database.md)
-- database/sql: connection pool, queries, transactions
-- pgx: batch, COPY, Listen/Notify
-- sqlc: type-safe SQL, code generation
+### 3. [3.3 Работа с данными (PostgreSQL)](./03_database.md)
+
+- Введение
+- Подходы к работе с БД в Go
+- database/sql: стандартная библиотека
+- pgx: Production PostgreSQL Driver
+- sqlc: Type-Safe SQL
 - GORM: когда нужен ORM
-- Миграции: golang-migrate, goose
+- Миграции базы данных
 - Repository Pattern
-- 3 практических примера
+- Практические примеры
 
-### 3.4 [Валидация и сериализация](./04_validation_serialization.md)
-- encoding/json: struct tags, custom marshal
-- Быстрые библиотеки: easyjson, sonic
-- go-playground/validator
+### 4. [3.4 Валидация и сериализация](./04_validation_serialization.md)
+
+- Введение
+- JSON в Go
+- Быстрые JSON библиотеки
+- Валидация: go-playground/validator
 - Request/Response DTO
 - Protocol Buffers
-- 3 практических примера
+- JSON v2 и производительность io.ReadAll (Go 1.25-1.26)
+- Практические примеры
 
-### 3.5 [Документация API](./05_api_documentation.md)
+### 5. [3.5 Документация API](./05_api_documentation.md)
+
+- Введение
+- Подходы к документации
 - OpenAPI Specification
 - swaggo: документация из кода
-- oapi-codegen: OpenAPI-first подход
-- Swagger UI интеграция
-- Версионирование API
-- CI/CD интеграция
-- 2 практических примера
-
-## Время изучения
-
-**Примерно**: 2-3 недели
-
-## Ключевые навыки
-
-После изучения этой части вы сможете:
-
-- Создавать production-ready HTTP API
-- Организовывать код по Clean Architecture
-- Работать с PostgreSQL через pgx и sqlc
-- Валидировать входные данные
-- Генерировать документацию Swagger
+- OpenAPI-first подход
+- Практические аспекты
+- Практические примеры
+<!-- /AUTO: MATERIALS -->
 
 ---
 
