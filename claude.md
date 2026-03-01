@@ -305,12 +305,6 @@ git push origin master
 
 ---
 
-## Следующие шаги
-
-Переходите к [Следующий раздел](link.md)
-
----
-
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
 [← Назад](prev.md) | [Вперёд →](next.md)

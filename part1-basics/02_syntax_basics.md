@@ -2359,14 +2359,6 @@ fmt.Println(string(data))
 
 ---
 
-## Следующие шаги
-
-После изучения синтаксиса переходите к:
-- **[1.3 Ключевые отличия от C#](03_key_differences.md)** — глубокое понимание философии Go
-- **[1.4 Практика: мини-проекты](04_practice.md)** — закрепление на реальных задачах
-
----
-
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
 [← Назад: Установка и настройка](01_setup_environment.md) | [Вперёд: Ключевые отличия от C# →](03_key_differences.md)
