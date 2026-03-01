@@ -6,7 +6,7 @@
 
 ## Статус
 
-🚧 **В разработке** (1/4 завершено)
+🚧 **В разработке** (2/4 завершено)
 
 ## Проекты
 
@@ -39,33 +39,44 @@
 
 ---
 
-### Проект 2: E-commerce Platform
+### [Проект 2: E-commerce Platform](./project2-ecommerce/) ✅
 **Сложность**: Intermediate
 
 **Цель**: Микросервисная архитектура
 
 **Сервисы**:
-1. API Gateway
-2. User Service (JWT auth)
-3. Catalog Service
-4. Order Service
-5. Payment Service
-6. Notification Service
+1. API Gateway (chi, JWT, Circuit Breaker)
+2. User Service (JWT auth, bcrypt)
+3. Catalog Service (CQRS, Redis cache)
+4. Order Service (Saga Pattern, Kafka)
+5. Payment Service (идемпотентность)
+6. Notification Service (Kafka consumer)
 
 **Технологии**:
-- gRPC для межсервисного взаимодействия
-- Kafka для событий
-- PostgreSQL (per service)
-- Redis для кэша
-- OpenTelemetry для трейсинга
+- gRPC (`google.golang.org/grpc`) для межсервисного взаимодействия
+- Kafka (`kafka-go`) для событий
+- PostgreSQL + pgx/v5 (per service)
+- Redis для кэша каталога
+- OpenTelemetry + Jaeger для трейсинга
+- `sony/gobreaker` для Circuit Breaker
 
 **Паттерны**:
-- Saga pattern
-- CQRS
-- Event Sourcing
-- Circuit Breaker
+- Saga pattern (хореография через Kafka)
+- CQRS (Catalog Service: write→PG, read→Redis)
+- Circuit Breaker (API Gateway → upstream)
+- Идемпотентность (Payment Service)
+- State Machine (статусы заказа)
 
-**Время**: ~3-4 недели
+**Разделы**:
+1. [Доменная модель и контракты](./project2-ecommerce/01_domain.md)
+2. [User Service](./project2-ecommerce/02_user_service.md)
+3. [Catalog Service (CQRS)](./project2-ecommerce/03_catalog_service.md)
+4. [Order Service (Saga)](./project2-ecommerce/04_order_service.md)
+5. [Payment & Notification](./project2-ecommerce/05_payment_notification.md)
+6. [API Gateway](./project2-ecommerce/06_api_gateway.md)
+7. [Деплой и наблюдаемость](./project2-ecommerce/07_deployment.md)
+
+**Время**: ~3-4 недели | **Статус**: ✅ Завершено
 
 ---
 
