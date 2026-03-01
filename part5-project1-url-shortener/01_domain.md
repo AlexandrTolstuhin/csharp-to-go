@@ -719,5 +719,5 @@ func getEnv(key, defaultValue string) string {
 <!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: Проект 1: URL Shortener](./README.md) | [Вперёд: 2. Хранилище: PostgreSQL и Redis →](./02_storage.md)
+[← Назад к оглавлению](./README.md) | [Вперёд: 2. Хранилище: PostgreSQL и Redis →](./02_storage.md)
 <!-- /AUTO: NAV -->

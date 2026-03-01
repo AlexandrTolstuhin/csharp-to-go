@@ -21,7 +21,8 @@ PARTS_ORDER = [
     'part2-advanced',
     'part3-web-api',
     'part4-infrastructure',
-    'part5-projects',
+    'part5-project1-url-shortener',
+    'part5-project2-ecommerce',
     'part6-best-practices',
     'part7-interview',
 ]
@@ -85,37 +86,6 @@ def parse_top_entries(materials_content):
     return [(m.group(1), m.group(2)) for m in pattern.finditer(materials_content)]
 
 
-def parse_project_sections(materials_content):
-    """
-    Для part5: парсит секции проектов и их файлы.
-    Каждая секция: ### N. [Project Title](./projectX/)
-                   - [File Title](./projectX/NN_file.md)
-
-    Возвращает список:
-      [{'title': str, 'path': str, 'files': [(title, path), ...]}, ...]
-    """
-    sections = re.split(r'(?=^###\s+\d+\.)', materials_content, flags=re.MULTILINE)
-    header_re = re.compile(r'^###\s+\d+\.\s+\[([^\]]+)\]\(([^)]+)\)')
-    file_re   = re.compile(r'^\s*-\s+\[([^\]]+)\]\(([^)]+)\)')
-
-    result = []
-    for section in sections:
-        section = section.strip()
-        if not section:
-            continue
-        hm = header_re.match(section)
-        if not hm:
-            continue
-        title = hm.group(1)
-        path  = hm.group(2)
-        files = []
-        for line in section.splitlines()[1:]:
-            fm = file_re.match(line)
-            if fm:
-                files.append((fm.group(1), fm.group(2)))
-        result.append({'title': title, 'path': path, 'files': files})
-    return result
-
 
 # ─── Section builders ─────────────────────────────────────────────────────────
 
@@ -129,20 +99,6 @@ def build_section_regular(part, title, materials_content):
         lines.append(f'- [{file_title}]({full_path})')
     return '\n'.join(lines)
 
-
-def build_section_part5(part, title, materials_content):
-    """Секция для part5: заголовок + проекты со списком файлов."""
-    projects = parse_project_sections(materials_content)
-    lines = [f'### [{title}](./{part}/)']
-    for proj in projects:
-        lines.append('')
-        proj_path = prefix_path(part, proj['path'])
-        lines.append(f'#### [{proj["title"]}]({proj_path})')
-        lines.append('')
-        for file_title, rel_path in proj['files']:
-            full_path = prefix_path(part, rel_path)
-            lines.append(f'- [{file_title}]({full_path})')
-    return '\n'.join(lines)
 
 
 # ─── Main builder ─────────────────────────────────────────────────────────────
@@ -164,10 +120,7 @@ def build_structure():
             sections.append(f'### [{title}](./{part}/)')
             continue
 
-        if part == 'part5-projects':
-            section = build_section_part5(part, title, mats)
-        else:
-            section = build_section_regular(part, title, mats)
+        section = build_section_regular(part, title, mats)
 
         sections.append(section)
 

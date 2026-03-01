@@ -22,23 +22,26 @@ CONTEXT_FILE = '.context-summary.md'
 MIN_DONE_SIZE_KB = 5  # файл < 5 KB считается незавершённым
 
 PART_NAMES = {
-    'part1-basics':         'Часть 1: Основы Go',
-    'part2-advanced':       'Часть 2: Продвинутые темы',
-    'part3-web-api':        'Часть 3: Web & API',
-    'part4-infrastructure': 'Часть 4: Инфраструктура',
-    'part5-projects':       'Часть 5: Практические проекты',
-    'part6-best-practices': 'Часть 6: Best Practices',
-    'part7-interview':      'Часть 7: Лайфкодинг',
+    'part1-basics':                 'Часть 1: Основы Go',
+    'part2-advanced':               'Часть 2: Продвинутые темы',
+    'part3-web-api':                'Часть 3: Web & API',
+    'part4-infrastructure':         'Часть 4: Инфраструктура',
+    'part5-project1-url-shortener': 'Проект 1: URL Shortener',
+    'part5-project2-ecommerce':     'Проект 2: E-Commerce',
+    'part6-best-practices':         'Часть 6: Best Practices',
+    'part7-interview':              'Часть 7: Лайфкодинг',
 }
 
 # Ожидаемое число контент-файлов (без README)
 PART_EXPECTED = {
-    'part1-basics':         5,
-    'part2-advanced':       8,  # 07 + 02a_memory_allocator
-    'part3-web-api':        5,
-    'part4-infrastructure': 7,
-    'part6-best-practices': 4,
-    'part7-interview':      5,
+    'part1-basics':                 5,
+    'part2-advanced':               8,  # 07 + 02a_memory_allocator
+    'part3-web-api':                5,
+    'part4-infrastructure':         7,
+    'part5-project1-url-shortener': 5,
+    'part5-project2-ecommerce':     7,
+    'part6-best-practices':         4,
+    'part7-interview':              5,
 }
 
 
@@ -67,18 +70,6 @@ def content_files(directory):
     return result
 
 
-def project_dirs(part5):
-    """Папки project* внутри part5-projects."""
-    result = []
-    try:
-        for name in sorted(os.listdir(part5)):
-            path = os.path.join(part5, name)
-            if os.path.isdir(path) and name.startswith('project'):
-                result.append((name, path))
-    except OSError:
-        pass
-    return result
-
 
 # ─── Генерация дерева ───────────────────────────────────────────────────────
 
@@ -94,52 +85,25 @@ def build_tree():
     for part in parts:
         expected = PART_EXPECTED.get(part)
 
-        if part == 'part5-projects':
-            projects = project_dirs(part)
-            done = sum(
-                1 for _, ppath in projects
-                if all(is_done(f) for f in content_files(ppath))
-                   and is_done(os.path.join(ppath, 'README.md'))
-            )
-            total = len(projects)
-            pct = int(done / total * 100) if total else 0
-            mark = '✅ 100%' if pct == 100 else f'🚧 {pct}% ({done}/{total} проектов)'
-            lines.append(f'├── {part}/  # {mark}')
+        files = content_files(part)
+        done_files = [f for f in files if is_done(f)]
+        total = expected or len(files)
+        done = len(done_files)
+        pct = int(done / total * 100) if total else 0
+        total_kb = sum(size_kb(f) for f in files)
+        mark = '✅ 100%' if pct == 100 else f'🚧 {pct}% ({done}/{total})'
 
-            for pname, ppath in projects:
-                files = content_files(ppath)
-                readme = os.path.join(ppath, 'README.md')
-                all_ok = all(is_done(f) for f in files) and is_done(readme)
-                total_kb = sum(size_kb(f) for f in files) + size_kb(readme)
-                st = '✅' if all_ok else '🚧'
-                lines.append(f'│   ├── {pname}/  {st} ({total_kb:.0f} KB, {len(files) + 1} файлов)')
+        connector = '└──' if part == parts[-1] else '├──'
+        lines.append(f'{connector} {part}/  # {mark}')
+        child_connector = '    ' if part == parts[-1] else '│   '
 
-            total_kb = sum(
-                size_kb(f) for _, ppath in projects
-                for f in content_files(ppath) + [os.path.join(ppath, 'README.md')]
-            )
-            stats[part] = (len(projects), f'{len(projects)} проекта', total_kb)
+        for f in files:
+            fname = os.path.basename(f)
+            kb = size_kb(f)
+            st = '✅' if is_done(f) else '🔲'
+            lines.append(f'{child_connector}├── {fname:<50} # {st} {kb:.0f} KB')
 
-        else:
-            files = content_files(part)
-            done_files = [f for f in files if is_done(f)]
-            total = expected or len(files)
-            done = len(done_files)
-            pct = int(done / total * 100) if total else 0
-            total_kb = sum(size_kb(f) for f in files)
-            mark = '✅ 100%' if pct == 100 else f'🚧 {pct}% ({done}/{total})'
-
-            connector = '└──' if part == parts[-1] else '├──'
-            lines.append(f'{connector} {part}/  # {mark}')
-            child_connector = '    ' if part == parts[-1] else '│   '
-
-            for f in files:
-                fname = os.path.basename(f)
-                kb = size_kb(f)
-                st = '✅' if is_done(f) else '🔲'
-                lines.append(f'{child_connector}├── {fname:<50} # {st} {kb:.0f} KB')
-
-            stats[part] = (len(files), f'{len(files)} файлов', total_kb)
+        stats[part] = (len(files), f'{len(files)} файлов', total_kb)
 
     lines.append('```')
     return '\n'.join(lines), stats

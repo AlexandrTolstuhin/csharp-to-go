@@ -353,17 +353,88 @@ CREATE TABLE payment_attempts (
 
 ---
 
-## Разделы гайда
+<!-- AUTO: MATERIALS -->
+## Материалы
 
-| # | Файл | Содержание |
-|---|------|-----------|
-| 1 | [Доменная модель и контракты](./01_domain.md) | Сущности, Proto файлы, Kafka events, shared типы |
-| 2 | [User Service](./02_user_service.md) | JWT auth, bcrypt, gRPC server, PostgreSQL |
-| 3 | [Catalog Service](./03_catalog_service.md) | CQRS, Redis cache, Kafka producer |
-| 4 | [Order Service](./04_order_service.md) | Saga pattern, Kafka consumer/producer, state machine |
-| 5 | [Payment & Notification](./05_payment_notification.md) | Идемпотентность, Kafka, email отправка |
-| 6 | [API Gateway](./06_api_gateway.md) | chi routing, JWT middleware, circuit breaker, rate limiting |
-| 7 | [Деплой и наблюдаемость](./07_deployment.md) | Docker Compose, Kubernetes, OpenTelemetry, Makefile |
+### 1. [1. Доменная модель и контракты](./01_domain.md)
+
+- Обзор доменов
+- Protobuf контракты
+- Go доменные модели
+- Kafka события
+- Shared пакеты
+- Сравнение с C#
+- Генерация кода
+
+### 2. [2. User Service](./02_user_service.md)
+
+- Обзор сервиса
+- Конфигурация
+- Доменный сервис
+- JWT токены
+- PostgreSQL репозиторий
+- gRPC сервер
+- Точка входа: main.go
+- Миграции
+- Тестирование
+- Сравнение с C#
+
+### 3. [3. Catalog Service (CQRS)](./03_catalog_service.md)
+
+- Обзор и CQRS
+- Доменная модель
+- Command Side (Write)
+- Query Side (Read)
+- Резервирование склада
+- gRPC сервер
+- Kafka: инвалидация кэша
+- Миграции
+- Тестирование
+- Сравнение с C#
+
+### 4. [4. Order Service (Saga Pattern)](./04_order_service.md)
+
+- Обзор и Saga Pattern
+- State Machine заказа
+- gRPC: создание заказа
+- Kafka Consumer: обработка событий
+- Kafka Producer: публикация событий
+- PostgreSQL репозиторий
+- gRPC сервер и клиент Catalog Service
+- main.go — запуск сервиса
+- Миграции
+- Тестирование
+- Сравнение с C#
+
+### 5. [5. Payment Service и Notification Service](./05_payment_notification.md)
+
+- Payment Service
+- Notification Service
+- Тестирование
+- Сравнение с C#
+
+### 6. [6. API Gateway](./06_api_gateway.md)
+
+- Обзор
+- Структура и routing
+- JWT middleware
+- gRPC клиенты с Circuit Breaker
+- HTTP хэндлеры
+- Rate limiting
+- main.go
+- Тестирование
+- Сравнение с C#
+
+### 7. [7. Деплой и наблюдаемость](./07_deployment.md)
+
+- Docker Compose
+- Dockerfiles
+- Makefile
+- OpenTelemetry
+- Health Checks
+- Kubernetes
+- Итоги проекта
+<!-- /AUTO: MATERIALS -->
 
 ---
 
@@ -442,5 +513,5 @@ open http://localhost:16686
 ---
 
 <!-- AUTO: NAV -->
-[← Назад: 5. Деплой: Docker Compose и Production](../project1-url-shortener/05_deployment.md) | [Вперёд: 1. Доменная модель и контракты →](./01_domain.md)
+[← Назад к оглавлению](../README.md) | [Предыдущая часть: Проект 1: URL Shortener](../part5-project1-url-shortener/) | [Следующая часть: Часть 6: Best Practices →](../part6-best-practices/)
 <!-- /AUTO: NAV -->

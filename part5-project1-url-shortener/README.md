@@ -188,15 +188,59 @@ urlshortener/
 
 ---
 
-## Разделы гайда
+<!-- AUTO: MATERIALS -->
+## Материалы
 
-| # | Файл | Содержание |
-|---|------|-----------|
-| 1 | [Доменная модель](./01_domain.md) | Модели, интерфейсы, сервис, генерация кодов, ошибки |
-| 2 | [Хранилище](./02_storage.md) | PostgreSQL (pgx), Redis, cache-aside |
-| 3 | [HTTP слой](./03_http.md) | net/http → chi, middleware, rate limiting |
-| 4 | [Тестирование](./04_testing.md) | Unit, integration, benchmarks |
-| 5 | [Деплой](./05_deployment.md) | Docker Compose, Dockerfile, production |
+### 1. [1. Доменная модель и сервисный слой](./01_domain.md)
+
+- Анализ требований
+- Доменная модель
+- Кастомные ошибки
+- Интерфейс репозитория
+- Алгоритм генерации кода (Base62)
+- Сервисный слой
+- Точка входа: main.go
+- Сравнительная таблица
+
+### 2. [2. Хранилище: PostgreSQL и Redis](./02_storage.md)
+
+- Схема базы данных
+- PostgreSQL с pgx v5
+- Реализация URLRepository
+- Redis кэш
+- Паттерн cache-aside
+- Обработка ошибок хранилища
+- Сравнительная таблица
+
+### 3. [3. HTTP слой: net/http и chi](./03_http.md)
+
+- Архитектура HTTP слоя
+- Часть 1: net/http (Go 1.22+)
+- Часть 2: Миграция на chi
+- Сравнительная таблица
+
+### 4. [4. Тестирование и бенчмарки](./04_testing.md)
+
+- Стратегия тестирования
+- Unit тесты сервисного слоя
+- Тесты HTTP хэндлеров
+- Integration тесты с testcontainers-go
+- Бенчмарки
+- Покрытие кода
+- Сравнительная таблица
+
+### 5. [5. Деплой: Docker Compose и Production](./05_deployment.md)
+
+- Dockerfile
+- Docker Compose
+- Конфигурация через переменные окружения
+- Graceful shutdown
+- Health checks
+- Структурированное логирование
+- Production чек-лист
+- Сравнительная таблица
+- Итоги проекта
+<!-- /AUTO: MATERIALS -->
 
 ---
 
@@ -234,5 +278,5 @@ curl -L http://localhost:8080/aB3xY9
 ---
 
 <!-- AUTO: NAV -->
-[← Назад: Часть 5: Практические проекты](../README.md) | [Вперёд: 1. Доменная модель и сервисный слой →](./01_domain.md)
+[← Назад к оглавлению](../README.md) | [Предыдущая часть: Часть 4: Инфраструктура](../part4-infrastructure/) | [Следующая часть: Проект 2: E-Commerce →](../part5-project2-ecommerce/)
 <!-- /AUTO: NAV -->

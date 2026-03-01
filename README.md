@@ -73,25 +73,25 @@
 
 ---
 
-### [Часть 5: Практические проекты](./part5-projects/)
+### [Проект 1: URL Shortener](./part5-project1-url-shortener/)
 
-#### [Проект 1: URL Shortener](./part5-projects/project1-url-shortener/)
+- [1. Доменная модель и сервисный слой](./part5-project1-url-shortener/01_domain.md)
+- [2. Хранилище: PostgreSQL и Redis](./part5-project1-url-shortener/02_storage.md)
+- [3. HTTP слой: net/http и chi](./part5-project1-url-shortener/03_http.md)
+- [4. Тестирование и бенчмарки](./part5-project1-url-shortener/04_testing.md)
+- [5. Деплой: Docker Compose и Production](./part5-project1-url-shortener/05_deployment.md)
 
-- [1. Доменная модель и сервисный слой](./part5-projects/project1-url-shortener/01_domain.md)
-- [2. Хранилище: PostgreSQL и Redis](./part5-projects/project1-url-shortener/02_storage.md)
-- [3. HTTP слой: net/http и chi](./part5-projects/project1-url-shortener/03_http.md)
-- [4. Тестирование и бенчмарки](./part5-projects/project1-url-shortener/04_testing.md)
-- [5. Деплой: Docker Compose и Production](./part5-projects/project1-url-shortener/05_deployment.md)
+---
 
-#### [Проект 2: E-commerce Platform](./part5-projects/project2-ecommerce/)
+### [Проект 2: E-commerce Platform](./part5-project2-ecommerce/)
 
-- [1. Доменная модель и контракты](./part5-projects/project2-ecommerce/01_domain.md)
-- [2. User Service](./part5-projects/project2-ecommerce/02_user_service.md)
-- [3. Catalog Service (CQRS)](./part5-projects/project2-ecommerce/03_catalog_service.md)
-- [4. Order Service (Saga Pattern)](./part5-projects/project2-ecommerce/04_order_service.md)
-- [5. Payment Service и Notification Service](./part5-projects/project2-ecommerce/05_payment_notification.md)
-- [6. API Gateway](./part5-projects/project2-ecommerce/06_api_gateway.md)
-- [7. Деплой и наблюдаемость](./part5-projects/project2-ecommerce/07_deployment.md)
+- [1. Доменная модель и контракты](./part5-project2-ecommerce/01_domain.md)
+- [2. User Service](./part5-project2-ecommerce/02_user_service.md)
+- [3. Catalog Service (CQRS)](./part5-project2-ecommerce/03_catalog_service.md)
+- [4. Order Service (Saga Pattern)](./part5-project2-ecommerce/04_order_service.md)
+- [5. Payment Service и Notification Service](./part5-project2-ecommerce/05_payment_notification.md)
+- [6. API Gateway](./part5-project2-ecommerce/06_api_gateway.md)
+- [7. Деплой и наблюдаемость](./part5-project2-ecommerce/07_deployment.md)
 
 ---
 

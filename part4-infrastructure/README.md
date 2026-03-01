@@ -111,5 +111,5 @@
 ---
 
 <!-- AUTO: NAV -->
-[← Назад к оглавлению](../README.md) | [Предыдущая часть: Часть 3: Web & API](../part3-web-api/) | [Следующая часть: Часть 5: Практические проекты →](../part5-projects/)
+[← Назад к оглавлению](../README.md) | [Предыдущая часть: Часть 3: Web & API](../part3-web-api/) | [Следующая часть: Проект 1: URL Shortener →](../part5-project1-url-shortener/)
 <!-- /AUTO: NAV -->

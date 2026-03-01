@@ -23,7 +23,8 @@ PARTS = [
     'part2-advanced',
     'part3-web-api',
     'part4-infrastructure',
-    'part5-projects',
+    'part5-project1-url-shortener',
+    'part5-project2-ecommerce',
     'part6-best-practices',
     'part7-interview',
 ]
@@ -56,18 +57,6 @@ def content_files(directory):
     return result
 
 
-def project_dirs(part5_path):
-    """Папки project* внутри part5-projects."""
-    result = []
-    try:
-        for name in sorted(os.listdir(part5_path)):
-            path = os.path.join(part5_path, name)
-            if os.path.isdir(path) and name.startswith('project'):
-                result.append((name, path))
-    except OSError:
-        pass
-    return result
-
 
 # ─── Извлечение данных из файлов ────────────────────────────────────────────
 
@@ -95,8 +84,8 @@ def extract_toc_top_items(content):
 
 # ─── Генерация блока Материалы ───────────────────────────────────────────────
 
-def build_materials_regular(part_dir):
-    """Генерирует ## Материалы для обычного раздела."""
+def build_materials(part_dir):
+    """Генерирует ## Материалы для раздела."""
     files = content_files(part_dir)
     if not files:
         return '## Материалы\n\n_Материалы в разработке._'
@@ -123,42 +112,6 @@ def build_materials_regular(part_dir):
     return '\n'.join(lines)
 
 
-def build_materials_part5(part_dir):
-    """Генерирует ## Материалы для part5-projects."""
-    projects = project_dirs(part_dir)
-    if not projects:
-        return '## Материалы\n\n_Проекты в разработке._'
-
-    lines = ['## Материалы', '']
-    for i, (pname, ppath) in enumerate(projects, 1):
-        readme_path = os.path.join(ppath, 'README.md')
-        try:
-            readme_content = read_file(readme_path)
-            title = extract_title(readme_content) or pname
-        except OSError:
-            title = pname
-
-        lines.append(f'### {i}. [{title}](./{pname}/)')
-        lines.append('')
-        for fname, fpath in content_files(ppath):
-            try:
-                file_content = read_file(fpath)
-                file_title = extract_title(file_content) or fname
-            except OSError:
-                file_title = fname
-            lines.append(f'- [{file_title}](./{pname}/{fname})')
-        lines.append('')
-
-    while lines and lines[-1] == '':
-        lines.pop()
-
-    return '\n'.join(lines)
-
-
-def build_materials(part_dir):
-    if os.path.basename(part_dir) == 'part5-projects':
-        return build_materials_part5(part_dir)
-    return build_materials_regular(part_dir)
 
 
 # ─── Работа с маркерами ─────────────────────────────────────────────────────

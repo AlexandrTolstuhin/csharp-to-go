@@ -4127,5 +4127,5 @@ kubectl -n myapp rollout undo deployment/myapp
 <!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: Конфигурация: Управление настройками в Go](./06_config.md) | [Вперёд: Часть 5: Практические проекты →](../part5-projects/)
+[← Назад: Конфигурация: Управление настройками в Go](./06_config.md) | [Вперёд: Проект 1: URL Shortener →](../part5-project1-url-shortener/)
 <!-- /AUTO: NAV -->

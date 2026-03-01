@@ -33,19 +33,21 @@ PARTS_ORDER = [
     'part2-advanced',
     'part3-web-api',
     'part4-infrastructure',
-    'part5-projects',
+    'part5-project1-url-shortener',
+    'part5-project2-ecommerce',
     'part6-best-practices',
     'part7-interview',
 ]
 
 PART_NAMES = {
-    'part1-basics':         'Часть 1: Основы Go',
-    'part2-advanced':       'Часть 2: Продвинутые темы',
-    'part3-web-api':        'Часть 3: Web & API',
-    'part4-infrastructure': 'Часть 4: Инфраструктура',
-    'part5-projects':       'Часть 5: Практические проекты',
-    'part6-best-practices': 'Часть 6: Best Practices',
-    'part7-interview':      'Часть 7: Лайфкодинг',
+    'part1-basics':                 'Часть 1: Основы Go',
+    'part2-advanced':               'Часть 2: Продвинутые темы',
+    'part3-web-api':                'Часть 3: Web & API',
+    'part4-infrastructure':         'Часть 4: Инфраструктура',
+    'part5-project1-url-shortener': 'Проект 1: URL Shortener',
+    'part5-project2-ecommerce':     'Проект 2: E-Commerce',
+    'part6-best-practices':         'Часть 6: Best Practices',
+    'part7-interview':              'Часть 7: Лайфкодинг',
 }
 
 START_MARKER = '<!-- AUTO: NAV -->'
@@ -60,7 +62,7 @@ class Node:
 
     def __init__(self, path, kind):
         # path: нормализованный forward-slash путь относительно корня проекта
-        # kind: 'part_readme' | 'project_readme' | 'content'
+        # kind: 'part_readme' | 'content'
         self.path = path.replace('\\', '/')
         self.kind = kind
         self.prev = None
@@ -84,19 +86,6 @@ def md_files_in(directory):
     return result
 
 
-def project_subdirs(part5):
-    """Поддиректории project* внутри part5-projects, отсортированные."""
-    result = []
-    try:
-        for name in sorted(os.listdir(part5)):
-            p = os.path.join(part5, name).replace('\\', '/')
-            if os.path.isdir(p) and name.startswith('project'):
-                result.append(p)
-    except OSError:
-        pass
-    return result
-
-
 def build_chain():
     """Строит полную линейную цепочку всех файлов курса."""
     nodes = []
@@ -110,16 +99,8 @@ def build_chain():
         if os.path.exists(readme):
             nodes.append(Node(readme, 'part_readme'))
 
-        if part == 'part5-projects':
-            for proj in project_subdirs(part):
-                proj_readme = f'{proj}/README.md'
-                if os.path.exists(proj_readme):
-                    nodes.append(Node(proj_readme, 'project_readme'))
-                for f in md_files_in(proj):
-                    nodes.append(Node(f, 'content'))
-        else:
-            for f in md_files_in(part):
-                nodes.append(Node(f, 'content'))
+        for f in md_files_in(part):
+            nodes.append(Node(f, 'content'))
 
     # Связать prev/next
     for i, node in enumerate(nodes):
@@ -208,9 +189,8 @@ def gen_part_readme_nav(node):
 
 def gen_content_nav(node):
     """
-    Навигация для content-файлов и project README.
-    content:         GitHub-ссылка + [← Назад: ...] | [Вперёд: ... →]
-    project_readme:  только [← Назад: ...] | [Вперёд: ... →]
+    Навигация для content-файлов.
+    GitHub-ссылка + [← Назад: ...] | [Вперёд: ... →]
     """
     path  = node.path
     links = []
@@ -220,14 +200,8 @@ def gen_content_nav(node):
         # Первый файл в курсе — не должно быть, но на всякий случай
         links.append('[← Назад к оглавлению](../README.md)')
     elif node.prev.kind == 'part_readme':
-        # Возврат к оглавлению своей части или родительской части (для project_readme)
         prev_rel = rel(path, node.prev.path)
-        if node.kind == 'project_readme':
-            # project README → ссылается на часть 5, показываем название
-            prev_title = PART_NAMES.get(node.prev.path.split('/')[0], 'Оглавление')
-            links.append(f'[← Назад: {prev_title}]({prev_rel})')
-        else:
-            links.append(f'[← Назад к оглавлению]({prev_rel})')
+        links.append(f'[← Назад к оглавлению]({prev_rel})')
     else:
         prev_rel, prev_title = node_link(node.prev, path)
         links.append(f'[← Назад: {prev_title}]({prev_rel})')
@@ -244,11 +218,8 @@ def gen_content_nav(node):
 
     nav_line = ' | '.join(links)
 
-    if node.kind == 'content':
-        github = f'**Вопросы?** Открой issue на [GitHub]({GITHUB_ISSUES})'
-        return f'{github}\n\n{nav_line}'
-
-    return nav_line
+    github = f'**Вопросы?** Открой issue на [GitHub]({GITHUB_ISSUES})'
+    return f'{github}\n\n{nav_line}'
 
 
 def generate_nav(node):
