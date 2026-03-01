@@ -86,12 +86,19 @@
 - ✅ Unit + handler + integration тесты, бенчмарки
 - ✅ Docker Compose, Dockerfile (scratch), graceful shutdown
 
-#### Проект 2: E-commerce Platform _(в разработке)_
+#### [Проект 2: E-commerce Platform](./part5-projects/project2-ecommerce/) ✅
 **Сложность**: Intermediate
 
-**Архитектура**: Микросервисы (gRPC, Kafka, PostgreSQL, Redis)
+**Стек**: gRPC + buf, Kafka (kafka-go), PostgreSQL (pgx), Redis, OpenTelemetry + Jaeger, Kubernetes
 
-**Паттерны**: Saga, CQRS, Event Sourcing, Circuit Breaker
+- ✅ Proto контракты (buf), доменные модели, Kafka события (shared/events)
+- ✅ User Service: JWT (golang-jwt/v5), bcrypt, gRPC сервер, testcontainers
+- ✅ Catalog Service: CQRS (command/ + query/), SELECT FOR UPDATE, Redis кэш, Kafka инвалидация
+- ✅ Order Service: Saga (хореография), state machine, Kafka consumer/producer
+- ✅ Payment Service: идемпотентность (ON CONFLICT DO NOTHING), Kafka consumer
+- ✅ Notification Service: Kafka consumer, SMTP / LogSender
+- ✅ API Gateway: chi, JWT middleware, Circuit Breaker (gobreaker), rate limiting
+- ✅ Docker Compose (dev + prod), Distroless Dockerfile, Kubernetes HPA, Makefile
 
 #### Проект 3: Trading/Fintech Platform _(в разработке)_
 **Сложность**: Advanced
@@ -157,6 +164,6 @@
 
 ---
 
-**Версия**: 0.7.0
+**Версия**: 0.8.0
 **Последнее обновление**: 2026-03-01
-**Статус**: Части 1-4, 6 и 7 завершены, Часть 5 — Проект 1 завершён
+**Статус**: Части 1-4, 6 и 7 завершены, Часть 5 — Проекты 1-2 завершены (2/4)
