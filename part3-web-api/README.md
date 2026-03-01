@@ -7,7 +7,7 @@
 <!-- AUTO: MATERIALS -->
 ## Материалы
 
-### 1. [3.1 HTTP в Go: Создание веб-серверов](./01_http_server.md)
+### 1. [HTTP в Go: Создание веб-серверов](./01_http_server.md)
 
 - Введение
 - Философия: net/http vs ASP.NET Core
@@ -17,7 +17,7 @@
 - Context в HTTP handlers
 - Практические примеры
 
-### 2. [3.2 Структура проекта Go](./02_project_structure.md)
+### 2. [Структура проекта Go](./02_project_structure.md)
 
 - Введение
 - Философия структуры в Go
@@ -28,7 +28,7 @@
 - Configuration
 - Практические примеры
 
-### 3. [3.3 Работа с данными (PostgreSQL)](./03_database.md)
+### 3. [Работа с данными (PostgreSQL)](./03_database.md)
 
 - Введение
 - Подходы к работе с БД в Go
@@ -40,7 +40,7 @@
 - Repository Pattern
 - Практические примеры
 
-### 4. [3.4 Валидация и сериализация](./04_validation_serialization.md)
+### 4. [Валидация и сериализация](./04_validation_serialization.md)
 
 - Введение
 - JSON в Go
@@ -51,7 +51,7 @@
 - JSON v2 и производительность io.ReadAll (Go 1.25-1.26)
 - Практические примеры
 
-### 5. [3.5 Документация API](./05_api_documentation.md)
+### 5. [Документация API](./05_api_documentation.md)
 
 - Введение
 - Подходы к документации

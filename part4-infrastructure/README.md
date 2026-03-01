@@ -7,7 +7,7 @@
 <!-- AUTO: MATERIALS -->
 ## Материалы
 
-### 1. [4.1 Production PostgreSQL](./01_production_postgresql.md)
+### 1. [Production PostgreSQL](./01_production_postgresql.md)
 
 - Введение
 - Advanced pgx Configuration
@@ -19,7 +19,7 @@
 - Observability для PostgreSQL
 - Практические примеры
 
-### 2. [4.2 Кэширование](./02_caching.md)
+### 2. [Кэширование](./02_caching.md)
 
 - Введение
 - Redis в Go: go-redis
@@ -30,7 +30,7 @@
 - Production Concerns
 - Практические примеры
 
-### 3. [4.3 Очереди сообщений](./03_message_queues.md)
+### 3. [Очереди сообщений](./03_message_queues.md)
 
 - Введение
 - Экосистема: C# vs Go
@@ -43,7 +43,7 @@
 - Production Concerns
 - Практические примеры
 
-### 4. [4.4 gRPC](./04_grpc.md)
+### 4. [gRPC](./04_grpc.md)
 
 - Введение
 - Экосистема: C# vs Go
@@ -61,7 +61,7 @@
 - Production Concerns
 - Практические примеры
 
-### 5. [4.5 Observability: Логирование, Метрики, Трейсинг](./05_observability.md)
+### 5. [Observability: Логирование, Метрики, Трейсинг](./05_observability.md)
 
 - Введение
 - Экосистема: C# vs Go
@@ -74,7 +74,7 @@
 - Production Concerns
 - Практические примеры
 
-### 6. [4.6 Конфигурация: Управление настройками в Go](./06_config.md)
+### 6. [Конфигурация: Управление настройками в Go](./06_config.md)
 
 - Введение
 - Экосистема: C# vs Go
@@ -94,7 +94,7 @@
 - Production Concerns
 - Практические примеры
 
-### 7. [4.7 Контейнеризация: Docker, Compose и Kubernetes для Go](./07_containerization.md)
+### 7. [Контейнеризация: Docker, Compose и Kubernetes для Go](./07_containerization.md)
 
 - Введение
 - Экосистема: C# vs Go

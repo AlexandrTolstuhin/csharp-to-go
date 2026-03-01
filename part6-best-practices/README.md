@@ -7,7 +7,7 @@
 <!-- AUTO: MATERIALS -->
 ## Материалы
 
-### 1. [6.1 Код и архитектура](./01_code_architecture.md)
+### 1. [Код и архитектура](./01_code_architecture.md)
 
 - Введение
 - Accept Interfaces, Return Structs
@@ -20,7 +20,7 @@
 - API Design
 - Практические примеры
 
-### 2. [6.2 Инструменты](./02_tools.md)
+### 2. [Инструменты](./02_tools.md)
 
 - Введение
 - Экосистема инструментов: C# vs Go
@@ -34,7 +34,7 @@
 - CI/CD Pipeline
 - Практические примеры
 
-### 3. [6.3 Производительность](./03_performance.md)
+### 3. [Производительность](./03_performance.md)
 
 - Введение
 - 1. Философия оптимизации
@@ -47,7 +47,7 @@
 - 8. Real-World Case Studies
 - Практические примеры
 
-### 4. [6.4 Production Checklist](./04_production_checklist.md)
+### 4. [Production Checklist](./04_production_checklist.md)
 
 - Введение
 - 1. Graceful Shutdown
