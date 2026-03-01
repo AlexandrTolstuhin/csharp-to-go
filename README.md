@@ -95,7 +95,7 @@
 
 ---
 
-### [Часть 6: Best Practices Go 2024-2025](./part6-best-practices/)
+### [Часть 6: Best Practices Go](./part6-best-practices/)
 
 - [6.1 Код и архитектура](./part6-best-practices/01_code_architecture.md)
 - [6.2 Инструменты](./part6-best-practices/02_tools.md)
