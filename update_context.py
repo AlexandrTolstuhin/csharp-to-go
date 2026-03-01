@@ -110,7 +110,11 @@ def build_tree():
                 st = '✅' if all_ok else '🚧'
                 lines.append(f'│   ├── {pname}/  {st} ({total_kb:.0f} KB, {len(files) + 1} файлов)')
 
-            stats[part] = (pct, f'{done}/{total} проектов')
+            total_kb = sum(
+                size_kb(f) for _, ppath in projects
+                for f in content_files(ppath) + [os.path.join(ppath, 'README.md')]
+            )
+            stats[part] = (len(projects), f'{len(projects)} проекта', total_kb)
 
         else:
             files = content_files(part)
@@ -118,6 +122,7 @@ def build_tree():
             total = expected or len(files)
             done = len(done_files)
             pct = int(done / total * 100) if total else 0
+            total_kb = sum(size_kb(f) for f in files)
             mark = '✅ 100%' if pct == 100 else f'🚧 {pct}% ({done}/{total})'
 
             connector = '└──' if part == parts[-1] else '├──'
@@ -130,7 +135,7 @@ def build_tree():
                 st = '✅' if is_done(f) else '🔲'
                 lines.append(f'{child_connector}├── {fname:<50} # {st} {kb:.0f} KB')
 
-            stats[part] = (pct, f'{done}/{total}')
+            stats[part] = (len(files), f'{len(files)} файлов', total_kb)
 
     lines.append('```')
     return '\n'.join(lines), stats
@@ -139,19 +144,16 @@ def build_tree():
 # ─── Генерация прогресса ────────────────────────────────────────────────────
 
 def build_progress(stats):
-    parts_done = sum(1 for pct, _ in stats.values() if pct == 100)
-    total_parts = len(stats)
-    overall = int(parts_done / total_parts * 100) if total_parts else 0
     today = date.today().strftime('%Y-%m-%d')
+    total_kb = sum(kb for _, _, kb in stats.values())
 
-    lines = ['### Прогресс', f'- Общий прогресс курса: ~{overall}%']
+    lines = ['### Прогресс']
     for part in sorted(stats):
         name = PART_NAMES.get(part, part)
-        pct, label = stats[part]
-        mark = '✅' if pct == 100 else '🚧'
-        lines.append(f'- **{name}: {pct}%** {mark} ({label})')
+        count, label, kb = stats[part]
+        lines.append(f'- **{name}**: {label}, {kb:.0f} KB')
 
-    lines += ['', '---', '', f'**Последнее обновление**: {today}']
+    lines += [f'- **Итого**: {total_kb:.0f} KB', '', '---', '', f'**Последнее обновление**: {today}']
     return '\n'.join(lines)
 
 
@@ -199,9 +201,9 @@ def main():
 
     print(f'Обновлён {CONTEXT_FILE} ({today})')
     for part in sorted(stats):
-        pct, label = stats[part]
+        count, label, kb = stats[part]
         name = PART_NAMES.get(part, part)
-        print(f'  {name}: {pct}% ({label})')
+        print(f'  {name}: {label}, {kb:.0f} KB')
 
 
 if __name__ == '__main__':
