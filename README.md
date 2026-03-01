@@ -27,111 +27,91 @@
 
 ## Структура курса
 
-### [Часть 1: Основы Go (Быстрый старт)](./part1-basics/) — **Завершено**
+<!-- AUTO: STRUCTURE -->
+### [Часть 1: Основы Go (Быстрый старт)](./part1-basics/)
 
-- **1.1** [Установка и настройка окружения](./part1-basics/01_setup_environment.md)
-- **1.2** [Синтаксис и базовые концепции](./part1-basics/02_syntax_basics.md)
-- **+** [Шпаргалка: Производительность коллекций](./part1-basics/02a_collections_performance_cheatsheet.md)
-- **1.3** [Ключевые отличия от C#](./part1-basics/03_key_differences.md)
-- **1.4** [Практика: мини-проекты](./part1-basics/04_practice.md)
-
----
-
-### [Часть 2: Продвинутые темы](./part2-advanced/) — **Завершено**
-
-- **2.1** [Горутины и каналы](./part2-advanced/01_goroutines_channels.md)
-- **2.2** [Go Runtime и планировщик](./part2-advanced/02_runtime_scheduler.md)
-- **+** [Аллокатор памяти Go](./part2-advanced/02a_memory_allocator.md)
-- **2.3** [Сборка мусора (GC)](./part2-advanced/03_gc.md)
-- **2.4** [Примитивы синхронизации](./part2-advanced/04_sync_primitives.md)
-- **2.5** [Обработка ошибок (продвинутый уровень)](./part2-advanced/05_error_handling.md)
-- **2.6** [Тестирование и бенчмаркинг](./part2-advanced/06_testing_benchmarking.md)
-- **2.7** [Профилирование и оптимизация](./part2-advanced/07_profiling_optimization.md)
+- [1.1 Установка и настройка окружения Go](./part1-basics/01_setup_environment.md)
+- [1.2 Синтаксис и базовые концепции (сравнение с C#)](./part1-basics/02_syntax_basics.md)
+- [Коллекции и производительность: Шпаргалка для C# разработчика](./part1-basics/02a_collections_performance_cheatsheet.md)
+- [1.3 Ключевые отличия от C#](./part1-basics/03_key_differences.md)
+- [1.4 Практика: Закрепление основ](./part1-basics/04_practice.md)
 
 ---
 
-### [Часть 3: Web API разработка](./part3-web-api/) — **Завершено**
+### [Часть 2: Продвинутые темы](./part2-advanced/)
 
-- **3.1** [HTTP в Go](./part3-web-api/01_http_server.md)
-- **3.2** [Структура проекта](./part3-web-api/02_project_structure.md)
-- **3.3** [Работа с данными](./part3-web-api/03_database.md)
-- **3.4** [Валидация и сериализация](./part3-web-api/04_validation_serialization.md)
-- **3.5** [Документация API](./part3-web-api/05_api_documentation.md)
+- [2.1 Горутины и каналы](./part2-advanced/01_goroutines_channels.md)
+- [2.2 Go Runtime и планировщик](./part2-advanced/02_runtime_scheduler.md)
+- [2.2a Аллокатор памяти Go (Memory Allocator Internals)](./part2-advanced/02a_memory_allocator.md)
+- [2.3 Сборка мусора (GC)](./part2-advanced/03_gc.md)
+- [2.4 Примитивы синхронизации](./part2-advanced/04_sync_primitives.md)
+- [2.5 Обработка ошибок (продвинутый уровень)](./part2-advanced/05_error_handling.md)
+- [2.6 Тестирование и бенчмаркинг](./part2-advanced/06_testing_benchmarking.md)
+- [2.7 Профилирование и оптимизация](./part2-advanced/07_profiling_optimization.md)
 
 ---
 
-### [Часть 4: Инфраструктура и интеграции](./part4-infrastructure/) — **Завершено**
+### [Часть 3: Web API разработка](./part3-web-api/)
 
-- **4.1** [Production PostgreSQL](./part4-infrastructure/01_production_postgresql.md)
-- **4.2** [Кэширование](./part4-infrastructure/02_caching.md)
-- **4.3** [Очереди сообщений](./part4-infrastructure/03_message_queues.md)
-- **4.4** [gRPC](./part4-infrastructure/04_grpc.md)
-- **4.5** [Observability](./part4-infrastructure/05_observability.md)
-- **4.6** [Конфигурация](./part4-infrastructure/06_config.md)
-- **4.7** [Контейнеризация](./part4-infrastructure/07_containerization.md)
+- [3.1 HTTP в Go: Создание веб-серверов](./part3-web-api/01_http_server.md)
+- [3.2 Структура проекта Go](./part3-web-api/02_project_structure.md)
+- [3.3 Работа с данными (PostgreSQL)](./part3-web-api/03_database.md)
+- [3.4 Валидация и сериализация](./part3-web-api/04_validation_serialization.md)
+- [3.5 Документация API](./part3-web-api/05_api_documentation.md)
+
+---
+
+### [Часть 4: Инфраструктура и интеграции](./part4-infrastructure/)
+
+- [4.1 Production PostgreSQL](./part4-infrastructure/01_production_postgresql.md)
+- [4.2 Кэширование](./part4-infrastructure/02_caching.md)
+- [4.3 Очереди сообщений](./part4-infrastructure/03_message_queues.md)
+- [4.4 gRPC](./part4-infrastructure/04_grpc.md)
+- [4.5 Observability: Логирование, Метрики, Трейсинг](./part4-infrastructure/05_observability.md)
+- [4.6 Конфигурация: Управление настройками в Go](./part4-infrastructure/06_config.md)
+- [4.7 Контейнеризация: Docker, Compose и Kubernetes для Go](./part4-infrastructure/07_containerization.md)
 
 ---
 
 ### [Часть 5: Практические проекты](./part5-projects/)
 
-#### [Проект 1: URL Shortener](./part5-projects/project1-url-shortener/) ✅
-**Сложность**: Beginner → Intermediate
+#### [Проект 1: URL Shortener](./part5-projects/project1-url-shortener/)
 
-**Стек**: net/http + chi, PostgreSQL (pgx), Redis, Docker Compose
+- [1. Доменная модель и сервисный слой](./part5-projects/project1-url-shortener/01_domain.md)
+- [2. Хранилище: PostgreSQL и Redis](./part5-projects/project1-url-shortener/02_storage.md)
+- [3. HTTP слой: net/http и chi](./part5-projects/project1-url-shortener/03_http.md)
+- [4. Тестирование и бенчмарки](./part5-projects/project1-url-shortener/04_testing.md)
+- [5. Деплой: Docker Compose и Production](./part5-projects/project1-url-shortener/05_deployment.md)
 
-- ✅ Доменная модель, интерфейсы, генерация Base62 кодов
-- ✅ PostgreSQL репозиторий (pgx v5), Redis cache-aside
-- ✅ HTTP API: net/http (Go 1.22+) → миграция на chi
-- ✅ Middleware: logging, recovery, rate limiting
-- ✅ Unit + handler + integration тесты, бенчмарки
-- ✅ Docker Compose, Dockerfile (scratch), graceful shutdown
+#### [Проект 2: E-commerce Platform](./part5-projects/project2-ecommerce/)
 
-#### [Проект 2: E-commerce Platform](./part5-projects/project2-ecommerce/) ✅
-**Сложность**: Intermediate
-
-**Стек**: gRPC + buf, Kafka (kafka-go), PostgreSQL (pgx), Redis, OpenTelemetry + Jaeger, Kubernetes
-
-- ✅ Proto контракты (buf), доменные модели, Kafka события (shared/events)
-- ✅ User Service: JWT (golang-jwt/v5), bcrypt, gRPC сервер, testcontainers
-- ✅ Catalog Service: CQRS (command/ + query/), SELECT FOR UPDATE, Redis кэш, Kafka инвалидация
-- ✅ Order Service: Saga (хореография), state machine, Kafka consumer/producer
-- ✅ Payment Service: идемпотентность (ON CONFLICT DO NOTHING), Kafka consumer
-- ✅ Notification Service: Kafka consumer, SMTP / LogSender
-- ✅ API Gateway: chi, JWT middleware, Circuit Breaker (gobreaker), rate limiting
-- ✅ Docker Compose (dev + prod), Distroless Dockerfile, Kubernetes HPA, Makefile
-
-#### Проект 3: Trading/Fintech Platform _(в разработке)_
-**Сложность**: Advanced
-
-**Фокус**: High-performance, real-time, low-latency
-
-**Технологии**: WebSocket, NATS, TimescaleDB
-
-#### Проект 4: SaaS Platform _(в разработке)_
-**Сложность**: Advanced
-
-**Фокус**: Multi-tenant архитектура
+- [1. Доменная модель и контракты](./part5-projects/project2-ecommerce/01_domain.md)
+- [2. User Service](./part5-projects/project2-ecommerce/02_user_service.md)
+- [3. Catalog Service (CQRS)](./part5-projects/project2-ecommerce/03_catalog_service.md)
+- [4. Order Service (Saga Pattern)](./part5-projects/project2-ecommerce/04_order_service.md)
+- [5. Payment Service и Notification Service](./part5-projects/project2-ecommerce/05_payment_notification.md)
+- [6. API Gateway](./part5-projects/project2-ecommerce/06_api_gateway.md)
+- [7. Деплой и наблюдаемость](./part5-projects/project2-ecommerce/07_deployment.md)
 
 ---
 
-### [Часть 6: Best Practices](./part6-best-practices/) — **Завершено**
+### [Часть 6: Best Practices Go 2024-2025](./part6-best-practices/)
 
-- **6.1** [Код и архитектура](./part6-best-practices/01_code_architecture.md)
-- **6.2** [Инструменты](./part6-best-practices/02_tools.md)
-- **6.3** [Производительность](./part6-best-practices/03_performance.md)
-- **6.4** [Production Checklist](./part6-best-practices/04_production_checklist.md)
+- [6.1 Код и архитектура](./part6-best-practices/01_code_architecture.md)
+- [6.2 Инструменты](./part6-best-practices/02_tools.md)
+- [6.3 Производительность](./part6-best-practices/03_performance.md)
+- [6.4 Production Checklist](./part6-best-practices/04_production_checklist.md)
 
 ---
 
-### [Часть 7: Лайфкодинг на собеседованиях](./part7-interview/) — **Завершено**
+### [Часть 7: Лайфкодинг на собеседованиях в российских компаниях](./part7-interview/)
 
-> Реальные задачи от Яндекса, Авито, Озона, Тинькофф, ВКонтакте, Wildberries и других российских компаний.
-
-- **7.1** [Задачи на слайсы и массивы](./part7-interview/01_slices_arrays.md) — reverse, deduplicate, rotate, gotchas
-- **7.2** [Задачи на горутины и каналы](./part7-interview/02_goroutines_channels.md) — worker pool, fan-out/in, pipeline, pub/sub
-- **7.3** [Задачи на map и синхронизацию](./part7-interview/03_maps_sync.md) — concurrent cache, Once, semaphore, COW map
-- **7.4** [Алгоритмические задачи](./part7-interview/04_algorithms.md) — LRU cache, two sum, стек, очередь, бинарный поиск
-- **7.5** [Системный дизайн на Go](./part7-interview/05_system_design.md) — TTL cache, rate limiter, priority queue, circuit breaker
+- [7.1 Задачи на слайсы и массивы](./part7-interview/01_slices_arrays.md)
+- [7.2 Задачи на горутины и каналы](./part7-interview/02_goroutines_channels.md)
+- [7.3 Задачи на map и синхронизацию](./part7-interview/03_maps_sync.md)
+- [7.4 Алгоритмические задачи](./part7-interview/04_algorithms.md)
+- [7.5 Системный дизайн на Go](./part7-interview/05_system_design.md)
+<!-- /AUTO: STRUCTURE -->
 
 ---
 

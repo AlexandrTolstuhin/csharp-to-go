@@ -1,4 +1,4 @@
-# Часть 6: Best Practices Go 2024-2025
+# Часть 6: Best Practices Go
 
 ## Описание
 
