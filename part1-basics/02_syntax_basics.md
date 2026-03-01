@@ -2383,4 +2383,11 @@ fmt.Println(string(data))
 - [ ] Использую `for i := range N` вместо `for i := 0; i < N; i++` (Go 1.22)
 - [ ] Понимаю `clear()`, `min()`, `max()` (Go 1.21)
 - [ ] Знаю, что такое `iter.Seq[T]` и как создавать пользовательские итераторы (Go 1.23)
+- [ ] Понимаю generic type aliases (Go 1.24) и `strings.Lines`/`strings.SplitSeq` (Go 1.24)
 - [ ] Понимаю видимость (public/private через регистр)
+
+---
+
+**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
+
+[← Назад: Установка и настройка](01_setup_environment.md) | [Вперёд: Ключевые отличия от C# →](03_key_differences.md)
