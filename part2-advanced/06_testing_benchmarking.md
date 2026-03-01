@@ -49,6 +49,10 @@
   - [11.1 Проблемы тестирования горутин](#111-проблемы-тестирования-горутин)
   - [11.2 Стратегии](#112-стратегии)
   - [11.3 goleak: обнаружение утечек](#113-goleak-обнаружение-утечек)
+- [12. Новые возможности тестирования (Go 1.24-1.25)](#12-новые-возможности-тестирования-go-1241-25)
+  - [12.1 testing.T.Context() — контекст теста (Go 1.24)](#121-testingtcontext--контекст-теста-go-124)
+  - [12.2 testing.B.Loop() — надёжные бенчмарки (Go 1.24)](#122-testingbloop--надёжные-бенчмарки-go-124)
+  - [12.3 testing/synctest — детерминированное тестирование (Go 1.25)](#123-testingsynctest--детерминированное-тестирование-конкурентности-go-125)
 - [Практические примеры](#практические-примеры)
   - [Пример 1: UserService с полным покрытием](#пример-1-userservice-с-полным-покрытием)
   - [Пример 2: Rate Limiter с concurrent тестами](#пример-2-rate-limiter-с-concurrent-тестами)
@@ -2165,6 +2169,234 @@ func TestNoGoroutineLeak(t *testing.T) {
 ```
 
 Связь с [разделом 2.1](./01_goroutines_channels.md#предотвращение-утечек-горутин).
+
+---
+
+## 12. Новые возможности тестирования (Go 1.24-1.25)
+
+### 12.1 testing.T.Context() — контекст теста (Go 1.24)
+
+> 💡 **Для C# разработчиков**: Аналог `CancellationToken`, автоматически отменяемый по завершении теста.
+
+Go 1.24 добавил `t.Context()` — метод, возвращающий `context.Context`, который **автоматически отменяется** при завершении теста (успешном, провальном или с `t.Cleanup()`).
+
+**До Go 1.24 (вручную):**
+```go
+func TestWithContext(t *testing.T) {
+    ctx, cancel := context.WithCancel(context.Background())
+    defer cancel() // Легко забыть!
+
+    result, err := fetchData(ctx, "https://example.com")
+    if err != nil {
+        t.Fatal(err)
+    }
+    _ = result
+}
+```
+
+**Go 1.24+ с `t.Context()` (идиоматично):**
+```go
+func TestWithContext(t *testing.T) {
+    ctx := t.Context() // Отменяется автоматически при завершении теста
+
+    result, err := fetchData(ctx, "https://example.com")
+    if err != nil {
+        t.Fatal(err)
+    }
+    _ = result
+}
+```
+
+**Применение — integration тесты с БД:**
+```go
+func TestDatabase(t *testing.T) {
+    ctx := t.Context() // Автоматически отменит in-flight запросы при t.Fatal
+
+    db, err := sql.Open("postgres", testDSN)
+    if err != nil {
+        t.Fatal(err)
+    }
+    t.Cleanup(func() { db.Close() })
+
+    // Если тест завершится (t.Fatal/t.FailNow), ctx отменяется,
+    // прерывая зависшие запросы к БД
+    rows, err := db.QueryContext(ctx, "SELECT id FROM users")
+    if err != nil {
+        t.Fatal(err)
+    }
+    defer rows.Close()
+}
+```
+
+**Сравнение с C#:**
+```csharp
+// C# — CancellationTokenSource для тестов (xUnit/NUnit)
+[Fact]
+public async Task TestWithCancellation()
+{
+    using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+    var result = await FetchDataAsync(cts.Token);
+    Assert.NotNull(result);
+}
+```
+
+```go
+// Go 1.24 — t.Context() автоматически
+func TestWithCancellation(t *testing.T) {
+    ctx := t.Context() // Deadline можно добавить через context.WithTimeout
+    result, err := fetchData(ctx, url)
+    if err != nil {
+        t.Fatal(err)
+    }
+}
+```
+
+---
+
+### 12.2 testing.B.Loop() — надёжные бенчмарки (Go 1.24)
+
+> 💡 **Для C# разработчиков**: Аналог `[Benchmark]` от BenchmarkDotNet с автоматической защитой от оптимизации компилятора.
+
+Go 1.24 добавил `b.Loop()` — замену классическому `for i := 0; i < b.N; i++`. Новый метод решает проблему **оптимизации пустого цикла** компилятором.
+
+**До Go 1.24 (проблема с оптимизацией):**
+```go
+var result int
+
+func BenchmarkSum(b *testing.B) {
+    for i := 0; i < b.N; i++ {
+        // Компилятор может оптимизировать цикл, если result не используется
+        result = computeSum(largeSlice)
+    }
+    _ = result // Попытка предотвратить оптимизацию (не всегда надёжно)
+}
+```
+
+**Go 1.24+ с `b.Loop()` (надёжно):**
+```go
+func BenchmarkSum(b *testing.B) {
+    for b.Loop() { // Компилятор не оптимизирует тело цикла
+        result := computeSum(largeSlice)
+        _ = result
+    }
+}
+```
+
+**Отличия `b.Loop()` от `for i < b.N`:**
+| Аспект | `for i < b.N` | `b.Loop()` |
+|--------|--------------|-----------|
+| Защита от оптимизации | Ненадёжная (нужен `_ = result`) | Встроенная |
+| Инициализация таймера | `b.ResetTimer()` вручную | Автоматически |
+| Cleanup между итерациями | Невозможен | `b.Cleanup(func())` |
+| Читаемость | Стандартная | Более явная |
+
+```go
+// Бенчмарк с setup per-iteration
+func BenchmarkJSONEncode(b *testing.B) {
+    data := &MyStruct{Name: "Alice", Age: 30}
+
+    for b.Loop() {
+        buf, err := json.Marshal(data)
+        if err != nil {
+            b.Fatal(err)
+        }
+        _ = buf
+    }
+}
+```
+
+---
+
+### 12.3 testing/synctest — детерминированное тестирование конкурентности (Go 1.25)
+
+> 💡 **Для C# разработчиков**: Аналог концепции Virtual Time в .NET тестировании — контролируемое время для воспроизводимых тестов горутин.
+
+`testing/synctest` (экспериментальный в Go 1.24, стабильный в Go 1.25) позволяет тестировать конкурентный код **детерминированно**, используя виртуальные часы.
+
+**Проблема тестирования кода с таймаутами:**
+```go
+// Функция с таймером — сложно тестировать
+func ProcessWithTimeout(ctx context.Context, timeout time.Duration) error {
+    timer := time.NewTimer(timeout)
+    defer timer.Stop()
+
+    select {
+    case <-ctx.Done():
+        return ctx.Err()
+    case <-timer.C:
+        return errors.New("timeout exceeded")
+    }
+}
+
+// Тест без synctest — нужно реально ждать
+func TestTimeout_Slow(t *testing.T) {
+    ctx := context.Background()
+    start := time.Now()
+    err := ProcessWithTimeout(ctx, 100*time.Millisecond) // Реальное ожидание!
+    t.Logf("elapsed: %v", time.Since(start))
+    if err == nil {
+        t.Error("expected timeout error")
+    }
+}
+```
+
+**С `testing/synctest` — мгновенно:**
+```go
+import "testing/synctest"
+
+func TestTimeout_Fast(t *testing.T) {
+    synctest.Run(func() {
+        ctx := context.Background()
+
+        // Запускаем тестируемую функцию в горутине
+        var err error
+        go func() {
+            err = ProcessWithTimeout(ctx, 100*time.Millisecond)
+        }()
+
+        // Продвигаем виртуальное время на 200ms — мгновенно!
+        synctest.Wait() // Ждём пока все горутины заблокируются
+        // time.Sleep(200*time.Millisecond) в виртуальном времени
+
+        // err теперь содержит "timeout exceeded"
+    })
+}
+```
+
+**Ключевые концепции `testing/synctest`:**
+- `synctest.Run(func())` — запускает функцию в изолированном «bubble» с виртуальным временем
+- `synctest.Wait()` — продвигает виртуальное время пока все горутины не заблокируются
+- Горутины внутри bubble видят виртуальное время (`time.Now()`, `time.Sleep()`, таймеры)
+- Горутины вне bubble работают с реальным временем
+
+**Применение:**
+```go
+// Тестирование retry-логики без реальных задержек
+func TestRetryPolicy(t *testing.T) {
+    synctest.Run(func() {
+        attempts := 0
+        client := &Client{
+            MaxRetries: 3,
+            Backoff:    100 * time.Millisecond,
+        }
+
+        go func() {
+            client.Do(func() error {
+                attempts++
+                if attempts < 3 {
+                    return errors.New("temporary error")
+                }
+                return nil
+            })
+        }()
+
+        synctest.Wait() // Время автоматически продвигается через backoff-паузы
+        // attempts == 3, но тест завершился мгновенно
+    })
+}
+```
+
+> ⚠️ **Статус**: `testing/synctest` стабилен в Go 1.25. Для Go 1.24 требует `GOEXPERIMENT=synctest`.
 
 ---
 

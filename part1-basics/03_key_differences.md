@@ -1880,6 +1880,78 @@ Go использует **частичную мономорфизацию** (GCS
 
 Performance penalty от generics в Go **минимален** (~3%). Не избегайте generics из соображений производительности — используйте их там, где они улучшают читаемость и type safety.
 
+#### Self-referential generics (Go 1.26)
+
+> 💡 **Для C# разработчиков**: Аналог recursive type constraints в C# — `where T : IComparable<T>`.
+
+Go 1.26 добавил поддержку **рекурсивных generic constraints** — тип может ссылаться сам на себя в ограничении.
+
+**C# — recursive type constraints (давно поддерживаются):**
+```csharp
+// T : IComparable<T> — рекурсивное ограничение
+public interface ISortable<T> where T : ISortable<T>
+{
+    int CompareTo(T other);
+}
+
+public class Temperature : ISortable<Temperature>
+{
+    public int CompareTo(Temperature other) => this.Value.CompareTo(other.Value);
+    public double Value { get; }
+}
+```
+
+**Go 1.26 — self-referential generics:**
+```go
+// Интерфейс с рекурсивным ограничением
+type Adder[A Adder[A]] interface {
+    Add(A) A
+}
+
+// Реализация
+type Vector struct{ X, Y float64 }
+
+func (v Vector) Add(other Vector) Vector {
+    return Vector{X: v.X + other.X, Y: v.Y + other.Y}
+}
+
+// Использование в generic функции
+func Sum[A Adder[A]](items []A) A {
+    var result A
+    for _, item := range items {
+        result = result.Add(item)
+    }
+    return result
+}
+
+total := Sum([]Vector{{1, 2}, {3, 4}, {5, 6}})
+// total = {9, 12}
+```
+
+**Другой пример — Builder pattern:**
+```go
+// Типобезопасный Builder с method chaining
+type Builder[B Builder[B]] interface {
+    Set(key, value string) B
+    Build() map[string]string
+}
+
+type QueryBuilder struct {
+    params map[string]string
+}
+
+func (q *QueryBuilder) Set(key, value string) *QueryBuilder {
+    q.params[key] = value
+    return q
+}
+
+func (q *QueryBuilder) Build() map[string]string {
+    return q.params
+}
+```
+
+> ⚠️ **Осторожно**: Self-referential generics мощны, но усложняют код. Используйте только когда рекурсивное ограничение действительно необходимо для type safety.
+
 ### 6. Properties vs Getters/Setters
 
 **C#**:

@@ -425,6 +425,64 @@ func DownloadFiles(ctx context.Context, urls []string) error {
 
 > 💡 **Идиома Go**: Используйте `errgroup` вместо `WaitGroup`, если нужна обработка ошибок или cancellation.
 
+### WaitGroup.Go() — новый API (Go 1.25)
+
+> 💡 **Для C# разработчиков**: Аналог `Task.WhenAll(tasks)` — запустить горутину и автоматически зарегистрировать её в группе.
+
+В Go 1.25 у `sync.WaitGroup` появился метод `Go(func())`, который объединяет `wg.Add(1)` + `go` + `wg.Done()` в одну операцию:
+
+**До Go 1.25 (многословно, легко забыть `Done`):**
+```go
+var wg sync.WaitGroup
+
+for _, url := range urls {
+    wg.Add(1)
+    go func(u string) {
+        defer wg.Done() // Легко забыть!
+        process(u)
+    }(url)
+}
+
+wg.Wait()
+```
+
+**Go 1.25+ с `WaitGroup.Go()` (идиоматично):**
+```go
+var wg sync.WaitGroup
+
+for _, url := range urls {
+    wg.Go(func() {            // Add(1) + go + Done() — всё в одном
+        process(url)
+    })
+}
+
+wg.Wait()
+```
+
+**Сравнение с C#:**
+```csharp
+// C# — Task.WhenAll
+var tasks = urls.Select(url => Task.Run(() => Process(url)));
+await Task.WhenAll(tasks);
+```
+
+```go
+// Go 1.25 — WaitGroup.Go
+var wg sync.WaitGroup
+for _, url := range urls {
+    wg.Go(func() { process(url) })
+}
+wg.Wait()
+```
+
+> ⚠️ **Важно**: `WaitGroup.Go()` не поддерживает возврат ошибок. Для этого по-прежнему используйте `errgroup.Group.Go()`.
+
+| Случай | Рекомендация |
+|--------|-------------|
+| Запустить горутины, ждать завершения | `wg.Go()` (Go 1.25+) |
+| Горутины возвращают ошибки | `errgroup.Group.Go()` |
+| Горутины + cancellation | `errgroup.WithContext()` |
+
 ---
 
 ## Once: однократное выполнение
@@ -883,6 +941,28 @@ func (m *ShardedMap) getShard(key string) *shard {
 ```
 
 > 💡 **Идиома Go**: В большинстве случаев `map + RWMutex` проще и эффективнее `sync.Map`. Используйте `sync.Map` только для write-once сценариев.
+
+### sync.Map и Swiss Tables (Go 1.24)
+
+В Go 1.24 внутренняя реализация `sync.Map` переписана с использованием **Swiss Tables** — алгоритма хэш-таблицы от Google, который также применяется во встроенных `map` (Go 1.24). Это **прозрачное улучшение**: никаких изменений в API, только прирост производительности.
+
+**Что изменилось внутри:**
+- Лучшая cache-locality за счёт группировки ключей в «buckets» по 8 записей
+- SIMD-оптимизации на современных CPU (Ice Lake, AMD Zen 4+)
+- Меньше промахов кэша при lookup
+
+**Для вас это значит:**
+```go
+// API не изменился — код работает быстрее «бесплатно»
+var cache sync.Map
+
+cache.Store("key", "value")
+val, ok := cache.Load("key")
+_ = val
+_ = ok
+```
+
+> 💡 **Контекст**: Swiss Tables (Go 1.24) дают ~2-3% ускорения CPU на map-тяжёлых workload-ах. Встроенные `map` получили то же улучшение. Подробнее — в разделе [2.3 Сборка мусора](./03_gc.md).
 
 ---
 

@@ -1301,6 +1301,65 @@ func InitializeApp() (*App, error) {
 | **Сложность** | Простой | Feature-rich (scopes, lifetimes) |
 | **Debugging** | Сгенерированный код читаем | Stack trace через DI |
 
+### go fix — автоматические миграции кода (Go 1.26)
+
+> 💡 **Для C# разработчиков**: Аналог `dotnet-upgrade-assistant` или Roslyn code fixes, но встроенный в инструментарий Go.
+
+`go fix` теперь поддерживает автоматические миграции кода на основе `go/analysis`. В Go 1.26 команда получила набор встроенных «модернизаторов» и директиву для библиотек.
+
+#### Встроенные модернизаторы Go 1.26
+
+```bash
+# Применить все доступные fix-ы к пакету
+go fix ./...
+
+# Применить конкретный fix
+go fix -fix=stdversion ./...
+
+# Посмотреть доступные fix-ы
+go fix -list
+```
+
+**Что умеет `go fix` в 1.26:**
+- Автоматически обновляет использование устаревших API на актуальные альтернативы
+- Заменяет deprecated функции в стандартной библиотеке
+- Адаптирует код к изменениям в языке (например, новые constraints в generics)
+
+#### Директива `//go:fix inline` для библиотек
+
+Библиотеки теперь могут помечать устаревшие функции для автоматической замены:
+
+```go
+// Старый API (deprecated)
+//
+// Deprecated: используйте NewClientV2.
+//go:fix inline
+func NewClient(addr string) *Client {
+    return NewClientV2(addr, DefaultOptions())
+}
+
+// Новый API
+func NewClientV2(addr string, opts Options) *Client {
+    return &Client{addr: addr, opts: opts}
+}
+```
+
+После `go fix ./...` все вызовы `NewClient("localhost")` автоматически заменятся на `NewClientV2("localhost", DefaultOptions())`.
+
+#### Сравнение с C#
+
+| Аспект | C# (Roslyn / dotnet-upgrade-assistant) | Go (go fix) |
+|--------|----------------------------------------|-------------|
+| **Механизм** | Roslyn analyzer + code fix | go/analysis + built-in fixes |
+| **Запуск** | IDE или CLI | `go fix ./...` |
+| **Для библиотек** | `[Obsolete]` + diagnostic | `//go:fix inline` directive |
+| **Проверка CI** | `dotnet format --verify-no-changes` | `go fix -list` + diff |
+
+```bash
+# CI: проверить что fix-ы применены
+git diff --exit-code  # после go fix ./... не должно быть изменений
+```
+
 ---
 
 ## Интеграция в IDE

@@ -11,6 +11,8 @@
   - [Пакеты slices, maps и cmp (Go 1.21+)](#пакеты-slices-maps-и-cmp-go-121)
   - [Современные встроенные функции (Go 1.21+)](#современные-встроенные-функции-go-121)
   - [Iterators (Go 1.23)](#iterators-go-123)
+  - [Generic type aliases (Go 1.24)](#generic-type-aliases-go-124)
+  - [strings.Lines и strings.SplitSeq (Go 1.24)](#stringslines-и-stringsplitseq-go-124)
 - [4. Управляющие конструкции](#4-управляющие-конструкции)
   - [Range over integers (Go 1.22)](#range-over-integers-go-122)
 - [5. Функции и defer](#5-функции-и-defer)
@@ -1069,6 +1071,148 @@ public static IEnumerable<int> Fibonacci(int n)
     }
 }
 ```
+
+---
+
+### Generic type aliases (Go 1.24)
+
+Go 1.24 добавил **полноценные generic type aliases** — псевдонимы для параметризованных типов. Аналог `using` с дженериками в C#.
+
+**C#:**
+```csharp
+// C# — using alias directive (C# 12)
+using StringMap<V> = Dictionary<string, V>;
+using Point = (int X, int Y);  // tuple alias
+
+var m = new StringMap<int>();
+m["key"] = 42;
+```
+
+**Go 1.24:**
+```go
+// Обычный alias (Go 1.0+)
+type MyString = string // Просто псевдоним, не новый тип
+
+// Generic alias (Go 1.24) — псевдоним для параметризованного типа
+type StringMap[V any] = map[string]V
+
+// Использование
+var m StringMap[int]
+m = make(StringMap[int])
+m["key"] = 42
+
+// Alias для сложного generic типа
+type Result[T any] = struct {
+    Value T
+    Err   error
+}
+
+// Псевдоним без указания параметров — создаёт конкретный тип
+type StringIntMap = map[string]int // Эквивалентно Go 1.0 alias
+```
+
+**Практическое применение:**
+```go
+// Упрощение сигнатур функций
+type Predicate[T any] = func(T) bool
+type Transform[T, U any] = func(T) U
+
+func Filter[T any](slice []T, pred Predicate[T]) []T {
+    var result []T
+    for _, v := range slice {
+        if pred(v) {
+            result = append(result, v)
+        }
+    }
+    return result
+}
+
+func Map[T, U any](slice []T, transform Transform[T, U]) []U {
+    result := make([]U, len(slice))
+    for i, v := range slice {
+        result[i] = transform(v)
+    }
+    return result
+}
+```
+
+> 💡 **Для C# разработчиков**: Generic type aliases в Go 1.24 позволяют создавать «читаемые» псевдонимы для сложных типов, как `using` directive в C# 12. Важно: `type MyMap[K, V any] = map[K]V` — это alias (тот же тип), а не новый тип.
+
+---
+
+### strings.Lines и strings.SplitSeq (Go 1.24)
+
+> 💡 **Для C# разработчиков**: Аналог `string.Split()` и ленивых LINQ методов — возвращают итератор вместо среза.
+
+Go 1.24 добавил **ленивые итераторы** для работы со строками — возвращают `iter.Seq[string]` вместо `[]string`:
+
+```go
+import (
+    "strings"
+    "fmt"
+)
+
+// strings.Lines — итерирует строки текста (lazy evaluation)
+text := "первая строка\nвторая строка\nтретья строка"
+
+for line := range strings.Lines(text) {
+    fmt.Println(line) // Без финального \n
+}
+// → "первая строка"
+// → "вторая строка"
+// → "третья строка"
+
+// strings.SplitSeq — lazy версия strings.Split
+csv := "alice,bob,charlie,dave"
+
+for name := range strings.SplitSeq(csv, ",") {
+    fmt.Println(name)
+}
+// → "alice"
+// → "bob"
+// → "charlie"
+// → "dave"
+```
+
+**Преимущество над strings.Split:** нет аллокации промежуточного среза:
+```go
+// До Go 1.24: всегда аллоцирует []string
+parts := strings.Split(bigText, "\n") // Аллокация!
+for _, line := range parts {
+    process(line)
+}
+
+// Go 1.24: ленивая обработка, нет промежуточного среза
+for line := range strings.Lines(bigText) { // Нет аллокации!
+    process(line)
+}
+// Особенно важно для больших файлов/строк
+```
+
+**Сравнение с C# LINQ:**
+```csharp
+// C# — ленивая обработка строк с LINQ
+var lines = File.ReadLines("data.txt") // IEnumerable<string>, lazy
+    .Where(l => l.StartsWith("ERROR"))
+    .Take(10);
+
+foreach (var line in lines) { /* ... */ }
+```
+
+```go
+// Go 1.24 — аналогичная ленивая обработка
+for line := range strings.Lines(bigText) {
+    if strings.HasPrefix(line, "ERROR") {
+        process(line)
+    }
+}
+```
+
+| Функция | Возвращает | Аллокация | Применение |
+|---------|-----------|----------|-----------|
+| `strings.Split()` | `[]string` | Да (весь срез) | Когда нужен произвольный доступ |
+| `strings.SplitSeq()` | `iter.Seq[string]` | Нет | Последовательная обработка |
+| `strings.Lines()` | `iter.Seq[string]` | Нет | Построчная обработка текста |
 
 ---
 

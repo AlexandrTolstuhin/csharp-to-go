@@ -2306,7 +2306,22 @@ spec:
           value: "2"  # Или используйте automaxprocs
 ```
 
-**automaxprocs (рекомендуется):**
+#### Go 1.25+: container-aware GOMAXPROCS встроен в runtime
+
+> 🚀 **Go 1.25** (август 2025): Go runtime **автоматически** читает cgroup CPU limits. `uber-go/automaxprocs` больше **не нужен** для Go 1.25+.
+
+```go
+// Go 1.25+ — GOMAXPROCS устанавливается автоматически
+// из cgroup CPU limits при запуске в контейнере.
+// Ничего дополнительно не нужно!
+func main() {
+    // runtime сам прочитает /sys/fs/cgroup/cpu.max
+    // и установит GOMAXPROCS = ceil(quota / period)
+    startServer()
+}
+```
+
+**Для Go < 1.25 используйте `automaxprocs` (рекомендуется):**
 
 ```go
 import _ "go.uber.org/automaxprocs"
@@ -2320,6 +2335,12 @@ func main() {
 ```bash
 go get go.uber.org/automaxprocs
 ```
+
+| Версия Go | Решение |
+|-----------|---------|
+| Go 1.25+ | Встроено в runtime автоматически |
+| Go < 1.25 | `go.uber.org/automaxprocs` |
+| Все версии | `GOMAXPROCS=N` env var (явно) |
 
 **Почему это важно:**
 

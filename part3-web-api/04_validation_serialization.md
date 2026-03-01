@@ -848,6 +848,132 @@ func main() {
 
 ---
 
+## JSON v2 и производительность io.ReadAll (Go 1.25-1.26)
+
+### encoding/json/v2 — экспериментальный (Go 1.25)
+
+> 💡 **Для C# разработчиков**: Аналог миграции с `Newtonsoft.Json` на `System.Text.Json` — новый, более быстрый и строгий JSON API.
+
+Go 1.25 добавил экспериментальный `encoding/json/v2` (включается через `GOEXPERIMENT=jsonv2`). Пакет решает давние проблемы `encoding/json`:
+
+**Ключевые улучшения JSON v2:**
+- **Быстрее**: ~2x ускорение decode за счёт отказа от reflection в hot paths
+- **Строже**: ошибки для unknown fields по умолчанию (в v1 игнорируются)
+- **Правильная обработка null**: различие между `null` и отсутствующим полем
+- **Streaming**: нативная поддержка потоковой обработки
+
+```go
+// Go 1.25+ (GOEXPERIMENT=jsonv2)
+import "encoding/json/v2"
+
+type User struct {
+    Name  string `json:"name"`
+    Email string `json:"email"`
+    Age   int    `json:"age"`
+}
+
+user := User{Name: "Alice", Email: "alice@example.com", Age: 30}
+
+// Marshal — аналогичный API
+data, err := json.Marshal(user)
+if err != nil {
+    return err
+}
+
+// Unmarshal — строже по умолчанию
+var parsed User
+if err := json.Unmarshal(data, &parsed); err != nil {
+    // v2: ошибка при unknown fields (по умолчанию)
+    return err
+}
+
+// Разрешить unknown fields явно
+if err := json.UnmarshalOptions{RejectUnknownMembers: false}.Unmarshal(data, &parsed); err != nil {
+    return err
+}
+```
+
+**Сравнение v1 vs v2:**
+```go
+// encoding/json (v1) — тихо игнорирует unknown fields
+var result map[string]any
+json.Unmarshal([]byte(`{"name":"Alice","unknown":"field"}`), &result)
+// OK, "unknown" в result
+
+// encoding/json/v2 — ошибка при unknown fields (по умолчанию)
+json.Unmarshal([]byte(`{"name":"Alice","unknown":"field"}`), &User{})
+// Error: unknown field "unknown"
+```
+
+**Benchmarks v1 vs v2 (предварительные):**
+| Операция | json v1 | json v2 | Улучшение |
+|----------|---------|---------|-----------|
+| Marshal 1KB | 1500 ns | 900 ns | ~1.7x |
+| Unmarshal 1KB | 2800 ns | 1400 ns | ~2x |
+| Allocations | 8 | 4 | ~2x меньше |
+
+> ⚠️ **Статус**: Экспериментальный в Go 1.25. API может измениться. Включение: `GOEXPERIMENT=jsonv2 go build ./...`
+>
+> Для продакшна в Go 1.25 используйте `easyjson` или `sonic`. JSON v2 станет стабильным в будущих версиях.
+
+**Миграция в перспективе:**
+```go
+// Сейчас (стабильно)
+import "encoding/json"
+
+// Будущая миграция (v2 stable)
+// import json "encoding/json/v2"  // Drop-in replacement (почти)
+```
+
+---
+
+### io.ReadAll — 2x быстрее (Go 1.26)
+
+> 💡 Это **бесплатное улучшение** — никакого изменения кода не требуется.
+
+Go 1.26 оптимизировал `io.ReadAll` — функцию для чтения всего содержимого Reader:
+- **~2x быстрее** в типичных сценариях
+- **~50% меньше аллокаций** за счёт более умного предвыделения буфера
+
+```go
+// Ваш существующий код работает быстрее «бесплатно»
+func readRequestBody(r *http.Request) ([]byte, error) {
+    // В Go 1.26: ~2x быстрее, ~50% меньше аллокаций
+    body, err := io.ReadAll(r.Body)
+    if err != nil {
+        return nil, fmt.Errorf("read body: %w", err)
+    }
+    return body, nil
+}
+
+func loadConfig(path string) ([]byte, error) {
+    f, err := os.Open(path)
+    if err != nil {
+        return nil, err
+    }
+    defer f.Close()
+
+    // В Go 1.26: умное предвыделение на основе os.File.Stat()
+    return io.ReadAll(f) // Быстрее в Go 1.26
+}
+```
+
+**Детали оптимизации (для понимания):**
+```
+Go 1.25 и ранее:
+- io.ReadAll начинает с буфера 512 bytes
+- Каждый раз удваивает при переполнении
+- Много промежуточных аллокаций
+
+Go 1.26:
+- Для os.File: читает размер через Stat() заранее
+- Для bytes.Buffer и strings.Reader: предвыделяет точный размер
+- Для http.Response.Body: использует Content-Length если доступен
+- Значительно меньше re-allocation
+```
+
+---
+
 ## Практические примеры
 
 ### Пример 1: REST API с валидацией

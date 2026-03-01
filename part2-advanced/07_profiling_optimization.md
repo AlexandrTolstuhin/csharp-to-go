@@ -1743,6 +1743,174 @@ Continuous profiling работает с низким overhead (~1-5%):
 
 ---
 
+## 5. Новые инструменты профилирования (Go 1.25-1.26)
+
+### 5.1 runtime/trace.FlightRecorder (Go 1.25)
+
+> 💡 **Для C# разработчиков**: Аналог .NET ETW (Event Tracing for Windows) или Application Insights Snapshot Debugger — кольцевой буфер событий для диагностики редких проблем в продакшне.
+
+Go 1.25 добавил `runtime/trace.FlightRecorder` — **непрерывную запись trace-событий** в кольцевой буфер. В отличие от `go tool trace`, FlightRecorder работает **всегда в фоне** и сохраняет только последние N секунд. Полезен для захвата редких ошибок (latency spike раз в несколько часов).
+
+**Проблема классического trace:**
+```go
+// Классический подход: trace нужно включить заранее
+// Если latency spike произошёл до включения — данных нет
+f, _ := os.Create("trace.out")
+trace.Start(f)
+defer trace.Stop()
+// Ждём проблему... которая уже произошла
+```
+
+**FlightRecorder — всегда пишет, сохраняет по событию:**
+```go
+import (
+    "os"
+    "runtime/trace"
+)
+
+func startFlightRecorder() {
+    // Создаём recorder с буфером на 30 секунд
+    recorder := &trace.FlightRecorder{}
+    recorder.Start()
+
+    // В отдельной горутине следим за latency
+    go func() {
+        for {
+            start := time.Now()
+            checkLatency()
+            elapsed := time.Since(start)
+
+            // При latency spike — сохраняем последние 30 сек
+            if elapsed > 500*time.Millisecond {
+                f, err := os.Create("flight-" + time.Now().Format("150405") + ".trace")
+                if err == nil {
+                    recorder.WriteTo(f) // Сохраняем буфер
+                    f.Close()
+                    log.Printf("latency spike detected: %v, trace saved", elapsed)
+                }
+            }
+            time.Sleep(100 * time.Millisecond)
+        }
+    }()
+}
+```
+
+**Интеграция с HTTP handler для on-demand дампа:**
+```go
+// Endpoint для получения trace по требованию
+http.HandleFunc("/debug/flight-trace", func(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/octet-stream")
+    w.Header().Set("Content-Disposition", `attachment; filename="flight.trace"`)
+    recorder.WriteTo(w) // Отдаём trace клиенту
+})
+```
+
+**Сравнение с .NET:**
+| Аспект | .NET ETW / Snapshot | Go FlightRecorder |
+|--------|---------------------|------------------|
+| Всегда активен | Да (ETW) | Да |
+| Кольцевой буфер | Да | Да |
+| Накладные расходы | ~1-3% CPU | ~1-2% CPU |
+| Размер буфера | Настраиваемый | По времени (N сек) |
+| Инструмент анализа | PerfView, dotnet-trace | go tool trace |
+
+---
+
+### 5.2 Обнаружение утечек горутин (Go 1.26, экспериментально)
+
+Go 1.26 добавил **экспериментальный** детектор утечек горутин в runtime. Включается через `GOEXPERIMENT=goroutineleak`.
+
+```go
+// При сборке с GOEXPERIMENT=goroutineleak
+// runtime отслеживает горутины без владельцев
+
+// go build -gcflags="-e" -tags goroutineleak ./...
+
+func processOrders(ctx context.Context) {
+    for order := range orderChan {
+        go func(o Order) { // ← Если ctx отменён до завершения горутины —
+            result := processOrder(ctx, o) // ← детектор зафиксирует утечку
+            resultChan <- result
+        }(order)
+    }
+}
+```
+
+```bash
+# Включение детектора при тестировании
+GOEXPERIMENT=goroutineleak go test ./... -v
+
+# В логах увидите:
+# GOROUTINE LEAK: goroutine 42 started at main.processOrders:45
+# still running after context cancellation
+```
+
+> ⚠️ **Статус**: Экспериментальный в Go 1.26. Не рекомендуется для продакшна. Для стабильного обнаружения утечек используйте [goleak](https://github.com/uber-go/goleak) (см. раздел 11.3 в 06_testing_benchmarking.md).
+
+---
+
+### 5.3 Новые runtime/metrics в Go 1.26
+
+Go 1.26 добавил новые метрики в `runtime/metrics` (доступны через Prometheus и OpenTelemetry):
+
+```go
+import "runtime/metrics"
+
+// Новые метрики Go 1.26
+samples := []metrics.Sample{
+    // Состояния горутин
+    {Name: "/sched/goroutines:goroutines"},        // Текущее количество
+    {Name: "/sched/goroutines/created:goroutines"}, // Создано всего (новая!)
+    {Name: "/sched/goroutines/runnable:goroutines"}, // В очереди (новая!)
+    {Name: "/sched/goroutines/blocked:goroutines"},   // Заблокированных (новая!)
+
+    // OS потоки
+    {Name: "/sched/latencies:seconds"},            // Latency планировщика
+    {Name: "/os/threads:threads"},                 // OS потоки (новая!)
+}
+
+metrics.Read(samples)
+
+for _, s := range samples {
+    fmt.Printf("%s = %v\n", s.Name, s.Value)
+}
+```
+
+**Prometheus: экспорт новых метрик:**
+```go
+// go.opencensus.io/stats или prometheus/client_golang
+// Автоматически подхватывает новые runtime/metrics через
+// collectors.NewGoCollector(collectors.WithGoCollectorRuntimeMetrics(...))
+
+import (
+    "github.com/prometheus/client_golang/prometheus"
+    "github.com/prometheus/client_golang/prometheus/collectors"
+)
+
+func initMetrics() *prometheus.Registry {
+    reg := prometheus.NewRegistry()
+    reg.MustRegister(
+        collectors.NewGoCollector(
+            // Go 1.26: включаем все runtime метрики включая новые
+            collectors.WithGoCollectorRuntimeMetrics(
+                collectors.GoRuntimeMetricsRuleAny,
+            ),
+        ),
+    )
+    return reg
+}
+```
+
+**Что отслеживают новые метрики:**
+| Метрика | Что показывает | Применение |
+|---------|----------------|-----------|
+| `goroutines/created` | Темп создания горутин | Утечки горутин |
+| `goroutines/runnable` | Очередь планировщика | Overload планировщика |
+| `goroutines/blocked` | Ожидание channel/mutex | Deadlock-риски |
+| `os/threads` | OS потоки (M в GMP) | Thread pool bloat |
+
+---
+
 ## Практические примеры
 
 ### Пример 1: Оптимизация HTTP сервиса (end-to-end)
