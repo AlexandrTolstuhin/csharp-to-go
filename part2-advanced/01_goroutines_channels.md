@@ -766,6 +766,164 @@ if userID, ok := ctx.Value(key("userID")).(int); ok {
 
 > ⚠️ **Важно**: Не злоупотребляйте `WithValue`. Используйте только для request-scoped данных (trace ID, auth tokens и т.д.).
 
+### Типизированные ключи для WithValue
+
+Использовать голые строки в качестве ключей — распространённая ошибка C# разработчиков:
+
+```go
+// ❌ Не идиоматично: ключ типа string может совпасть с ключом из другого пакета
+ctx = context.WithValue(ctx, "userID", 123)
+ctx = context.WithValue(ctx, "requestID", "abc-123")
+```
+
+Правильный подход — **неэкспортируемый тип внутри пакета**:
+
+```go
+// ✅ Идиоматично: свой тип исключает коллизии ключей между пакетами
+type contextKey int
+
+const (
+    userIDKey    contextKey = iota
+    requestIDKey
+)
+
+// Хранение
+ctx = context.WithValue(ctx, userIDKey, 123)
+ctx = context.WithValue(ctx, requestIDKey, "abc-123")
+
+// Извлечение
+if userID, ok := ctx.Value(userIDKey).(int); ok {
+    fmt.Printf("User ID: %d\n", userID)
+}
+```
+
+Для больших проектов удобно обернуть в хелпер-функции, чтобы скрыть детали типа ключа:
+
+```go
+type contextKey int
+
+const userIDKey contextKey = iota
+
+func WithUserID(ctx context.Context, id int) context.Context {
+    return context.WithValue(ctx, userIDKey, id)
+}
+
+func UserID(ctx context.Context) (int, bool) {
+    id, ok := ctx.Value(userIDKey).(int)
+    return id, ok
+}
+
+// Использование в middleware
+func AuthMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        userID := extractUserIDFromToken(r)
+        ctx := WithUserID(r.Context(), userID)
+        next.ServeHTTP(w, r.WithContext(ctx))
+    })
+}
+
+// Использование в handler
+func getProfile(w http.ResponseWriter, r *http.Request) {
+    userID, ok := UserID(r.Context())
+    if !ok {
+        http.Error(w, "unauthorized", http.StatusUnauthorized)
+        return
+    }
+    // ...
+}
+```
+
+> 💡 **Для C# разработчиков**: В C# `HttpContext.Items` — аналог `context.WithValue` для request-scoped данных. Та же идея: передавать данные через запрос, а не явными параметрами. Главное отличие — в Go ключ должен быть уникальным типом, а не строкой.
+
+### Антипаттерны WithValue
+
+`context.WithValue` — не замена параметрам функций:
+
+| Использование | Правильно | Неправильно |
+|---------------|:---------:|:-----------:|
+| Request ID для логов | ✅ | |
+| Trace ID для телеметрии | ✅ | |
+| Auth info из middleware | ✅ | |
+| Соединение с БД | | ❌ |
+| Logger | | ❌ |
+| Конфигурация | | ❌ |
+| Бизнес-параметры функции | | ❌ |
+
+**Плохо** — скрытые зависимости через context:
+
+```go
+// ❌ Зависимости в context: код непрозрачен, сложно тестировать
+func setupHandler(db *sql.DB, logger *slog.Logger) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        ctx := context.WithValue(r.Context(), "db", db)
+        ctx = context.WithValue(ctx, "logger", logger)
+        getUser(ctx, 42)
+    }
+}
+
+func getUser(ctx context.Context, id int) (*User, error) {
+    db := ctx.Value("db").(*sql.DB) // паника если db нет в контексте
+    // ...
+}
+```
+
+**Хорошо** — зависимости явные, context только для сквозных данных:
+
+```go
+// ✅ Зависимости — явные параметры; context — только для cancellation и trace
+type UserRepo struct {
+    db *sql.DB
+}
+
+func (r *UserRepo) GetUser(ctx context.Context, id int) (*User, error) {
+    row := r.db.QueryRowContext(ctx, "SELECT id, name FROM users WHERE id = $1", id)
+    var u User
+    return &u, row.Scan(&u.ID, &u.Name)
+}
+```
+
+### context.Background() vs context.TODO()
+
+Обе функции возвращают пустой корневой контекст, но несут разную смысловую нагрузку:
+
+| Функция | Когда использовать |
+|---------|-------------------|
+| `context.Background()` | Корневой контекст в `main()`, в тестах, при инициализации серверов |
+| `context.TODO()` | Временная заглушка при рефакторинге, когда context ещё не внедрён |
+
+```go
+// ✅ Background — настоящий корневой контекст
+func main() {
+    ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM)
+    defer stop()
+    runServer(ctx)
+}
+
+func TestGetUser(t *testing.T) {
+    ctx := context.Background()
+    user, err := repo.GetUser(ctx, 1)
+    // ...
+}
+```
+
+```go
+// ✅ TODO — явный сигнал «здесь нужен рефакторинг»
+// Старый код без context
+func legacyFetchData() ([]byte, error) {
+    // TODO: добавить ctx как параметр после рефакторинга
+    return fetchFromDB(context.TODO())
+}
+
+// После рефакторинга:
+func fetchData(ctx context.Context) ([]byte, error) {
+    return fetchFromDB(ctx)
+}
+```
+
+> 💡 **Для C# разработчиков**: `context.TODO()` — аналог временного `CancellationToken.None` при поэтапном внедрении отмены в legacy-код. Линтеры (`go vet`, `staticcheck`) умеют находить `TODO()` в production-коде как напоминание о незавершённом рефакторинге.
+
+> ⚠️ **Частая ошибка**: `context.Background()` и `context.TODO()` функционально идентичны — разница только в намерении. Не используйте `TODO()` в production-коде, который не планируете рефакторить.
+
 ### Идиоматичное использование context
 
 ```go
