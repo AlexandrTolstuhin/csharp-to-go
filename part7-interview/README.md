@@ -69,5 +69,5 @@
 ---
 
 <!-- AUTO: NAV -->
-[← Назад к оглавлению](../README.md) | [Предыдущая часть: Часть 6: Best Practices](../part6-best-practices/)
+[← Назад к оглавлению](../README.md) | [Предыдущая часть: Часть 6: Best Practices Go](../part6-best-practices/)
 <!-- /AUTO: NAV -->

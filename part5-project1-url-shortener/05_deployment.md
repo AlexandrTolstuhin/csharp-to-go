@@ -673,5 +673,5 @@ graph LR
 <!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: 4. Тестирование и бенчмарки](./04_testing.md) | [Вперёд: Проект 2: E-Commerce →](../part5-project2-ecommerce/)
+[← Назад: 4. Тестирование и бенчмарки](./04_testing.md) | [Вперёд: Проект 2: E-commerce Platform →](../part5-project2-ecommerce/)
 <!-- /AUTO: NAV -->

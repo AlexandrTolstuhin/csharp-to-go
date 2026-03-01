@@ -21,29 +21,6 @@ from datetime import date
 CONTEXT_FILE = '.context-summary.md'
 MIN_DONE_SIZE_KB = 5  # файл < 5 KB считается незавершённым
 
-PART_NAMES = {
-    'part1-basics':                 'Часть 1: Основы Go',
-    'part2-advanced':               'Часть 2: Продвинутые темы',
-    'part3-web-api':                'Часть 3: Web & API',
-    'part4-infrastructure':         'Часть 4: Инфраструктура',
-    'part5-project1-url-shortener': 'Проект 1: URL Shortener',
-    'part5-project2-ecommerce':     'Проект 2: E-Commerce',
-    'part6-best-practices':         'Часть 6: Best Practices',
-    'part7-interview':              'Часть 7: Лайфкодинг',
-}
-
-# Ожидаемое число контент-файлов (без README)
-PART_EXPECTED = {
-    'part1-basics':                 5,
-    'part2-advanced':               8,  # 07 + 02a_memory_allocator
-    'part3-web-api':                5,
-    'part4-infrastructure':         7,
-    'part5-project1-url-shortener': 5,
-    'part5-project2-ecommerce':     7,
-    'part6-best-practices':         4,
-    'part7-interview':              5,
-}
-
 
 # ─── Файловый анализ ────────────────────────────────────────────────────────
 
@@ -80,21 +57,14 @@ def build_tree():
     )
 
     lines = ['```', 'csharp-to-go/']
-    stats = {}  # part -> (pct, label)
+    stats = {}  # part -> (count, label, total_kb)
 
     for part in parts:
-        expected = PART_EXPECTED.get(part)
-
         files = content_files(part)
-        done_files = [f for f in files if is_done(f)]
-        total = expected or len(files)
-        done = len(done_files)
-        pct = int(done / total * 100) if total else 0
         total_kb = sum(size_kb(f) for f in files)
-        mark = '✅ 100%' if pct == 100 else f'🚧 {pct}% ({done}/{total})'
 
         connector = '└──' if part == parts[-1] else '├──'
-        lines.append(f'{connector} {part}/  # {mark}')
+        lines.append(f'{connector} {part}/  # {len(files)} файлов, {total_kb:.0f} KB')
         child_connector = '    ' if part == parts[-1] else '│   '
 
         for f in files:
@@ -117,9 +87,8 @@ def build_progress(stats):
 
     lines = ['### Прогресс']
     for part in sorted(stats):
-        name = PART_NAMES.get(part, part)
         count, label, kb = stats[part]
-        lines.append(f'- **{name}**: {label}, {kb:.0f} KB')
+        lines.append(f'- **{part}**: {label}, {kb:.0f} KB')
 
     lines += [f'- **Итого**: {total_kb:.0f} KB', '', '---', '', f'**Последнее обновление**: {today}']
     return '\n'.join(lines)
@@ -204,8 +173,7 @@ def main():
     print(f'Обновлён {CONTEXT_FILE} ({today})')
     for part in sorted(stats):
         count, label, kb = stats[part]
-        name = PART_NAMES.get(part, part)
-        print(f'  {name}: {label}, {kb:.0f} KB')
+        print(f'  {part}: {label}, {kb:.0f} KB')
 
     # 4. Обновить версию во всех файлах (если передана)
     if args.version:

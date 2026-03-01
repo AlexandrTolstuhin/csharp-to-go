@@ -16,17 +16,6 @@ import os
 import re
 import sys
 
-PARTS_ORDER = [
-    'part1-basics',
-    'part2-advanced',
-    'part3-web-api',
-    'part4-infrastructure',
-    'part5-project1-url-shortener',
-    'part5-project2-ecommerce',
-    'part6-best-practices',
-    'part7-interview',
-]
-
 START_MARKER = '<!-- AUTO: STRUCTURE -->'
 END_MARKER   = '<!-- /AUTO: STRUCTURE -->'
 
@@ -107,7 +96,7 @@ def build_structure():
     """Строит полное содержимое блока STRUCTURE."""
     sections = []
 
-    for part in PARTS_ORDER:
+    for part in sorted(p for p in os.listdir('.') if p.startswith('part') and os.path.isdir(p)):
         readme_path = f'{part}/README.md'
         if not os.path.exists(readme_path):
             continue

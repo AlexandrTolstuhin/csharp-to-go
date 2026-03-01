@@ -18,17 +18,6 @@ import os
 import re
 import sys
 
-PARTS = [
-    'part1-basics',
-    'part2-advanced',
-    'part3-web-api',
-    'part4-infrastructure',
-    'part5-project1-url-shortener',
-    'part5-project2-ecommerce',
-    'part6-best-practices',
-    'part7-interview',
-]
-
 START_MARKER = '<!-- AUTO: MATERIALS -->'
 END_MARKER = '<!-- /AUTO: MATERIALS -->'
 
@@ -214,7 +203,7 @@ def main():
     targets = [a for a in args if not a.startswith('--')]
 
     if not targets:
-        targets = [p for p in PARTS if os.path.isdir(p)]
+        targets = sorted(p for p in os.listdir('.') if p.startswith('part') and os.path.isdir(p))
 
     for part_dir in targets:
         print(f'{part_dir}:')

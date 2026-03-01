@@ -4631,5 +4631,5 @@ spec:
 <!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: Производительность](./03_performance.md) | [Вперёд: Часть 7: Лайфкодинг →](../part7-interview/)
+[← Назад: Производительность](./03_performance.md) | [Вперёд: Часть 7: Лайфкодинг на собеседованиях в российских компаниях →](../part7-interview/)
 <!-- /AUTO: NAV -->

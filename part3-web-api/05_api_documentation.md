@@ -1301,5 +1301,5 @@ serve-docs:
 <!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: Валидация и сериализация](./04_validation_serialization.md) | [Вперёд: Часть 4: Инфраструктура →](../part4-infrastructure/)
+[← Назад: Валидация и сериализация](./04_validation_serialization.md) | [Вперёд: Часть 4: Инфраструктура и интеграции →](../part4-infrastructure/)
 <!-- /AUTO: NAV -->

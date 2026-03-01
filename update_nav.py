@@ -28,28 +28,6 @@ import sys
 
 GITHUB_ISSUES = 'https://github.com/AlexandrTolstuhin/csharp-to-go/issues'
 
-PARTS_ORDER = [
-    'part1-basics',
-    'part2-advanced',
-    'part3-web-api',
-    'part4-infrastructure',
-    'part5-project1-url-shortener',
-    'part5-project2-ecommerce',
-    'part6-best-practices',
-    'part7-interview',
-]
-
-PART_NAMES = {
-    'part1-basics':                 'Часть 1: Основы Go',
-    'part2-advanced':               'Часть 2: Продвинутые темы',
-    'part3-web-api':                'Часть 3: Web & API',
-    'part4-infrastructure':         'Часть 4: Инфраструктура',
-    'part5-project1-url-shortener': 'Проект 1: URL Shortener',
-    'part5-project2-ecommerce':     'Проект 2: E-Commerce',
-    'part6-best-practices':         'Часть 6: Best Practices',
-    'part7-interview':              'Часть 7: Лайфкодинг',
-}
-
 START_MARKER = '<!-- AUTO: NAV -->'
 END_MARKER   = '<!-- /AUTO: NAV -->'
 
@@ -72,6 +50,28 @@ class Node:
         return f'Node({self.path!r}, {self.kind!r})'
 
 
+# ─── Helpers ──────────────────────────────────────────────────────────────────
+
+def sorted_parts():
+    """Отсортированный список директорий part* в корне проекта."""
+    return sorted(
+        p for p in os.listdir('.')
+        if p.startswith('part') and os.path.isdir(p)
+    )
+
+
+def extract_part_name(part):
+    """Читает заголовок H1 из README.md части."""
+    readme = f'{part}/README.md'
+    try:
+        m = re.search(r'^#\s+(.+)$', read_file(readme), re.MULTILINE)
+        if m:
+            return m.group(1).strip()
+    except OSError:
+        pass
+    return part
+
+
 # ─── Chain builder ────────────────────────────────────────────────────────────
 
 def md_files_in(directory):
@@ -90,10 +90,7 @@ def build_chain():
     """Строит полную линейную цепочку всех файлов курса."""
     nodes = []
 
-    for part in PARTS_ORDER:
-        if not os.path.isdir(part):
-            continue
-
+    for part in sorted_parts():
         # Part README — всегда первый в секции части
         readme = f'{part}/README.md'
         if os.path.exists(readme):
@@ -110,7 +107,7 @@ def build_chain():
     return nodes
 
 
-# ─── Helpers ──────────────────────────────────────────────────────────────────
+# ─── File I/O & titles ────────────────────────────────────────────────────────
 
 def read_file(path):
     with open(path, encoding='utf-8') as f:
@@ -153,13 +150,12 @@ def rel(from_file, to_path):
 def node_link(node, from_file):
     """
     Возвращает (rel_path, display_title) для ссылки на node из from_file.
-    part_readme  → directory link + название части из PART_NAMES
-    project_readme → явный путь к README.md + заголовок проекта
-    content      → явный путь к файлу + короткий заголовок
+    part_readme → directory link + H1 из README.md части
+    content     → явный путь к файлу + короткий заголовок
     """
     if node.kind == 'part_readme':
         part = node.path.split('/')[0]
-        return rel(from_file, f'{part}/'), PART_NAMES.get(part, part)
+        return rel(from_file, f'{part}/'), extract_part_name(part)
     else:
         return rel(from_file, node.path), extract_short_title(node.path)
 
@@ -170,19 +166,19 @@ def gen_part_readme_nav(node):
     """
     Навигация для part*/README.md.
     Формат: [← Назад к оглавлению] | [Предыдущая часть: ...] | [Следующая часть: ... →]
-    Использует PARTS_ORDER, не цепочку.
     """
-    part = node.path.split('/')[0]
-    idx  = PARTS_ORDER.index(part)
+    part  = node.path.split('/')[0]
+    parts = sorted_parts()
+    idx   = parts.index(part)
     links = ['[← Назад к оглавлению](../README.md)']
 
     if idx > 0:
-        prev_part = PARTS_ORDER[idx - 1]
-        links.append(f'[Предыдущая часть: {PART_NAMES[prev_part]}](../{prev_part}/)')
+        prev_part = parts[idx - 1]
+        links.append(f'[Предыдущая часть: {extract_part_name(prev_part)}](../{prev_part}/)')
 
-    if idx < len(PARTS_ORDER) - 1:
-        next_part = PARTS_ORDER[idx + 1]
-        links.append(f'[Следующая часть: {PART_NAMES[next_part]} →](../{next_part}/)')
+    if idx < len(parts) - 1:
+        next_part = parts[idx + 1]
+        links.append(f'[Следующая часть: {extract_part_name(next_part)} →](../{next_part}/)')
 
     return ' | '.join(links)
 

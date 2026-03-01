@@ -278,5 +278,5 @@ curl -L http://localhost:8080/aB3xY9
 ---
 
 <!-- AUTO: NAV -->
-[← Назад к оглавлению](../README.md) | [Предыдущая часть: Часть 4: Инфраструктура](../part4-infrastructure/) | [Следующая часть: Проект 2: E-Commerce →](../part5-project2-ecommerce/)
+[← Назад к оглавлению](../README.md) | [Предыдущая часть: Часть 4: Инфраструктура и интеграции](../part4-infrastructure/) | [Следующая часть: Проект 2: E-commerce Platform →](../part5-project2-ecommerce/)
 <!-- /AUTO: NAV -->

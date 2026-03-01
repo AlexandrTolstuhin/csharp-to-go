@@ -513,5 +513,5 @@ open http://localhost:16686
 ---
 
 <!-- AUTO: NAV -->
-[← Назад к оглавлению](../README.md) | [Предыдущая часть: Проект 1: URL Shortener](../part5-project1-url-shortener/) | [Следующая часть: Часть 6: Best Practices →](../part6-best-practices/)
+[← Назад к оглавлению](../README.md) | [Предыдущая часть: Проект 1: URL Shortener](../part5-project1-url-shortener/) | [Следующая часть: Часть 6: Best Practices Go →](../part6-best-practices/)
 <!-- /AUTO: NAV -->
