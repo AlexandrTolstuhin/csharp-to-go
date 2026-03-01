@@ -2,19 +2,29 @@
 
 ## Содержание
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
 - [Payment Service](#payment-service)
-  - [Идемпотентность](#идемпотентность)
+  - [Структура пакетов](#%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%B0-%D0%BF%D0%B0%D0%BA%D0%B5%D1%82%D0%BE%D0%B2)
+  - [Идемпотентность](#%D0%B8%D0%B4%D0%B5%D0%BC%D0%BF%D0%BE%D1%82%D0%B5%D0%BD%D1%82%D0%BD%D0%BE%D1%81%D1%82%D1%8C)
   - [Kafka Consumer: order.created](#kafka-consumer-ordercreated)
   - [Kafka Producer: payment events](#kafka-producer-payment-events)
-  - [Симуляция оплаты](#симуляция-оплаты)
-  - [PostgreSQL репозиторий](#postgresql-репозиторий)
-  - [gRPC сервер](#grpc-сервер)
-  - [Миграции](#миграции)
+  - [Симуляция оплаты](#%D1%81%D0%B8%D0%BC%D1%83%D0%BB%D1%8F%D1%86%D0%B8%D1%8F-%D0%BE%D0%BF%D0%BB%D0%B0%D1%82%D1%8B)
+  - [PostgreSQL репозиторий](#postgresql-%D1%80%D0%B5%D0%BF%D0%BE%D0%B7%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%B9)
+  - [gRPC сервер](#grpc-%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80)
+  - [Миграции](#%D0%BC%D0%B8%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D0%B8)
 - [Notification Service](#notification-service)
+  - [Структура пакетов](#%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%B0-%D0%BF%D0%B0%D0%BA%D0%B5%D1%82%D0%BE%D0%B2-1)
   - [Kafka Consumer](#kafka-consumer)
-  - [Email отправка](#email-отправка)
-  - [Тестирование](#тестирование)
-- [Сравнение с C#](#сравнение-с-c)
+  - [Email отправка](#email-%D0%BE%D1%82%D0%BF%D1%80%D0%B0%D0%B2%D0%BA%D0%B0)
+  - [main.go (worker)](#maingo-worker)
+- [Тестирование](#%D1%82%D0%B5%D1%81%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5)
+- [Сравнение с C#](#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-c)
+  - [Идемпотентность: MassTransit Outbox vs Go](#%D0%B8%D0%B4%D0%B5%D0%BC%D0%BF%D0%BE%D1%82%D0%B5%D0%BD%D1%82%D0%BD%D0%BE%D1%81%D1%82%D1%8C-masstransit-outbox-vs-go)
+  - [Worker vs WebAPI](#worker-vs-webapi)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 

@@ -2,18 +2,26 @@
 
 ## Содержание
 
-- [Архитектура HTTP слоя](#архитектура-http-слоя)
-- [Часть 1: net/http (Go 1.22+)](#часть-1-nethttp-go-122)
-  - [Хэндлеры](#хэндлеры)
-  - [Роутинг через ServeMux](#роутинг-через-servemux)
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Архитектура HTTP слоя](#%D0%B0%D1%80%D1%85%D0%B8%D1%82%D0%B5%D0%BA%D1%82%D1%83%D1%80%D0%B0-http-%D1%81%D0%BB%D0%BE%D1%8F)
+- [Часть 1: net/http (Go 1.22+)](#%D1%87%D0%B0%D1%81%D1%82%D1%8C-1-nethttp-go-122)
+  - [Хэндлеры](#%D1%85%D1%8D%D0%BD%D0%B4%D0%BB%D0%B5%D1%80%D1%8B)
+    - [C# подход (Minimal API)](#c-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4-minimal-api)
+    - [Go подход (net/http хэндлеры)](#go-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4-nethttp-%D1%85%D1%8D%D0%BD%D0%B4%D0%BB%D0%B5%D1%80%D1%8B)
+  - [Роутинг через ServeMux](#%D1%80%D0%BE%D1%83%D1%82%D0%B8%D0%BD%D0%B3-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-servemux)
   - [Middleware](#middleware)
   - [Rate limiting](#rate-limiting)
   - [Health check](#health-check)
-- [Часть 2: Миграция на chi](#часть-2-миграция-на-chi)
-  - [Почему chi](#почему-chi)
-  - [Изменения в роутере](#изменения-в-роутере)
-  - [Middleware в chi](#middleware-в-chi)
-- [Сравнительная таблица](#сравнительная-таблица)
+- [Часть 2: Миграция на chi](#%D1%87%D0%B0%D1%81%D1%82%D1%8C-2-%D0%BC%D0%B8%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D0%BD%D0%B0-chi)
+  - [Почему chi](#%D0%BF%D0%BE%D1%87%D0%B5%D0%BC%D1%83-chi)
+  - [Изменения в роутере](#%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F-%D0%B2-%D1%80%D0%BE%D1%83%D1%82%D0%B5%D1%80%D0%B5)
+  - [Middleware в chi](#middleware-%D0%B2-chi)
+  - [Сравнение: C# Minimal API vs Go chi](#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-c-minimal-api-vs-go-chi)
+- [Сравнительная таблица](#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 

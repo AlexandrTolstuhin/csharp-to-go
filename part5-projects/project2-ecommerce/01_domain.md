@@ -2,12 +2,35 @@
 
 ## Содержание
 
-- [Обзор доменов](#обзор-доменов)
-- [Protobuf контракты](#protobuf-контракты)
-- [Go доменные модели](#go-доменные-модели)
-- [Kafka события](#kafka-события)
-- [Shared пакеты](#shared-пакеты)
-- [Сравнение с C#](#сравнение-с-c)
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Обзор доменов](#%D0%BE%D0%B1%D0%B7%D0%BE%D1%80-%D0%B4%D0%BE%D0%BC%D0%B5%D0%BD%D0%BE%D0%B2)
+- [Protobuf контракты](#protobuf-%D0%BA%D0%BE%D0%BD%D1%82%D1%80%D0%B0%D0%BA%D1%82%D1%8B)
+  - [Структура proto файлов](#%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%B0-proto-%D1%84%D0%B0%D0%B9%D0%BB%D0%BE%D0%B2)
+  - [buf.yaml](#bufyaml)
+  - [buf.gen.yaml](#bufgenyaml)
+  - [user/v1/user.proto](#userv1userproto)
+  - [catalog/v1/catalog.proto](#catalogv1catalogproto)
+  - [order/v1/order.proto](#orderv1orderproto)
+  - [payment/v1/payment.proto](#paymentv1paymentproto)
+- [Go доменные модели](#go-%D0%B4%D0%BE%D0%BC%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5-%D0%BC%D0%BE%D0%B4%D0%B5%D0%BB%D0%B8)
+  - [User Service: internal/domain/user.go](#user-service-internaldomainusergo)
+  - [Catalog Service: internal/domain/product.go](#catalog-service-internaldomainproductgo)
+  - [Order Service: internal/domain/order.go](#order-service-internaldomainordergo)
+  - [Payment Service: internal/domain/payment.go](#payment-service-internaldomainpaymentgo)
+- [Kafka события](#kafka-%D1%81%D0%BE%D0%B1%D1%8B%D1%82%D0%B8%D1%8F)
+  - [shared/events/order_events.go](#sharedeventsorder_eventsgo)
+  - [shared/events/payment_events.go](#sharedeventspayment_eventsgo)
+- [Shared пакеты](#shared-%D0%BF%D0%B0%D0%BA%D0%B5%D1%82%D1%8B)
+  - [shared/config/base.go](#sharedconfigbasego)
+  - [shared/middleware/auth.go](#sharedmiddlewareauthgo)
+- [Сравнение с C#](#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-c)
+  - [Денежные значения](#%D0%B4%D0%B5%D0%BD%D0%B5%D0%B6%D0%BD%D1%8B%D0%B5-%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D1%8F)
+  - [Event-driven vs MassTransit](#event-driven-vs-masstransit)
+- [Генерация кода](#%D0%B3%D0%B5%D0%BD%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D0%BA%D0%BE%D0%B4%D0%B0)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 

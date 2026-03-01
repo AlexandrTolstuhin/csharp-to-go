@@ -2,25 +2,35 @@
 
 ## Содержание
 
-- [Введение](#введение)
-- [Подходы к документации](#подходы-к-документации)
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Введение](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5)
+  - [Что вы узнаете](#%D1%87%D1%82%D0%BE-%D0%B2%D1%8B-%D1%83%D0%B7%D0%BD%D0%B0%D0%B5%D1%82%D0%B5)
+- [Подходы к документации](#%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4%D1%8B-%D0%BA-%D0%B4%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D1%86%D0%B8%D0%B8)
+  - [Сравнение с C#](#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-c)
 - [OpenAPI Specification](#openapi-specification)
-- [swaggo: документация из кода](#swaggo-документация-из-кода)
-  - [Установка и настройка](#установка-и-настройка)
-  - [Аннотации](#аннотации)
-  - [Документирование endpoints](#документирование-endpoints)
-  - [Модели и схемы](#модели-и-схемы)
+- [swaggo: документация из кода](#swaggo-%D0%B4%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D1%86%D0%B8%D1%8F-%D0%B8%D0%B7-%D0%BA%D0%BE%D0%B4%D0%B0)
+  - [Установка и настройка](#%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0)
+  - [Аннотации](#%D0%B0%D0%BD%D0%BD%D0%BE%D1%82%D0%B0%D1%86%D0%B8%D0%B8)
+  - [Документирование endpoints](#%D0%B4%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-endpoints)
+  - [Модели и схемы](#%D0%BC%D0%BE%D0%B4%D0%B5%D0%BB%D0%B8-%D0%B8-%D1%81%D1%85%D0%B5%D0%BC%D1%8B)
+  - [Генерация документации](#%D0%B3%D0%B5%D0%BD%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D0%B4%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D1%86%D0%B8%D0%B8)
   - [Swagger UI](#swagger-ui)
-- [OpenAPI-first подход](#openapi-first-подход)
+- [OpenAPI-first подход](#openapi-first-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4)
   - [oapi-codegen](#oapi-codegen)
-  - [Преимущества и недостатки](#преимущества-и-недостатки)
-- [Практические аспекты](#практические-аспекты)
-  - [Версионирование API](#версионирование-api)
-  - [Authentication в документации](#authentication-в-документации)
-  - [CI/CD интеграция](#cicd-интеграция)
-- [Практические примеры](#практические-примеры)
-  - [Пример 1: REST API с swaggo](#пример-1-rest-api-с-swaggo)
-  - [Пример 2: OpenAPI-first с генерацией](#пример-2-openapi-first-с-генерацией)
+  - [Реализация сервера](#%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80%D0%B0)
+  - [Преимущества и недостатки](#%D0%BF%D1%80%D0%B5%D0%B8%D0%BC%D1%83%D1%89%D0%B5%D1%81%D1%82%D0%B2%D0%B0-%D0%B8-%D0%BD%D0%B5%D0%B4%D0%BE%D1%81%D1%82%D0%B0%D1%82%D0%BA%D0%B8)
+  - [Когда что использовать](#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D1%87%D1%82%D0%BE-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C)
+- [Практические аспекты](#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%B0%D1%81%D0%BF%D0%B5%D0%BA%D1%82%D1%8B)
+  - [Версионирование API](#%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D0%BE%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-api)
+  - [Authentication в документации](#authentication-%D0%B2-%D0%B4%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D1%86%D0%B8%D0%B8)
+  - [CI/CD интеграция](#cicd-%D0%B8%D0%BD%D1%82%D0%B5%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D1%8F)
+- [Практические примеры](#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B)
+  - [Пример 1: REST API с swaggo](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-rest-api-%D1%81-swaggo)
+  - [Пример 2: OpenAPI-first с генерацией](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-openapi-first-%D1%81-%D0%B3%D0%B5%D0%BD%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D0%B5%D0%B9)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 

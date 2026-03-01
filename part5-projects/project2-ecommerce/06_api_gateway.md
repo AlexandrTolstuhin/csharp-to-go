@@ -2,15 +2,24 @@
 
 ## Содержание
 
-- [Обзор](#обзор)
-- [Структура и routing](#структура-и-routing)
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Обзор](#%D0%BE%D0%B1%D0%B7%D0%BE%D1%80)
+  - [Структура пакетов](#%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%B0-%D0%BF%D0%B0%D0%BA%D0%B5%D1%82%D0%BE%D0%B2)
+- [Структура и routing](#%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%B0-%D0%B8-routing)
 - [JWT middleware](#jwt-middleware)
-- [gRPC клиенты с Circuit Breaker](#grpc-клиенты-с-circuit-breaker)
-- [HTTP хэндлеры](#http-хэндлеры)
+- [gRPC клиенты с Circuit Breaker](#grpc-%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%D1%8B-%D1%81-circuit-breaker)
+- [HTTP хэндлеры](#http-%D1%85%D1%8D%D0%BD%D0%B4%D0%BB%D0%B5%D1%80%D1%8B)
 - [Rate limiting](#rate-limiting)
 - [main.go](#maingo)
-- [Тестирование](#тестирование)
-- [Сравнение с C#](#сравнение-с-c)
+- [Тестирование](#%D1%82%D0%B5%D1%81%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5)
+- [Сравнение с C#](#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-c)
+  - [API Gateway: YARP vs chi + gobreaker](#api-gateway-yarp-vs-chi--gobreaker)
+  - [Circuit Breaker: Polly vs gobreaker](#circuit-breaker-polly-vs-gobreaker)
+  - [gRPC → HTTP маппинг](#grpc-%E2%86%92-http-%D0%BC%D0%B0%D0%BF%D0%BF%D0%B8%D0%BD%D0%B3)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 

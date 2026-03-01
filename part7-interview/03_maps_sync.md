@@ -2,13 +2,41 @@
 
 ## Содержание
 
-- [Введение: что проверяют](#введение-что-проверяют)
-- [Задача 1: Concurrent Cache](#задача-1-concurrent-cache)
-- [Задача 2: Частотный анализ слов (concurrent)](#задача-2-частотный-анализ-слов-concurrent)
-- [Задача 3: Реализация Once](#задача-3-реализация-once)
-- [Задача 4: Семафор](#задача-4-семафор)
-- [Задача 5: Что выведет код — map gotchas](#задача-5-что-выведет-код--map-gotchas)
-- [Задача 6: CopyOnWrite Map](#задача-6-copyonwrite-map)
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Введение: что проверяют](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5-%D1%87%D1%82%D0%BE-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D1%8F%D1%8E%D1%82)
+  - [Модель памяти Go (кратко)](#%D0%BC%D0%BE%D0%B4%D0%B5%D0%BB%D1%8C-%D0%BF%D0%B0%D0%BC%D1%8F%D1%82%D0%B8-go-%D0%BA%D1%80%D0%B0%D1%82%D0%BA%D0%BE)
+- [Задача 1: Concurrent Cache](#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-1-concurrent-cache)
+  - [Формулировка](#%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0)
+  - [Что проверяют](#%D1%87%D1%82%D0%BE-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D1%8F%D1%8E%D1%82)
+  - [Версия с TTL](#%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D1%8F-%D1%81-ttl)
+  - [Когда использовать sync.Map вместо RWMutex?](#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C-syncmap-%D0%B2%D0%BC%D0%B5%D1%81%D1%82%D0%BE-rwmutex)
+  - [Типичные ошибки](#%D1%82%D0%B8%D0%BF%D0%B8%D1%87%D0%BD%D1%8B%D0%B5-%D0%BE%D1%88%D0%B8%D0%B1%D0%BA%D0%B8)
+- [Задача 2: Частотный анализ слов (concurrent)](#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-2-%D1%87%D0%B0%D1%81%D1%82%D0%BE%D1%82%D0%BD%D1%8B%D0%B9-%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7-%D1%81%D0%BB%D0%BE%D0%B2-concurrent)
+  - [Формулировка](#%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-1)
+  - [Go решение](#go-%D1%80%D0%B5%D1%88%D0%B5%D0%BD%D0%B8%D0%B5)
+  - [Дополнительные вопросы](#%D0%B4%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%D1%8B)
+- [Задача 3: Реализация Once](#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-3-%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-once)
+  - [Формулировка](#%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-2)
+  - [Что проверяют](#%D1%87%D1%82%D0%BE-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D1%8F%D1%8E%D1%82-1)
+  - [Реальное применение: lazy singleton](#%D1%80%D0%B5%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-lazy-singleton)
+- [Задача 4: Семафор](#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-4-%D1%81%D0%B5%D0%BC%D0%B0%D1%84%D0%BE%D1%80)
+  - [Формулировка](#%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-3)
+  - [Что проверяют](#%D1%87%D1%82%D0%BE-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D1%8F%D1%8E%D1%82-2)
+- [Задача 5: Что выведет код — map gotchas](#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-5-%D1%87%D1%82%D0%BE-%D0%B2%D1%8B%D0%B2%D0%B5%D0%B4%D0%B5%D1%82-%D0%BA%D0%BE%D0%B4--map-gotchas)
+  - [Gotcha 1: Concurrent map write — panic](#gotcha-1-concurrent-map-write--panic)
+  - [Gotcha 2: Итерация по map — порядок](#gotcha-2-%D0%B8%D1%82%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D0%BF%D0%BE-map--%D0%BF%D0%BE%D1%80%D1%8F%D0%B4%D0%BE%D0%BA)
+  - [Gotcha 3: Zero value при чтении](#gotcha-3-zero-value-%D0%BF%D1%80%D0%B8-%D1%87%D1%82%D0%B5%D0%BD%D0%B8%D0%B8)
+  - [Gotcha 4: Изменение map во время итерации](#gotcha-4-%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-map-%D0%B2%D0%BE-%D0%B2%D1%80%D0%B5%D0%BC%D1%8F-%D0%B8%D1%82%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D0%B8)
+- [Задача 6: CopyOnWrite Map](#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-6-copyonwrite-map)
+  - [Формулировка](#%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-4)
+  - [Что проверяют](#%D1%87%D1%82%D0%BE-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D1%8F%D1%8E%D1%82-3)
+  - [Когда это полезно](#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D1%8D%D1%82%D0%BE-%D0%BF%D0%BE%D0%BB%D0%B5%D0%B7%D0%BD%D0%BE)
+  - [Trade-offs](#trade-offs)
+- [Итоги](#%D0%B8%D1%82%D0%BE%D0%B3%D0%B8)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 

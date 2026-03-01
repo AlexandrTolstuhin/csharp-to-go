@@ -239,6 +239,82 @@ git push origin master
 
 ---
 
+## Автогенерация содержания (doctoc)
+
+### Инструменты
+
+Для работы с содержанием есть два инструмента:
+
+**`add_doctoc_markers.py`** — добавляет doctoc-маркеры в новые файлы и запускает doctoc:
+
+```bash
+python add_doctoc_markers.py                    # весь проект
+python add_doctoc_markers.py part2-advanced/    # конкретная папка
+python add_doctoc_markers.py part1-basics/02_syntax_basics.md  # файл
+```
+
+**`npx doctoc`** — только обновить TOC (маркеры уже есть):
+
+```bash
+npx doctoc part1-basics/02_syntax_basics.md --github --notitle
+```
+
+### Когда запускать
+
+**ОБЯЗАТЕЛЬНО запускать после любых изменений заголовков** (`##`, `###`, `####`):
+- Добавлены новые заголовки
+- Переименованы существующие заголовки
+- Изменён порядок или удалены заголовки
+
+```bash
+# Стандартный сценарий: изменили заголовки в файле → обновить TOC
+npx doctoc <файл>.md --github --notitle
+
+# Новый файл без маркеров → добавить маркеры и сгенерировать TOC
+python add_doctoc_markers.py <файл или папка>
+```
+
+### Структура содержания в файле
+
+Содержание оформляется так — `## Содержание` как заголовок, doctoc-маркеры вместо ручного списка:
+
+```markdown
+## Содержание
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+  - [Идиоматичный подход](#%D0%B8%D0%B4%D0%B8%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%BD%D1%8B%D0%B9-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4)
+  - [Сравнительная таблица](#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0)
+- [Практические примеры](#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B)
+  - [Пример 1: Название](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-%D0%BD%D0%B0%D0%B7%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5)
+  - [Актуализация материалов](#%D0%B0%D0%BA%D1%82%D1%83%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%BC%D0%B0%D1%82%D0%B5%D1%80%D0%B8%D0%B0%D0%BB%D0%BE%D0%B2)
+  - [Производительность](#%D0%BF%D1%80%D0%BE%D0%B8%D0%B7%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D1%8C)
+  - [Практические проекты](#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D1%8B)
+- [Обновление прогресса](#%D0%BE%D0%B1%D0%BD%D0%BE%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B5%D1%81%D1%81%D0%B0)
+  - [Формула расчёта общего прогресса](#%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B0-%D1%80%D0%B0%D1%81%D1%87%D1%91%D1%82%D0%B0-%D0%BE%D0%B1%D1%89%D0%B5%D0%B3%D0%BE-%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B5%D1%81%D1%81%D0%B0)
+  - [Прогресс внутри части](#%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B5%D1%81%D1%81-%D0%B2%D0%BD%D1%83%D1%82%D1%80%D0%B8-%D1%87%D0%B0%D1%81%D1%82%D0%B8)
+- [Навигация между файлами](#%D0%BD%D0%B0%D0%B2%D0%B8%D0%B3%D0%B0%D1%86%D0%B8%D1%8F-%D0%BC%D0%B5%D0%B6%D0%B4%D1%83-%D1%84%D0%B0%D0%B9%D0%BB%D0%B0%D0%BC%D0%B8)
+  - [Обязательно обновлять](#%D0%BE%D0%B1%D1%8F%D0%B7%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE-%D0%BE%D0%B1%D0%BD%D0%BE%D0%B2%D0%BB%D1%8F%D1%82%D1%8C)
+  - [Формат навигации](#%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D1%82-%D0%BD%D0%B0%D0%B2%D0%B8%D0%B3%D0%B0%D1%86%D0%B8%D0%B8)
+- [Качество материалов](#%D0%BA%D0%B0%D1%87%D0%B5%D1%81%D1%82%D0%B2%D0%BE-%D0%BC%D0%B0%D1%82%D0%B5%D1%80%D0%B8%D0%B0%D0%BB%D0%BE%D0%B2)
+  - [Обязательные элементы качества](#%D0%BE%D0%B1%D1%8F%D0%B7%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D1%8D%D0%BB%D0%B5%D0%BC%D0%B5%D0%BD%D1%82%D1%8B-%D0%BA%D0%B0%D1%87%D0%B5%D1%81%D1%82%D0%B2%D0%B0)
+  - [Проверка перед коммитом](#%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%BA%D0%B0-%D0%BF%D0%B5%D1%80%D0%B5%D0%B4-%D0%BA%D0%BE%D0%BC%D0%BC%D0%B8%D1%82%D0%BE%D0%BC)
+- [Приоритеты при разработке](#%D0%BF%D1%80%D0%B8%D0%BE%D1%80%D0%B8%D1%82%D0%B5%D1%82%D1%8B-%D0%BF%D1%80%D0%B8-%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B5)
+  - [Высокий приоритет](#%D0%B2%D1%8B%D1%81%D0%BE%D0%BA%D0%B8%D0%B9-%D0%BF%D1%80%D0%B8%D0%BE%D1%80%D0%B8%D1%82%D0%B5%D1%82)
+  - [Средний приоритет](#%D1%81%D1%80%D0%B5%D0%B4%D0%BD%D0%B8%D0%B9-%D0%BF%D1%80%D0%B8%D0%BE%D1%80%D0%B8%D1%82%D0%B5%D1%82)
+  - [Низкий приоритет](#%D0%BD%D0%B8%D0%B7%D0%BA%D0%B8%D0%B9-%D0%BF%D1%80%D0%B8%D0%BE%D1%80%D0%B8%D1%82%D0%B5%D1%82)
+- [Работа с TODO](#%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0-%D1%81-todo)
+  - [Использовать TodoWrite для](#%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C-todowrite-%D0%B4%D0%BB%D1%8F)
+  - [Формат TODO](#%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D1%82-todo)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+```
+
+После запуска doctoc маркеры заполняются автоматически. **Не редактировать список внутри маркеров вручную.**
+
+---
+
 ## Структура нового раздела
 
 ### Шаблон для .md файла
@@ -247,8 +323,10 @@ git push origin master
 # X.Y Название раздела
 
 ## Содержание
-- [Подраздел 1](#подраздел-1)
-- [Подраздел 2](#подраздел-2)
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 ...
 
 ---

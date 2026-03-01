@@ -2,30 +2,43 @@
 
 ## Содержание
 
-- [Введение](#введение)
-- [JSON в Go](#json-в-go)
-  - [encoding/json: основы](#encodingjson-основы)
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Введение](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5)
+  - [Что вы узнаете](#%D1%87%D1%82%D0%BE-%D0%B2%D1%8B-%D1%83%D0%B7%D0%BD%D0%B0%D0%B5%D1%82%D0%B5)
+- [JSON в Go](#json-%D0%B2-go)
+  - [encoding/json: основы](#encodingjson-%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D1%8B)
   - [Struct Tags](#struct-tags)
+  - [Сравнение с C#](#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-c)
   - [Custom Marshal/Unmarshal](#custom-marshalunmarshal)
-  - [Работа с динамическим JSON](#работа-с-динамическим-json)
-- [Быстрые JSON библиотеки](#быстрые-json-библиотеки)
+  - [Работа с динамическим JSON](#%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0-%D1%81-%D0%B4%D0%B8%D0%BD%D0%B0%D0%BC%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%BC-json)
+- [Быстрые JSON библиотеки](#%D0%B1%D1%8B%D1%81%D1%82%D1%80%D1%8B%D0%B5-json-%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA%D0%B8)
   - [easyjson](#easyjson)
   - [sonic](#sonic)
   - [Benchmarks](#benchmarks)
-- [Валидация: go-playground/validator](#валидация-go-playgroundvalidator)
-  - [Базовые валидаторы](#базовые-валидаторы)
-  - [Кастомные валидаторы](#кастомные-валидаторы)
-  - [Вложенные структуры](#вложенные-структуры)
-  - [Локализация ошибок](#локализация-ошибок)
+- [Валидация: go-playground/validator](#%D0%B2%D0%B0%D0%BB%D0%B8%D0%B4%D0%B0%D1%86%D0%B8%D1%8F-go-playgroundvalidator)
+  - [Базовые валидаторы](#%D0%B1%D0%B0%D0%B7%D0%BE%D0%B2%D1%8B%D0%B5-%D0%B2%D0%B0%D0%BB%D0%B8%D0%B4%D0%B0%D1%82%D0%BE%D1%80%D1%8B)
+  - [Полный список популярных тегов](#%D0%BF%D0%BE%D0%BB%D0%BD%D1%8B%D0%B9-%D1%81%D0%BF%D0%B8%D1%81%D0%BE%D0%BA-%D0%BF%D0%BE%D0%BF%D1%83%D0%BB%D1%8F%D1%80%D0%BD%D1%8B%D1%85-%D1%82%D0%B5%D0%B3%D0%BE%D0%B2)
+  - [Кастомные валидаторы](#%D0%BA%D0%B0%D1%81%D1%82%D0%BE%D0%BC%D0%BD%D1%8B%D0%B5-%D0%B2%D0%B0%D0%BB%D0%B8%D0%B4%D0%B0%D1%82%D0%BE%D1%80%D1%8B)
+  - [Вложенные структуры](#%D0%B2%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5-%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D1%8B)
+  - [Локализация ошибок](#%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%BE%D1%88%D0%B8%D0%B1%D0%BE%D0%BA)
+  - [Сравнение с C# Data Annotations](#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-c-data-annotations)
 - [Request/Response DTO](#requestresponse-dto)
 - [Protocol Buffers](#protocol-buffers)
-  - [Основы protobuf](#основы-protobuf)
-  - [Генерация Go кода](#генерация-go-кода)
-  - [Сравнение с JSON](#сравнение-с-json)
-- [Практические примеры](#практические-примеры)
-  - [Пример 1: REST API с валидацией](#пример-1-rest-api-с-валидацией)
-  - [Пример 2: Оптимизация JSON](#пример-2-оптимизация-json)
-  - [Пример 3: Protobuf для микросервисов](#пример-3-protobuf-для-микросервисов)
+  - [Основы protobuf](#%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D1%8B-protobuf)
+  - [Генерация Go кода](#%D0%B3%D0%B5%D0%BD%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D1%8F-go-%D0%BA%D0%BE%D0%B4%D0%B0)
+  - [Использование](#%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5)
+  - [Сравнение с JSON](#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-json)
+- [JSON v2 и производительность io.ReadAll (Go 1.25-1.26)](#json-v2-%D0%B8-%D0%BF%D1%80%D0%BE%D0%B8%D0%B7%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D1%8C-ioreadall-go-125-126)
+  - [encoding/json/v2 — экспериментальный (Go 1.25)](#encodingjsonv2--%D1%8D%D0%BA%D1%81%D0%BF%D0%B5%D1%80%D0%B8%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9-go-125)
+  - [io.ReadAll — 2x быстрее (Go 1.26)](#ioreadall--2x-%D0%B1%D1%8B%D1%81%D1%82%D1%80%D0%B5%D0%B5-go-126)
+- [Практические примеры](#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B)
+  - [Пример 1: REST API с валидацией](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-rest-api-%D1%81-%D0%B2%D0%B0%D0%BB%D0%B8%D0%B4%D0%B0%D1%86%D0%B8%D0%B5%D0%B9)
+  - [Пример 2: Оптимизация JSON](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-%D0%BE%D0%BF%D1%82%D0%B8%D0%BC%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-json)
+  - [Пример 3: Protobuf для микросервисов](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-protobuf-%D0%B4%D0%BB%D1%8F-%D0%BC%D0%B8%D0%BA%D1%80%D0%BE%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%BE%D0%B2)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 

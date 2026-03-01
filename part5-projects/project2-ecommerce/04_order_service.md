@@ -2,15 +2,27 @@
 
 ## Содержание
 
-- [Обзор и Saga Pattern](#обзор-и-saga-pattern)
-- [State Machine заказа](#state-machine-заказа)
-- [gRPC: создание заказа](#grpc-создание-заказа)
-- [Kafka Consumer: обработка событий](#kafka-consumer-обработка-событий)
-- [Kafka Producer: публикация событий](#kafka-producer-публикация-событий)
-- [PostgreSQL репозиторий](#postgresql-репозиторий)
-- [Миграции](#миграции)
-- [Тестирование](#тестирование)
-- [Сравнение с C#](#сравнение-с-c)
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Обзор и Saga Pattern](#%D0%BE%D0%B1%D0%B7%D0%BE%D1%80-%D0%B8-saga-pattern)
+  - [Структура пакетов](#%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%B0-%D0%BF%D0%B0%D0%BA%D0%B5%D1%82%D0%BE%D0%B2)
+- [State Machine заказа](#state-machine-%D0%B7%D0%B0%D0%BA%D0%B0%D0%B7%D0%B0)
+- [gRPC: создание заказа](#grpc-%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-%D0%B7%D0%B0%D0%BA%D0%B0%D0%B7%D0%B0)
+- [Kafka Consumer: обработка событий](#kafka-consumer-%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0-%D1%81%D0%BE%D0%B1%D1%8B%D1%82%D0%B8%D0%B9)
+- [Kafka Producer: публикация событий](#kafka-producer-%D0%BF%D1%83%D0%B1%D0%BB%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D1%8F-%D1%81%D0%BE%D0%B1%D1%8B%D1%82%D0%B8%D0%B9)
+- [PostgreSQL репозиторий](#postgresql-%D1%80%D0%B5%D0%BF%D0%BE%D0%B7%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%B9)
+- [gRPC сервер и клиент Catalog Service](#grpc-%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80-%D0%B8-%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82-catalog-service)
+- [main.go — запуск сервиса](#maingo--%D0%B7%D0%B0%D0%BF%D1%83%D1%81%D0%BA-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%B0)
+- [Миграции](#%D0%BC%D0%B8%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D0%B8)
+- [Тестирование](#%D1%82%D0%B5%D1%81%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5)
+  - [Тест state machine](#%D1%82%D0%B5%D1%81%D1%82-state-machine)
+  - [Тест Saga (с моками)](#%D1%82%D0%B5%D1%81%D1%82-saga-%D1%81-%D0%BC%D0%BE%D0%BA%D0%B0%D0%BC%D0%B8)
+- [Сравнение с C#](#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-c)
+  - [Saga: MassTransit vs хореография вручную](#saga-masstransit-vs-%D1%85%D0%BE%D1%80%D0%B5%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D1%8F-%D0%B2%D1%80%D1%83%D1%87%D0%BD%D1%83%D1%8E)
+  - [Ключевые отличия](#%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5-%D0%BE%D1%82%D0%BB%D0%B8%D1%87%D0%B8%D1%8F)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 
