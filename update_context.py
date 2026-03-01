@@ -4,12 +4,16 @@
   - Дерево файлов между <!-- AUTO: STRUCTURE --> ... <!-- /AUTO: STRUCTURE -->
   - Прогресс между <!-- AUTO: PROGRESS --> ... <!-- /AUTO: PROGRESS -->
 
+При указании --version обновляет <!-- AUTO: VERSION --> во всех .md файлах проекта.
+
 Ручные секции (детали разделов, история, текущая работа) не трогаются.
 
 Использование:
   python update_context.py
+  python update_context.py --version "0.9.0 (описание)"
 """
 
+import argparse
 import os
 import re
 from datetime import date
@@ -173,9 +177,43 @@ def replace_block(content, tag, new_body):
     return updated
 
 
+# ─── Обновление версии ──────────────────────────────────────────────────────
+
+def collect_md_files():
+    """Все .md файлы в проекте (рекурсивно), кроме .git."""
+    result = []
+    for root, dirs, files in os.walk('.'):
+        dirs[:] = [d for d in dirs if d != '.git']
+        for name in files:
+            if name.endswith('.md'):
+                result.append(os.path.join(root, name))
+    return result
+
+
+def update_version(version_str):
+    """Заменяет содержимое <!-- AUTO: VERSION --> во всех .md файлах проекта."""
+    files = collect_md_files()
+    updated = []
+    for path in files:
+        with open(path, encoding='utf-8') as f:
+            content = f.read()
+        if '<!-- AUTO: VERSION -->' not in content:
+            continue
+        new_content = replace_block(content, 'VERSION', f'**Версия**: {version_str}')
+        with open(path, 'w', encoding='utf-8') as f:
+            f.write(new_content)
+        updated.append(path)
+    return updated
+
+
 # ─── Точка входа ────────────────────────────────────────────────────────────
 
 def main():
+    parser = argparse.ArgumentParser(description='Обновляет .context-summary.md и версию проекта')
+    parser.add_argument('--version', metavar='STR',
+                        help='Строка версии, например: "0.9.0 (описание)"')
+    args = parser.parse_args()
+
     with open(CONTEXT_FILE, encoding='utf-8') as f:
         content = f.read()
 
@@ -204,6 +242,16 @@ def main():
         count, label, kb = stats[part]
         name = PART_NAMES.get(part, part)
         print(f'  {name}: {label}, {kb:.0f} KB')
+
+    # 4. Обновить версию во всех файлах (если передана)
+    if args.version:
+        updated = update_version(args.version)
+        if updated:
+            print(f'\nВерсия "{args.version}" обновлена в {len(updated)} файл(ах):')
+            for path in updated:
+                print(f'  {path}')
+        else:
+            print('\nWARN: файлы с <!-- AUTO: VERSION --> не найдены')
 
 
 if __name__ == '__main__':
