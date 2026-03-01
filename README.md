@@ -1,4 +1,4 @@
-# Переход с C# на Go: Курс для Senior разработчика
+# Переход с C# на Go: Курс для C# разработчика
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.26+-00ADD8?logo=go)](https://go.dev/)
@@ -13,7 +13,7 @@
 
 ## О курсе
 
-**Целевая аудитория**: Senior C# разработчик с глубоким опытом async/await, TPL, высоконагруженных систем
+**Целевая аудитория**: C# разработчик с опытом async/await, TPL, высоконагруженных систем
 
 **Формат**: Теория + практика + реальные проекты (E-commerce, Fintech, SaaS)
 
