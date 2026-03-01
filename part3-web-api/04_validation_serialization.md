@@ -1298,6 +1298,8 @@ func (c *ProductClient) GetProduct(ctx context.Context, id int) (*pb.Product, er
 
 ---
 
+<!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Работа с данными](./03_database.md) | [Вперёд: Документация API →](./05_api_documentation.md)
+[← Назад: Работа с данными (PostgreSQL)](./03_database.md) | [Вперёд: Документация API →](./05_api_documentation.md)
+<!-- /AUTO: NAV -->

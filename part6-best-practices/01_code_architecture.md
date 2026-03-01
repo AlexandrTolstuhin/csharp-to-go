@@ -2186,6 +2186,8 @@ func (s *Service) CreateUser(ctx context.Context, req CreateRequest) (*User, err
 
 ---
 
+<!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: Часть 5](../part5-projects/README.md) | [Вперёд: 6.2 Инструменты Go →](./02_tools.md)
+[← Назад к оглавлению](./README.md) | [Вперёд: Инструменты →](./02_tools.md)
+<!-- /AUTO: NAV -->

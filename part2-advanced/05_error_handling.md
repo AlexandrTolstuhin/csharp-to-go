@@ -2090,6 +2090,8 @@ func ProcessOrder(ctx context.Context, orderID int) error {
 
 ---
 
+<!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: 2.4 Примитивы синхронизации](04_sync_primitives.md) | [Вперёд: 2.6 Тестирование →](06_testing_benchmarking.md)
+[← Назад: Примитивы синхронизации](./04_sync_primitives.md) | [Вперёд: Тестирование и бенчмаркинг →](./06_testing_benchmarking.md)
+<!-- /AUTO: NAV -->

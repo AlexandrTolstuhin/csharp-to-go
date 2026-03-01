@@ -1499,6 +1499,8 @@ func main() {
 
 ---
 
+<!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← HTTP в Go](./01_http_server.md) | [Вперёд: Работа с данными →](./03_database.md)
+[← Назад: HTTP в Go: Создание веб-серверов](./01_http_server.md) | [Вперёд: Работа с данными (PostgreSQL) →](./03_database.md)
+<!-- /AUTO: NAV -->

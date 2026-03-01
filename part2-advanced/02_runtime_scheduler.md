@@ -1045,6 +1045,8 @@ func main() {
 
 ---
 
+<!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: Горутины и каналы](01_goroutines_channels.md) | [Вперёд: Аллокатор памяти →](02a_memory_allocator.md)
+[← Назад: Горутины и каналы](./01_goroutines_channels.md) | [Вперёд: Аллокатор памяти Go (Memory Allocator Internals) →](./02a_memory_allocator.md)
+<!-- /AUTO: NAV -->

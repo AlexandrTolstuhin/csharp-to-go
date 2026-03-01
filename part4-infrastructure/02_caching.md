@@ -2497,6 +2497,8 @@ func main() {
 
 ---
 
-**Вопросы?** Откройте issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
+<!-- AUTO: NAV -->
+**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: 4.1 Production PostgreSQL](./01_production_postgresql.md) | [Вперёд: 4.3 Очереди сообщений →](./03_message_queues.md)
+[← Назад: Production PostgreSQL](./01_production_postgresql.md) | [Вперёд: Очереди сообщений →](./03_message_queues.md)
+<!-- /AUTO: NAV -->

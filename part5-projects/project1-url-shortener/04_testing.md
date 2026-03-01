@@ -748,6 +748,8 @@ go test -short -cover ./...
 
 ---
 
+<!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: HTTP слой](./03_http.md) | [Вперёд: Деплой →](./05_deployment.md)
+[← Назад: 3. HTTP слой: net/http и chi](./03_http.md) | [Вперёд: 5. Деплой: Docker Compose и Production →](./05_deployment.md)
+<!-- /AUTO: NAV -->

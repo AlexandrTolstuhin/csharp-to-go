@@ -784,4 +784,8 @@ func (q *EfficientQueue[T]) Dequeue() (T, bool) {
 
 ---
 
-[← Назад: Map и синхронизация](./03_maps_sync.md) | [Вперёд: Системный дизайн →](./05_system_design.md)
+<!-- AUTO: NAV -->
+**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
+
+[← Назад: Задачи на map и синхронизацию](./03_maps_sync.md) | [Вперёд: Системный дизайн на Go →](./05_system_design.md)
+<!-- /AUTO: NAV -->

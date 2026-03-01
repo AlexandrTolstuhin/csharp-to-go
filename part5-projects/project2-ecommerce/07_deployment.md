@@ -785,4 +785,8 @@ spec:
 
 ---
 
-[← API Gateway](./06_api_gateway.md) | [← Назад к проектам](../README.md)
+<!-- AUTO: NAV -->
+**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
+
+[← Назад: 6. API Gateway](./06_api_gateway.md) | [Вперёд: Часть 6: Best Practices →](../../part6-best-practices/)
+<!-- /AUTO: NAV -->

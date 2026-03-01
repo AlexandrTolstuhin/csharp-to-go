@@ -1695,6 +1695,8 @@ func main() {
 
 ---
 
+<!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: Go Runtime и планировщик](02_runtime_scheduler.md) | [Вперёд: Сборка мусора →](03_gc.md)
+[← Назад: Go Runtime и планировщик](./02_runtime_scheduler.md) | [Вперёд: Сборка мусора (GC) →](./03_gc.md)
+<!-- /AUTO: NAV -->

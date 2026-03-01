@@ -637,6 +637,8 @@ http.ListenAndServe(cfg.Addr, r)
 
 ---
 
+<!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: Хранилище](./02_storage.md) | [Вперёд: Тестирование →](./04_testing.md)
+[← Назад: 2. Хранилище: PostgreSQL и Redis](./02_storage.md) | [Вперёд: 4. Тестирование и бенчмарки →](./04_testing.md)
+<!-- /AUTO: NAV -->

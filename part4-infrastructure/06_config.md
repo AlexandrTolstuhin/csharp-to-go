@@ -3412,7 +3412,8 @@ func main() {
 
 ---
 
-**Вопросы?** Откройте issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
+<!-- AUTO: NAV -->
+**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: 4.5 Observability](./05_observability.md) | [Вперёд: 4.7 Контейнеризация →](./07_containerization.md)
-
+[← Назад: Observability: Логирование, Метрики, Трейсинг](./05_observability.md) | [Вперёд: Контейнеризация: Docker, Compose и Kubernetes для Go →](./07_containerization.md)
+<!-- /AUTO: NAV -->

@@ -4628,6 +4628,8 @@ spec:
 
 ---
 
+<!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: 6.3 Производительность](./03_performance.md) | [К оглавлению](../README.md)
+[← Назад: Производительность](./03_performance.md) | [Вперёд: Часть 7: Лайфкодинг →](../part7-interview/)
+<!-- /AUTO: NAV -->

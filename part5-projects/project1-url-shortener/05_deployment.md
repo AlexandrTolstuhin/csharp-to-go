@@ -670,4 +670,8 @@ graph LR
 
 ---
 
-[← Тестирование](./04_testing.md) | [← Назад к Части 5](../README.md) | [Часть 6: Best Practices →](../../part6-best-practices/README.md)
+<!-- AUTO: NAV -->
+**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
+
+[← Назад: 4. Тестирование и бенчмарки](./04_testing.md) | [Вперёд: Проект 2: E-commerce Platform →](../project2-ecommerce/README.md)
+<!-- /AUTO: NAV -->

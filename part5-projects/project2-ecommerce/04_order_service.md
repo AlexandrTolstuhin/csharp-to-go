@@ -1238,4 +1238,8 @@ func (c *PaymentConsumer) RunCompleted(ctx context.Context) error {
 
 ---
 
-[← Catalog Service](./03_catalog_service.md) | [Payment & Notification →](./05_payment_notification.md)
+<!-- AUTO: NAV -->
+**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
+
+[← Назад: 3. Catalog Service (CQRS)](./03_catalog_service.md) | [Вперёд: 5. Payment Service и Notification Service →](./05_payment_notification.md)
+<!-- /AUTO: NAV -->

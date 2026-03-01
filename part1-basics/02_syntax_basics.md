@@ -2421,6 +2421,8 @@ fmt.Println(string(data))
 
 ---
 
+<!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: Установка и настройка](01_setup_environment.md) | [Вперёд: Ключевые отличия от C# →](03_key_differences.md)
+[← Назад: Установка и настройка окружения Go](./01_setup_environment.md) | [Вперёд: Коллекции и производительность: Шпаргалка для C# разработчика →](./02a_collections_performance_cheatsheet.md)
+<!-- /AUTO: NAV -->

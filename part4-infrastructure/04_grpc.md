@@ -3676,7 +3676,8 @@ curl http://localhost:8080/swagger.json
 
 ---
 
-**Вопросы?** Откройте issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
+<!-- AUTO: NAV -->
+**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: 4.3 Очереди сообщений](./03_message_queues.md) | [Вперёд: 4.5 Observability →](./05_observability.md)
-
+[← Назад: Очереди сообщений](./03_message_queues.md) | [Вперёд: Observability: Логирование, Метрики, Трейсинг →](./05_observability.md)
+<!-- /AUTO: NAV -->

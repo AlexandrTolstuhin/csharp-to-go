@@ -859,4 +859,8 @@ cd proto && buf generate
 
 ---
 
-[← README проекта](./README.md) | [User Service →](./02_user_service.md)
+<!-- AUTO: NAV -->
+**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
+
+[← Назад: Проект 2: E-commerce Platform](./README.md) | [Вперёд: 2. User Service →](./02_user_service.md)
+<!-- /AUTO: NAV -->

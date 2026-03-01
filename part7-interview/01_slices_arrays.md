@@ -797,4 +797,8 @@ nums = filter(nums, func(n int) bool { return n%2 == 0 })
 
 ---
 
-[← Назад: Введение в часть 7](./README.md) | [Вперёд: Горутины и каналы →](./02_goroutines_channels.md)
+<!-- AUTO: NAV -->
+**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
+
+[← Назад к оглавлению](./README.md) | [Вперёд: Задачи на горутины и каналы →](./02_goroutines_channels.md)
+<!-- /AUTO: NAV -->

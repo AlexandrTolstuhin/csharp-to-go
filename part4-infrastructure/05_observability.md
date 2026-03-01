@@ -4032,7 +4032,8 @@ datasources:
 
 ---
 
-**Вопросы?** Откройте issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
+<!-- AUTO: NAV -->
+**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: 4.4 gRPC](./04_grpc.md) | [Вперёд: 4.6 Конфигурация →](./06_config.md)
-
+[← Назад: gRPC](./04_grpc.md) | [Вперёд: Конфигурация: Управление настройками в Go →](./06_config.md)
+<!-- /AUTO: NAV -->

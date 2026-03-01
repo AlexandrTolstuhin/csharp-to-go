@@ -780,4 +780,8 @@ func (f *FeatureFlags) Reload(newFlags map[string]int) {
 
 ---
 
-[← Назад: Горутины и каналы](./02_goroutines_channels.md) | [Вперёд: Алгоритмические задачи →](./04_algorithms.md)
+<!-- AUTO: NAV -->
+**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
+
+[← Назад: Задачи на горутины и каналы](./02_goroutines_channels.md) | [Вперёд: Алгоритмические задачи →](./04_algorithms.md)
+<!-- /AUTO: NAV -->

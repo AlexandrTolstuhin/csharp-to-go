@@ -485,4 +485,8 @@ debug.SetMemoryLimit(1 << 30) // 1GB
 
 ---
 
-[← Назад: Синтаксис и базовые концепции](02_syntax_basics.md) | [Вперёд: Ключевые отличия от C# →](03_key_differences.md)
+<!-- AUTO: NAV -->
+**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
+
+[← Назад: Синтаксис и базовые концепции (сравнение с C#)](./02_syntax_basics.md) | [Вперёд: Ключевые отличия от C# →](./03_key_differences.md)
+<!-- /AUTO: NAV -->

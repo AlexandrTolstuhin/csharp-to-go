@@ -1199,4 +1199,8 @@ sequenceDiagram
 
 ---
 
-[← Назад: Слайсы и массивы](./01_slices_arrays.md) | [Вперёд: Map и синхронизация →](./03_maps_sync.md)
+<!-- AUTO: NAV -->
+**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
+
+[← Назад: Задачи на слайсы и массивы](./01_slices_arrays.md) | [Вперёд: Задачи на map и синхронизацию →](./03_maps_sync.md)
+<!-- /AUTO: NAV -->

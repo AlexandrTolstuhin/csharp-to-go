@@ -3677,7 +3677,8 @@ func main() {
 
 ---
 
-**Вопросы?** Откройте issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
+<!-- AUTO: NAV -->
+**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: 4.2 Кэширование](./02_caching.md) | [Вперёд: 4.4 gRPC →](./04_grpc.md)
-
+[← Назад: Кэширование](./02_caching.md) | [Вперёд: gRPC →](./04_grpc.md)
+<!-- /AUTO: NAV -->

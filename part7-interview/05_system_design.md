@@ -762,4 +762,8 @@ stateDiagram-v2
 
 ---
 
-[← Назад: Алгоритмические задачи](./04_algorithms.md) | [Назад к содержанию части 7 →](./README.md)
+<!-- AUTO: NAV -->
+**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
+
+[← Назад: Алгоритмические задачи](./04_algorithms.md) | [К оглавлению части](./README.md)
+<!-- /AUTO: NAV -->

@@ -2457,6 +2457,8 @@ Handler-8           48.2kB ± 0%    72.1kB ± 0%   +49.6%  ⚠️
 
 ---
 
+<!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: 2.6 Тестирование и бенчмаркинг](./06_testing_benchmarking.md) | [Вперёд: Часть 3: Web & API →](../part3-web-api/)
+[← Назад: Тестирование и бенчмаркинг](./06_testing_benchmarking.md) | [Вперёд: Часть 3: Web & API →](../part3-web-api/)
+<!-- /AUTO: NAV -->

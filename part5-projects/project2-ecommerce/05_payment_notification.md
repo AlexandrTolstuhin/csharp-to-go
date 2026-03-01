@@ -1062,4 +1062,8 @@ func (c *OrderConsumer) Run(ctx context.Context) error {
 
 ---
 
-[← Order Service](./04_order_service.md) | [API Gateway →](./06_api_gateway.md)
+<!-- AUTO: NAV -->
+**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
+
+[← Назад: 4. Order Service (Saga Pattern)](./04_order_service.md) | [Вперёд: 6. API Gateway →](./06_api_gateway.md)
+<!-- /AUTO: NAV -->

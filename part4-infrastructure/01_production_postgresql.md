@@ -4193,7 +4193,8 @@ func (s *OrderService) List(ctx context.Context, limit, offset int) ([]Order, er
 
 ---
 
+<!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: 3.5 Документация API](../part3-web-api/05_api_documentation.md) | [Вперёд: 4.2 Кэширование →](./02_caching.md)
-
+[← Назад к оглавлению](./README.md) | [Вперёд: Кэширование →](./02_caching.md)
+<!-- /AUTO: NAV -->

@@ -2909,6 +2909,8 @@ jobs:
 
 ---
 
+<!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: 6.2 Инструменты](./02_tools.md) | [Вперёд: 6.4 Production Checklist →](./04_production_checklist.md)
+[← Назад: Инструменты](./02_tools.md) | [Вперёд: Production Checklist →](./04_production_checklist.md)
+<!-- /AUTO: NAV -->

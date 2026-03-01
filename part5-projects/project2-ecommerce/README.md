@@ -441,4 +441,6 @@ open http://localhost:16686
 
 ---
 
-[← Назад: Проект 1 — URL Shortener](../project1-url-shortener/) | [Доменная модель →](./01_domain.md)
+<!-- AUTO: NAV -->
+[← Назад: 5. Деплой: Docker Compose и Production](../project1-url-shortener/05_deployment.md) | [Вперёд: 1. Доменная модель и контракты →](./01_domain.md)
+<!-- /AUTO: NAV -->

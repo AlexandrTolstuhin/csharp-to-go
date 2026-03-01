@@ -1696,6 +1696,8 @@ func (wp *WorkerPool) Stop() {
 
 ---
 
+<!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: Ключевые отличия от C#](03_key_differences.md) | [Вперёд: Часть 2 →](../part2-advanced/README.md)
+[← Назад: Ключевые отличия от C#](./03_key_differences.md) | [Вперёд: Часть 2: Продвинутые темы →](../part2-advanced/)
+<!-- /AUTO: NAV -->

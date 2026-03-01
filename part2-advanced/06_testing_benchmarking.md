@@ -2721,6 +2721,8 @@ func BenchmarkRateLimiter(b *testing.B) {
 
 ---
 
+<!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: 2.5 Обработка ошибок](./05_error_handling.md) | [Вперёд: 2.7 Профилирование и оптимизация →](./07_profiling_optimization.md)
+[← Назад: Обработка ошибок (продвинутый уровень)](./05_error_handling.md) | [Вперёд: Профилирование и оптимизация →](./07_profiling_optimization.md)
+<!-- /AUTO: NAV -->

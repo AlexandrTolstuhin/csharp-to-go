@@ -2362,6 +2362,8 @@ make install-tools
 
 ---
 
+<!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: 6.1 Архитектура кода](./01_code_architecture.md) | [Вперёд: 6.3 Производительность →](./03_performance.md)
+[← Назад: Код и архитектура](./01_code_architecture.md) | [Вперёд: Производительность →](./03_performance.md)
+<!-- /AUTO: NAV -->

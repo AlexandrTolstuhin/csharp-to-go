@@ -68,4 +68,6 @@
 
 ---
 
-[← Назад: Часть 6. Best Practices](../part6-best-practices/README.md)
+<!-- AUTO: NAV -->
+[← Назад к оглавлению](../README.md) | [Предыдущая часть: Часть 6: Best Practices](../part6-best-practices/)
+<!-- /AUTO: NAV -->

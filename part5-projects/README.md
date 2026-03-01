@@ -28,4 +28,6 @@
 
 ---
 
-[← Назад к оглавлению](../README.md) | [Предыдущая часть](../part4-infrastructure/) | [Следующая часть →](../part6-best-practices/)
+<!-- AUTO: NAV -->
+[← Назад к оглавлению](../README.md) | [Предыдущая часть: Часть 4: Инфраструктура](../part4-infrastructure/) | [Следующая часть: Часть 6: Best Practices →](../part6-best-practices/)
+<!-- /AUTO: NAV -->

@@ -1549,6 +1549,8 @@ func (s *OrderService) CreateOrder(ctx context.Context, order Order) error {
 
 ---
 
+<!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Структура проекта](./02_project_structure.md) | [Вперёд: Валидация и сериализация →](./04_validation_serialization.md)
+[← Назад: Структура проекта Go](./02_project_structure.md) | [Вперёд: Валидация и сериализация →](./04_validation_serialization.md)
+<!-- /AUTO: NAV -->

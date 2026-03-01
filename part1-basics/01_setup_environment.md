@@ -680,4 +680,8 @@ go env -w GOPROXY=https://yourproxy.com
 
 ---
 
-[← Назад: README Части 1](README.md) | [Вперёд: Синтаксис и базовые концепции →](02_syntax_basics.md)
+<!-- AUTO: NAV -->
+**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
+
+[← Назад к оглавлению](./README.md) | [Вперёд: Синтаксис и базовые концепции (сравнение с C#) →](./02_syntax_basics.md)
+<!-- /AUTO: NAV -->

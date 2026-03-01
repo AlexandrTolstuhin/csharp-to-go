@@ -605,6 +605,8 @@ if err != nil {
 
 ---
 
+<!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: Доменная модель](./01_domain.md) | [Вперёд: HTTP слой →](./03_http.md)
+[← Назад: 1. Доменная модель и сервисный слой](./01_domain.md) | [Вперёд: 3. HTTP слой: net/http и chi →](./03_http.md)
+<!-- /AUTO: NAV -->

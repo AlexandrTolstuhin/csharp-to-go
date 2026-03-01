@@ -2146,6 +2146,8 @@ curl http://localhost:8080/panic
 
 ---
 
+<!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Часть 2: Профилирование и оптимизация](../part2-advanced/07_profiling_optimization.md) | [Вперёд: Структура проекта →](./02_project_structure.md)
+[← Назад к оглавлению](./README.md) | [Вперёд: Структура проекта Go →](./02_project_structure.md)
+<!-- /AUTO: NAV -->

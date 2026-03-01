@@ -1672,6 +1672,8 @@ public class SingleFlight<TKey, TValue>
 
 ---
 
+<!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: 2.3 Сборка мусора (GC)](03_gc.md) | [Вперёд: 2.5 Обработка ошибок →](05_error_handling.md)
+[← Назад: Сборка мусора (GC)](./03_gc.md) | [Вперёд: Обработка ошибок (продвинутый уровень) →](./05_error_handling.md)
+<!-- /AUTO: NAV -->

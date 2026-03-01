@@ -1028,4 +1028,8 @@ if errors.Is(err, domain.ErrUserNotFound) { ... }
 
 ---
 
-[← Доменная модель](./01_domain.md) | [Catalog Service →](./03_catalog_service.md)
+<!-- AUTO: NAV -->
+**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
+
+[← Назад: 1. Доменная модель и контракты](./01_domain.md) | [Вперёд: 3. Catalog Service (CQRS) →](./03_catalog_service.md)
+<!-- /AUTO: NAV -->
