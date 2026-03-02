@@ -191,7 +191,7 @@ urlshortener/
 <!-- AUTO: MATERIALS -->
 ## Материалы
 
-### 1. [1. Доменная модель и сервисный слой](./01_domain.md)
+### 1. [Доменная модель и сервисный слой](./01_domain.md)
 
 - Анализ требований
 - Доменная модель
@@ -202,7 +202,7 @@ urlshortener/
 - Точка входа: main.go
 - Сравнительная таблица
 
-### 2. [2. Хранилище: PostgreSQL и Redis](./02_storage.md)
+### 2. [Хранилище: PostgreSQL и Redis](./02_storage.md)
 
 - Схема базы данных
 - PostgreSQL с pgx v5
@@ -212,14 +212,14 @@ urlshortener/
 - Обработка ошибок хранилища
 - Сравнительная таблица
 
-### 3. [3. HTTP слой: net/http и chi](./03_http.md)
+### 3. [HTTP слой: net/http и chi](./03_http.md)
 
 - Архитектура HTTP слоя
 - Часть 1: net/http (Go 1.22+)
 - Часть 2: Миграция на chi
 - Сравнительная таблица
 
-### 4. [4. Тестирование и бенчмарки](./04_testing.md)
+### 4. [Тестирование и бенчмарки](./04_testing.md)
 
 - Стратегия тестирования
 - Unit тесты сервисного слоя
@@ -229,7 +229,7 @@ urlshortener/
 - Покрытие кода
 - Сравнительная таблица
 
-### 5. [5. Деплой: Docker Compose и Production](./05_deployment.md)
+### 5. [Деплой: Docker Compose и Production](./05_deployment.md)
 
 - Dockerfile
 - Docker Compose

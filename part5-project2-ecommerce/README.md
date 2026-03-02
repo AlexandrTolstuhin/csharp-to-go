@@ -356,7 +356,7 @@ CREATE TABLE payment_attempts (
 <!-- AUTO: MATERIALS -->
 ## Материалы
 
-### 1. [1. Доменная модель и контракты](./01_domain.md)
+### 1. [Доменная модель и контракты](./01_domain.md)
 
 - Обзор доменов
 - Protobuf контракты
@@ -366,7 +366,7 @@ CREATE TABLE payment_attempts (
 - Сравнение с C#
 - Генерация кода
 
-### 2. [2. User Service](./02_user_service.md)
+### 2. [User Service](./02_user_service.md)
 
 - Обзор сервиса
 - Конфигурация
@@ -379,7 +379,7 @@ CREATE TABLE payment_attempts (
 - Тестирование
 - Сравнение с C#
 
-### 3. [3. Catalog Service (CQRS)](./03_catalog_service.md)
+### 3. [Catalog Service (CQRS)](./03_catalog_service.md)
 
 - Обзор и CQRS
 - Доменная модель
@@ -392,7 +392,7 @@ CREATE TABLE payment_attempts (
 - Тестирование
 - Сравнение с C#
 
-### 4. [4. Order Service (Saga Pattern)](./04_order_service.md)
+### 4. [Order Service (Saga Pattern)](./04_order_service.md)
 
 - Обзор и Saga Pattern
 - State Machine заказа
@@ -406,14 +406,14 @@ CREATE TABLE payment_attempts (
 - Тестирование
 - Сравнение с C#
 
-### 5. [5. Payment Service и Notification Service](./05_payment_notification.md)
+### 5. [Payment Service и Notification Service](./05_payment_notification.md)
 
 - Payment Service
 - Notification Service
 - Тестирование
 - Сравнение с C#
 
-### 6. [6. API Gateway](./06_api_gateway.md)
+### 6. [API Gateway](./06_api_gateway.md)
 
 - Обзор
 - Структура и routing
@@ -425,7 +425,7 @@ CREATE TABLE payment_attempts (
 - Тестирование
 - Сравнение с C#
 
-### 7. [7. Деплой и наблюдаемость](./07_deployment.md)
+### 7. [Деплой и наблюдаемость](./07_deployment.md)
 
 - Docker Compose
 - Dockerfiles

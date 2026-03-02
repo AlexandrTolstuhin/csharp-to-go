@@ -42,7 +42,7 @@
 
 - [Горутины и каналы](./part2-advanced/01_goroutines_channels.md)
 - [Go Runtime и планировщик](./part2-advanced/02_runtime_scheduler.md)
-- [Аллокатор памяти Go (Memory Allocator Internals)](./part2-advanced/02a_memory_allocator.md)
+- [2.2a Аллокатор памяти Go (Memory Allocator Internals)](./part2-advanced/02a_memory_allocator.md)
 - [Сборка мусора (GC)](./part2-advanced/03_gc.md)
 - [Примитивы синхронизации](./part2-advanced/04_sync_primitives.md)
 - [Обработка ошибок (продвинутый уровень)](./part2-advanced/05_error_handling.md)
@@ -75,23 +75,23 @@
 
 ### [Проект 1: URL Shortener](./part5-project1-url-shortener/)
 
-- [1. Доменная модель и сервисный слой](./part5-project1-url-shortener/01_domain.md)
-- [2. Хранилище: PostgreSQL и Redis](./part5-project1-url-shortener/02_storage.md)
-- [3. HTTP слой: net/http и chi](./part5-project1-url-shortener/03_http.md)
-- [4. Тестирование и бенчмарки](./part5-project1-url-shortener/04_testing.md)
-- [5. Деплой: Docker Compose и Production](./part5-project1-url-shortener/05_deployment.md)
+- [Доменная модель и сервисный слой](./part5-project1-url-shortener/01_domain.md)
+- [Хранилище: PostgreSQL и Redis](./part5-project1-url-shortener/02_storage.md)
+- [HTTP слой: net/http и chi](./part5-project1-url-shortener/03_http.md)
+- [Тестирование и бенчмарки](./part5-project1-url-shortener/04_testing.md)
+- [Деплой: Docker Compose и Production](./part5-project1-url-shortener/05_deployment.md)
 
 ---
 
 ### [Проект 2: E-commerce Platform](./part5-project2-ecommerce/)
 
-- [1. Доменная модель и контракты](./part5-project2-ecommerce/01_domain.md)
-- [2. User Service](./part5-project2-ecommerce/02_user_service.md)
-- [3. Catalog Service (CQRS)](./part5-project2-ecommerce/03_catalog_service.md)
-- [4. Order Service (Saga Pattern)](./part5-project2-ecommerce/04_order_service.md)
-- [5. Payment Service и Notification Service](./part5-project2-ecommerce/05_payment_notification.md)
-- [6. API Gateway](./part5-project2-ecommerce/06_api_gateway.md)
-- [7. Деплой и наблюдаемость](./part5-project2-ecommerce/07_deployment.md)
+- [Доменная модель и контракты](./part5-project2-ecommerce/01_domain.md)
+- [User Service](./part5-project2-ecommerce/02_user_service.md)
+- [Catalog Service (CQRS)](./part5-project2-ecommerce/03_catalog_service.md)
+- [Order Service (Saga Pattern)](./part5-project2-ecommerce/04_order_service.md)
+- [Payment Service и Notification Service](./part5-project2-ecommerce/05_payment_notification.md)
+- [API Gateway](./part5-project2-ecommerce/06_api_gateway.md)
+- [Деплой и наблюдаемость](./part5-project2-ecommerce/07_deployment.md)
 
 ---
 

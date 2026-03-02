@@ -31,7 +31,7 @@
 - Оптимизация под планировщик
 - Практические примеры
 
-### 3. [Аллокатор памяти Go (Memory Allocator Internals)](./02a_memory_allocator.md)
+### 3. [2.2a Аллокатор памяти Go (Memory Allocator Internals)](./02a_memory_allocator.md)
 
 - Введение
 - 1. Virtual Memory vs Physical Memory
