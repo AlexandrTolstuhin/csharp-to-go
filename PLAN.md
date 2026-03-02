@@ -56,6 +56,35 @@
 
 ---
 
+### Part 6: Code generation (расширение существующего файла)
+
+**Файл**: `part6-best-practices/02_tools.md` — добавить разделы
+
+**Обоснование**: Базовый раздел `go generate` с таблицей инструментов есть, но нет практических примеров. C# разработчики знают Source Generators и T4 — нужна проекция.
+
+**Что добавить**:
+- `sqlc`: полный workflow — схема → `sqlc.yaml` → генерация → использование
+- `mockgen` vs `moq`: сравнение подходов, когда что выбрать
+- `stringer` + `enumer`: генерация String()/MarshalJSON() для const-перечислений
+- `buf generate`: современный protoc workflow вместо прямого вызова protoc
+- Сравнение с C# Source Generators и T4 Templates
+
+---
+
+### Part 1: go work / workspaces (расширение существующего файла)
+
+**Файл**: `part1-basics/01_setup_environment.md` или `part6-best-practices/02_tools.md`
+
+**Обоснование**: `go.work` (Go 1.18+) не раскрыт. Нужен для монорепозиториев и локальной разработки нескольких связанных модулей — типичный сценарий при переходе с .NET Solution.
+
+**Что добавить**:
+- `go work init`, `go work use`, `go work sync`
+- Структура `go.work` файла
+- Когда использовать workspaces vs `replace` directive
+- Сравнение с .NET Solution (.sln) и project references
+
+---
+
 ### Проект 3: Trading/Fintech Platform
 **Сложность**: Advanced
 
