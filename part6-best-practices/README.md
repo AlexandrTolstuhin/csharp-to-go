@@ -37,29 +37,29 @@
 ### 3. [Производительность](./03_performance.md)
 
 - Введение
-- 1. Философия оптимизации
-- 2. Zero-Allocation Patterns
-- 3. Контроль Escape Analysis
-- 4. Memory Layout и Alignment
-- 5. Compiler Optimizations
-- 6. Runtime в контейнерах
-- 7. Production Memory Patterns
-- 8. Real-World Case Studies
+- Философия оптимизации
+- Zero-Allocation Patterns
+- Контроль Escape Analysis
+- Memory Layout и Alignment
+- Compiler Optimizations
+- Runtime в контейнерах
+- Production Memory Patterns
+- Real-World Case Studies
 - Практические примеры
 
 ### 4. [Production Checklist](./04_production_checklist.md)
 
 - Введение
-- 1. Graceful Shutdown
-- 2. Health Checks
-- 3. Structured Logging
-- 4. Metrics и Monitoring
-- 5. Distributed Tracing
-- 6. Resilience Patterns
-- 7. Error Handling в Production
-- 8. Configuration
-- 9. Docker Images
-- 10. Security Checklist
+- Graceful Shutdown
+- Health Checks
+- Structured Logging
+- Metrics и Monitoring
+- Distributed Tracing
+- Resilience Patterns
+- Error Handling в Production
+- Configuration
+- Docker Images
+- Security Checklist
 - Практические примеры
 - Master Checklist
 <!-- /AUTO: MATERIALS -->

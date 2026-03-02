@@ -34,16 +34,16 @@
 ### 3. [Аллокатор памяти Go (Memory Allocator Internals)](./02a_memory_allocator.md)
 
 - Введение
-- 1. Virtual Memory vs Physical Memory
-- 2. Страницы памяти (Memory Pages)
-- 3. Архитектура аллокатора Go
-- 4. mheap: Глобальная куча
-- 5. mspan: Единица управления памятью
-- 6. mcentral: Центральный кеш
-- 7. mcache: Per-P кеш
-- 8. Size Classes
-- 9. Путь аллокации: от new() до памяти
-- 10. Диагностика и мониторинг
+- Virtual Memory vs Physical Memory
+- Страницы памяти (Memory Pages)
+- Архитектура аллокатора Go
+- mheap: Глобальная куча
+- mspan: Единица управления памятью
+- mcentral: Центральный кеш
+- mcache: Per-P кеш
+- Size Classes
+- Путь аллокации: от new() до памяти
+- Диагностика и мониторинг
 - Практические примеры
 
 ### 4. [Сборка мусора (GC)](./03_gc.md)
@@ -87,29 +87,29 @@
 ### 7. [Тестирование и бенчмаркинг](./06_testing_benchmarking.md)
 
 - Введение
-- 1. testing package: основы
-- 2. Table-Driven Tests (идиоматичный Go)
-- 3. Subtests (t.Run)
-- 4. Мокирование и тестирование зависимостей
-- 5. Benchmarks: производительность
-- 6. Fuzzing (Go 1.18+)
-- 7. Integration Tests
-- 8. Race Detector
-- 9. Coverage (покрытие кода)
-- 10. Идиоматичные паттерны тестирования
-- 11. Тестирование конкурентного кода
-- 12. Новые возможности тестирования (Go 1.24-1.25)
+- testing package: основы
+- Table-Driven Tests (идиоматичный Go)
+- Subtests (t.Run)
+- Мокирование и тестирование зависимостей
+- Benchmarks: производительность
+- Fuzzing (Go 1.18+)
+- Integration Tests
+- Race Detector
+- Coverage (покрытие кода)
+- Идиоматичные паттерны тестирования
+- Тестирование конкурентного кода
+- Новые возможности тестирования (Go 1.24-1.25)
 - Практические примеры
 
 ### 8. [Профилирование и оптимизация](./07_profiling_optimization.md)
 
 - Введение
-- 1. pprof: CPU профилирование
-- 2. go tool trace: расширенный анализ
-- 3. Комплексный workflow профилирования
-- 4. Оптимизация production-кода
-- 5. Continuous Profiling
-- 5. Новые инструменты профилирования (Go 1.25-1.26)
+- pprof: CPU профилирование
+- go tool trace: расширенный анализ
+- Комплексный workflow профилирования
+- Оптимизация production-кода
+- Continuous Profiling
+- Новые инструменты профилирования (Go 1.25-1.26)
 - Практические примеры
 <!-- /AUTO: MATERIALS -->
 

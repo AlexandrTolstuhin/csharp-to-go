@@ -92,7 +92,8 @@ def build_materials(part_dir):
         lines.append(f'### {i}. [{title}](./{fname})')
         lines.append('')
         for item in toc_items:
-            lines.append(f'- {item}')
+            clean_item = re.sub(r'^\d+\.(\w+)?\s+', '', item)
+            lines.append(f'- {clean_item}')
         lines.append('')
 
     while lines and lines[-1] == '':
