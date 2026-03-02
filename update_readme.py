@@ -86,7 +86,7 @@ def build_materials(part_dir):
         except OSError:
             continue
 
-        title = re.sub(r'^\d+\.(\d+)?\s+', '', extract_title(file_content) or fname)
+        title = re.sub(r'^\d+\.(\w+)?\s+', '', extract_title(file_content) or fname)
         toc_items = extract_toc_top_items(file_content)
 
         lines.append(f'### {i}. [{title}](./{fname})')
