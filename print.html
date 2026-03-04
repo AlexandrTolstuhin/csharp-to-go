@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-66c694bb.js";
+            window.path_to_searchindex_js = "searchindex-83edfc80.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-1a7de78a.js"></script>
@@ -228,249 +228,7 @@
 <p>Этот проект распространяется под лицензией <strong>MIT License</strong> — см. файл <a href="LICENSE">LICENSE</a>.</p>
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="установка-и-настройка-окружения-go"><a class="header" href="#установка-и-настройка-окружения-go">Установка и настройка окружения Go</a></h1>
-<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
-<p>Для работы с Go вам понадобится установить компилятор, настроить окружение и выбрать подходящую IDE. Этот процесс значительно проще, чем в C#.</p>
-<blockquote>
-<p>💡 <strong>Для C# разработчиков</strong>:</p>
-<ul>
-<li><strong>C#</strong>: Visual Studio + .NET SDK (многогигабайтная установка с множеством компонентов)</li>
-<li><strong>Go</strong>: Один компактный SDK (~150 MB) + легковесная IDE</li>
-<li><strong>C#</strong>: NuGet packages хранятся глобально (global packages folder)</li>
-<li><strong>Go</strong>: Go Modules управляют зависимостями локально для каждого проекта</li>
-<li><strong>C#</strong>: .csproj файлы, solution файлы, сложная структура</li>
-<li><strong>Go</strong>: Один простой go.mod файл на проект</li>
-</ul>
-</blockquote>
-<p>Go был разработан с акцентом на простоту инструментария. Вся установка займёт 10-15 минут.</p>
-<hr>
-<h2 id="цель"><a class="header" href="#цель">Цель</a></h2>
-<p>Настроить полноценное окружение для разработки на Go, которое позволит вам эффективно писать, тестировать и отлаживать код.</p>
-<hr>
-<h2 id="шаг-1-установка-go-версия-126"><a class="header" href="#шаг-1-установка-go-версия-126">Шаг 1: Установка Go (версия 1.26+)</a></h2>
-<h3 id="windows"><a class="header" href="#windows">Windows</a></h3>
-<ol>
-<li>
-<p><strong>Скачайте установщик</strong></p>
-<ul>
-<li>Перейдите на официальный сайт: https://go.dev/dl/</li>
-<li>Скачайте MSI-установщик для Windows (например, <code>go1.26.x.windows-amd64.msi</code>)</li>
-</ul>
-</li>
-<li>
-<p><strong>Запустите установщик</strong></p>
-<ul>
-<li>Запустите скачанный MSI-файл</li>
-<li>Следуйте инструкциям мастера установки</li>
-<li>По умолчанию Go устанавливается в <code>C:\Program Files\Go</code></li>
-</ul>
-</li>
-<li>
-<p><strong>Проверьте установку</strong></p>
-<pre><code class="language-bash">go version
-</code></pre>
-<p>Должно вывести что-то вроде: <code>go version go1.26.x windows/amd64</code></p>
-</li>
-</ol>
-<h3 id="альтернативный-способ-через-winget"><a class="header" href="#альтернативный-способ-через-winget">Альтернативный способ (через winget)</a></h3>
-<pre><code class="language-bash">winget install GoLang.Go
-</code></pre>
-<h3 id="linux"><a class="header" href="#linux">Linux</a></h3>
-<pre><code class="language-bash"># Скачиваем последнюю версию
-wget https://go.dev/dl/go1.26.x.linux-amd64.tar.gz
-
-# Удаляем старую установку (если есть)
-sudo rm -rf /usr/local/go
-
-# Распаковываем в /usr/local
-sudo tar -C /usr/local -xzf go1.26.x.linux-amd64.tar.gz
-
-# Проверяем установку
-go version
-</code></pre>
-<h3 id="macos"><a class="header" href="#macos">macOS</a></h3>
-<pre><code class="language-bash"># Через Homebrew
-brew install go
-
-# Или скачать PKG-установщик с https://go.dev/dl/
-</code></pre>
-<hr>
-<h2 id="шаг-2-настройка-переменных-окружения"><a class="header" href="#шаг-2-настройка-переменных-окружения">Шаг 2: Настройка переменных окружения</a></h2>
-<h3 id="основные-переменные"><a class="header" href="#основные-переменные">Основные переменные</a></h3>
-<h4 id="goroot"><a class="header" href="#goroot">GOROOT</a></h4>
-<p><strong>Что это</strong>: Директория, где установлен Go
-<strong>Нужно ли настраивать</strong>: Обычно <strong>НЕТ</strong> — устанавливается автоматически</p>
-<p><strong>Проверка</strong>:</p>
-<pre><code class="language-bash">go env GOROOT
-</code></pre>
-<p><strong>Когда нужно настраивать вручную</strong>:</p>
-<ul>
-<li>Если вы используете несколько версий Go</li>
-<li>Если установили Go в нестандартную директорию</li>
-</ul>
-<p><strong>Windows</strong> (если нужно):</p>
-<pre><code class="language-cmd">setx GOROOT "C:\Program Files\Go"
-</code></pre>
-<p><strong>Linux/macOS</strong> (добавить в <code>~/.bashrc</code> или <code>~/.zshrc</code>):</p>
-<pre><code class="language-bash">export GOROOT=/usr/local/go
-export PATH=$PATH:$GOROOT/bin
-</code></pre>
-<hr>
-<h4 id="gopath"><a class="header" href="#gopath">GOPATH</a></h4>
-<p><strong>Что это</strong>: Рабочая директория для вашего Go-кода (workspace)
-<strong>Значение по умолчанию</strong>:</p>
-<ul>
-<li>Windows: <code>%USERPROFILE%\go</code> (например, <code>C:\Users\alext\go</code>)</li>
-<li>Linux/macOS: <code>$HOME/go</code></li>
-</ul>
-<p><strong>Структура GOPATH</strong> (устаревшая для модулей, но полезна для понимания):</p>
-<pre><code>$GOPATH/
-├── bin/        # Скомпилированные исполняемые файлы
-├── pkg/        # Скомпилированные пакеты (кэш)
-└── src/        # Исходный код (для legacy проектов без Go Modules)
-</code></pre>
-<p><strong>Рекомендация</strong>: Оставьте значение по умолчанию. Go Modules (появились в Go 1.11) позволяют работать в любой директории.</p>
-<p><strong>Проверка</strong>:</p>
-<pre><code class="language-bash">go env GOPATH
-</code></pre>
-<p><strong>Добавление $GOPATH/bin в PATH</strong> (важно для установленных утилит):</p>
-<p><strong>Windows</strong>:</p>
-<pre><code class="language-cmd">setx PATH "%PATH%;%USERPROFILE%\go\bin"
-</code></pre>
-<p><strong>Linux/macOS</strong> (добавить в <code>~/.bashrc</code> или <code>~/.zshrc</code>):</p>
-<pre><code class="language-bash">export PATH=$PATH:$GOPATH/bin
-</code></pre>
-<hr>
-<h4 id="go111module"><a class="header" href="#go111module">GO111MODULE</a></h4>
-<p><strong>Что это</strong>: Включение/выключение Go Modules
-<strong>Значение по умолчанию</strong>: <code>on</code> (начиная с Go 1.16)</p>
-<p><strong>Проверка</strong>:</p>
-<pre><code class="language-bash">go env GO111MODULE
-</code></pre>
-<p><strong>Рекомендация</strong>: Оставьте <code>on</code> или пустым (автоматический режим)</p>
-<hr>
-<h3 id="go-modules-современный-подход"><a class="header" href="#go-modules-современный-подход">Go Modules (современный подход)</a></h3>
-<p><strong>Что это</strong>: Система управления зависимостями, появившаяся в Go 1.11</p>
-<p><strong>Преимущества</strong>:</p>
-<ul>
-<li>Работа вне GOPATH</li>
-<li>Версионирование зависимостей</li>
-<li>Reproducible builds</li>
-<li>Идиоматичный подход для современного Go</li>
-</ul>
-<p><strong>Инициализация модуля</strong>:</p>
-<pre><code class="language-bash"># В директории вашего проекта
-go mod init github.com/yourusername/yourproject
-
-# Для локального проекта (без GitHub)
-go mod init myproject
-</code></pre>
-<p><strong>Файлы Go Modules</strong>:</p>
-<ul>
-<li><code>go.mod</code> — описание модуля и зависимостей</li>
-<li><code>go.sum</code> — контрольные суммы зависимостей (для безопасности)</li>
-</ul>
-<p><strong>Основные команды</strong>:</p>
-<pre><code class="language-bash">go mod tidy        # Удалить неиспользуемые, добавить недостающие зависимости
-go mod download    # Скачать зависимости
-go mod vendor      # Создать vendor-директорию с зависимостями
-go mod verify      # Проверить контрольные суммы
-</code></pre>
-<p><strong>Пример go.mod</strong>:</p>
-<pre><code class="language-go">module github.com/yourusername/myapp
-
-go 1.26
-
-require (
-    github.com/gin-gonic/gin v1.9.1
-    github.com/lib/pq v1.10.9
-)
-</code></pre>
-<hr>
-<h2 id="шаг-3-настройка-ide"><a class="header" href="#шаг-3-настройка-ide">Шаг 3: Настройка IDE</a></h2>
-<h3 id="вариант-1-goland-jetbrains--рекомендуется-для-c-разработчиков"><a class="header" href="#вариант-1-goland-jetbrains--рекомендуется-для-c-разработчиков">Вариант 1: GoLand (JetBrains) — Рекомендуется для C# разработчиков</a></h3>
-<p><strong>Преимущества</strong>:</p>
-<ul>
-<li>Из коробки все работает</li>
-<li>Мощный отладчик</li>
-<li>Рефакторинг</li>
-<li>Интеграция с Go tools</li>
-<li>Знакомый интерфейс для пользователей Rider/IntelliJ</li>
-</ul>
-<p><strong>Установка</strong>:</p>
-<ol>
-<li>Скачайте с https://www.jetbrains.com/go/</li>
-<li>Запустите установщик</li>
-<li>Укажите путь к Go SDK (обычно определяется автоматически)</li>
-</ol>
-<p><strong>Настройка</strong>:</p>
-<ul>
-<li><strong>Settings → Go → GOROOT</strong>: должен быть установлен автоматически</li>
-<li><strong>Settings → Go → Go Modules</strong>: включено по умолчанию</li>
-<li><strong>Settings → Tools → File Watchers</strong>: можно настроить автоматический <code>go fmt</code></li>
-</ul>
-<p><strong>Плагины</strong> (опционально):</p>
-<ul>
-<li><code>Protocol Buffers</code> — для работы с protobuf</li>
-<li><code>Docker</code> — для контейнеризации</li>
-</ul>
-<hr>
-<h3 id="вариант-2-visual-studio-code--go-extension"><a class="header" href="#вариант-2-visual-studio-code--go-extension">Вариант 2: Visual Studio Code + Go Extension</a></h3>
-<p><strong>Установка VS Code</strong>:</p>
-<ol>
-<li>Скачайте с https://code.visualstudio.com/</li>
-<li>Установите</li>
-</ol>
-<p><strong>Установка Go Extension</strong>:</p>
-<ol>
-<li>Откройте VS Code</li>
-<li>Перейдите в Extensions (<code>Ctrl+Shift+X</code>)</li>
-<li>Найдите и установите <strong>“Go”</strong> (от Go Team at Google)</li>
-</ol>
-<p><strong>Первая настройка</strong>:
-При открытии первого <code>.go</code> файла VS Code предложит установить Go tools:</p>
-<ul>
-<li>Нажмите <strong>“Install All”</strong></li>
-</ul>
-<p><strong>Альтернативно</strong> (вручную):</p>
-<pre><code class="language-bash"># Откройте Command Palette (Ctrl+Shift+P)
-# Введите: Go: Install/Update Tools
-# Выберите все тулы и нажмите OK
-</code></pre>
-<p><strong>Устанавливаемые инструменты</strong>:</p>
-<ul>
-<li><code>gopls</code> — Language Server Protocol (автодополнение, навигация)</li>
-<li><code>dlv</code> — Delve debugger</li>
-<li><code>staticcheck</code> — статический анализ</li>
-<li><code>golangci-lint</code> — мета-линтер</li>
-<li>И другие…</li>
-</ul>
-<p><strong>Рекомендуемые настройки</strong> (<code>settings.json</code>):</p>
-<pre><code class="language-json">{
-  "go.useLanguageServer": true,
-  "go.lintOnSave": "workspace",
-  "go.formatTool": "gofmt",
-  "go.lintTool": "golangci-lint",
-  "editor.formatOnSave": true,
-  "[go]": {
-    "editor.defaultFormatter": "golang.go",
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": true
-    }
-  },
-  "go.testFlags": ["-v", "-race"],
-  "go.coverOnSave": true
-}
-</code></pre>
-<p><strong>Полезные расширения для VS Code</strong>:</p>
-<ul>
-<li><strong>Go</strong> (обязательно)</li>
-<li><strong>Error Lens</strong> — показывает ошибки inline</li>
-<li><strong>GitLens</strong> — Git интеграция</li>
-<li><strong>REST Client</strong> — тестирование HTTP API</li>
-<li><strong>Thunder Client</strong> — альтернатива Postman</li>
-</ul>
-<hr>
-<h2 id="шаг-4-настройка-инструментов"><a class="header" href="#шаг-4-настройка-инструментов">Шаг 4: Настройка инструментов</a></h2>
+<h2 id="настройка-инструментов"><a class="header" href="#настройка-инструментов">Настройка инструментов</a></h2>
 <h3 id="go-fmt--форматирование-кода"><a class="header" href="#go-fmt--форматирование-кода">go fmt — Форматирование кода</a></h3>
 <p><strong>Что делает</strong>: Автоматически форматирует код по стандарту Go</p>
 <p><strong>Использование</strong>:</p>
@@ -570,7 +328,7 @@ issues:
 golangci-lint run --out-format=github-actions
 </code></pre>
 <hr>
-<h2 id="шаг-5-создание-первого-проекта"><a class="header" href="#шаг-5-создание-первого-проекта">Шаг 5: Создание первого проекта</a></h2>
+<h2 id="создание-первого-проекта"><a class="header" href="#создание-первого-проекта">Создание первого проекта</a></h2>
 <h3 id="структура-простого-проекта"><a class="header" href="#структура-простого-проекта">Структура простого проекта</a></h3>
 <pre><code class="language-bash"># Создайте директорию проекта (можно где угодно, не обязательно в GOPATH)
 mkdir hello-go
@@ -610,7 +368,7 @@ go vet ./...
 golangci-lint run
 </code></pre>
 <hr>
-<h2 id="шаг-6-дополнительные-инструменты-опционально-но-рекомендуется"><a class="header" href="#шаг-6-дополнительные-инструменты-опционально-но-рекомендуется">Шаг 6: Дополнительные инструменты (опционально, но рекомендуется)</a></h2>
+<h2 id="дополнительные-инструменты"><a class="header" href="#дополнительные-инструменты">Дополнительные инструменты</a></h2>
 <h3 id="staticcheck--мощный-статический-анализатор"><a class="header" href="#staticcheck--мощный-статический-анализатор">staticcheck — Мощный статический анализатор</a></h3>
 <pre><code class="language-bash">go install honnef.co/go/tools/cmd/staticcheck@latest
 
@@ -739,7 +497,7 @@ go env -w GOPROXY=https://yourproxy.com
 </code></pre>
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="синтаксис-и-базовые-концепции-сравнение-с-c"><a class="header" href="#синтаксис-и-базовые-концепции-сравнение-с-c">Синтаксис и базовые концепции (сравнение с C#)</a></h1>
-<h2 id="введение-1"><a class="header" href="#введение-1">Введение</a></h2>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
 <p>Go — минималистичный язык с простым синтаксисом. Если вы приходите из C#, многие концепции покажутся знакомыми, но есть фундаментальные отличия в философии и подходах.</p>
 <p><strong>Философия Go</strong>:</p>
 <ul>
@@ -5462,7 +5220,7 @@ func (r *UserRepository) GetActiveUsers(ctx context.Context) ([]*User, error) {
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="горутины-и-каналы"><a class="header" href="#горутины-и-каналы">Горутины и каналы</a></h1>
 <hr>
-<h2 id="введение-2"><a class="header" href="#введение-2">Введение</a></h2>
+<h2 id="введение-1"><a class="header" href="#введение-1">Введение</a></h2>
 <p>Конкурентность в Go - это один из главных козырей языка и <strong>радикально отличается</strong> от C# async/await.</p>
 <h3 id="философия"><a class="header" href="#философия">Философия</a></h3>
 <p><strong>C#</strong>:</p>
@@ -7039,7 +6797,7 @@ func main() {
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="go-runtime-и-планировщик"><a class="header" href="#go-runtime-и-планировщик">Go Runtime и планировщик</a></h1>
 <hr>
-<h2 id="введение-3"><a class="header" href="#введение-3">Введение</a></h2>
+<h2 id="введение-2"><a class="header" href="#введение-2">Введение</a></h2>
 <p>Go runtime включает в себя <strong>планировщик горутин</strong> (goroutine scheduler), который эффективно мультиплексирует миллионы горутин на ограниченное количество OS threads.</p>
 <h3 id="почему-это-важно"><a class="header" href="#почему-это-важно">Почему это важно?</a></h3>
 <p><strong>C# разработчики</strong> привыкли к тому, что:</p>
@@ -7921,7 +7679,7 @@ func main() {
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="аллокатор-памяти-go-memory-allocator-internals"><a class="header" href="#аллокатор-памяти-go-memory-allocator-internals">Аллокатор памяти Go (Memory Allocator Internals)</a></h1>
 <hr>
-<h2 id="введение-4"><a class="header" href="#введение-4">Введение</a></h2>
+<h2 id="введение-3"><a class="header" href="#введение-3">Введение</a></h2>
 <p>Go runtime включает в себя <strong>собственный аллокатор памяти</strong>, который эффективно управляет выделением и освобождением памяти без обращения к системному malloc() для каждой аллокации.</p>
 <h3 id="почему-это-важно-1"><a class="header" href="#почему-это-важно-1">Почему это важно?</a></h3>
 <p><strong>C# разработчики</strong> привыкли к тому, что:</p>
@@ -9398,7 +9156,7 @@ func main() {
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="сборка-мусора-gc"><a class="header" href="#сборка-мусора-gc">Сборка мусора (GC)</a></h1>
 <hr>
-<h2 id="введение-5"><a class="header" href="#введение-5">Введение</a></h2>
+<h2 id="введение-4"><a class="header" href="#введение-4">Введение</a></h2>
 <blockquote>
 <p>💡 <strong>Рекомендуется</strong>: Перед изучением этого раздела ознакомьтесь с <a href="part2-advanced/02a_memory_allocator.html">2.2a Аллокатор памяти</a> для понимания низкоуровневых структур (mheap, mspan, mcache), которые GC использует для работы.</p>
 </blockquote>
@@ -10704,7 +10462,7 @@ data:
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="примитивы-синхронизации"><a class="header" href="#примитивы-синхронизации">Примитивы синхронизации</a></h1>
 <hr>
-<h2 id="введение-6"><a class="header" href="#введение-6">Введение</a></h2>
+<h2 id="введение-5"><a class="header" href="#введение-5">Введение</a></h2>
 <p>Go предоставляет богатый набор примитивов синхронизации в пакете <code>sync</code> для координации работы горутин. В этом разделе мы рассмотрим каждый примитив в сравнении с аналогами из C#.</p>
 <blockquote>
 <p>💡 <strong>Для C# разработчиков</strong>: В Go философия синхронизации отличается от C#. Вместо “share memory by communicating” (как в .NET с lock и Interlocked), в Go предпочитают “communicate to share memory” через каналы. Но для низкоуровневой синхронизации примитивы <code>sync</code> незаменимы.</p>
@@ -12212,7 +11970,7 @@ public class SingleFlight&lt;TKey, TValue&gt;
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="обработка-ошибок-продвинутый-уровень"><a class="header" href="#обработка-ошибок-продвинутый-уровень">Обработка ошибок (продвинутый уровень)</a></h1>
 <hr>
-<h2 id="введение-7"><a class="header" href="#введение-7">Введение</a></h2>
+<h2 id="введение-6"><a class="header" href="#введение-6">Введение</a></h2>
 <p>В <a href="part1-basics/03_key_differences.html#error-handling-vs-exceptions">разделе 1.3</a> мы познакомились с базовой философией обработки ошибок в Go: <strong>errors are values</strong>, явные проверки, early return. Этот подход кардинально отличается от C# exceptions, но его простота — это только начало.</p>
 <p>В продвинутом уровне мы рассмотрим:</p>
 <ul>
@@ -14134,7 +13892,7 @@ func ProcessOrder(ctx context.Context, orderID int) error {
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="тестирование-и-бенчмаркинг"><a class="header" href="#тестирование-и-бенчмаркинг">Тестирование и бенчмаркинг</a></h1>
 <hr>
-<h2 id="введение-8"><a class="header" href="#введение-8">Введение</a></h2>
+<h2 id="введение-7"><a class="header" href="#введение-7">Введение</a></h2>
 <p>В <a href="part1-basics/04_practice.html">разделе 1.4</a> мы писали практические проекты, но тестирование было минимальным. Теперь, когда мы изучили продвинутые темы (<a href="#горутины-и-каналы">горутины</a>, <a href="part2-advanced/03_gc.html">GC</a>, <a href="part2-advanced/04_sync_primitives.html">синхронизацию</a>, <a href="part2-advanced/05_error_handling.html">обработку ошибок</a>), пришло время научиться тестировать сложный Go код на уровне production.</p>
 <p>В этом разделе мы рассмотрим:</p>
 <ul>
@@ -16455,7 +16213,7 @@ func BenchmarkRateLimiter(b *testing.B) {
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="профилирование-и-оптимизация"><a class="header" href="#профилирование-и-оптимизация">Профилирование и оптимизация</a></h1>
 <hr>
-<h2 id="введение-9"><a class="header" href="#введение-9">Введение</a></h2>
+<h2 id="введение-8"><a class="header" href="#введение-8">Введение</a></h2>
 <p>В предыдущих разделах мы изучили отдельные аспекты производительности Go:</p>
 <ul>
 <li><a href="part2-advanced/03_gc.html">Раздел 2.3 (GC)</a> — pprof для memory profiling, escape analysis, <code>GOGC</code>/<code>GOMEMLIMIT</code></li>
@@ -18524,7 +18282,7 @@ Handler-8           48.2kB ± 0%    72.1kB ± 0%   +49.6%  ⚠️
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="http-в-go-создание-веб-серверов"><a class="header" href="#http-в-go-создание-веб-серверов">HTTP в Go: Создание веб-серверов</a></h1>
 <hr>
-<h2 id="введение-10"><a class="header" href="#введение-10">Введение</a></h2>
+<h2 id="введение-9"><a class="header" href="#введение-9">Введение</a></h2>
 <p>HTTP-сервер — основа любого веб-приложения. В Go работа с HTTP принципиально отличается от ASP.NET Core. Вместо сложного фреймворка с DI-контейнерами, middleware pipeline и контроллерами, Go предлагает минималистичную стандартную библиотеку <code>net/http</code>, которая покрывает большинство потребностей.</p>
 <blockquote>
 <p>💡 <strong>Для C# разработчиков</strong>: Забудьте про <code>Startup.cs</code>, <code>Program.cs</code> с <code>builder.Services</code>, атрибутные роуты и <code>IActionResult</code>. В Go всё проще: функция принимает <code>ResponseWriter</code> и <code>Request</code>, и вы сами решаете, что с ними делать.</p>
@@ -20497,7 +20255,7 @@ curl http://localhost:8080/panic
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="структура-проекта-go"><a class="header" href="#структура-проекта-go">Структура проекта Go</a></h1>
 <hr>
-<h2 id="введение-11"><a class="header" href="#введение-11">Введение</a></h2>
+<h2 id="введение-10"><a class="header" href="#введение-10">Введение</a></h2>
 <p>Структура проекта в Go кардинально отличается от C#. Нет Solution/Project файлов, нет жёсткой иерархии namespace’ов, нет требования “один класс — один файл”. Go продвигает простоту и практичность.</p>
 <blockquote>
 <p>💡 <strong>Для C# разработчиков</strong>: Забудьте про <code>.sln</code>, <code>.csproj</code>, вложенные папки по namespace’ам. В Go структура проекта — это просто папки с файлами <code>.go</code>. Один пакет = одна папка.</p>
@@ -21850,7 +21608,7 @@ func main() {
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="работа-с-данными-postgresql"><a class="header" href="#работа-с-данными-postgresql">Работа с данными (PostgreSQL)</a></h1>
 <hr>
-<h2 id="введение-12"><a class="header" href="#введение-12">Введение</a></h2>
+<h2 id="введение-11"><a class="header" href="#введение-11">Введение</a></h2>
 <p>Работа с базами данных в Go существенно отличается от C#. Вместо мощного ORM (Entity Framework) Go-сообщество предпочитает более простые инструменты: чистый SQL или кодогенерацию.</p>
 <blockquote>
 <p>💡 <strong>Для C# разработчиков</strong>: В Go нет LINQ, нет Change Tracker, нет Lazy Loading. Но есть простота, предсказуемость и полный контроль над SQL.</p>
@@ -23244,7 +23002,7 @@ func (s *OrderService) CreateOrder(ctx context.Context, order Order) error {
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="валидация-и-сериализация"><a class="header" href="#валидация-и-сериализация">Валидация и сериализация</a></h1>
 <hr>
-<h2 id="введение-13"><a class="header" href="#введение-13">Введение</a></h2>
+<h2 id="введение-12"><a class="header" href="#введение-12">Введение</a></h2>
 <p>Сериализация и валидация — критически важные части любого API. В Go эти задачи решаются иначе, чем в C#: нет встроенных Data Annotations, нет System.Text.Json с source generators по умолчанию.</p>
 <blockquote>
 <p>💡 <strong>Для C# разработчиков</strong>: Вместо <code>[Required]</code>, <code>[MaxLength]</code> используется библиотека validator со struct tags. Вместо System.Text.Json — <code>encoding/json</code> или альтернативы.</p>
@@ -24428,7 +24186,7 @@ func (c *ProductClient) GetProduct(ctx context.Context, id int) (*pb.Product, er
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="документация-api"><a class="header" href="#документация-api">Документация API</a></h1>
 <hr>
-<h2 id="введение-14"><a class="header" href="#введение-14">Введение</a></h2>
+<h2 id="введение-13"><a class="header" href="#введение-13">Введение</a></h2>
 <p>Документация API критически важна для разработчиков, использующих ваш сервис. В Go есть два основных подхода: Code-first (генерация спецификации из кода) и API-first (генерация кода из спецификации).</p>
 <blockquote>
 <p>💡 <strong>Для C# разработчиков</strong>: Вместо Swashbuckle с атрибутами <code>[ProducesResponseType]</code> в Go используется swaggo с комментариями. Концепция та же — автогенерация OpenAPI из кода.</p>
@@ -25622,7 +25380,7 @@ serve-docs:
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="production-postgresql"><a class="header" href="#production-postgresql">Production PostgreSQL</a></h1>
 <hr>
-<h2 id="введение-15"><a class="header" href="#введение-15">Введение</a></h2>
+<h2 id="введение-14"><a class="header" href="#введение-14">Введение</a></h2>
 <p>В <a href="#работа-с-данными-postgresql">разделе 3.3</a> мы рассмотрели основы работы с PostgreSQL в Go: database/sql, pgx, sqlc, миграции и Repository pattern. Этот раздел углубляется в <strong>production-ready паттерны</strong> — то, что отличает прототип от системы, обслуживающей миллионы запросов.</p>
 <blockquote>
 <p>💡 <strong>Для C# разработчиков</strong>: Если раздел 3.3 был аналогом “Getting Started with EF Core”, то этот раздел — “EF Core in Production”. Connection resilience, query optimization, zero-downtime deployments — всё это здесь.</p>
@@ -29511,7 +29269,7 @@ func (s *OrderService) List(ctx context.Context, limit, offset int) ([]Order, er
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="кэширование"><a class="header" href="#кэширование">Кэширование</a></h1>
 <hr>
-<h2 id="введение-16"><a class="header" href="#введение-16">Введение</a></h2>
+<h2 id="введение-15"><a class="header" href="#введение-15">Введение</a></h2>
 <p>В <a href="#работа-с-данными-postgresql">разделе 3.3</a> мы настроили работу с PostgreSQL, а в <a href="#production-postgresql">разделе 4.1</a> довели её до production-уровня. Но даже идеально оптимизированная база данных не спасёт от проблем под высокой нагрузкой — именно здесь на помощь приходит <strong>кэширование</strong>.</p>
 <blockquote>
 <p>💡 <strong>Для C# разработчиков</strong>: В ASP.NET Core вы привыкли к <code>IMemoryCache</code>, <code>IDistributedCache</code>, <code>StackExchange.Redis</code>, а также к готовым абстракциям вроде <code>LazyCache</code> и <code>FusionCache</code>. В Go единого интерфейса кэширования нет — вместо этого вы комбинируете конкретные библиотеки и паттерны. Это требует больше ручной работы, но даёт полный контроль над производительностью и поведением.</p>
@@ -31801,7 +31559,7 @@ type sessionWriter struct {
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="очереди-сообщений"><a class="header" href="#очереди-сообщений">Очереди сообщений</a></h1>
 <hr>
-<h2 id="введение-17"><a class="header" href="#введение-17">Введение</a></h2>
+<h2 id="введение-16"><a class="header" href="#введение-16">Введение</a></h2>
 <p>В <a href="#кэширование">разделе 4.2</a> мы рассмотрели Pub/Sub в Redis и упомянули, что для надёжной доставки сообщений нужны специализированные решения. Очереди сообщений (Message Queues) — это фундамент асинхронной архитектуры: они позволяют сервисам обмениваться данными без прямой связи, обеспечивая надёжность, масштабируемость и устойчивость к сбоям.</p>
 <blockquote>
 <p>💡 <strong>Для C# разработчиков</strong>: В .NET вы привыкли к <strong>MassTransit</strong> или <strong>NServiceBus</strong> — высокоуровневым абстракциям, которые скрывают детали транспорта. Вы регистрируете <code>IConsumer&lt;T&gt;</code> в DI, настраиваете retry policies, saga state machines, и фреймворк сам управляет подключениями, сериализацией, dead letter queues и consumer lifecycle. В Go <strong>нет аналога MassTransit</strong>. Вы работаете с клиентскими библиотеками напрямую — это больше кода, но полный контроль над поведением. Горутины делают consumer concurrency тривиальным, а отсутствие скрытой «магии» упрощает отладку.</p>
@@ -35263,7 +35021,7 @@ func main() {
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="grpc"><a class="header" href="#grpc">gRPC</a></h1>
 <hr>
-<h2 id="введение-18"><a class="header" href="#введение-18">Введение</a></h2>
+<h2 id="введение-17"><a class="header" href="#введение-17">Введение</a></h2>
 <p>В <a href="#валидация-и-сериализация">разделе 3.4</a> мы рассмотрели Protocol Buffers как формат сериализации — синтаксис <code>.proto</code> файлов, кодогенерацию через <code>protoc</code> и сравнение с JSON. Теперь мы используем protobuf как основу для <strong>gRPC</strong> — высокопроизводительного RPC-фреймворка, который стал стандартом межсервисного взаимодействия в микросервисных архитектурах.</p>
 <p>gRPC передаёт данные в бинарном формате Protocol Buffers поверх HTTP/2, обеспечивая мультиплексирование, двунаправленный стриминг и сжатие заголовков. В отличие от REST API с JSON, gRPC предлагает строгую типизацию контрактов, автоматическую кодогенерацию клиентов и серверов, и значительно меньший размер сообщений.</p>
 <blockquote>
@@ -38622,7 +38380,7 @@ curl http://localhost:8080/swagger.json
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="observability-логирование-метрики-трейсинг"><a class="header" href="#observability-логирование-метрики-трейсинг">Observability: Логирование, Метрики, Трейсинг</a></h1>
 <hr>
-<h2 id="введение-19"><a class="header" href="#введение-19">Введение</a></h2>
+<h2 id="введение-18"><a class="header" href="#введение-18">Введение</a></h2>
 <p>Observability — это способность понять внутреннее состояние системы по её внешним сигналам. В отличие от мониторинга, который отвечает на заранее известные вопросы (“работает ли сервис?”, “какая нагрузка на CPU?”), observability позволяет исследовать <strong>неизвестные проблемы</strong> — те, которые вы не предвидели при проектировании.</p>
 <p>В предыдущих разделах мы уже добавляли элементы observability фрагментарно: Prometheus метрики в <a href="#production-postgresql">4.1 PostgreSQL</a>, <a href="#кэширование">4.2 Кэширование</a>, <a href="#очереди-сообщений">4.3 Очереди сообщений</a> и OpenTelemetry tracing в <a href="#grpc">4.4 gRPC</a>. Теперь мы соберём полную картину и построим observability как единую систему.</p>
 <p><strong>Три столпа observability</strong>:</p>
@@ -42332,7 +42090,7 @@ datasources:
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="конфигурация-управление-настройками-в-go"><a class="header" href="#конфигурация-управление-настройками-в-go">Конфигурация: Управление настройками в Go</a></h1>
 <hr>
-<h2 id="введение-20"><a class="header" href="#введение-20">Введение</a></h2>
+<h2 id="введение-19"><a class="header" href="#введение-19">Введение</a></h2>
 <p>В <a href="#структура-проекта-go">разделе 3.2</a> мы познакомились с базовым подходом к конфигурации — <code>os.Getenv</code> и простая структура <code>Config</code>. Этого достаточно для учебного проекта, но в production-системах конфигурация — это целая инфраструктура: типизация, валидация, секреты, горячая перезагрузка, мультисреды.</p>
 <p>В предыдущих разделах Части 4 мы уже сталкивались с конфигурацией:</p>
 <ul>
@@ -45392,7 +45150,7 @@ func main() {
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="контейнеризация-docker-compose-и-kubernetes-для-go"><a class="header" href="#контейнеризация-docker-compose-и-kubernetes-для-go">Контейнеризация: Docker, Compose и Kubernetes для Go</a></h1>
 <hr>
-<h2 id="введение-21"><a class="header" href="#введение-21">Введение</a></h2>
+<h2 id="введение-20"><a class="header" href="#введение-20">Введение</a></h2>
 <p>В предыдущих разделах Части 4 мы создали полноценную инфраструктуру:</p>
 <ul>
 <li><strong>4.1</strong>: PostgreSQL с connection pooling и миграциями</li>
@@ -59290,7 +59048,7 @@ spec:
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="код-и-архитектура"><a class="header" href="#код-и-архитектура">Код и архитектура</a></h1>
 <hr>
-<h2 id="введение-22"><a class="header" href="#введение-22">Введение</a></h2>
+<h2 id="введение-21"><a class="header" href="#введение-21">Введение</a></h2>
 <p>В <a href="part1-basics/03_key_differences.html">разделе 1.3</a> мы познакомились с философскими отличиями Go от C#: простота вместо богатства возможностей, композиция вместо наследования, явность вместо магии. Этот раздел систематизирует <strong>архитектурные принципы и идиомы</strong>, которые делают Go-код идиоматичным.</p>
 <blockquote>
 <p>💡 <strong>Для C# разработчиков</strong>: Переход на Go — это не просто изучение нового синтаксиса. Это <strong>смена парадигмы мышления</strong>. Многие паттерны, которые вы годами оттачивали в C#, в Go либо не нужны, либо реализуются принципиально иначе. Этот раздел поможет “разучиться” и научиться заново.</p>
@@ -61237,7 +60995,7 @@ func (s *Service) CreateUser(ctx context.Context, req CreateRequest) (*User, err
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="инструменты"><a class="header" href="#инструменты">Инструменты</a></h1>
 <hr>
-<h2 id="введение-23"><a class="header" href="#введение-23">Введение</a></h2>
+<h2 id="введение-22"><a class="header" href="#введение-22">Введение</a></h2>
 <p>В Go качество кода обеспечивается не только компилятором, но и богатой экосистемой инструментов статического анализа. В отличие от C#, где большинство инструментов интегрировано в Visual Studio или Rider, в Go принят модульный подход — множество специализированных инструментов, объединённых в единый workflow.</p>
 <blockquote>
 <p>💡 <strong>Для C# разработчиков</strong>: Если в C# вы привыкли к Roslyn Analyzers, встроенным в IDE, то в Go вы столкнётесь с отдельными CLI-инструментами. Но не пугайтесь — golangci-lint объединяет 100+ линтеров в один инструмент с единой конфигурацией.</p>
@@ -62235,7 +61993,7 @@ volumes:
 <p>💡 <strong>Почему Go перекомпилирует?</strong> Go компилируется очень быстро (секунды), поэтому hot reload на уровне runtime не нужен. Перекомпиляция гарантирует, что код всегда актуален.</p>
 </blockquote>
 <hr>
-<h2 id="дополнительные-инструменты"><a class="header" href="#дополнительные-инструменты">Дополнительные инструменты</a></h2>
+<h2 id="дополнительные-инструменты-1"><a class="header" href="#дополнительные-инструменты-1">Дополнительные инструменты</a></h2>
 <h3 id="gofumpt--строгое-форматирование"><a class="header" href="#gofumpt--строгое-форматирование">gofumpt — строгое форматирование</a></h3>
 <p>gofumpt — форк gofmt с более строгими правилами форматирования.</p>
 <pre><code class="language-bash"># Установка
@@ -63418,7 +63176,7 @@ make install-tools
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="производительность"><a class="header" href="#производительность">Производительность</a></h1>
 <hr>
-<h2 id="введение-24"><a class="header" href="#введение-24">Введение</a></h2>
+<h2 id="введение-23"><a class="header" href="#введение-23">Введение</a></h2>
 <p>Этот раздел фокусируется на <strong>превентивных практиках производительности</strong> — best practices, которые помогают избежать проблем изначально. Он дополняет материалы по профилированию и GC, рассмотренные ранее:</p>
 <ul>
 <li><strong><a href="part2-advanced/03_gc.html">Раздел 2.3 (GC)</a></strong> — сборка мусора, базовый escape analysis, GOGC/GOMEMLIMIT</li>
@@ -65996,7 +65754,7 @@ jobs:
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="production-checklist"><a class="header" href="#production-checklist">Production Checklist</a></h1>
 <hr>
-<h2 id="введение-25"><a class="header" href="#введение-25">Введение</a></h2>
+<h2 id="введение-24"><a class="header" href="#введение-24">Введение</a></h2>
 <p>Этот раздел — <strong>финальный чек-лист</strong> для подготовки Go-приложения к production. Он объединяет best practices из всего курса в единый практический документ.</p>
 <blockquote>
 <p><strong>Для C# разработчиков</strong>: ASP.NET Core предоставляет многое “из коробки” (health checks, graceful shutdown, DI). В Go вы собираете эти компоненты самостоятельно, что даёт больше контроля, но требует понимания каждой части.</p>
@@ -73268,7 +73026,7 @@ func (q *EfficientQueue[T]) Dequeue() (T, bool) {
 <hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="системный-дизайн-на-go"><a class="header" href="#системный-дизайн-на-go">Системный дизайн на Go</a></h1>
 <hr>
-<h2 id="введение-26"><a class="header" href="#введение-26">Введение</a></h2>
+<h2 id="введение-25"><a class="header" href="#введение-25">Введение</a></h2>
 <p>Задачи на системный дизайн для Senior/Lead уровня в российских компаниях — это не “нарисуй архитектуру Twitter”. Это:</p>
 <blockquote>
 <p>“Реализуй компонент системы прямо здесь, в CoderPad. Production-ready код с учётом конкурентности.”</p>
