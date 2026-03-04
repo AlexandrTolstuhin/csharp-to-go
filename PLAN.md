@@ -1,6 +1,42 @@
 
 ---
 
+### Part 3: Дополнения к разделу JSON (04_validation_serialization.md)
+
+**Файл**: `part3-web-api/04_validation_serialization.md` — дополнить существующий раздел
+
+**Обоснование**: Раздел хорошо покрывает `encoding/json`, easyjson, sonic и экспериментальный v2. Однако есть несколько практически важных тем, которых нет совсем:
+
+**Что добавить**:
+
+1. **json.Number при работе с `any`**
+   - Стандартная ловушка: `json.Unmarshal` в `map[string]any` преобразует все числа в `float64`, что теряет точность для больших `int64`
+   - Решение через `json.Decoder.UseNumber()` и `json.Number`
+   - Сравнение с C#: `JsonElement`, `JsonDocument` и точное хранение чисел в `System.Text.Json`
+   - Актуально для fintech, ID пользователей > 2^53
+
+2. **Потоковая обработка больших JSON (Decoder.Token())**
+   - `json.Decoder.Token()` — низкоуровневый streaming, аналог `Utf8JsonReader` / `JsonTextReader` в C#
+   - Когда использовать: файлы > 10 MB, неограниченные массивы, парсинг NDJSON-потоков
+   - Паттерн: итерация по массиву без загрузки всего в память
+
+3. **go-json (github.com/goccy/go-json)**
+   - Добавить в таблицу benchmarks и описание рядом с easyjson/sonic
+   - Drop-in замена без кодогенерации, в отличие от easyjson
+   - Популярная альтернатива: сравнение трёх быстрых библиотек по сценариям
+
+4. **gjson (github.com/tidwall/gjson)**
+   - Быстрое извлечение полей из JSON без полного парсинга структуры
+   - Аналог `JObject.SelectToken()` / `JsonPath` в Newtonsoft.Json
+   - Когда уместно: middleware, логирование, парсинг webhook-payload без схемы
+
+5. **Актуализация статуса encoding/json/v2**
+   - Уточнить текущий статус (март 2026): пакет `github.com/go-json-experiment/json` vs `GOEXPERIMENT=jsonv2`
+   - Добавить информацию о новых тегах: `json:",omitzero"`, `json:",format:..."`, `json:",unknown"`
+   - Обновить рекомендацию: когда уже можно применять в продакшне
+
+---
+
 ## Доработки существующих частей
 
 ### Part 1: Generics (новый файл)
@@ -64,10 +100,15 @@
 
 **Что добавить**:
 - `sqlc`: полный workflow — схема → `sqlc.yaml` → генерация → использование
-- `mockgen` vs `moq`: сравнение подходов, когда что выбрать
+- `mockgen` vs `moq`: сравнение подходов, когда что выбрать; расширить до трёх вариантов: `gomock (uber-go)` vs `testify/mock` vs `mockery`
 - `stringer` + `enumer`: генерация String()/MarshalJSON() для const-перечислений
 - `buf generate`: современный protoc workflow вместо прямого вызова protoc
 - Сравнение с C# Source Generators и T4 Templates
+- `mockery` (github.com/vektra/mockery) — testify-совместимые моки, `mockery.yaml`, автообнаружение интерфейсов; добавить в сравнительную таблицу
+- `ent` (entgo.io) — ORM с кодогенерацией: схема на Go → типобезопасный query builder; C# аналог: EF Core `Scaffold-DbContext`; нет нигде в курсе
+- Написание собственного генератора: `go/ast` для анализа → `text/template` для вывода → `go/format` для форматирования; C# аналог: Roslyn `ISourceGenerator`
+- Актуализировать путь `golang/mock` → `go.uber.org/mock` в `06_testing_benchmarking.md` (оригинал заархивирован в 2023, в тексте курса указан устаревший путь)
+- Актуализировать `oapi-codegen` в `05_api_documentation.md`: пакет переехал `deepmap/oapi-codegen` → `oapi-codegen/oapi-codegen` (с v2, 2023)
 
 ---
 
