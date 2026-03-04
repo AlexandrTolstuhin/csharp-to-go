@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-9fb8a2cc.js";
+            window.path_to_searchindex_js = "../searchindex-b8def063.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-30443d92.js"></script>
@@ -181,89 +181,6 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="22a-аллокатор-памяти-go-memory-allocator-internals"><a class="header" href="#22a-аллокатор-памяти-go-memory-allocator-internals">2.2a Аллокатор памяти Go (Memory Allocator Internals)</a></h1>
-<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
-<ul>
-<li><a href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5">Введение</a>
-<ul>
-<li><a href="#%D0%BF%D0%BE%D1%87%D0%B5%D0%BC%D1%83-%D1%8D%D1%82%D0%BE-%D0%B2%D0%B0%D0%B6%D0%BD%D0%BE">Почему это важно?</a></li>
-<li><a href="#%D1%87%D1%82%D0%BE-%D0%B2%D1%8B-%D1%83%D0%B7%D0%BD%D0%B0%D0%B5%D1%82%D0%B5">Что вы узнаете</a></li>
-</ul>
-</li>
-<li><a href="#1-virtual-memory-vs-physical-memory">1. Virtual Memory vs Physical Memory</a>
-<ul>
-<li><a href="#11-%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D1%8B-%D0%B2%D0%B8%D1%80%D1%82%D1%83%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B9-%D0%BF%D0%B0%D0%BC%D1%8F%D1%82%D0%B8">1.1 Основы виртуальной памяти</a></li>
-<li><a href="#12-%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-net-clr">1.2 Сравнение с .NET CLR</a></li>
-<li><a href="#13-mmap-%D0%B8-%D1%80%D0%B5%D0%B7%D0%B5%D1%80%D0%B2%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BF%D0%B0%D0%BC%D1%8F%D1%82%D0%B8">1.3 mmap и резервирование памяти</a></li>
-</ul>
-</li>
-<li><a href="#2-%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D1%8B-%D0%BF%D0%B0%D0%BC%D1%8F%D1%82%D0%B8-memory-pages">2. Страницы памяти (Memory Pages)</a>
-<ul>
-<li><a href="#21-page-%D0%B8-page-fault">2.1 Page и page fault</a></li>
-<li><a href="#22-huge-pages-%D0%B2-go">2.2 Huge Pages в Go</a></li>
-<li><a href="#23-%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-net-gc-regions">2.3 Сравнение с .NET GC Regions</a></li>
-</ul>
-</li>
-<li><a href="#3-%D0%B0%D1%80%D1%85%D0%B8%D1%82%D0%B5%D0%BA%D1%82%D1%83%D1%80%D0%B0-%D0%B0%D0%BB%D0%BB%D0%BE%D0%BA%D0%B0%D1%82%D0%BE%D1%80%D0%B0-go">3. Архитектура аллокатора Go</a>
-<ul>
-<li><a href="#31-%D0%BE%D0%B1%D1%89%D0%B0%D1%8F-%D1%81%D1%85%D0%B5%D0%BC%D0%B0-mheap-%E2%86%92-mcentral-%E2%86%92-mcache">3.1 Общая схема: mheap → mcentral → mcache</a></li>
-<li><a href="#32-%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-net-sohlohpoh">3.2 Сравнение с .NET SOH/LOH/POH</a></li>
-</ul>
-</li>
-<li><a href="#4-mheap-%D0%B3%D0%BB%D0%BE%D0%B1%D0%B0%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D0%BA%D1%83%D1%87%D0%B0">4. mheap: Глобальная куча</a>
-<ul>
-<li><a href="#41-%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%B0-%D0%B8-%D0%BD%D0%B0%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D0%B5">4.1 Структура и назначение</a></li>
-<li><a href="#42-arena-%D0%B8-heap-growth">4.2 Arena и heap growth</a></li>
-</ul>
-</li>
-<li><a href="#5-mspan-%D0%B5%D0%B4%D0%B8%D0%BD%D0%B8%D1%86%D0%B0-%D1%83%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D1%8F-%D0%BF%D0%B0%D0%BC%D1%8F%D1%82%D1%8C%D1%8E">5. mspan: Единица управления памятью</a>
-<ul>
-<li><a href="#51-%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%B0-mspan">5.1 Структура mspan</a></li>
-<li><a href="#52-bitmap-%D0%B4%D0%BB%D1%8F-%D0%BE%D1%82%D1%81%D0%BB%D0%B5%D0%B6%D0%B8%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F-%D0%BE%D0%B1%D1%8A%D0%B5%D0%BA%D1%82%D0%BE%D0%B2">5.2 Bitmap для отслеживания объектов</a></li>
-<li><a href="#53-%D1%81%D0%BE%D1%81%D1%82%D0%BE%D1%8F%D0%BD%D0%B8%D1%8F-span">5.3 Состояния span</a></li>
-</ul>
-</li>
-<li><a href="#6-mcentral-%D1%86%D0%B5%D0%BD%D1%82%D1%80%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9-%D0%BA%D0%B5%D1%88">6. mcentral: Центральный кеш</a>
-<ul>
-<li><a href="#61-%D1%80%D0%BE%D0%BB%D1%8C-%D0%B2-%D0%BC%D0%BD%D0%BE%D0%B3%D0%BE%D0%BF%D0%BE%D1%82%D0%BE%D1%87%D0%BD%D0%BE%D0%B9-%D0%B0%D0%BB%D0%BB%D0%BE%D0%BA%D0%B0%D1%86%D0%B8%D0%B8">6.1 Роль в многопоточной аллокации</a></li>
-<li><a href="#62-partial-%D0%B8-full-span-%D1%81%D0%BF%D0%B8%D1%81%D0%BA%D0%B8">6.2 Partial и Full span списки</a></li>
-</ul>
-</li>
-<li><a href="#7-mcache-per-p-%D0%BA%D0%B5%D1%88">7. mcache: Per-P кеш</a>
-<ul>
-<li><a href="#71-%D1%81%D0%B2%D1%8F%D0%B7%D1%8C-%D1%81-p-processor">7.1 Связь с P (Processor)</a></li>
-<li><a href="#72-tiny-allocator">7.2 Tiny allocator</a></li>
-<li><a href="#73-%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-net-thread-allocation-context">7.3 Сравнение с .NET Thread allocation context</a></li>
-</ul>
-</li>
-<li><a href="#8-size-classes">8. Size Classes</a>
-<ul>
-<li><a href="#81-%D1%87%D1%82%D0%BE-%D1%82%D0%B0%D0%BA%D0%BE%D0%B5-size-class">8.1 Что такое size class</a></li>
-<li><a href="#82-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-size-classes-%D0%B2-go">8.2 Таблица size classes в Go</a></li>
-<li><a href="#83-%D0%BE%D0%BF%D1%82%D0%B8%D0%BC%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80-%D0%BF%D0%BE%D0%B4-size-classes">8.3 Оптимизация структур под size classes</a></li>
-</ul>
-</li>
-<li><a href="#9-%D0%BF%D1%83%D1%82%D1%8C-%D0%B0%D0%BB%D0%BB%D0%BE%D0%BA%D0%B0%D1%86%D0%B8%D0%B8-%D0%BE%D1%82-new-%D0%B4%D0%BE-%D0%BF%D0%B0%D0%BC%D1%8F%D1%82%D0%B8">9. Путь аллокации: от new() до памяти</a>
-<ul>
-<li><a href="#91-mallocgc-%D0%BF%D0%BE%D1%88%D0%B0%D0%B3%D0%BE%D0%B2%D0%BE">9.1 mallocgc() пошагово</a></li>
-<li><a href="#92-fast-path-vs-slow-path">9.2 Fast path vs Slow path</a></li>
-<li><a href="#93-tiny-small-%D0%B8-large-%D0%B0%D0%BB%D0%BB%D0%BE%D0%BA%D0%B0%D1%86%D0%B8%D0%B8">9.3 Tiny, Small и Large аллокации</a></li>
-</ul>
-</li>
-<li><a href="#10-%D0%B4%D0%B8%D0%B0%D0%B3%D0%BD%D0%BE%D1%81%D1%82%D0%B8%D0%BA%D0%B0-%D0%B8-%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3">10. Диагностика и мониторинг</a>
-<ul>
-<li><a href="#101-runtimememstats-%D0%B4%D0%B5%D1%82%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE">10.1 runtime.MemStats детально</a></li>
-<li><a href="#102-godebug-%D1%84%D0%BB%D0%B0%D0%B3%D0%B8">10.2 GODEBUG флаги</a></li>
-<li><a href="#103-pprof-%D0%B2%D0%B8%D0%B7%D1%83%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F">10.3 pprof визуализация</a></li>
-</ul>
-</li>
-<li><a href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B">Практические примеры</a>
-<ul>
-<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7-size-class-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-benchmark">Пример 1: Анализ size class через benchmark</a></li>
-<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3-%D0%B0%D0%BB%D0%BB%D0%BE%D0%BA%D0%B0%D1%82%D0%BE%D1%80%D0%B0-%D0%B2-runtime">Пример 2: Мониторинг аллокатора в runtime</a></li>
-<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-prometheus-%D0%BC%D0%B5%D1%82%D1%80%D0%B8%D0%BA%D0%B8-%D0%B0%D0%BB%D0%BB%D0%BE%D0%BA%D0%B0%D1%82%D0%BE%D1%80%D0%B0">Пример 3: Prometheus метрики аллокатора</a></li>
-</ul>
-</li>
-</ul>
 <hr>
 <h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
 <p>Go runtime включает в себя <strong>собственный аллокатор памяти</strong>, который эффективно управляет выделением и освобождением памяти без обращения к системному malloc() для каждой аллокации.</p>

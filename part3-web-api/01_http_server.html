@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-9fb8a2cc.js";
+            window.path_to_searchindex_js = "../searchindex-b8def063.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-30443d92.js"></script>
@@ -181,115 +181,6 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="31-http-в-go-создание-веб-серверов"><a class="header" href="#31-http-в-go-создание-веб-серверов">3.1 HTTP в Go: Создание веб-серверов</a></h1>
-<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
-<ul>
-<li><a href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5">Введение</a>
-<ul>
-<li><a href="#%D1%87%D1%82%D0%BE-%D0%B2%D1%8B-%D1%83%D0%B7%D0%BD%D0%B0%D0%B5%D1%82%D0%B5">Что вы узнаете</a></li>
-</ul>
-</li>
-<li><a href="#%D1%84%D0%B8%D0%BB%D0%BE%D1%81%D0%BE%D1%84%D0%B8%D1%8F-nethttp-vs-aspnet-core">Философия: net/http vs ASP.NET Core</a>
-<ul>
-<li><a href="#%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5-%D1%80%D0%B0%D0%B7%D0%BB%D0%B8%D1%87%D0%B8%D1%8F-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4%D0%BE%D0%B2">Ключевые различия подходов</a></li>
-<li><a href="#aspnet-core-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4">ASP.NET Core подход</a></li>
-<li><a href="#go-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4">Go подход</a></li>
-<li><a href="#%D0%BF%D0%BE%D1%87%D0%B5%D0%BC%D1%83-go-%D0%BF%D1%80%D0%BE%D1%89%D0%B5">Почему Go проще?</a></li>
-</ul>
-</li>
-<li><a href="#nethttp-%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D1%8B">net/http: основы</a>
-<ul>
-<li><a href="#handler-%D0%B8-handlerfunc">Handler и HandlerFunc</a>
-<ul>
-<li><a href="#%D1%81%D0%BF%D0%BE%D1%81%D0%BE%D0%B1-1-%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D1%84%D0%B5%D0%B9%D1%81%D0%B0">Способ 1: Реализация интерфейса</a></li>
-<li><a href="#%D1%81%D0%BF%D0%BE%D1%81%D0%BE%D0%B1-2-handlerfunc-%D1%87%D0%B0%D1%89%D0%B5-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D1%83%D0%B5%D1%82%D1%81%D1%8F">Способ 2: HandlerFunc (чаще используется)</a></li>
-<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-c">Сравнение с C#</a></li>
-</ul>
-</li>
-<li><a href="#servemux-%D0%BC%D0%B0%D1%80%D1%88%D1%80%D1%83%D1%82%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2">ServeMux: маршрутизация запросов</a>
-<ul>
-<li><a href="#%D0%BE%D0%B3%D1%80%D0%B0%D0%BD%D0%B8%D1%87%D0%B5%D0%BD%D0%B8%D1%8F-servemux-go--122">Ограничения ServeMux (Go &lt; 1.22)</a></li>
-<li><a href="#%D0%BD%D0%BE%D0%B2%D1%8B%D0%B9-servemux-%D0%B2-go-122">Новый ServeMux в Go 1.22+</a></li>
-<li><a href="#%D0%BC%D0%B8%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D1%81-chi-%D0%BD%D0%B0-stdlib-go-122">Миграция с chi на stdlib (Go 1.22+)</a></li>
-</ul>
-</li>
-<li><a href="#%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0-%D1%81-request">Работа с Request</a>
-<ul>
-<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-aspnet-core">Сравнение с ASP.NET Core</a></li>
-</ul>
-</li>
-<li><a href="#%D1%84%D0%BE%D1%80%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-response">Формирование Response</a>
-<ul>
-<li><a href="#helper-%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8-%D0%B4%D0%BB%D1%8F-%D0%BE%D1%82%D0%B2%D0%B5%D1%82%D0%BE%D0%B2">Helper-функции для ответов</a></li>
-</ul>
-</li>
-<li><a href="#graceful-shutdown">Graceful Shutdown</a>
-<ul>
-<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-aspnet-core-1">Сравнение с ASP.NET Core</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#middleware-pattern">Middleware Pattern</a>
-<ul>
-<li><a href="#%D0%BA%D0%BE%D0%BD%D1%86%D0%B5%D0%BF%D1%86%D0%B8%D1%8F-middleware-%D0%B2-go">Концепция middleware в Go</a>
-<ul>
-<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-aspnet-core-2">Сравнение с ASP.NET Core</a></li>
-</ul>
-</li>
-<li><a href="#%D1%86%D0%B5%D0%BF%D0%BE%D1%87%D0%BA%D0%B0-middleware">Цепочка middleware</a></li>
-<li><a href="#%D1%82%D0%B8%D0%BF%D0%B8%D1%87%D0%BD%D1%8B%D0%B5-middleware">Типичные middleware</a>
-<ul>
-<li><a href="#recovery-%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0-%D0%BF%D0%B0%D0%BD%D0%B8%D0%BA%D0%B8">Recovery (обработка паники)</a></li>
-<li><a href="#logging">Logging</a></li>
-<li><a href="#cors">CORS</a></li>
-<li><a href="#authentication">Authentication</a></li>
-<li><a href="#rate-limiting">Rate Limiting</a></li>
-</ul>
-</li>
-<li><a href="#%D0%BF%D0%B5%D1%80%D0%B5%D0%B4%D0%B0%D1%87%D0%B0-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-context">Передача данных через context</a></li>
-</ul>
-</li>
-<li><a href="#%D0%BF%D0%BE%D0%BF%D1%83%D0%BB%D1%8F%D1%80%D0%BD%D1%8B%D0%B5-%D1%80%D0%BE%D1%83%D1%82%D0%B5%D1%80%D1%8B">Популярные роутеры</a>
-<ul>
-<li><a href="#chi--%D0%B8%D0%B4%D0%B8%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%BD%D1%8B%D0%B9-%D0%B2%D1%8B%D0%B1%D0%BE%D1%80">chi — идиоматичный выбор</a>
-<ul>
-<li><a href="#%D0%BF%D1%80%D0%B5%D0%B8%D0%BC%D1%83%D1%89%D0%B5%D1%81%D1%82%D0%B2%D0%B0-chi">Преимущества chi</a></li>
-</ul>
-</li>
-<li><a href="#gin--%D1%81%D0%B0%D0%BC%D1%8B%D0%B9-%D0%BF%D0%BE%D0%BF%D1%83%D0%BB%D1%8F%D1%80%D0%BD%D1%8B%D0%B9">gin — самый популярный</a>
-<ul>
-<li><a href="#%D0%BE%D1%81%D0%BE%D0%B1%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8-gin">Особенности gin</a></li>
-</ul>
-</li>
-<li><a href="#echo--%D1%8D%D0%BB%D0%B5%D0%B3%D0%B0%D0%BD%D1%82%D0%BD%D1%8B%D0%B9-api">echo — элегантный API</a>
-<ul>
-<li><a href="#%D0%BE%D1%81%D0%BE%D0%B1%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8-echo">Особенности echo</a></li>
-</ul>
-</li>
-<li><a href="#fiber--%D0%BC%D0%B0%D0%BA%D1%81%D0%B8%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D0%BF%D1%80%D0%BE%D0%B8%D0%B7%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D1%8C">fiber — максимальная производительность</a>
-<ul>
-<li><a href="#%D0%BE%D1%81%D0%BE%D0%B1%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8-fiber">Особенности fiber</a></li>
-</ul>
-</li>
-<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-%D1%80%D0%BE%D1%83%D1%82%D0%B5%D1%80%D0%BE%D0%B2">Сравнительная таблица роутеров</a></li>
-<li><a href="#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D1%87%D1%82%D0%BE-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C">Когда что использовать?</a></li>
-</ul>
-</li>
-<li><a href="#context-%D0%B2-http-handlers">Context в HTTP handlers</a>
-<ul>
-<li><a href="#request-context">Request Context</a></li>
-<li><a href="#timeout-middleware">Timeout middleware</a></li>
-<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-aspnet-core-3">Сравнение с ASP.NET Core</a></li>
-</ul>
-</li>
-<li><a href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B">Практические примеры</a>
-<ul>
-<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-rest-api-%D1%81-nethttp">Пример 1: REST API с net/http</a></li>
-<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-rest-api-%D1%81-chi">Пример 2: REST API с chi</a></li>
-<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-middleware-chain">Пример 3: Middleware chain</a></li>
-</ul>
-</li>
-</ul>
 <hr>
 <h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
 <p>HTTP-сервер — основа любого веб-приложения. В Go работа с HTTP принципиально отличается от ASP.NET Core. Вместо сложного фреймворка с DI-контейнерами, middleware pipeline и контроллерами, Go предлагает минималистичную стандартную библиотеку <code>net/http</code>, которая покрывает большинство потребностей.</p>

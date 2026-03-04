@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-9fb8a2cc.js";
+            window.path_to_searchindex_js = "../searchindex-b8def063.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-30443d92.js"></script>
@@ -181,113 +181,6 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="64-production-checklist"><a class="header" href="#64-production-checklist">6.4 Production Checklist</a></h1>
-<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
-<ul>
-<li><a href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5">Введение</a>
-<ul>
-<li><a href="#c-vs-go-production-ready-%D0%B8%D0%B7-%D0%BA%D0%BE%D1%80%D0%BE%D0%B1%D0%BA%D0%B8">C# vs Go: Production-Ready “из коробки”</a></li>
-<li><a href="#%D1%81%D0%B2%D1%8F%D0%B7%D1%8C-%D1%81-%D0%B4%D1%80%D1%83%D0%B3%D0%B8%D0%BC%D0%B8-%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB%D0%B0%D0%BC%D0%B8-%D0%BA%D1%83%D1%80%D1%81%D0%B0">Связь с другими разделами курса</a></li>
-</ul>
-</li>
-<li><a href="#1-graceful-shutdown">1. Graceful Shutdown</a>
-<ul>
-<li><a href="#11-%D0%B7%D0%B0%D1%87%D0%B5%D0%BC-%D0%BD%D1%83%D0%B6%D0%B5%D0%BD-graceful-shutdown">1.1 Зачем нужен graceful shutdown</a></li>
-<li><a href="#12-%D1%81%D0%B8%D0%B3%D0%BD%D0%B0%D0%BB%D1%8B-%D0%BE%D1%81">1.2 Сигналы ОС</a></li>
-<li><a href="#13-%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD-%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8">1.3 Паттерн реализации</a></li>
-<li><a href="#14-shutdown-order">1.4 Shutdown order</a></li>
-<li><a href="#15-kubernetes-%D0%B8%D0%BD%D1%82%D0%B5%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D1%8F">1.5 Kubernetes интеграция</a></li>
-</ul>
-</li>
-<li><a href="#2-health-checks">2. Health Checks</a>
-<ul>
-<li><a href="#21-%D1%82%D0%B8%D0%BF%D1%8B-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%BE%D0%BA">2.1 Типы проверок</a></li>
-<li><a href="#22-%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-endpoints">2.2 Реализация endpoints</a></li>
-<li><a href="#23-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%BA%D0%B0-%D0%B7%D0%B0%D0%B2%D0%B8%D1%81%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D0%B5%D0%B9">2.3 Проверка зависимостей</a></li>
-<li><a href="#24-kubernetes-probes">2.4 Kubernetes probes</a></li>
-</ul>
-</li>
-<li><a href="#3-structured-logging">3. Structured Logging</a>
-<ul>
-<li><a href="#31-production-requirements">3.1 Production requirements</a></li>
-<li><a href="#32-slog-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F">3.2 slog конфигурация</a></li>
-<li><a href="#33-%D1%83%D1%80%D0%BE%D0%B2%D0%BD%D0%B8-%D0%BB%D0%BE%D0%B3%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F">3.3 Уровни логирования</a></li>
-<li><a href="#34-%D0%BC%D0%B0%D1%81%D0%BA%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-sensitive-data">3.4 Маскирование sensitive data</a></li>
-<li><a href="#35-request-id-%D0%B8-correlation">3.5 Request ID и correlation</a></li>
-</ul>
-</li>
-<li><a href="#4-metrics-%D0%B8-monitoring">4. Metrics и Monitoring</a>
-<ul>
-<li><a href="#41-red-metrics">4.1 RED metrics</a></li>
-<li><a href="#42-prometheus-%D1%8D%D0%BA%D1%81%D0%BF%D0%BE%D1%80%D1%82">4.2 Prometheus экспорт</a></li>
-<li><a href="#43-%D0%B1%D0%B8%D0%B7%D0%BD%D0%B5%D1%81-%D0%BC%D0%B5%D1%82%D1%80%D0%B8%D0%BA%D0%B8">4.3 Бизнес-метрики</a></li>
-<li><a href="#44-alerting">4.4 Alerting</a></li>
-</ul>
-</li>
-<li><a href="#5-distributed-tracing">5. Distributed Tracing</a>
-<ul>
-<li><a href="#51-%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-tracing-%D0%BD%D0%B5%D0%BE%D0%B1%D1%85%D0%BE%D0%B4%D0%B8%D0%BC">5.1 Когда tracing необходим</a></li>
-<li><a href="#52-opentelemetry-setup">5.2 OpenTelemetry setup</a></li>
-<li><a href="#53-sampling-strategies">5.3 Sampling strategies</a></li>
-</ul>
-</li>
-<li><a href="#6-resilience-patterns">6. Resilience Patterns</a>
-<ul>
-<li><a href="#61-rate-limiting">6.1 Rate Limiting</a></li>
-<li><a href="#62-circuit-breaker">6.2 Circuit Breaker</a></li>
-<li><a href="#63-retry-%D1%81-exponential-backoff">6.3 Retry с Exponential Backoff</a></li>
-<li><a href="#64-timeouts-%D0%B8-deadlines">6.4 Timeouts и Deadlines</a></li>
-<li><a href="#65-bulkhead-pattern">6.5 Bulkhead pattern</a></li>
-</ul>
-</li>
-<li><a href="#7-error-handling-%D0%B2-production">7. Error Handling в Production</a>
-<ul>
-<li><a href="#71-%D0%BA%D0%BB%D0%B0%D1%81%D1%81%D0%B8%D1%84%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D1%8F-%D0%BE%D1%88%D0%B8%D0%B1%D0%BE%D0%BA">7.1 Классификация ошибок</a></li>
-<li><a href="#72-rfc-7807-problem-details">7.2 RFC 7807 Problem Details</a></li>
-<li><a href="#73-panic-recovery">7.3 Panic recovery</a></li>
-<li><a href="#74-error-tracking">7.4 Error tracking</a></li>
-</ul>
-</li>
-<li><a href="#8-configuration">8. Configuration</a>
-<ul>
-<li><a href="#81-12-factor-app">8.1 12-Factor App</a></li>
-<li><a href="#82-environment-variables">8.2 Environment variables</a></li>
-<li><a href="#83-secrets-management">8.3 Secrets management</a></li>
-<li><a href="#84-fail-fast-validation">8.4 Fail fast validation</a></li>
-</ul>
-</li>
-<li><a href="#9-docker-images">9. Docker Images</a>
-<ul>
-<li><a href="#91-multi-stage-build">9.1 Multi-stage build</a></li>
-<li><a href="#92-base-images">9.2 Base images</a></li>
-<li><a href="#93-security-scanning">9.3 Security scanning</a></li>
-<li><a href="#94-non-root-user">9.4 Non-root user</a></li>
-</ul>
-</li>
-<li><a href="#10-security-checklist">10. Security Checklist</a>
-<ul>
-<li><a href="#101-input-validation">10.1 Input validation</a></li>
-<li><a href="#102-sql-injection-prevention">10.2 SQL injection prevention</a></li>
-<li><a href="#103-security-headers">10.3 Security headers</a></li>
-<li><a href="#104-dependency-scanning">10.4 Dependency scanning</a></li>
-</ul>
-</li>
-<li><a href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B">Практические примеры</a>
-<ul>
-<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-production-ready-http-server">Пример 1: Production-Ready HTTP Server</a></li>
-<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-complete-maingo-template">Пример 2: Complete main.go Template</a></li>
-<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-kubernetes-manifests">Пример 3: Kubernetes Manifests</a></li>
-</ul>
-</li>
-<li><a href="#master-checklist">Master Checklist</a>
-<ul>
-<li><a href="#infrastructure">Infrastructure</a></li>
-<li><a href="#observability">Observability</a></li>
-<li><a href="#resilience">Resilience</a></li>
-<li><a href="#security">Security</a></li>
-<li><a href="#docker--kubernetes">Docker &amp; Kubernetes</a></li>
-</ul>
-</li>
-</ul>
 <hr>
 <h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
 <p>Этот раздел — <strong>финальный чек-лист</strong> для подготовки Go-приложения к production. Он объединяет best practices из всего курса в единый практический документ.</p>

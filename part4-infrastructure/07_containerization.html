@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-9fb8a2cc.js";
+            window.path_to_searchindex_js = "../searchindex-b8def063.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-30443d92.js"></script>
@@ -181,119 +181,6 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="47-контейнеризация-docker-compose-и-kubernetes-для-go"><a class="header" href="#47-контейнеризация-docker-compose-и-kubernetes-для-go">4.7 Контейнеризация: Docker, Compose и Kubernetes для Go</a></h1>
-<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
-<ul>
-<li><a href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5">Введение</a></li>
-<li><a href="#%D1%8D%D0%BA%D0%BE%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0-c-vs-go">Экосистема: C# vs Go</a></li>
-<li><a href="#docker-%D0%B4%D0%BB%D1%8F-go-%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B9">Docker для Go приложений</a>
-<ul>
-<li><a href="#%D0%B1%D0%B0%D0%B7%D0%BE%D0%B2%D1%8B%D0%B9-dockerfile-%D0%BA%D0%B0%D0%BA-%D0%BD%D0%B5-%D0%BD%D0%B0%D0%B4%D0%BE">Базовый Dockerfile: как НЕ надо</a></li>
-<li><a href="#multi-stage-builds">Multi-stage builds</a>
-<ul>
-<li><a href="#%D0%BF%D0%BE%D1%87%D0%B5%D0%BC%D1%83-multi-stage-%D0%BA%D1%80%D0%B8%D1%82%D0%B8%D1%87%D0%B5%D0%BD-%D0%B4%D0%BB%D1%8F-go">Почему multi-stage критичен для Go</a></li>
-<li><a href="#%D0%B1%D0%B0%D0%B7%D0%BE%D0%B2%D1%8B%D0%B9-%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD-builder--runtime">Базовый паттерн: builder + runtime</a></li>
-<li><a href="#%D0%BA%D1%8D%D1%88%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D0%B7%D0%B0%D0%B2%D0%B8%D1%81%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D0%B5%D0%B9">Кэширование зависимостей</a></li>
-<li><a href="#cgo-%D0%B8-alpine">CGO и Alpine</a></li>
-</ul>
-</li>
-<li><a href="#scratch-vs-alpine-vs-distroless">Scratch vs Alpine vs Distroless</a>
-<ul>
-<li><a href="#from-scratch-%D0%BC%D0%B8%D0%BD%D0%B8%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9-%D0%BE%D0%B1%D1%80%D0%B0%D0%B7">FROM scratch: минимальный образ</a></li>
-<li><a href="#alpine-%D0%B1%D0%B0%D0%BB%D0%B0%D0%BD%D1%81-%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%80%D0%B0-%D0%B8-%D1%83%D1%82%D0%B8%D0%BB%D0%B8%D1%82">Alpine: баланс размера и утилит</a></li>
-<li><a href="#distroless-%D0%B1%D0%B5%D0%B7%D0%BE%D0%BF%D0%B0%D1%81%D0%BD%D0%BE%D1%81%D1%82%D1%8C-google">Distroless: безопасность Google</a></li>
-<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-%D0%B1%D0%B0%D0%B7%D0%BE%D0%B2%D1%8B%D1%85-%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%BE%D0%B2">Сравнительная таблица базовых образов</a></li>
-<li><a href="#%D0%B1%D0%BB%D0%BE%D0%BA-%D1%81%D1%85%D0%B5%D0%BC%D0%B0-%D0%B2%D1%8B%D0%B1%D0%BE%D1%80%D0%B0-%D0%B1%D0%B0%D0%B7%D0%BE%D0%B2%D0%BE%D0%B3%D0%BE-%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%B0">Блок-схема выбора базового образа</a></li>
-</ul>
-</li>
-<li><a href="#%D0%B1%D0%B5%D0%B7%D0%BE%D0%BF%D0%B0%D1%81%D0%BD%D0%BE%D1%81%D1%82%D1%8C-docker-%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%BE%D0%B2">Безопасность Docker-образов</a>
-<ul>
-<li><a href="#non-root-%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8C">Non-root пользователь</a></li>
-<li><a href="#%D1%81%D0%BA%D0%B0%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D1%83%D1%8F%D0%B7%D0%B2%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D0%B5%D0%B9-trivy">Сканирование уязвимостей (Trivy)</a></li>
-<li><a href="#dockerignore">.dockerignore</a></li>
-<li><a href="#secrets-%D0%B2-build-time">Secrets в build-time</a></li>
-</ul>
-</li>
-<li><a href="#%D0%BE%D0%BF%D1%82%D0%B8%D0%BC%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%80%D0%B0-%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%B0">Оптимизация размера образа</a>
-<ul>
-<li><a href="#%D1%84%D0%BB%D0%B0%D0%B3%D0%B8-%D0%BA%D0%BE%D0%BC%D0%BF%D0%B8%D0%BB%D1%8F%D1%86%D0%B8%D0%B8-ldflags">Флаги компиляции: ldflags</a></li>
-<li><a href="#upx-%D0%BA%D0%BE%D0%BC%D0%BF%D1%80%D0%B5%D1%81%D1%81%D0%B8%D1%8F">UPX компрессия</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#production-docker-patterns">Production Docker Patterns</a>
-<ul>
-<li><a href="#health-checks-%D0%B2-dockerfile">Health Checks в Dockerfile</a></li>
-<li><a href="#graceful-shutdown">Graceful Shutdown</a></li>
-<li><a href="#%D0%BB%D0%BE%D0%B3%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D0%B2-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80%D0%B5">Логирование в контейнере</a></li>
-<li><a href="#%D1%81%D0%B8%D0%B3%D0%BD%D0%B0%D0%BB%D1%8B-%D0%B8-pid-1">Сигналы и PID 1</a></li>
-</ul>
-</li>
-<li><a href="#docker-compose">Docker Compose</a>
-<ul>
-<li><a href="#%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%B0-composeyaml">Структура compose.yaml</a></li>
-<li><a href="#%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81-go-%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F">Сервис Go приложения</a></li>
-<li><a href="#%D0%B7%D0%B0%D0%B2%D0%B8%D1%81%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D0%B8-postgresql-redis">Зависимости: PostgreSQL, Redis</a></li>
-<li><a href="#networking-%D0%B8-service-discovery">Networking и service discovery</a></li>
-<li><a href="#volumes-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5-%D0%B8-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F">Volumes: данные и конфигурация</a></li>
-<li><a href="#health-checks-%D0%B8-depends_on">Health checks и depends_on</a></li>
-<li><a href="#profiles-%D0%B4%D0%BB%D1%8F-%D1%80%D0%B0%D0%B7%D0%BD%D1%8B%D1%85-%D0%BE%D0%BA%D1%80%D1%83%D0%B6%D0%B5%D0%BD%D0%B8%D0%B9">Profiles для разных окружений</a></li>
-<li><a href="#%D0%B3%D0%BE%D1%80%D1%8F%D1%87%D0%B0%D1%8F-%D0%BF%D0%B5%D1%80%D0%B5%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BA%D0%B0-%D0%B2-development-air">Горячая перезагрузка в development (air)</a></li>
-</ul>
-</li>
-<li><a href="#kubernetes-basics">Kubernetes Basics</a>
-<ul>
-<li><a href="#%D0%B7%D0%B0%D1%87%D0%B5%D0%BC-kubernetes-%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-docker-compose-%D0%BD%D0%B5%D0%B4%D0%BE%D1%81%D1%82%D0%B0%D1%82%D0%BE%D1%87%D0%BD%D0%BE">Зачем Kubernetes: когда Docker Compose недостаточно</a></li>
-<li><a href="#%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BD%D1%86%D0%B5%D0%BF%D1%86%D0%B8%D0%B8-pod-deployment-service">Основные концепции: Pod, Deployment, Service</a></li>
-<li><a href="#deployment-%D0%BC%D0%B0%D0%BD%D0%B8%D1%84%D0%B5%D1%81%D1%82-%D0%B4%D0%BB%D1%8F-go-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%B0">Deployment манифест для Go сервиса</a></li>
-<li><a href="#service-%D0%B8-ingress">Service и Ingress</a></li>
-<li><a href="#configmaps-%D0%B8-secrets">ConfigMaps и Secrets</a></li>
-<li><a href="#health-probes-liveness-readiness-startup">Health Probes: liveness, readiness, startup</a></li>
-<li><a href="#resource-limits-%D0%B8-requests">Resource Limits и Requests</a>
-<ul>
-<li><a href="#go-125-container-aware-gomaxprocs-%D0%B2%D1%81%D1%82%D1%80%D0%BE%D0%B5%D0%BD-%D0%B2-runtime">Go 1.25+: container-aware GOMAXPROCS встроен в runtime</a></li>
-</ul>
-</li>
-<li><a href="#hpa-%D0%B0%D0%B2%D1%82%D0%BE%D1%81%D0%BA%D0%B5%D0%B9%D0%BB%D0%B8%D0%BD%D0%B3">HPA: автоскейлинг</a></li>
-</ul>
-</li>
-<li><a href="#cicd-%D0%B8%D0%BD%D1%82%D0%B5%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D1%8F">CI/CD интеграция</a>
-<ul>
-<li><a href="#github-actions-%D0%B4%D0%BB%D1%8F-go--docker">GitHub Actions для Go + Docker</a></li>
-<li><a href="#multi-platform-builds">Multi-platform builds</a></li>
-<li><a href="#container-registry">Container Registry</a></li>
-<li><a href="#%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D0%BE%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%BE%D0%B2">Версионирование образов</a></li>
-</ul>
-</li>
-<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-net">Сравнение с .NET</a>
-<ul>
-<li><a href="#aspnet-core-docker-vs-go-docker">ASP.NET Core Docker vs Go Docker</a></li>
-<li><a href="#net-aspire-vs-go--compose">.NET Aspire vs Go + Compose</a></li>
-<li><a href="#%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%80%D1%8B-%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%BE%D0%B2">Размеры образов</a></li>
-</ul>
-</li>
-<li><a href="#%D1%82%D0%B8%D0%BF%D0%B8%D1%87%D0%BD%D1%8B%D0%B5-%D0%BE%D1%88%D0%B8%D0%B1%D0%BA%D0%B8-c-%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%87%D0%B8%D0%BA%D0%BE%D0%B2">Типичные ошибки C# разработчиков</a>
-<ul>
-<li><a href="#1-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-runtime-%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%BE%D0%B2-%D0%BA%D0%B0%D0%BA-%D0%B1%D0%B0%D0%B7%D0%BE%D0%B2%D1%8B%D1%85">1. Использование runtime-образов как базовых</a></li>
-<li><a href="#2-%D0%BD%D0%B5-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D1%83%D1%8E%D1%82-multi-stage-builds">2. Не используют multi-stage builds</a></li>
-<li><a href="#3-cgo_enabled1-%D0%BF%D0%BE-%D1%83%D0%BC%D0%BE%D0%BB%D1%87%D0%B0%D0%BD%D0%B8%D1%8E">3. CGO_ENABLED=1 по умолчанию</a></li>
-<li><a href="#4-%D1%84%D0%B0%D0%B9%D0%BB%D0%BE%D0%B2%D0%BE%D0%B5-%D0%BB%D0%BE%D0%B3%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D0%B2-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80%D0%B5">4. Файловое логирование в контейнере</a></li>
-<li><a href="#5-%D0%B8%D0%B3%D0%BD%D0%BE%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-graceful-shutdown">5. Игнорирование graceful shutdown</a></li>
-<li><a href="#6-%D0%B7%D0%B0%D0%BF%D1%83%D1%81%D0%BA-%D0%BE%D1%82-root">6. Запуск от root</a></li>
-<li><a href="#7-%D1%85%D1%80%D0%B0%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81%D0%BE%D1%81%D1%82%D0%BE%D1%8F%D0%BD%D0%B8%D1%8F-%D0%B2-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80%D0%B5">7. Хранение состояния в контейнере</a></li>
-<li><a href="#8-depends_on-%D0%B1%D0%B5%D0%B7-healthcheck">8. depends_on без healthcheck</a></li>
-<li><a href="#9-%D0%BE%D1%82%D1%81%D1%83%D1%82%D1%81%D1%82%D0%B2%D0%B8%D0%B5-dockerignore">9. Отсутствие .dockerignore</a></li>
-<li><a href="#10-shell-%D1%84%D0%BE%D1%80%D0%BC%D0%B0-%D0%B2%D0%BC%D0%B5%D1%81%D1%82%D0%BE-exec">10. Shell форма вместо exec</a></li>
-</ul>
-</li>
-<li><a href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B">Практические примеры</a>
-<ul>
-<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-production-dockerfile-%D1%81-multi-stage-%D0%B8-distroless">Пример 1: Production Dockerfile с multi-stage и distroless</a></li>
-<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-docker-compose-%D0%B4%D0%BB%D1%8F-%D0%BC%D0%B8%D0%BA%D1%80%D0%BE%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%BE%D0%B2">Пример 2: Docker Compose для микросервисов</a></li>
-<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-kubernetes-deployment-%D1%81-health-checks-%D0%B8-hpa">Пример 3: Kubernetes Deployment с health checks и HPA</a></li>
-</ul>
-</li>
-</ul>
 <hr>
 <h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
 <p>В предыдущих разделах Части 4 мы создали полноценную инфраструктуру:</p>

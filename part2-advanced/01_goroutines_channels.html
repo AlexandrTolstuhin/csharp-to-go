@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-9fb8a2cc.js";
+            window.path_to_searchindex_js = "../searchindex-b8def063.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-30443d92.js"></script>
@@ -181,100 +181,6 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="21-горутины-и-каналы"><a class="header" href="#21-горутины-и-каналы">2.1 Горутины и каналы</a></h1>
-<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
-<ul>
-<li><a href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5">Введение</a>
-<ul>
-<li><a href="#%D1%84%D0%B8%D0%BB%D0%BE%D1%81%D0%BE%D1%84%D0%B8%D1%8F">Философия</a></li>
-</ul>
-</li>
-<li><a href="#%D0%B3%D0%BE%D1%80%D1%83%D1%82%D0%B8%D0%BD%D1%8B-vs-c-taskthread">Горутины vs C# Task/Thread</a>
-<ul>
-<li><a href="#%D1%87%D1%82%D0%BE-%D1%82%D0%B0%D0%BA%D0%BE%D0%B5-%D0%B3%D0%BE%D1%80%D1%83%D1%82%D0%B8%D0%BD%D0%B0">Что такое горутина?</a></li>
-<li><a href="#c-thread">C# Thread</a></li>
-<li><a href="#c-task-asyncawait">C# Task (async/await)</a></li>
-<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-%D0%B8-%D0%B7%D0%B0%D0%BF%D1%83%D1%81%D0%BA">Сравнение: создание и запуск</a></li>
-<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0">Сравнительная таблица</a></li>
-</ul>
-</li>
-<li><a href="#%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB%D1%8B-%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D1%8B">Каналы: основы</a>
-<ul>
-<li><a href="#%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB%D0%B0">Создание канала</a></li>
-<li><a href="#%D0%BE%D1%82%D0%BF%D1%80%D0%B0%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D0%B5">Отправка и получение</a></li>
-<li><a href="#c-%D0%B0%D0%BD%D0%B0%D0%BB%D0%BE%D0%B3-channelt">C# аналог: Channel<t></t></a></li>
-<li><a href="#%D0%B7%D0%B0%D0%BA%D1%80%D1%8B%D1%82%D0%B8%D0%B5-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB%D0%B0">Закрытие канала</a></li>
-<li><a href="#%D0%B8%D0%B4%D0%B8%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%BD%D1%8B%D0%B9-%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD-range-over-channel">Идиоматичный паттерн: range over channel</a></li>
-<li><a href="#%D0%BD%D0%B0%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB%D1%8B-directional-channels">Направленные каналы (directional channels)</a></li>
-</ul>
-</li>
-<li><a href="#%D0%B1%D1%83%D1%84%D0%B5%D1%80%D0%B8%D0%B7%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB%D1%8B">Буферизированные каналы</a>
-<ul>
-<li><a href="#%D0%BD%D0%B5%D0%B1%D1%83%D1%84%D0%B5%D1%80%D0%B8%D0%B7%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B9-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB-%D0%BF%D0%BE-%D1%83%D0%BC%D0%BE%D0%BB%D1%87%D0%B0%D0%BD%D0%B8%D1%8E">Небуферизированный канал (по умолчанию)</a></li>
-<li><a href="#%D0%B1%D1%83%D1%84%D0%B5%D1%80%D0%B8%D0%B7%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B9-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB">Буферизированный канал</a></li>
-<li><a href="#c-%D0%B0%D0%BD%D0%B0%D0%BB%D0%BE%D0%B3">C# аналог</a></li>
-<li><a href="#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C-%D0%B1%D1%83%D1%84%D0%B5%D1%80%D0%B8%D0%B7%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB%D1%8B">Когда использовать буферизированные каналы?</a></li>
-</ul>
-</li>
-<li><a href="#select-statement">Select statement</a>
-<ul>
-<li><a href="#%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D1%8B-select">Основы select</a></li>
-<li><a href="#c-%D0%B0%D0%BD%D0%B0%D0%BB%D0%BE%D0%B3-taskwhenany">C# аналог: Task.WhenAny</a></li>
-<li><a href="#default-case-%D0%BD%D0%B5%D0%B1%D0%BB%D0%BE%D0%BA%D0%B8%D1%80%D1%83%D1%8E%D1%89%D0%B0%D1%8F-%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D1%8F">Default case (неблокирующая операция)</a></li>
-<li><a href="#timeout-%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD">Timeout паттерн</a></li>
-<li><a href="#ticker-%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD-%D0%BF%D0%B5%D1%80%D0%B8%D0%BE%D0%B4%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B5-%D0%B2%D1%8B%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5">Ticker паттерн (периодическое выполнение)</a></li>
-<li><a href="#%D0%B8%D0%B4%D0%B8%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%BD%D1%8B%D0%B9-select-loop">Идиоматичный select loop</a></li>
-</ul>
-</li>
-<li><a href="#context-%D0%B8-cancellation">Context и cancellation</a>
-<ul>
-<li><a href="#c-cancellationtoken">C# CancellationToken</a></li>
-<li><a href="#go-contextcontext">Go context.Context</a></li>
-<li><a href="#%D1%82%D0%B8%D0%BF%D1%8B-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BA%D1%81%D1%82%D0%BE%D0%B2">Типы контекстов</a>
-<ul>
-<li><a href="#1-withcancel---%D1%80%D1%83%D1%87%D0%BD%D0%B0%D1%8F-%D0%BE%D1%82%D0%BC%D0%B5%D0%BD%D0%B0">1. WithCancel - ручная отмена</a></li>
-<li><a href="#2-withtimeout---%D0%B0%D0%B2%D1%82%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F-%D0%BE%D1%82%D0%BC%D0%B5%D0%BD%D0%B0-%D0%BF%D0%BE-%D1%82%D0%B0%D0%B9%D0%BC%D0%B0%D1%83%D1%82%D1%83">2. WithTimeout - автоматическая отмена по таймауту</a></li>
-<li><a href="#3-withdeadline---%D0%BE%D1%82%D0%BC%D0%B5%D0%BD%D0%B0-%D0%B2-%D0%BA%D0%BE%D0%BD%D0%BA%D1%80%D0%B5%D1%82%D0%BD%D0%BE%D0%B5-%D0%B2%D1%80%D0%B5%D0%BC%D1%8F">3. WithDeadline - отмена в конкретное время</a></li>
-<li><a href="#4-withvalue---%D0%BF%D0%B5%D1%80%D0%B5%D0%B4%D0%B0%D1%87%D0%B0-%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D0%B9">4. WithValue - передача значений</a></li>
-</ul>
-</li>
-<li><a href="#%D1%82%D0%B8%D0%BF%D0%B8%D0%B7%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BB%D1%8E%D1%87%D0%B8-%D0%B4%D0%BB%D1%8F-withvalue">Типизированные ключи для WithValue</a></li>
-<li><a href="#%D0%B0%D0%BD%D1%82%D0%B8%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD%D1%8B-withvalue">Антипаттерны WithValue</a></li>
-<li><a href="#contextbackground-vs-contexttodo">context.Background() vs context.TODO()</a></li>
-<li><a href="#%D0%B8%D0%B4%D0%B8%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%BD%D0%BE%D0%B5-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-context">Идиоматичное использование context</a></li>
-<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BE%D1%82%D0%BC%D0%B5%D0%BD%D0%B0-%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D0%B8">Сравнение: отмена операции</a></li>
-</ul>
-</li>
-<li><a href="#%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD%D1%8B-%D0%BA%D0%BE%D0%BD%D0%BA%D1%83%D1%80%D0%B5%D0%BD%D1%82%D0%BD%D0%BE%D1%81%D1%82%D0%B8">Паттерны конкурентности</a>
-<ul>
-<li><a href="#1-worker-pool">1. Worker Pool</a></li>
-<li><a href="#2-fan-out-fan-in">2. Fan-Out, Fan-In</a></li>
-<li><a href="#3-pipeline">3. Pipeline</a></li>
-<li><a href="#4-semaphore-%D0%BE%D0%B3%D1%80%D0%B0%D0%BD%D0%B8%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BA%D0%BE%D0%BD%D0%BA%D1%83%D1%80%D0%B5%D0%BD%D1%82%D0%BD%D0%BE%D1%81%D1%82%D0%B8">4. Semaphore (ограничение конкурентности)</a></li>
-<li><a href="#5-errgroup-golangorgxsyncerrgroup">5. errgroup (golang.org/x/sync/errgroup)</a></li>
-</ul>
-</li>
-<li><a href="#%D1%83%D1%82%D0%B5%D1%87%D0%BA%D0%B8-%D0%B3%D0%BE%D1%80%D1%83%D1%82%D0%B8%D0%BD">Утечки горутин</a>
-<ul>
-<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-%D1%83%D1%82%D0%B5%D1%87%D0%BA%D0%B8">Пример утечки</a></li>
-<li><a href="#%D0%BA%D0%B0%D0%BA-%D0%B8%D0%B7%D0%B1%D0%B5%D0%B6%D0%B0%D1%82%D1%8C-%D1%83%D1%82%D0%B5%D1%87%D0%B5%D0%BA">Как избежать утечек</a>
-<ul>
-<li><a href="#1-%D0%B2%D1%81%D0%B5%D0%B3%D0%B4%D0%B0-%D0%B7%D0%B0%D0%BA%D1%80%D1%8B%D0%B2%D0%B0%D0%B9%D1%82%D0%B5-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB%D1%8B">1. Всегда закрывайте каналы</a></li>
-<li><a href="#2-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D1%83%D0%B9%D1%82%D0%B5-context-%D0%B4%D0%BB%D1%8F-%D0%BE%D1%82%D0%BC%D0%B5%D0%BD%D1%8B">2. Используйте context для отмены</a></li>
-<li><a href="#3-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D1%83%D0%B9%D1%82%D0%B5-%D0%B1%D1%83%D1%84%D0%B5%D1%80%D0%B8%D0%B7%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB%D1%8B-%D1%81-%D0%BE%D1%81%D1%82%D0%BE%D1%80%D0%BE%D0%B6%D0%BD%D0%BE%D1%81%D1%82%D1%8C%D1%8E">3. Используйте буферизированные каналы с осторожностью</a></li>
-<li><a href="#4-graceful-shutdown">4. Graceful shutdown</a></li>
-</ul>
-</li>
-<li><a href="#%D0%BE%D0%B1%D0%BD%D0%B0%D1%80%D1%83%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5-%D1%83%D1%82%D0%B5%D1%87%D0%B5%D0%BA">Обнаружение утечек</a></li>
-</ul>
-</li>
-<li><a href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B">Практические примеры</a>
-<ul>
-<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-%D0%BA%D0%BE%D0%BD%D0%BA%D1%83%D1%80%D0%B5%D0%BD%D1%82%D0%BD%D0%B0%D1%8F-%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BA%D0%B0-url">Пример 1: Конкурентная загрузка URL</a></li>
-<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-producer-consumer-%D1%81-graceful-shutdown">Пример 2: Producer-Consumer с graceful shutdown</a></li>
-<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-rate-limiter">Пример 3: Rate Limiter</a></li>
-</ul>
-</li>
-</ul>
 <hr>
 <h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
 <p>Конкурентность в Go - это один из главных козырей языка и <strong>радикально отличается</strong> от C# async/await.</p>
