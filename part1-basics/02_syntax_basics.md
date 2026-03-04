@@ -830,20 +830,20 @@ m.Range(func(key, value interface{}) bool {
 
 #### Пакет slices
 
-| C# LINQ | Go slices | Описание |
-|---------|-----------|----------|
-| `.Contains(x)` | `slices.Contains(s, x)` | Проверка наличия элемента |
-| `.Any(predicate)` | `slices.ContainsFunc(s, fn)` | Есть ли элемент по условию |
-| `.OrderBy()` | `slices.Sort(s)` | Сортировка (in-place!) |
+| C# LINQ                | Go slices | Описание |
+|------------------------|-----------|----------|
+| `.Contains(x)`         | `slices.Contains(s, x)` | Проверка наличия элемента |
+| `.Any(predicate)`      | `slices.ContainsFunc(s, fn)` | Есть ли элемент по условию |
+| `.OrderBy()`           | `slices.Sort(s)` | Сортировка (in-place!) |
 | `.OrderByDescending()` | `slices.SortFunc(s, cmp)` | Сортировка с компаратором |
-| `.Reverse()` | `slices.Reverse(s)` | Разворот (in-place!) |
-| `.Distinct()` | `slices.Compact(s)` | Удаление последовательных дублей |
-| Clone() | `slices.Clone(s)` | Копирование slice |
-| `.Max()` | `slices.Max(s)` | Максимальный элемент |
-| `.Min()` | `slices.Min(s)` | Минимальный элемент |
-| `.SequenceEqual()` | `slices.Equal(s1, s2)` | Сравнение slices |
-| `.Take(n)` | `s[:n]` | Взять первые N (нативный синтаксис) |
-| `.Skip(n)` | `s[n:]` | Пропустить первые N |
+| `.Reverse()`           | `slices.Reverse(s)` | Разворот (in-place!) |
+| `.Distinct()`          | `slices.Compact(s)` | Удаление последовательных дублей |
+| `.Clone()`             | `slices.Clone(s)` | Копирование slice |
+| `.Max()`               | `slices.Max(s)` | Максимальный элемент |
+| `.Min()`               | `slices.Min(s)` | Минимальный элемент |
+| `.SequenceEqual()`     | `slices.Equal(s1, s2)` | Сравнение slices |
+| `.Take(n)`             | `s[:n]` | Взять первые N (нативный синтаксис) |
+| `.Skip(n)`             | `s[n:]` | Пропустить первые N |
 
 > ⚠️ **Важно**: Многие функции `slices` работают **in-place** (изменяют исходный slice). В LINQ методы всегда возвращают новую коллекцию.
 
