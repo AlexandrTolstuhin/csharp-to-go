@@ -1,0 +1,2285 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>6.1 Код и архитектура - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-e1a1ce5b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-c19b06e6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part6-best-practices/01_code_architecture.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="61-код-и-архитектура"><a class="header" href="#61-код-и-архитектура">6.1 Код и архитектура</a></h1>
+<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<ul>
+<li><a href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5">Введение</a>
+<ul>
+<li><a href="#enterprise-c-mindset-vs-go-mindset">Enterprise C# mindset vs Go mindset</a></li>
+<li><a href="#%D1%87%D1%82%D0%BE-%D0%B2%D1%8B-%D1%83%D0%B7%D0%BD%D0%B0%D0%B5%D1%82%D0%B5">Что вы узнаете</a></li>
+</ul>
+</li>
+<li><a href="#accept-interfaces-return-structs">Accept Interfaces, Return Structs</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BD%D1%86%D0%B8%D0%BF-%D0%B8-%D0%BC%D0%BE%D1%82%D0%B8%D0%B2%D0%B0%D1%86%D0%B8%D1%8F">Принцип и мотивация</a></li>
+<li><a href="#c-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4-%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D1%84%D0%B5%D0%B9%D1%81%D1%8B-%D0%B2%D0%B5%D0%B7%D0%B4%D0%B5">C# подход: интерфейсы везде</a></li>
+<li><a href="#go-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4-%D0%B3%D0%B8%D0%B1%D0%BA%D0%BE%D1%81%D1%82%D1%8C-%D0%BD%D0%B0-%D0%B2%D1%85%D0%BE%D0%B4%D0%B5-%D0%BA%D0%BE%D0%BD%D0%BA%D1%80%D0%B5%D1%82%D0%BD%D0%BE%D1%81%D1%82%D1%8C-%D0%BD%D0%B0-%D0%B2%D1%8B%D1%85%D0%BE%D0%B4%D0%B5">Go подход: гибкость на входе, конкретность на выходе</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C-%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D1%84%D0%B5%D0%B9%D1%81%D1%8B-%D0%BD%D0%B0-%D0%B2%D1%85%D0%BE%D0%B4%D0%B5">Когда использовать интерфейсы на входе</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%BD%D0%B0%D1%80%D1%83%D1%88%D0%B0%D1%82%D1%8C-%D0%BF%D1%80%D0%B0%D0%B2%D0%B8%D0%BB%D0%BE">Когда нарушать правило</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0">Сравнительная таблица</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BC%D0%B0%D0%BB%D0%B5%D0%BD%D1%8C%D0%BA%D0%B8%D0%B5-%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D1%84%D0%B5%D0%B9%D1%81%D1%8B">Маленькие интерфейсы</a>
+<ul>
+<li><a href="#isp-%D1%82%D0%B5%D0%BE%D1%80%D0%B8%D1%8F-vs-%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D0%BA%D0%B0">ISP: теория vs практика</a></li>
+<li><a href="#%D0%BF%D0%BE%D1%87%D0%B5%D0%BC%D1%83-%D0%B2-go-%D0%BC%D0%B0%D0%BB%D0%B5%D0%BD%D1%8C%D0%BA%D0%B8%D0%B5-%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D1%84%D0%B5%D0%B9%D1%81%D1%8B--%D0%BD%D0%BE%D1%80%D0%BC%D0%B0">Почему в Go маленькие интерфейсы — норма</a></li>
+<li><a href="#%D1%81%D1%82%D0%B0%D0%BD%D0%B4%D0%B0%D1%80%D1%82%D0%BD%D0%B0%D1%8F-%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA%D0%B0-%D0%BA%D0%B0%D0%BA-%D1%8D%D1%82%D0%B0%D0%BB%D0%BE%D0%BD">Стандартная библиотека как эталон</a></li>
+<li><a href="#consumer-side-interface-definition">Consumer-side interface definition</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%B7%D0%B8%D1%86%D0%B8%D1%8F-%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D1%84%D0%B5%D0%B9%D1%81%D0%BE%D0%B2">Композиция интерфейсов</a></li>
+<li><a href="#%D0%B0%D0%BD%D1%82%D0%B8-%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD%D1%8B">Анти-паттерны</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-1">Сравнительная таблица</a></li>
+</ul>
+</li>
+<li><a href="#composition-over-inheritance">Composition over Inheritance</a>
+<ul>
+<li><a href="#%D1%84%D0%B8%D0%BB%D0%BE%D1%81%D0%BE%D1%84%D0%B8%D1%8F-has-a-%D0%B2%D0%BC%D0%B5%D1%81%D1%82%D0%BE-is-a">Философия: Has-a вместо Is-a</a></li>
+<li><a href="#embedding-%D0%B2-go">Embedding в Go</a></li>
+<li><a href="#forwarding-vs-embedding">Forwarding vs Embedding</a></li>
+<li><a href="#decorator-pattern">Decorator pattern</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD%D1%8B">Сравнительная таблица: паттерны</a></li>
+</ul>
+</li>
+<li><a href="#explicit-is-better-than-implicit">Explicit is Better than Implicit</a>
+<ul>
+<li><a href="#%D1%84%D0%B8%D0%BB%D0%BE%D1%81%D0%BE%D1%84%D0%B8%D1%8F-%D1%8F%D0%B2%D0%BD%D0%BE%D1%81%D1%82%D0%B8">Философия явности</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D0%BE%D1%80%D1%8B-%D0%B8-%D0%B8%D0%BD%D0%B8%D1%86%D0%B8%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F">Конструкторы и инициализация</a></li>
+<li><a href="#functional-options-pattern">Functional Options Pattern</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-2">Сравнительная таблица</a></li>
+</ul>
+</li>
+<li><a href="#errors-are-values">Errors are Values</a>
+<ul>
+<li><a href="#%D1%84%D0%B8%D0%BB%D0%BE%D1%81%D0%BE%D1%84%D0%B8%D1%8F">Философия</a></li>
+<li><a href="#%D1%82%D0%B8%D0%BF%D0%B8%D1%87%D0%BD%D1%8B%D0%B5-%D0%BE%D1%88%D0%B8%D0%B1%D0%BA%D0%B8-c-%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%87%D0%B8%D0%BA%D0%BE%D0%B2">Типичные ошибки C# разработчиков</a></li>
+<li><a href="#quick-reference">Quick Reference</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BE%D1%80%D0%B3%D0%B0%D0%BD%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%BF%D0%B0%D0%BA%D0%B5%D1%82%D0%BE%D0%B2">Организация пакетов</a>
+<ul>
+<li><a href="#internal--%D0%B2%D0%B0%D1%88-%D0%BB%D1%83%D1%87%D1%88%D0%B8%D0%B9-%D0%B4%D1%80%D1%83%D0%B3">internal/ — ваш лучший друг</a></li>
+<li><a href="#package-%D0%BF%D0%BE-feature-vs-%D0%BF%D0%BE-layer">Package по feature vs по layer</a></li>
+<li><a href="#cyclic-imports">Cyclic imports</a></li>
+<li><a href="#naming-conventions">Naming conventions</a></li>
+</ul>
+</li>
+<li><a href="#%D1%82%D0%B8%D0%BF%D0%B8%D1%87%D0%BD%D1%8B%D0%B5-%D0%BE%D1%88%D0%B8%D0%B1%D0%BA%D0%B8-c-%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%87%D0%B8%D0%BA%D0%BE%D0%B2-1">Типичные ошибки C# разработчиков</a>
+<ul>
+<li><a href="#1-overengineering">1. Overengineering</a></li>
+<li><a href="#2-gettersetter-%D0%B4%D0%BB%D1%8F-%D0%B2%D1%81%D0%B5%D0%B3%D0%BE">2. Getter/Setter для всего</a></li>
+<li><a href="#3-%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D1%84%D0%B5%D0%B9%D1%81%D1%8B-%D0%BD%D0%B0-%D0%B2%D1%81%D1%8F%D0%BA%D0%B8%D0%B9-%D1%81%D0%BB%D1%83%D1%87%D0%B0%D0%B9">3. Интерфейсы “на всякий случай”</a></li>
+<li><a href="#4-panic-%D0%B2%D0%BC%D0%B5%D1%81%D1%82%D0%BE-error">4. Panic вместо error</a></li>
+<li><a href="#5-%D0%B8%D0%B3%D0%BD%D0%BE%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-contextcontext">5. Игнорирование context.Context</a></li>
+<li><a href="#6-%D0%BD%D0%B5%D0%BF%D1%80%D0%B0%D0%B2%D0%B8%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0-%D1%81-nil">6. Неправильная работа с nil</a></li>
+<li><a href="#7-linq-%D1%81%D1%82%D0%B8%D0%BB%D1%8C-%D0%B2%D0%BC%D0%B5%D1%81%D1%82%D0%BE-%D0%BF%D1%80%D0%BE%D1%81%D1%82%D1%8B%D1%85-%D1%86%D0%B8%D0%BA%D0%BB%D0%BE%D0%B2">7. LINQ-стиль вместо простых циклов</a></li>
+<li><a href="#%D1%81%D0%B2%D0%BE%D0%B4%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0">Сводная таблица</a></li>
+</ul>
+</li>
+<li><a href="#api-design">API Design</a>
+<ul>
+<li><a href="#%D1%8D%D0%BA%D1%81%D0%BF%D0%BE%D1%80%D1%82-%D0%B8-%D0%B2%D0%B8%D0%B4%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D1%8C">Экспорт и видимость</a></li>
+<li><a href="#%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D0%BE%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5">Версионирование</a></li>
+<li><a href="#%D0%BE%D0%B1%D1%80%D0%B0%D1%82%D0%BD%D0%B0%D1%8F-%D1%81%D0%BE%D0%B2%D0%BC%D0%B5%D1%81%D1%82%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D1%8C">Обратная совместимость</a></li>
+<li><a href="#%D0%B4%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-api">Документирование API</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-3">Сравнительная таблица</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B">Практические примеры</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-%D1%80%D0%B5%D1%84%D0%B0%D0%BA%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3-repository">Пример 1: Рефакторинг Repository</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-%D0%BC%D0%B8%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D1%8F-di-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%B0">Пример 2: Миграция DI-сервиса</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-%D0%BE%D1%80%D0%B3%D0%B0%D0%BD%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%BC%D0%B8%D0%BA%D1%80%D0%BE%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%B0">Пример 3: Организация микросервиса</a></li>
+</ul>
+</li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<p>В <a href="../part1-basics/03_key_differences.html">разделе 1.3</a> мы познакомились с философскими отличиями Go от C#: простота вместо богатства возможностей, композиция вместо наследования, явность вместо магии. Этот раздел систематизирует <strong>архитектурные принципы и идиомы</strong>, которые делают Go-код идиоматичным.</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Переход на Go — это не просто изучение нового синтаксиса. Это <strong>смена парадигмы мышления</strong>. Многие паттерны, которые вы годами оттачивали в C#, в Go либо не нужны, либо реализуются принципиально иначе. Этот раздел поможет “разучиться” и научиться заново.</p>
+</blockquote>
+<h3 id="enterprise-c-mindset-vs-go-mindset"><a class="header" href="#enterprise-c-mindset-vs-go-mindset">Enterprise C# mindset vs Go mindset</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# (Enterprise)</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Абстракции</strong></td><td>Чем больше, тем лучше</td><td>Минимум необходимого</td></tr>
+<tr><td><strong>DI-контейнер</strong></td><td>Обязателен</td><td>Не нужен (manual DI)</td></tr>
+<tr><td><strong>Интерфейсы</strong></td><td>На каждый класс</td><td>Только когда нужен полиморфизм</td></tr>
+<tr><td><strong>Наследование</strong></td><td>Основной инструмент переиспользования</td><td>Отсутствует (композиция)</td></tr>
+<tr><td><strong>Conventions</strong></td><td>Магия фреймворка</td><td>Явный код</td></tr>
+<tr><td><strong>Generics</strong></td><td>Активно используются</td><td>Только когда необходимы</td></tr>
+<tr><td><strong>Сложность</strong></td><td>“Enterprise-ready”</td><td>“Simple is better than clever”</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="что-вы-узнаете"><a class="header" href="#что-вы-узнаете">Что вы узнаете</a></h3>
+<ul>
+<li><strong>Accept interfaces, return structs</strong> — золотое правило Go</li>
+<li><strong>Маленькие интерфейсы</strong> — почему 1-3 метода это идеал</li>
+<li><strong>Композиция</strong> — как заменить наследование</li>
+<li><strong>Явность</strong> — почему explicit лучше implicit</li>
+<li><strong>Организация пакетов</strong> — структура production-ready проекта</li>
+<li><strong>Типичные ошибки</strong> — чего избегать при переходе с C#</li>
+</ul>
+<hr>
+<h2 id="accept-interfaces-return-structs"><a class="header" href="#accept-interfaces-return-structs">Accept Interfaces, Return Structs</a></h2>
+<p>Это одно из самых важных правил проектирования в Go. Понимание этого принципа кардинально меняет подход к написанию кода.</p>
+<h3 id="принцип-и-мотивация"><a class="header" href="#принцип-и-мотивация">Принцип и мотивация</a></h3>
+<p><strong>Правило</strong>: Функции должны <strong>принимать интерфейсы</strong> (когда нужен полиморфизм) и <strong>возвращать конкретные типы</strong> (структуры).</p>
+<p><strong>Почему это работает</strong>:</p>
+<ul>
+<li><strong>Гибкость на входе</strong>: Вызывающий код может передать любую реализацию</li>
+<li><strong>Конкретность на выходе</strong>: Вызывающий код получает полный API структуры</li>
+<li><strong>Тестируемость</strong>: Легко подменить зависимость в тестах</li>
+<li><strong>Отсутствие over-abstraction</strong>: Интерфейс создаётся только когда нужен</li>
+</ul>
+<h3 id="c-подход-интерфейсы-везде"><a class="header" href="#c-подход-интерфейсы-везде">C# подход: интерфейсы везде</a></h3>
+<p>В C# принято создавать интерфейс для каждого сервиса, даже если реализация одна:</p>
+<pre><code class="language-csharp">// C#: типичный Enterprise-стиль
+public interface IUserRepository
+{
+    Task&lt;User?&gt; GetByIdAsync(int id);
+    Task&lt;User?&gt; GetByEmailAsync(string email);
+    Task&lt;IEnumerable&lt;User&gt;&gt; GetAllAsync();
+    Task&lt;User&gt; CreateAsync(User user);
+    Task UpdateAsync(User user);
+    Task DeleteAsync(int id);
+}
+
+public interface IUserService
+{
+    Task&lt;UserDto?&gt; GetUserAsync(int id);
+    Task&lt;UserDto&gt; CreateUserAsync(CreateUserRequest request);
+    Task UpdateUserAsync(int id, UpdateUserRequest request);
+    Task DeleteUserAsync(int id);
+}
+
+// Реализации
+public class UserRepository : IUserRepository { ... }
+public class UserService : IUserService
+{
+    private readonly IUserRepository _repository;
+    private readonly ILogger&lt;UserService&gt; _logger;
+
+    public UserService(IUserRepository repository, ILogger&lt;UserService&gt; logger)
+    {
+        _repository = repository;
+        _logger = logger;
+    }
+    // ...
+}
+
+// Регистрация в DI
+services.AddScoped&lt;IUserRepository, UserRepository&gt;();
+services.AddScoped&lt;IUserService, UserService&gt;();
+</code></pre>
+<p><strong>Проблемы этого подхода</strong>:</p>
+<ul>
+<li>Интерфейс создаётся “на всякий случай”, даже если реализация одна</li>
+<li>DI-контейнер скрывает зависимости</li>
+<li>Сложно понять, какие методы реально используются</li>
+</ul>
+<h3 id="go-подход-гибкость-на-входе-конкретность-на-выходе"><a class="header" href="#go-подход-гибкость-на-входе-конкретность-на-выходе">Go подход: гибкость на входе, конкретность на выходе</a></h3>
+<pre><code class="language-go">// Go: идиоматичный подход
+
+// UserRepository — конкретная структура, НЕ интерфейс
+type UserRepository struct {
+    db *sql.DB
+}
+
+// NewUserRepository возвращает конкретный тип, не интерфейс
+func NewUserRepository(db *sql.DB) *UserRepository {
+    return &amp;UserRepository{db: db}
+}
+
+func (r *UserRepository) GetByID(ctx context.Context, id int) (*User, error) {
+    // ...
+}
+
+func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*User, error) {
+    // ...
+}
+
+func (r *UserRepository) Create(ctx context.Context, user *User) error {
+    // ...
+}
+
+// UserService — конкретная структура
+type UserService struct {
+    repo   *UserRepository  // Конкретный тип, если не нужен полиморфизм
+    logger *slog.Logger
+}
+
+// NewUserService возвращает конкретный тип
+func NewUserService(repo *UserRepository, logger *slog.Logger) *UserService {
+    return &amp;UserService{
+        repo:   repo,
+        logger: logger,
+    }
+}
+
+// main.go — явная инициализация
+func main() {
+    db, _ := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+    logger := slog.Default()
+
+    repo := NewUserRepository(db)
+    svc := NewUserService(repo, logger)
+    // ...
+}
+</code></pre>
+<p><strong>Преимущества</strong>:</p>
+<ul>
+<li>Нет лишних абстракций — интерфейс появляется только когда нужен</li>
+<li>Зависимости явные — видно в конструкторе</li>
+<li>Полный API доступен — вызывающий код видит все методы</li>
+</ul>
+<h3 id="когда-использовать-интерфейсы-на-входе"><a class="header" href="#когда-использовать-интерфейсы-на-входе">Когда использовать интерфейсы на входе</a></h3>
+<p>Интерфейс нужен, когда:</p>
+<ol>
+<li><strong>Тестирование</strong> — нужно подменить зависимость в тестах</li>
+<li><strong>Полиморфизм</strong> — несколько реализаций в runtime</li>
+<li><strong>Внешняя зависимость</strong> — абстрагирование от внешнего API</li>
+</ol>
+<pre><code class="language-go">// Интерфейс для тестирования
+type UserGetter interface {
+    GetByID(ctx context.Context, id int) (*User, error)
+}
+
+// Сервис принимает интерфейс — можно подменить в тестах
+type UserService struct {
+    repo UserGetter  // Интерфейс, не конкретный тип
+}
+
+func NewUserService(repo UserGetter) *UserService {
+    return &amp;UserService{repo: repo}
+}
+
+// В тестах
+type mockUserRepo struct {
+    user *User
+    err  error
+}
+
+func (m *mockUserRepo) GetByID(ctx context.Context, id int) (*User, error) {
+    return m.user, m.err
+}
+
+func TestUserService_GetUser(t *testing.T) {
+    mock := &amp;mockUserRepo{
+        user: &amp;User{ID: 1, Name: "Test"},
+    }
+    svc := NewUserService(mock)
+    // ...
+}
+</code></pre>
+<h3 id="когда-нарушать-правило"><a class="header" href="#когда-нарушать-правило">Когда нарушать правило</a></h3>
+<p><strong>1. Factory functions с множественными реализациями:</strong></p>
+<pre><code class="language-go">// Возвращаем интерфейс, когда конкретный тип определяется в runtime
+type Storage interface {
+    Save(key string, data []byte) error
+    Load(key string) ([]byte, error)
+}
+
+func NewStorage(storageType string) Storage {
+    switch storageType {
+    case "s3":
+        return &amp;S3Storage{...}
+    case "gcs":
+        return &amp;GCSStorage{...}
+    default:
+        return &amp;FileStorage{...}
+    }
+}
+</code></pre>
+<p><strong>2. Библиотеки для внешнего использования:</strong></p>
+<pre><code class="language-go">// Публичный API библиотеки может возвращать интерфейс
+// для сокрытия деталей реализации
+type Client interface {
+    Get(ctx context.Context, key string) (string, error)
+    Set(ctx context.Context, key, value string) error
+}
+
+func NewClient(addr string) Client {
+    return &amp;client{addr: addr}
+}
+</code></pre>
+<h3 id="сравнительная-таблица"><a class="header" href="#сравнительная-таблица">Сравнительная таблица</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C#</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Параметр функции</strong></td><td>Часто интерфейс</td><td>Интерфейс только для полиморфизма</td></tr>
+<tr><td><strong>Возвращаемое значение</strong></td><td>Часто интерфейс</td><td>Конкретный тип (*Struct)</td></tr>
+<tr><td><strong>Создание интерфейса</strong></td><td>Заранее, “на всякий случай”</td><td>Когда реально нужен</td></tr>
+<tr><td><strong>Определение интерфейса</strong></td><td>Рядом с реализацией</td><td>Рядом с потребителем</td></tr>
+<tr><td><strong>DI</strong></td><td>Через контейнер</td><td>Через конструкторы</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="маленькие-интерфейсы"><a class="header" href="#маленькие-интерфейсы">Маленькие интерфейсы</a></h2>
+<h3 id="isp-теория-vs-практика"><a class="header" href="#isp-теория-vs-практика">ISP: теория vs практика</a></h3>
+<p>Interface Segregation Principle (ISP) — один из принципов SOLID. И в C#, и в Go он важен. Разница в том, насколько язык <strong>поощряет</strong> его соблюдение.</p>
+<p><strong>В C#</strong> ISP — это принцип, которому нужно <strong>осознанно следовать</strong>. На практике он часто нарушается:</p>
+<pre><code class="language-csharp">// C#: типичный "жирный" интерфейс
+// ISP нарушен, но код работает
+public interface IUserRepository
+{
+    // CRUD
+    Task&lt;User?&gt; GetByIdAsync(int id);
+    Task&lt;User?&gt; GetByEmailAsync(string email);
+    Task&lt;IEnumerable&lt;User&gt;&gt; GetAllAsync();
+    Task&lt;User&gt; CreateAsync(User user);
+    Task UpdateAsync(User user);
+    Task DeleteAsync(int id);
+
+    // Поиск
+    Task&lt;IEnumerable&lt;User&gt;&gt; SearchAsync(string query);
+    Task&lt;IEnumerable&lt;User&gt;&gt; GetByRoleAsync(string role);
+
+    // Статистика
+    Task&lt;int&gt; CountAsync();
+    Task&lt;int&gt; CountActiveAsync();
+
+    // Batch-операции
+    Task CreateManyAsync(IEnumerable&lt;User&gt; users);
+    Task DeleteManyAsync(IEnumerable&lt;int&gt; ids);
+}
+
+// Проблема: сервис использует только 2 метода, но зависит от всего интерфейса
+public class UserProfileService
+{
+    private readonly IUserRepository _repository; // 12+ методов
+
+    public async Task&lt;UserProfile&gt; GetProfile(int userId)
+    {
+        var user = await _repository.GetByIdAsync(userId); // использует 1 метод
+        return MapToProfile(user);
+    }
+}
+</code></pre>
+<p><strong>Почему это происходит в C#</strong>:</p>
+<ul>
+<li>DI-контейнер поощряет “один интерфейс на класс”</li>
+<li>Generic Repository паттерн с полным CRUD</li>
+<li>Привычка создавать интерфейс заранее</li>
+<li>Явная реализация (<code>class X : IY</code>) требует реализовать ВСЕ методы</li>
+</ul>
+<h3 id="почему-в-go-маленькие-интерфейсы--норма"><a class="header" href="#почему-в-go-маленькие-интерфейсы--норма">Почему в Go маленькие интерфейсы — норма</a></h3>
+<p><strong>В Go</strong> маленькие интерфейсы — это <strong>естественный результат дизайна языка</strong>:</p>
+<pre><code class="language-go">// Go: интерфейс определяется там, где используется
+// Только те методы, которые реально нужны
+
+// В пакете profile — только то, что нужно ProfileService
+type UserGetter interface {
+    GetByID(ctx context.Context, id int) (*User, error)
+}
+
+type ProfileService struct {
+    users UserGetter // 1 метод — достаточно
+}
+
+func (s *ProfileService) GetProfile(ctx context.Context, userID int) (*Profile, error) {
+    user, err := s.users.GetByID(ctx, userID)
+    if err != nil {
+        return nil, fmt.Errorf("get user: %w", err)
+    }
+    return mapToProfile(user), nil
+}
+
+// В пакете admin — другой интерфейс
+type UserLister interface {
+    List(ctx context.Context, filter Filter) ([]*User, error)
+    Count(ctx context.Context) (int, error)
+}
+
+type AdminService struct {
+    users UserLister // 2 метода — достаточно
+}
+</code></pre>
+<p><strong>Почему это естественно в Go</strong>:</p>
+<ol>
+<li><strong>Неявная реализация (duck typing)</strong> — структура реализует интерфейс автоматически</li>
+<li><strong>Определение у потребителя</strong> — интерфейс создаётся там, где нужен</li>
+<li><strong>Стандартная библиотека</strong> — задаёт эталон (<code>io.Reader</code> — 1 метод)</li>
+<li><strong>Нет DI-контейнера</strong> — нет давления “один интерфейс на класс”</li>
+</ol>
+<h3 id="стандартная-библиотека-как-эталон"><a class="header" href="#стандартная-библиотека-как-эталон">Стандартная библиотека как эталон</a></h3>
+<p>Go stdlib — образец минималистичных интерфейсов:</p>
+<pre><code class="language-go">// io.Reader — 1 метод
+type Reader interface {
+    Read(p []byte) (n int, err error)
+}
+
+// io.Writer — 1 метод
+type Writer interface {
+    Write(p []byte) (n int, err error)
+}
+
+// io.Closer — 1 метод
+type Closer interface {
+    Close() error
+}
+
+// fmt.Stringer — 1 метод
+type Stringer interface {
+    String() string
+}
+
+// error — 1 метод
+type error interface {
+    Error() string
+}
+
+// sort.Interface — 3 метода (максимум для сложного поведения)
+type Interface interface {
+    Len() int
+    Less(i, j int) bool
+    Swap(i, j int)
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Если интерфейс содержит больше 3 методов — это сигнал пересмотреть дизайн. Возможно, интерфейс делает слишком много.</p>
+</blockquote>
+<h3 id="consumer-side-interface-definition"><a class="header" href="#consumer-side-interface-definition">Consumer-side interface definition</a></h3>
+<p>Ключевое отличие от C#: <strong>интерфейс определяется там, где он используется</strong>, а не там, где реализуется.</p>
+<pre><code class="language-go">// ❌ C#-стиль: интерфейс рядом с реализацией
+// package repository
+type UserRepository interface {
+    GetByID(ctx context.Context, id int) (*User, error)
+    GetByEmail(ctx context.Context, email string) (*User, error)
+    Create(ctx context.Context, user *User) error
+    Update(ctx context.Context, user *User) error
+    Delete(ctx context.Context, id int) error
+    List(ctx context.Context) ([]*User, error)
+    // ... ещё 10 методов
+}
+
+type userRepository struct { db *sql.DB }
+// реализация...
+
+// ✅ Go-стиль: интерфейс у потребителя
+// package repository — только структура
+type UserRepository struct { db *sql.DB }
+
+func (r *UserRepository) GetByID(ctx context.Context, id int) (*User, error) { ... }
+func (r *UserRepository) Create(ctx context.Context, user *User) error { ... }
+// ... все методы
+
+// package service — интерфейс определяется здесь
+type userStore interface {
+    GetByID(ctx context.Context, id int) (*User, error)
+    Create(ctx context.Context, user *User) error
+}
+
+type Service struct {
+    users userStore // только нужные методы
+}
+
+// package notification — свой интерфейс
+type userGetter interface {
+    GetByID(ctx context.Context, id int) (*User, error)
+}
+
+type Notifier struct {
+    users userGetter // только 1 метод
+}
+</code></pre>
+<p><strong>Преимущества consumer-side definition</strong>:</p>
+<ul>
+<li>Каждый потребитель зависит только от того, что использует</li>
+<li>Легко тестировать — маленький интерфейс = простой mock</li>
+<li>Нет “interface pollution” — интерфейсы не экспортируются без необходимости</li>
+</ul>
+<h3 id="композиция-интерфейсов"><a class="header" href="#композиция-интерфейсов">Композиция интерфейсов</a></h3>
+<p>Маленькие интерфейсы легко комбинировать:</p>
+<pre><code class="language-go">// Базовые интерфейсы — по 1 методу
+type Reader interface {
+    Read(p []byte) (n int, err error)
+}
+
+type Writer interface {
+    Write(p []byte) (n int, err error)
+}
+
+type Closer interface {
+    Close() error
+}
+
+// Композиция — встраивание интерфейсов
+type ReadWriter interface {
+    Reader
+    Writer
+}
+
+type ReadCloser interface {
+    Reader
+    Closer
+}
+
+type WriteCloser interface {
+    Writer
+    Closer
+}
+
+type ReadWriteCloser interface {
+    Reader
+    Writer
+    Closer
+}
+
+// Использование
+func Copy(dst Writer, src Reader) (int64, error) {
+    // работает с любыми Reader и Writer
+}
+
+func ProcessFile(rwc ReadWriteCloser) error {
+    defer rwc.Close()
+    // читаем, обрабатываем, пишем
+}
+</code></pre>
+<h3 id="анти-паттерны"><a class="header" href="#анти-паттерны">Анти-паттерны</a></h3>
+<p><strong>1. God Interface (общий для C# и Go)</strong></p>
+<pre><code class="language-go">// ❌ Слишком много методов
+type UserService interface {
+    GetByID(ctx context.Context, id int) (*User, error)
+    GetByEmail(ctx context.Context, email string) (*User, error)
+    Create(ctx context.Context, user *User) error
+    Update(ctx context.Context, user *User) error
+    Delete(ctx context.Context, id int) error
+    List(ctx context.Context, filter Filter) ([]*User, error)
+    Search(ctx context.Context, query string) ([]*User, error)
+    Activate(ctx context.Context, id int) error
+    Deactivate(ctx context.Context, id int) error
+    ChangePassword(ctx context.Context, id int, pwd string) error
+    ResetPassword(ctx context.Context, email string) error
+    SendVerification(ctx context.Context, id int) error
+    // ... ещё 20 методов
+}
+
+// ✅ Разбить на маленькие интерфейсы
+type UserGetter interface {
+    GetByID(ctx context.Context, id int) (*User, error)
+}
+
+type UserCreator interface {
+    Create(ctx context.Context, user *User) error
+}
+
+type PasswordManager interface {
+    ChangePassword(ctx context.Context, id int, pwd string) error
+    ResetPassword(ctx context.Context, email string) error
+}
+</code></pre>
+<p><strong>2. Interface just in case</strong></p>
+<pre><code class="language-go">// ❌ Интерфейс "на всякий случай" — единственная реализация
+type Logger interface {
+    Info(msg string, args ...any)
+    Error(msg string, args ...any)
+}
+
+type logger struct { /* ... */ }
+
+// ✅ Просто используй конкретный тип
+type Logger struct { /* ... */ }
+
+// Интерфейс создашь, когда понадобится вторая реализация или тесты
+</code></pre>
+<p><strong>3. Экспорт интерфейса без необходимости</strong></p>
+<pre><code class="language-go">// ❌ Экспортируем интерфейс для внутреннего использования
+type UserRepository interface { // экспортирован (заглавная буква)
+    GetByID(ctx context.Context, id int) (*User, error)
+}
+
+// ✅ Если интерфейс только для внутреннего использования — не экспортируй
+type userRepository interface { // не экспортирован (строчная буква)
+    GetByID(ctx context.Context, id int) (*User, error)
+}
+</code></pre>
+<h3 id="сравнительная-таблица-1"><a class="header" href="#сравнительная-таблица-1">Сравнительная таблица</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# (теория)</th><th>C# (практика)</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>Размер интерфейса</td><td>1-5 методов (ISP)</td><td>10-20 методов</td><td>1-3 метода</td></tr>
+<tr><td>Определение</td><td>Рядом с реализацией</td><td>Рядом с реализацией</td><td>У потребителя</td></tr>
+<tr><td>Создание</td><td>Заранее</td><td>Заранее</td><td>Когда нужен</td></tr>
+<tr><td>Экспорт</td><td>Всегда public</td><td>Всегда public</td><td>По необходимости</td></tr>
+<tr><td>Именование</td><td><code>IUserRepository</code></td><td><code>IUserRepository</code></td><td><code>UserGetter</code></td></tr>
+<tr><td>Реализация</td><td>Явная (<code>: IInterface</code>)</td><td>Явная</td><td>Неявная (duck typing)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="composition-over-inheritance"><a class="header" href="#composition-over-inheritance">Composition over Inheritance</a></h2>
+<h3 id="философия-has-a-вместо-is-a"><a class="header" href="#философия-has-a-вместо-is-a">Философия: Has-a вместо Is-a</a></h3>
+<p>Go не имеет классического наследования. Это <strong>осознанное решение дизайнеров языка</strong>, а не ограничение.</p>
+<p><strong>C# мышление</strong>: “Dog <strong>is-a</strong> Animal”
+<strong>Go мышление</strong>: “Dog <strong>has-a</strong> AnimalBehavior”</p>
+<pre><code class="language-csharp">// C#: иерархия наследования
+public abstract class Animal
+{
+    public string Name { get; set; }
+
+    public virtual void Eat()
+    {
+        Console.WriteLine($"{Name} is eating");
+    }
+
+    public abstract void MakeSound();
+}
+
+public class Dog : Animal
+{
+    public override void MakeSound()
+    {
+        Console.WriteLine("Woof!");
+    }
+
+    public void Fetch()
+    {
+        Console.WriteLine($"{Name} is fetching");
+    }
+}
+
+public class Cat : Animal
+{
+    public override void MakeSound()
+    {
+        Console.WriteLine("Meow!");
+    }
+}
+</code></pre>
+<pre><code class="language-go">// Go: композиция через embedding
+type Animal struct {
+    Name string
+}
+
+func (a Animal) Eat() {
+    fmt.Printf("%s is eating\n", a.Name)
+}
+
+type Dog struct {
+    Animal // embedding — Dog "has" Animal
+}
+
+func (d Dog) MakeSound() {
+    fmt.Println("Woof!")
+}
+
+func (d Dog) Fetch() {
+    fmt.Printf("%s is fetching\n", d.Name)
+}
+
+type Cat struct {
+    Animal // embedding
+}
+
+func (c Cat) MakeSound() {
+    fmt.Println("Meow!")
+}
+
+// Использование
+func main() {
+    dog := Dog{Animal: Animal{Name: "Buddy"}}
+    dog.Eat()       // метод Animal доступен напрямую
+    dog.MakeSound() // метод Dog
+    dog.Fetch()
+
+    cat := Cat{Animal: Animal{Name: "Whiskers"}}
+    cat.Eat()
+    cat.MakeSound()
+}
+</code></pre>
+<h3 id="embedding-в-go"><a class="header" href="#embedding-в-go">Embedding в Go</a></h3>
+<p><strong>Embedding</strong> — встраивание одной структуры в другую. Это не наследование, а композиция с “продвижением” методов.</p>
+<pre><code class="language-go">// Embedding структуры
+type Logger struct {
+    prefix string
+}
+
+func (l Logger) Log(msg string) {
+    fmt.Printf("[%s] %s\n", l.prefix, msg)
+}
+
+func (l Logger) Error(msg string) {
+    fmt.Printf("[%s] ERROR: %s\n", l.prefix, msg)
+}
+
+type Service struct {
+    Logger // embedding
+    name   string
+}
+
+func (s *Service) DoWork() {
+    s.Log("starting work")  // метод Logger доступен напрямую
+    // ... работа
+    s.Log("work completed")
+}
+
+// Можно переопределить метод
+func (s *Service) Error(msg string) {
+    s.Logger.Error(fmt.Sprintf("[%s] %s", s.name, msg))
+}
+
+// Использование
+func main() {
+    svc := &amp;Service{
+        Logger: Logger{prefix: "SVC"},
+        name:   "UserService",
+    }
+    svc.DoWork()
+    svc.Error("something went wrong")
+}
+</code></pre>
+<p><strong>Embedding интерфейса</strong>:</p>
+<pre><code class="language-go">type Reader interface {
+    Read(p []byte) (n int, err error)
+}
+
+type Writer interface {
+    Write(p []byte) (n int, err error)
+}
+
+// Embedding интерфейсов
+type ReadWriter interface {
+    Reader
+    Writer
+}
+
+// Структура может встраивать интерфейс
+type CountingWriter struct {
+    io.Writer       // embedding интерфейса
+    BytesWritten int
+}
+
+func (cw *CountingWriter) Write(p []byte) (n int, err error) {
+    n, err = cw.Writer.Write(p) // вызов встроенного Writer
+    cw.BytesWritten += n
+    return
+}
+</code></pre>
+<h3 id="forwarding-vs-embedding"><a class="header" href="#forwarding-vs-embedding">Forwarding vs Embedding</a></h3>
+<p><strong>Embedding</strong> — когда нужен доступ к методам встроенного типа напрямую:</p>
+<pre><code class="language-go">// Embedding: методы Logger доступны на Service
+type Service struct {
+    Logger
+}
+
+svc := &amp;Service{Logger: Logger{prefix: "SVC"}}
+svc.Log("message") // Logger.Log продвигается на Service
+</code></pre>
+<p><strong>Forwarding (делегирование)</strong> — когда нужен контроль над вызовами:</p>
+<pre><code class="language-go">// Forwarding: явное делегирование
+type Service struct {
+    logger Logger // не embedding
+}
+
+func (s *Service) Log(msg string) {
+    // Можем добавить логику
+    s.logger.Log(fmt.Sprintf("[%s] %s", time.Now().Format(time.RFC3339), msg))
+}
+
+svc := &amp;Service{logger: Logger{prefix: "SVC"}}
+svc.Log("message") // вызывает наш метод
+</code></pre>
+<p><strong>Когда использовать что</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Сценарий</th><th>Embedding</th><th>Forwarding</th></tr>
+</thead>
+<tbody>
+<tr><td>Нужны все методы встроенного типа</td><td>✅</td><td>❌</td></tr>
+<tr><td>Нужно изменить поведение некоторых методов</td><td>⚠️ Можно, но осторожно</td><td>✅</td></tr>
+<tr><td>Нужно скрыть некоторые методы</td><td>❌</td><td>✅</td></tr>
+<tr><td>Несколько типов с одинаковыми методами</td><td>⚠️ Конфликты</td><td>✅</td></tr>
+<tr><td>Простота кода</td><td>✅</td><td>❌</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="decorator-pattern"><a class="header" href="#decorator-pattern">Decorator pattern</a></h3>
+<p>В Go decorator реализуется через функции, принимающие и возвращающие интерфейс:</p>
+<pre><code class="language-go">// Интерфейс
+type Handler interface {
+    Handle(ctx context.Context, req Request) (Response, error)
+}
+
+// Конкретная реализация
+type userHandler struct {
+    service *UserService
+}
+
+func (h *userHandler) Handle(ctx context.Context, req Request) (Response, error) {
+    // бизнес-логика
+    return Response{}, nil
+}
+
+// Decorator: логирование
+func WithLogging(h Handler, logger *slog.Logger) Handler {
+    return &amp;loggingHandler{next: h, logger: logger}
+}
+
+type loggingHandler struct {
+    next   Handler
+    logger *slog.Logger
+}
+
+func (h *loggingHandler) Handle(ctx context.Context, req Request) (Response, error) {
+    h.logger.Info("handling request", "request", req)
+    resp, err := h.next.Handle(ctx, req)
+    if err != nil {
+        h.logger.Error("request failed", "error", err)
+    }
+    return resp, err
+}
+
+// Decorator: метрики
+func WithMetrics(h Handler, metrics *Metrics) Handler {
+    return &amp;metricsHandler{next: h, metrics: metrics}
+}
+
+type metricsHandler struct {
+    next    Handler
+    metrics *Metrics
+}
+
+func (h *metricsHandler) Handle(ctx context.Context, req Request) (Response, error) {
+    start := time.Now()
+    resp, err := h.next.Handle(ctx, req)
+    h.metrics.RecordDuration(time.Since(start))
+    if err != nil {
+        h.metrics.IncrementErrors()
+    }
+    return resp, err
+}
+
+// Использование: композиция декораторов
+func main() {
+    handler := &amp;userHandler{service: userService}
+
+    // Оборачиваем в декораторы
+    handler = WithLogging(handler, logger)
+    handler = WithMetrics(handler, metrics)
+
+    // Теперь каждый вызов логируется и измеряется
+    resp, err := handler.Handle(ctx, req)
+}
+</code></pre>
+<p><strong>Функциональный стиль</strong> (для HTTP middleware):</p>
+<pre><code class="language-go">type Middleware func(http.Handler) http.Handler
+
+func Logging(logger *slog.Logger) Middleware {
+    return func(next http.Handler) http.Handler {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            logger.Info("request", "method", r.Method, "path", r.URL.Path)
+            next.ServeHTTP(w, r)
+        })
+    }
+}
+
+func Recover() Middleware {
+    return func(next http.Handler) http.Handler {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            defer func() {
+                if err := recover(); err != nil {
+                    http.Error(w, "Internal Server Error", 500)
+                }
+            }()
+            next.ServeHTTP(w, r)
+        })
+    }
+}
+
+// Применение
+handler := Logging(logger)(Recover()(myHandler))
+</code></pre>
+<h3 id="сравнительная-таблица-паттерны"><a class="header" href="#сравнительная-таблица-паттерны">Сравнительная таблица: паттерны</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Паттерн</th><th>C#</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Наследование</strong></td><td><code>class Child : Parent</code></td><td>Embedding / Композиция</td></tr>
+<tr><td><strong>Abstract class</strong></td><td><code>abstract class Base</code></td><td>Interface + struct</td></tr>
+<tr><td><strong>Virtual methods</strong></td><td><code>virtual</code> / <code>override</code></td><td>Interface methods</td></tr>
+<tr><td><strong>Template Method</strong></td><td>Base class + virtual methods</td><td>Functional options / Strategy</td></tr>
+<tr><td><strong>Decorator</strong></td><td>Interface-based, DI</td><td>Function wrapping</td></tr>
+<tr><td><strong>Mixin</strong></td><td>Multiple inheritance (нет), traits (нет)</td><td>Embedding + interfaces</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="explicit-is-better-than-implicit"><a class="header" href="#explicit-is-better-than-implicit">Explicit is Better than Implicit</a></h2>
+<h3 id="философия-явности"><a class="header" href="#философия-явности">Философия явности</a></h3>
+<p>Go следует принципу <strong>“explicit is better than implicit”</strong> (явное лучше неявного). Это означает:</p>
+<ul>
+<li>Нет магии — код делает то, что написано</li>
+<li>Нет скрытых зависимостей — всё передаётся явно</li>
+<li>Нет conventions — конфигурация через код</li>
+<li>Читаемость важнее краткости</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В .NET много “магии”: DI-контейнер резолвит зависимости, Entity Framework отслеживает изменения, ASP.NET маршрутизирует по conventions. В Go всё явно — и это преимущество, а не недостаток.</p>
+</blockquote>
+<h3 id="конструкторы-и-инициализация"><a class="header" href="#конструкторы-и-инициализация">Конструкторы и инициализация</a></h3>
+<p><strong>C#: Скрытые зависимости через DI</strong></p>
+<pre><code class="language-csharp">// C#: зависимости скрыты в DI-контейнере
+public class UserService
+{
+    private readonly IUserRepository _repository;
+    private readonly ILogger&lt;UserService&gt; _logger;
+    private readonly IEmailService _emailService;
+    private readonly IOptions&lt;UserServiceOptions&gt; _options;
+
+    // DI резолвит всё автоматически
+    public UserService(
+        IUserRepository repository,
+        ILogger&lt;UserService&gt; logger,
+        IEmailService emailService,
+        IOptions&lt;UserServiceOptions&gt; options)
+    {
+        _repository = repository;
+        _logger = logger;
+        _emailService = emailService;
+        _options = options;
+    }
+}
+
+// Startup.cs — регистрация скрыта
+services.AddScoped&lt;IUserRepository, UserRepository&gt;();
+services.AddScoped&lt;IEmailService, SendGridEmailService&gt;();
+services.Configure&lt;UserServiceOptions&gt;(Configuration.GetSection("UserService"));
+services.AddScoped&lt;UserService&gt;();
+</code></pre>
+<p><strong>Go: Явные зависимости через конструкторы</strong></p>
+<pre><code class="language-go">// Go: все зависимости видны в конструкторе
+type UserService struct {
+    repo    *UserRepository
+    logger  *slog.Logger
+    email   *EmailService
+    options UserServiceOptions
+}
+
+// Конструктор явно показывает все зависимости
+func NewUserService(
+    repo *UserRepository,
+    logger *slog.Logger,
+    email *EmailService,
+    options UserServiceOptions,
+) *UserService {
+    return &amp;UserService{
+        repo:    repo,
+        logger:  logger,
+        email:   email,
+        options: options,
+    }
+}
+
+// main.go — инициализация явная
+func main() {
+    cfg := config.Load()
+
+    db, _ := sql.Open("postgres", cfg.DatabaseURL)
+    logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+
+    repo := repository.NewUserRepository(db)
+    email := email.NewService(cfg.SendGridAPIKey)
+
+    svc := service.NewUserService(repo, logger, email, cfg.UserService)
+    // Все зависимости видны в одном месте
+}
+</code></pre>
+<h3 id="functional-options-pattern"><a class="header" href="#functional-options-pattern">Functional Options Pattern</a></h3>
+<p>Когда конструктор имеет много опциональных параметров, используется <strong>Functional Options Pattern</strong>:</p>
+<pre><code class="language-go">// Структура с опциями
+type Server struct {
+    host         string
+    port         int
+    timeout      time.Duration
+    maxConns     int
+    logger       *slog.Logger
+    readTimeout  time.Duration
+    writeTimeout time.Duration
+}
+
+// Option — функция, модифицирующая Server
+type Option func(*Server)
+
+// Функции-опции
+func WithHost(host string) Option {
+    return func(s *Server) {
+        s.host = host
+    }
+}
+
+func WithPort(port int) Option {
+    return func(s *Server) {
+        s.port = port
+    }
+}
+
+func WithTimeout(d time.Duration) Option {
+    return func(s *Server) {
+        s.timeout = d
+    }
+}
+
+func WithMaxConnections(n int) Option {
+    return func(s *Server) {
+        s.maxConns = n
+    }
+}
+
+func WithLogger(l *slog.Logger) Option {
+    return func(s *Server) {
+        s.logger = l
+    }
+}
+
+func WithReadTimeout(d time.Duration) Option {
+    return func(s *Server) {
+        s.readTimeout = d
+    }
+}
+
+func WithWriteTimeout(d time.Duration) Option {
+    return func(s *Server) {
+        s.writeTimeout = d
+    }
+}
+
+// Конструктор с variadic options
+func NewServer(opts ...Option) *Server {
+    // Значения по умолчанию
+    s := &amp;Server{
+        host:         "localhost",
+        port:         8080,
+        timeout:      30 * time.Second,
+        maxConns:     100,
+        logger:       slog.Default(),
+        readTimeout:  10 * time.Second,
+        writeTimeout: 10 * time.Second,
+    }
+
+    // Применяем опции
+    for _, opt := range opts {
+        opt(s)
+    }
+
+    return s
+}
+
+// Использование — чистый, читаемый код
+func main() {
+    // С дефолтами
+    server1 := NewServer()
+
+    // С кастомными опциями
+    server2 := NewServer(
+        WithHost("0.0.0.0"),
+        WithPort(9000),
+        WithTimeout(60*time.Second),
+        WithLogger(customLogger),
+    )
+
+    // Легко понять, что настроено
+}
+</code></pre>
+<p><strong>Преимущества Functional Options</strong>:</p>
+<ul>
+<li>Значения по умолчанию встроены</li>
+<li>Опции можно добавлять без breaking changes</li>
+<li>Код использования читаемый</li>
+<li>Опции можно комбинировать и переиспользовать</li>
+</ul>
+<p><strong>Альтернатива: Config struct</strong></p>
+<pre><code class="language-go">// Для простых случаев — структура конфигурации
+type ServerConfig struct {
+    Host         string        `env:"HOST" envDefault:"localhost"`
+    Port         int           `env:"PORT" envDefault:"8080"`
+    Timeout      time.Duration `env:"TIMEOUT" envDefault:"30s"`
+    MaxConns     int           `env:"MAX_CONNS" envDefault:"100"`
+    ReadTimeout  time.Duration `env:"READ_TIMEOUT" envDefault:"10s"`
+    WriteTimeout time.Duration `env:"WRITE_TIMEOUT" envDefault:"10s"`
+}
+
+func NewServer(cfg ServerConfig) *Server {
+    return &amp;Server{
+        host:         cfg.Host,
+        port:         cfg.Port,
+        timeout:      cfg.Timeout,
+        maxConns:     cfg.MaxConns,
+        readTimeout:  cfg.ReadTimeout,
+        writeTimeout: cfg.WriteTimeout,
+    }
+}
+
+// Использование
+cfg := ServerConfig{Port: 9000}  // остальное — дефолты
+server := NewServer(cfg)
+</code></pre>
+<h3 id="сравнительная-таблица-2"><a class="header" href="#сравнительная-таблица-2">Сравнительная таблица</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# (Implicit)</th><th>Go (Explicit)</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>DI</strong></td><td>Контейнер + <code>[Inject]</code></td><td>Manual конструкторы</td></tr>
+<tr><td><strong>Config</strong></td><td><code>IOptions&lt;T&gt;</code> через DI</td><td>Config struct, явная передача</td></tr>
+<tr><td><strong>Routing</strong></td><td><code>[Route("api/[controller]")]</code></td><td>Явная регистрация маршрутов</td></tr>
+<tr><td><strong>Validation</strong></td><td><code>[Required]</code>, <code>[StringLength]</code></td><td>Явные функции валидации</td></tr>
+<tr><td><strong>ORM mapping</strong></td><td>Conventions, Fluent API</td><td>Struct tags или явный mapping</td></tr>
+<tr><td><strong>Middleware</strong></td><td><code>app.UseXxx()</code> + conventions</td><td>Явное оборачивание handlers</td></tr>
+<tr><td><strong>Опциональные параметры</strong></td><td>Named parameters, default values</td><td>Functional Options</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="errors-are-values"><a class="header" href="#errors-are-values">Errors are Values</a></h2>
+<blockquote>
+<p>📖 <strong>Подробно</strong>: Этот раздел — краткое напоминание. Детальное изучение — в <a href="../part2-advanced/05_error_handling.html">разделе 2.5 Обработка ошибок</a>.</p>
+</blockquote>
+<h3 id="философия"><a class="header" href="#философия">Философия</a></h3>
+<p>В Go ошибки — это <strong>значения</strong>, а не исключения. Они явно возвращаются и явно проверяются.</p>
+<pre><code class="language-go">// Go: ошибка — часть возвращаемого значения
+func GetUser(id int) (*User, error) {
+    user, err := db.QueryUser(id)
+    if err != nil {
+        return nil, fmt.Errorf("get user %d: %w", id, err)
+    }
+    return user, nil
+}
+
+// Вызывающий код ОБЯЗАН обработать ошибку
+user, err := GetUser(42)
+if err != nil {
+    // обработка ошибки
+    return err
+}
+// использование user
+</code></pre>
+<h3 id="типичные-ошибки-c-разработчиков"><a class="header" href="#типичные-ошибки-c-разработчиков">Типичные ошибки C# разработчиков</a></h3>
+<p><strong>1. Использование panic вместо error</strong></p>
+<pre><code class="language-go">// ❌ C#-мышление: "выбросить исключение"
+func GetUser(id int) *User {
+    user, err := db.QueryUser(id)
+    if err != nil {
+        panic(err) // НЕТ! Panic — не для бизнес-ошибок
+    }
+    return user
+}
+
+// ✅ Go-way: возвращать ошибку
+func GetUser(id int) (*User, error) {
+    user, err := db.QueryUser(id)
+    if err != nil {
+        return nil, fmt.Errorf("get user %d: %w", id, err)
+    }
+    return user, nil
+}
+</code></pre>
+<p><strong>2. Игнорирование ошибок</strong></p>
+<pre><code class="language-go">// ❌ Игнорирование ошибки
+json.Unmarshal(data, &amp;user) // ошибка игнорируется!
+
+// ✅ Всегда проверять
+if err := json.Unmarshal(data, &amp;user); err != nil {
+    return fmt.Errorf("unmarshal user: %w", err)
+}
+</code></pre>
+<p><strong>3. Не использование errors.Is / errors.As</strong></p>
+<pre><code class="language-go">// ❌ Прямое сравнение строк или типов
+if err.Error() == "user not found" { ... } // Хрупко!
+
+// ✅ Использовать errors.Is для sentinel errors
+if errors.Is(err, ErrUserNotFound) { ... }
+
+// ✅ Использовать errors.As для typed errors
+var validErr *ValidationError
+if errors.As(err, &amp;validErr) {
+    // доступ к полям validErr
+}
+</code></pre>
+<h3 id="quick-reference"><a class="header" href="#quick-reference">Quick Reference</a></h3>
+<pre><code class="language-go">// Создание ошибок
+err := errors.New("something went wrong")
+err := fmt.Errorf("user %d not found", id)
+
+// Wrapping (добавление контекста)
+return fmt.Errorf("get user: %w", err)
+
+// Проверка типа ошибки
+if errors.Is(err, ErrNotFound) { ... }
+
+// Извлечение typed error
+var e *MyError
+if errors.As(err, &amp;e) { ... }
+
+// Sentinel errors
+var ErrNotFound = errors.New("not found")
+var ErrInvalid = errors.New("invalid")
+</code></pre>
+<hr>
+<h2 id="организация-пакетов"><a class="header" href="#организация-пакетов">Организация пакетов</a></h2>
+<h3 id="internal--ваш-лучший-друг"><a class="header" href="#internal--ваш-лучший-друг">internal/ — ваш лучший друг</a></h3>
+<p>Директория <code>internal/</code> — <strong>компилятор Go запрещает</strong> импорт кода из неё извне модуля.</p>
+<pre><code>myapp/
+├── go.mod
+├── cmd/
+│   └── api/
+│       └── main.go          # entry point
+├── internal/                 # приватный код
+│   ├── user/
+│   │   ├── handler.go
+│   │   ├── service.go
+│   │   └── repository.go
+│   ├── order/
+│   │   └── ...
+│   └── platform/             # общие internal-пакеты
+│       ├── database/
+│       └── logger/
+└── pkg/                      # публичный код (для библиотек)
+    └── validator/
+</code></pre>
+<p><strong>Почему это важно</strong>:</p>
+<pre><code class="language-go">// Другой модуль НЕ СМОЖЕТ импортировать:
+import "github.com/company/myapp/internal/user" // Ошибка компиляции!
+
+// Но может импортировать:
+import "github.com/company/myapp/pkg/validator" // OK
+</code></pre>
+<p><strong>Сравнение с C#</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Механизм</th><th>C#</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>Видимость внутри проекта</td><td><code>internal</code> keyword</td><td><code>internal/</code> директория</td></tr>
+<tr><td>Гарантия</td><td>Runtime/Compile time</td><td><strong>Compile time</strong></td></tr>
+<tr><td>Применение</td><td>На класс/метод</td><td>На весь пакет</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="package-по-feature-vs-по-layer"><a class="header" href="#package-по-feature-vs-по-layer">Package по feature vs по layer</a></h3>
+<p><strong>C#-стиль (по layer) — НЕ рекомендуется в Go</strong>:</p>
+<pre><code>// ❌ Организация по слоям
+myapp/
+├── controllers/
+│   ├── user_controller.go
+│   └── order_controller.go
+├── services/
+│   ├── user_service.go
+│   └── order_service.go
+├── repositories/
+│   ├── user_repository.go
+│   └── order_repository.go
+└── models/
+    ├── user.go
+    └── order.go
+</code></pre>
+<p><strong>Проблемы</strong>:</p>
+<ul>
+<li>Высокая связанность между пакетами</li>
+<li>Сложно понять границы домена</li>
+<li>Часто приводит к циклическим зависимостям</li>
+</ul>
+<p><strong>Go-стиль (по feature) — рекомендуется</strong>:</p>
+<pre><code>// ✅ Организация по фичам/доменам
+myapp/
+├── cmd/
+│   └── api/
+│       └── main.go
+├── internal/
+│   ├── user/                 # всё про users вместе
+│   │   ├── handler.go
+│   │   ├── service.go
+│   │   ├── repository.go
+│   │   ├── model.go
+│   │   └── user_test.go
+│   ├── order/                # всё про orders вместе
+│   │   ├── handler.go
+│   │   ├── service.go
+│   │   └── ...
+│   └── platform/             # общая инфраструктура
+│       ├── postgres/
+│       ├── redis/
+│       └── http/
+└── pkg/                      # публичные библиотеки
+</code></pre>
+<p><strong>Преимущества</strong>:</p>
+<ul>
+<li>Код связанный логически — рядом физически</li>
+<li>Легко понять границы домена</li>
+<li>Минимум зависимостей между пакетами</li>
+<li>Легко выделить в отдельный сервис</li>
+</ul>
+<h3 id="cyclic-imports"><a class="header" href="#cyclic-imports">Cyclic imports</a></h3>
+<p>Go <strong>запрещает</strong> циклические зависимости между пакетами. Это compile-time ошибка.</p>
+<pre><code class="language-go">// ❌ Цикл: user → order → user
+// package user
+import "myapp/internal/order"  // user зависит от order
+
+// package order
+import "myapp/internal/user"   // order зависит от user
+// ОШИБКА КОМПИЛЯЦИИ!
+</code></pre>
+<p><strong>Решения</strong>:</p>
+<p><strong>1. Интерфейсы для разрыва зависимости</strong>:</p>
+<pre><code class="language-go">// package user — определяет интерфейс
+type OrderGetter interface {
+    GetByUserID(ctx context.Context, userID int) ([]*Order, error)
+}
+
+type Service struct {
+    orders OrderGetter  // зависимость через интерфейс
+}
+
+// package order — реализует, но не знает про user
+type Service struct { /* ... */ }
+
+func (s *Service) GetByUserID(ctx context.Context, userID int) ([]*Order, error) {
+    // ...
+}
+
+// main.go — связывание
+userSvc := user.NewService(orderSvc)  // orderSvc реализует OrderGetter
+</code></pre>
+<p><strong>2. Общий пакет с типами</strong>:</p>
+<pre><code class="language-go">// package domain — общие типы
+type User struct { ... }
+type Order struct { ... }
+
+// package user
+import "myapp/internal/domain"
+
+// package order
+import "myapp/internal/domain"
+
+// Нет цикла — оба зависят от domain
+</code></pre>
+<p><strong>3. Dependency Inversion</strong>:</p>
+<pre><code class="language-go">// package notification — нижний уровень
+type UserGetter interface {
+    GetByID(ctx context.Context, id int) (*User, error)
+}
+
+type Service struct {
+    users UserGetter
+}
+
+// package user — верхний уровень
+// Реализует UserGetter, но не знает про notification
+</code></pre>
+<h3 id="naming-conventions"><a class="header" href="#naming-conventions">Naming conventions</a></h3>
+<p><strong>Имена пакетов</strong>:</p>
+<pre><code class="language-go">// ✅ Хорошо: короткие, lowercase, без подчёркиваний
+package user
+package httputil
+package postgres
+
+// ❌ Плохо
+package userService      // camelCase
+package user_service     // snake_case
+package UserService      // PascalCase
+package util             // слишком общее
+package common           // слишком общее
+package helpers          // слишком общее
+</code></pre>
+<p><strong>Избегать stutter (заикания)</strong>:</p>
+<pre><code class="language-go">// ❌ Stutter: user.UserService, user.UserRepository
+package user
+
+type UserService struct { ... }  // user.UserService — повторение
+
+// ✅ Без stutter
+type Service struct { ... }      // user.Service — чисто
+type Repository struct { ... }   // user.Repository — чисто
+</code></pre>
+<p><strong>Именование файлов</strong>:</p>
+<pre><code class="language-go">// Один файл — одна логическая единица
+user/
+├── service.go       // type Service struct
+├── repository.go    // type Repository struct
+├── handler.go       // type Handler struct
+├── model.go         // type User struct, type CreateRequest struct
+└── service_test.go  // тесты для service.go
+</code></pre>
+<hr>
+<h2 id="типичные-ошибки-c-разработчиков-1"><a class="header" href="#типичные-ошибки-c-разработчиков-1">Типичные ошибки C# разработчиков</a></h2>
+<h3 id="1-overengineering"><a class="header" href="#1-overengineering">1. Overengineering</a></h3>
+<pre><code class="language-go">// ❌ C#-стиль: слишком много абстракций
+type IUserRepositoryFactory interface {
+    Create() IUserRepository
+}
+
+type IUserRepository interface {
+    // 15 методов
+}
+
+type IUserService interface {
+    // 10 методов
+}
+
+type IUserServiceFactory interface {
+    Create() IUserService
+}
+
+// ✅ Go-стиль: просто и прямо
+type UserRepository struct {
+    db *sql.DB
+}
+
+type UserService struct {
+    repo *UserRepository
+}
+</code></pre>
+<h3 id="2-gettersetter-для-всего"><a class="header" href="#2-gettersetter-для-всего">2. Getter/Setter для всего</a></h3>
+<pre><code class="language-go">// ❌ C#-стиль: getter/setter
+type User struct {
+    name string
+    age  int
+}
+
+func (u *User) GetName() string { return u.name }
+func (u *User) SetName(n string) { u.name = n }
+func (u *User) GetAge() int { return u.age }
+func (u *User) SetAge(a int) { u.age = a }
+
+// ✅ Go-стиль: публичные поля
+type User struct {
+    Name string
+    Age  int
+}
+
+// Getter/setter только если нужна валидация или side effects
+</code></pre>
+<h3 id="3-интерфейсы-на-всякий-случай"><a class="header" href="#3-интерфейсы-на-всякий-случай">3. Интерфейсы “на всякий случай”</a></h3>
+<pre><code class="language-go">// ❌ Интерфейс для единственной реализации
+type UserService interface {
+    GetUser(id int) (*User, error)
+    CreateUser(u *User) error
+}
+
+type userService struct { ... }
+
+var _ UserService = (*userService)(nil)  // "проверка реализации"
+
+// ✅ Просто структура
+type UserService struct { ... }
+
+// Интерфейс создашь когда понадобится для тестов или полиморфизма
+</code></pre>
+<h3 id="4-panic-вместо-error"><a class="header" href="#4-panic-вместо-error">4. Panic вместо error</a></h3>
+<pre><code class="language-go">// ❌ Panic для бизнес-ошибок
+func MustGetUser(id int) *User {
+    user, err := db.GetUser(id)
+    if err != nil {
+        panic(err)  // Плохо!
+    }
+    return user
+}
+
+// ✅ Возвращать ошибку
+func GetUser(id int) (*User, error) {
+    user, err := db.GetUser(id)
+    if err != nil {
+        return nil, fmt.Errorf("get user %d: %w", id, err)
+    }
+    return user, nil
+}
+
+// Panic только для инициализации (Must-функции)
+func MustParseTemplate(name string) *template.Template {
+    t, err := template.ParseFiles(name)
+    if err != nil {
+        panic(err)  // OK — ошибка при старте приложения
+    }
+    return t
+}
+</code></pre>
+<h3 id="5-игнорирование-contextcontext"><a class="header" href="#5-игнорирование-contextcontext">5. Игнорирование context.Context</a></h3>
+<pre><code class="language-go">// ❌ Нет context
+func GetUser(id int) (*User, error) {
+    return db.Query("SELECT * FROM users WHERE id = ?", id)
+}
+
+// ✅ Context первым параметром
+func GetUser(ctx context.Context, id int) (*User, error) {
+    return db.QueryContext(ctx, "SELECT * FROM users WHERE id = ?", id)
+}
+</code></pre>
+<h3 id="6-неправильная-работа-с-nil"><a class="header" href="#6-неправильная-работа-с-nil">6. Неправильная работа с nil</a></h3>
+<pre><code class="language-go">// ❌ Не проверять nil
+func ProcessUser(u *User) {
+    fmt.Println(u.Name)  // Panic если u == nil!
+}
+
+// ✅ Проверять nil или использовать значения
+func ProcessUser(u *User) error {
+    if u == nil {
+        return errors.New("user is nil")
+    }
+    fmt.Println(u.Name)
+    return nil
+}
+
+// Или использовать значение вместо указателя
+func ProcessUser(u User) {  // Копия, не указатель
+    fmt.Println(u.Name)  // Работает с zero value
+}
+</code></pre>
+<h3 id="7-linq-стиль-вместо-простых-циклов"><a class="header" href="#7-linq-стиль-вместо-простых-циклов">7. LINQ-стиль вместо простых циклов</a></h3>
+<pre><code class="language-go">// ❌ Попытка сделать LINQ
+users := Filter(users, func(u User) bool { return u.Age &gt; 18 })
+users = Map(users, func(u User) UserDTO { return ToDTO(u) })
+result := Reduce(users, 0, func(acc int, u UserDTO) int { return acc + 1 })
+
+// ✅ Простой цикл — читаемее и быстрее
+var adults []UserDTO
+for _, u := range users {
+    if u.Age &gt; 18 {
+        adults = append(adults, ToDTO(u))
+    }
+}
+count := len(adults)
+</code></pre>
+<h3 id="сводная-таблица"><a class="header" href="#сводная-таблица">Сводная таблица</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Ошибка</th><th>Почему плохо</th><th>Go-way</th></tr>
+</thead>
+<tbody>
+<tr><td>Getters/Setters</td><td>Избыточность, бойлерплейт</td><td>Экспортируемые поля</td></tr>
+<tr><td>Много интерфейсов</td><td>Interface pollution</td><td>По необходимости</td></tr>
+<tr><td>Panic для ошибок</td><td>Не идиоматично, сложно обрабатывать</td><td>Return error</td></tr>
+<tr><td>Игнорирование err</td><td>Потеря информации, скрытые баги</td><td>Всегда проверять</td></tr>
+<tr><td>Нет context</td><td>Нет cancellation, timeout</td><td>Context первым параметром</td></tr>
+<tr><td>LINQ-стиль</td><td>Медленнее, сложнее читать</td><td>Простые циклы</td></tr>
+<tr><td>Factories везде</td><td>Overengineering</td><td>Простые конструкторы</td></tr>
+<tr><td>DTO на каждый слой</td><td>Много маппинга</td><td>Минимум преобразований</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="api-design"><a class="header" href="#api-design">API Design</a></h2>
+<h3 id="экспорт-и-видимость"><a class="header" href="#экспорт-и-видимость">Экспорт и видимость</a></h3>
+<p>В Go видимость определяется <strong>регистром первой буквы</strong>:</p>
+<pre><code class="language-go">package user
+
+// Экспортируется (публичный API)
+type User struct {       // ✅ Доступен извне пакета
+    ID   int             // ✅ Поле доступно
+    Name string          // ✅ Поле доступно
+    hash string          // ❌ Поле приватное
+}
+
+func NewUser(name string) *User { ... }  // ✅ Функция экспортируется
+func (u *User) Validate() error { ... }  // ✅ Метод экспортируется
+
+// Не экспортируется (внутреннее)
+type userCache struct { ... }            // ❌ Только внутри пакета
+func hashPassword(pwd string) string { } // ❌ Только внутри пакета
+func (u *User) setHash(h string) { }     // ❌ Метод приватный
+</code></pre>
+<p><strong>Правило минимального экспорта</strong>:</p>
+<pre><code class="language-go">// ❌ Экспортируем всё
+type UserRepository struct {
+    DB        *sql.DB      // Зачем клиенту доступ к DB?
+    Cache     *redis.Client
+    TableName string
+}
+
+// ✅ Минимальный публичный API
+type UserRepository struct {
+    db        *sql.DB       // приватные поля
+    cache     *redis.Client
+    tableName string
+}
+
+// Только нужные методы экспортируются
+func (r *UserRepository) GetByID(ctx context.Context, id int) (*User, error)
+func (r *UserRepository) Create(ctx context.Context, u *User) error
+</code></pre>
+<h3 id="версионирование"><a class="header" href="#версионирование">Версионирование</a></h3>
+<p>Go modules используют <strong>semantic versioning</strong> с особенностями:</p>
+<pre><code>v1.2.3
+│ │ │
+│ │ └── Patch: багфиксы, без breaking changes
+│ └──── Minor: новые фичи, без breaking changes
+└────── Major: breaking changes
+</code></pre>
+<p><strong>Major version suffix</strong> (для v2+):</p>
+<pre><code>// Для v0.x и v1.x — обычный путь
+import "github.com/company/mylib"
+
+// Для v2+ — суффикс в пути
+import "github.com/company/mylib/v2"
+import "github.com/company/mylib/v3"
+</code></pre>
+<p><strong>Структура репозитория для v2+</strong>:</p>
+<pre><code>mylib/
+├── go.mod           # module github.com/company/mylib/v2
+├── v2/              # опционально, код может быть в корне
+│   └── ...
+└── ...
+</code></pre>
+<h3 id="обратная-совместимость"><a class="header" href="#обратная-совместимость">Обратная совместимость</a></h3>
+<p><strong>Что НЕ ломает совместимость</strong> (ok в minor/patch):</p>
+<ul>
+<li>Добавление нового экспортируемого типа</li>
+<li>Добавление нового метода в структуру</li>
+<li>Добавление нового поля в структуру</li>
+<li>Добавление новой функции</li>
+</ul>
+<p><strong>Что ЛОМАЕТ совместимость</strong> (требует major bump):</p>
+<ul>
+<li>Удаление экспортируемого типа/функции/метода</li>
+<li>Изменение сигнатуры функции</li>
+<li>Изменение типа поля структуры</li>
+<li>Удаление поля структуры</li>
+<li>Изменение поведения функции</li>
+</ul>
+<pre><code class="language-go">// v1.0.0
+func ParseConfig(path string) (*Config, error)
+
+// v1.1.0 — добавили опциональный параметр через Functional Options
+func ParseConfig(path string, opts ...Option) (*Config, error)  // ✅ Совместимо
+
+// v2.0.0 — изменили сигнатуру
+func ParseConfig(path string, strict bool) (*Config, error)  // ❌ Breaking change
+</code></pre>
+<h3 id="документирование-api"><a class="header" href="#документирование-api">Документирование API</a></h3>
+<p><strong>godoc-стиль</strong>:</p>
+<pre><code class="language-go">// Package user предоставляет функционал управления пользователями.
+//
+// Основные типы:
+//   - User: представление пользователя
+//   - Service: бизнес-логика работы с пользователями
+//   - Repository: доступ к данным
+package user
+
+// User представляет пользователя системы.
+//
+// Поля ID и Email обязательны и уникальны.
+// CreatedAt устанавливается автоматически при создании.
+type User struct {
+    ID        int       // Уникальный идентификатор
+    Email     string    // Email пользователя (уникальный)
+    Name      string    // Отображаемое имя
+    CreatedAt time.Time // Время создания
+}
+
+// NewUser создаёт нового пользователя с указанным email и именем.
+// Возвращает ошибку, если email невалидный.
+//
+// Пример:
+//
+//     user, err := NewUser("user@example.com", "John Doe")
+//     if err != nil {
+//         log.Fatal(err)
+//     }
+func NewUser(email, name string) (*User, error) {
+    // ...
+}
+
+// ErrUserNotFound возвращается когда пользователь не найден.
+var ErrUserNotFound = errors.New("user not found")
+</code></pre>
+<h3 id="сравнительная-таблица-3"><a class="header" href="#сравнительная-таблица-3">Сравнительная таблица</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C#</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>Видимость</td><td><code>public</code>, <code>internal</code>, <code>private</code>, <code>protected</code></td><td>Заглавная/строчная буква</td></tr>
+<tr><td>Scope модификаторов</td><td>Класс, метод, поле</td><td>Пакет целиком</td></tr>
+<tr><td>Версионирование</td><td>NuGet SemVer</td><td>Go modules SemVer</td></tr>
+<tr><td>Major version</td><td>Новый пакет NuGet</td><td><code>/v2</code>, <code>/v3</code> suffix в import</td></tr>
+<tr><td>Документация</td><td>XML comments, <code>///</code></td><td>Комментарии перед объявлением</td></tr>
+<tr><td>Генерация доков</td><td>Swagger, DocFX</td><td><code>go doc</code>, pkg.go.dev</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="практические-примеры"><a class="header" href="#практические-примеры">Практические примеры</a></h2>
+<h3 id="пример-1-рефакторинг-repository"><a class="header" href="#пример-1-рефакторинг-repository">Пример 1: Рефакторинг Repository</a></h3>
+<p><strong>C# оригинал</strong>:</p>
+<pre><code class="language-csharp">// C#: типичный generic repository
+public interface IRepository&lt;T&gt; where T : class
+{
+    Task&lt;T?&gt; GetByIdAsync(int id);
+    Task&lt;IEnumerable&lt;T&gt;&gt; GetAllAsync();
+    Task&lt;T&gt; AddAsync(T entity);
+    Task UpdateAsync(T entity);
+    Task DeleteAsync(int id);
+    Task&lt;bool&gt; ExistsAsync(int id);
+    Task&lt;int&gt; CountAsync();
+    IQueryable&lt;T&gt; Query();
+}
+
+public interface IUserRepository : IRepository&lt;User&gt;
+{
+    Task&lt;User?&gt; GetByEmailAsync(string email);
+    Task&lt;IEnumerable&lt;User&gt;&gt; GetActiveUsersAsync();
+}
+
+public class UserRepository : IUserRepository
+{
+    private readonly AppDbContext _context;
+
+    public UserRepository(AppDbContext context)
+    {
+        _context = context;
+    }
+
+    // 9+ методов реализации...
+}
+
+public class UserService
+{
+    private readonly IUserRepository _repository;  // 9+ методов, используем 2
+
+    public async Task&lt;UserDto&gt; GetUserProfile(int userId)
+    {
+        var user = await _repository.GetByIdAsync(userId);
+        return MapToDto(user);
+    }
+}
+</code></pre>
+<p><strong>Go рефакторинг</strong>:</p>
+<pre><code class="language-go">// Go: маленькие интерфейсы у потребителя
+
+// package postgres — конкретная реализация без интерфейса
+type UserRepository struct {
+    db *sql.DB
+}
+
+func NewUserRepository(db *sql.DB) *UserRepository {
+    return &amp;UserRepository{db: db}
+}
+
+func (r *UserRepository) GetByID(ctx context.Context, id int) (*domain.User, error) {
+    var u domain.User
+    err := r.db.QueryRowContext(ctx,
+        "SELECT id, email, name, created_at FROM users WHERE id = $1", id,
+    ).Scan(&amp;u.ID, &amp;u.Email, &amp;u.Name, &amp;u.CreatedAt)
+    if errors.Is(err, sql.ErrNoRows) {
+        return nil, domain.ErrUserNotFound
+    }
+    return &amp;u, err
+}
+
+func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*domain.User, error) {
+    // ...
+}
+
+func (r *UserRepository) Create(ctx context.Context, u *domain.User) error {
+    // ...
+}
+
+func (r *UserRepository) List(ctx context.Context, filter Filter) ([]*domain.User, error) {
+    // ...
+}
+
+// package service — интерфейс определяется здесь
+type userGetter interface {
+    GetByID(ctx context.Context, id int) (*domain.User, error)
+}
+
+type ProfileService struct {
+    users userGetter  // только 1 нужный метод
+}
+
+func NewProfileService(users userGetter) *ProfileService {
+    return &amp;ProfileService{users: users}
+}
+
+func (s *ProfileService) GetProfile(ctx context.Context, userID int) (*Profile, error) {
+    user, err := s.users.GetByID(ctx, userID)
+    if err != nil {
+        return nil, fmt.Errorf("get user: %w", err)
+    }
+    return mapToProfile(user), nil
+}
+
+// package admin — свой интерфейс
+type userLister interface {
+    List(ctx context.Context, filter Filter) ([]*domain.User, error)
+}
+
+type AdminService struct {
+    users userLister  // только нужные методы
+}
+</code></pre>
+<h3 id="пример-2-миграция-di-сервиса"><a class="header" href="#пример-2-миграция-di-сервиса">Пример 2: Миграция DI-сервиса</a></h3>
+<p><strong>C# оригинал</strong>:</p>
+<pre><code class="language-csharp">// C#: сложная DI-конфигурация
+public class Startup
+{
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddDbContext&lt;AppDbContext&gt;(options =&gt;
+            options.UseNpgsql(Configuration.GetConnectionString("Default")));
+
+        services.AddScoped&lt;IUserRepository, UserRepository&gt;();
+        services.AddScoped&lt;IOrderRepository, OrderRepository&gt;();
+        services.AddScoped&lt;IEmailService, SendGridEmailService&gt;();
+        services.AddScoped&lt;IUserService, UserService&gt;();
+        services.AddScoped&lt;IOrderService, OrderService&gt;();
+
+        services.Configure&lt;EmailOptions&gt;(Configuration.GetSection("Email"));
+        services.Configure&lt;CacheOptions&gt;(Configuration.GetSection("Cache"));
+
+        services.AddStackExchangeRedisCache(options =&gt;
+            options.Configuration = Configuration.GetConnectionString("Redis"));
+    }
+}
+
+public class UserService : IUserService
+{
+    private readonly IUserRepository _userRepo;
+    private readonly IEmailService _emailService;
+    private readonly ILogger&lt;UserService&gt; _logger;
+    private readonly IOptions&lt;EmailOptions&gt; _emailOptions;
+
+    public UserService(
+        IUserRepository userRepo,
+        IEmailService emailService,
+        ILogger&lt;UserService&gt; logger,
+        IOptions&lt;EmailOptions&gt; emailOptions)
+    {
+        _userRepo = userRepo;
+        _emailService = emailService;
+        _logger = logger;
+        _emailOptions = emailOptions;
+    }
+}
+</code></pre>
+<p><strong>Go рефакторинг</strong>:</p>
+<pre><code class="language-go">// Go: явная инициализация
+
+// config/config.go
+type Config struct {
+    Database DatabaseConfig
+    Redis    RedisConfig
+    Email    EmailConfig
+}
+
+func Load() (*Config, error) {
+    var cfg Config
+    if err := env.Parse(&amp;cfg); err != nil {
+        return nil, fmt.Errorf("parse config: %w", err)
+    }
+    return &amp;cfg, nil
+}
+
+// main.go — всё явно
+func main() {
+    // Загрузка конфигурации
+    cfg, err := config.Load()
+    if err != nil {
+        log.Fatal("load config", "error", err)
+    }
+
+    // Инициализация инфраструктуры
+    db, err := sql.Open("postgres", cfg.Database.URL)
+    if err != nil {
+        log.Fatal("connect db", "error", err)
+    }
+    defer db.Close()
+
+    redisClient := redis.NewClient(&amp;redis.Options{
+        Addr: cfg.Redis.Addr,
+    })
+    defer redisClient.Close()
+
+    logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+
+    // Инициализация слоёв — зависимости явные
+    userRepo := postgres.NewUserRepository(db)
+    orderRepo := postgres.NewOrderRepository(db)
+    emailSvc := email.NewService(cfg.Email)
+    cache := rediscache.New(redisClient)
+
+    userSvc := service.NewUserService(userRepo, emailSvc, logger, cfg.Email)
+    orderSvc := service.NewOrderService(orderRepo, userSvc, cache, logger)
+
+    // HTTP handlers
+    userHandler := api.NewUserHandler(userSvc)
+    orderHandler := api.NewOrderHandler(orderSvc)
+
+    // Router
+    mux := http.NewServeMux()
+    mux.Handle("GET /users/{id}", userHandler.GetUser())
+    mux.Handle("POST /orders", orderHandler.CreateOrder())
+
+    // Server
+    server := &amp;http.Server{
+        Addr:    cfg.Server.Addr,
+        Handler: mux,
+    }
+
+    log.Info("starting server", "addr", cfg.Server.Addr)
+    if err := server.ListenAndServe(); err != nil {
+        log.Fatal("server failed", "error", err)
+    }
+}
+</code></pre>
+<h3 id="пример-3-организация-микросервиса"><a class="header" href="#пример-3-организация-микросервиса">Пример 3: Организация микросервиса</a></h3>
+<pre><code>user-service/
+├── cmd/
+│   └── api/
+│       └── main.go              # Entry point
+├── internal/
+│   ├── config/
+│   │   └── config.go            # Конфигурация
+│   ├── user/                    # Домен User
+│   │   ├── model.go             # type User struct
+│   │   ├── service.go           # Бизнес-логика
+│   │   ├── service_test.go      # Тесты
+│   │   ├── repository.go        # Интерфейс репозитория
+│   │   └── errors.go            # ErrUserNotFound и т.д.
+│   ├── postgres/                # Реализация для PostgreSQL
+│   │   ├── user_repository.go
+│   │   └── migrations/
+│   ├── api/                     # HTTP handlers
+│   │   ├── handler.go
+│   │   ├── middleware.go
+│   │   └── router.go
+│   └── platform/                # Общая инфраструктура
+│       ├── logger/
+│       └── metrics/
+├── pkg/                         # Публичные пакеты (если нужны)
+│   └── userid/
+│       └── userid.go            # type ID string
+├── go.mod
+├── go.sum
+├── Dockerfile
+└── Makefile
+</code></pre>
+<p><strong>internal/user/service.go</strong>:</p>
+<pre><code class="language-go">package user
+
+import (
+    "context"
+    "fmt"
+)
+
+// Repository — интерфейс определён в пакете user (consumer-side)
+type Repository interface {
+    GetByID(ctx context.Context, id int) (*User, error)
+    GetByEmail(ctx context.Context, email string) (*User, error)
+    Create(ctx context.Context, u *User) error
+    Update(ctx context.Context, u *User) error
+}
+
+type Service struct {
+    repo   Repository
+    logger *slog.Logger
+}
+
+func NewService(repo Repository, logger *slog.Logger) *Service {
+    return &amp;Service{
+        repo:   repo,
+        logger: logger,
+    }
+}
+
+func (s *Service) GetUser(ctx context.Context, id int) (*User, error) {
+    user, err := s.repo.GetByID(ctx, id)
+    if err != nil {
+        return nil, fmt.Errorf("get user %d: %w", id, err)
+    }
+    return user, nil
+}
+
+func (s *Service) CreateUser(ctx context.Context, req CreateRequest) (*User, error) {
+    // Валидация
+    if err := req.Validate(); err != nil {
+        return nil, fmt.Errorf("validate: %w", err)
+    }
+
+    // Проверка уникальности email
+    existing, err := s.repo.GetByEmail(ctx, req.Email)
+    if err != nil &amp;&amp; !errors.Is(err, ErrUserNotFound) {
+        return nil, fmt.Errorf("check email: %w", err)
+    }
+    if existing != nil {
+        return nil, ErrEmailExists
+    }
+
+    // Создание
+    user := &amp;User{
+        Email:     req.Email,
+        Name:      req.Name,
+        CreatedAt: time.Now(),
+    }
+
+    if err := s.repo.Create(ctx, user); err != nil {
+        return nil, fmt.Errorf("create user: %w", err)
+    }
+
+    s.logger.Info("user created", "id", user.ID, "email", user.Email)
+    return user, nil
+}
+</code></pre>
+<hr><!-- AUTO: NAV -->
+<p><strong>Вопросы?</strong> Открой issue на <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/issues">GitHub</a></p>
+<p><a href="./README.html">← Назад к оглавлению</a> | <a href="./02_tools.html">Вперёд: Инструменты →</a></p>
+<!-- /AUTO: NAV -->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part5-project2-ecommerce/07_deployment.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part6-best-practices/02_tools.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part5-project2-ecommerce/07_deployment.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part6-best-practices/02_tools.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

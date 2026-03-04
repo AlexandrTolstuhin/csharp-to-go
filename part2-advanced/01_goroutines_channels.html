@@ -1,0 +1,1919 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>2.1 Горутины и каналы - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-e1a1ce5b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-c19b06e6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part2-advanced/01_goroutines_channels.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="21-горутины-и-каналы"><a class="header" href="#21-горутины-и-каналы">2.1 Горутины и каналы</a></h1>
+<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<ul>
+<li><a href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5">Введение</a>
+<ul>
+<li><a href="#%D1%84%D0%B8%D0%BB%D0%BE%D1%81%D0%BE%D1%84%D0%B8%D1%8F">Философия</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B3%D0%BE%D1%80%D1%83%D1%82%D0%B8%D0%BD%D1%8B-vs-c-taskthread">Горутины vs C# Task/Thread</a>
+<ul>
+<li><a href="#%D1%87%D1%82%D0%BE-%D1%82%D0%B0%D0%BA%D0%BE%D0%B5-%D0%B3%D0%BE%D1%80%D1%83%D1%82%D0%B8%D0%BD%D0%B0">Что такое горутина?</a></li>
+<li><a href="#c-thread">C# Thread</a></li>
+<li><a href="#c-task-asyncawait">C# Task (async/await)</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-%D0%B8-%D0%B7%D0%B0%D0%BF%D1%83%D1%81%D0%BA">Сравнение: создание и запуск</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0">Сравнительная таблица</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB%D1%8B-%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D1%8B">Каналы: основы</a>
+<ul>
+<li><a href="#%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB%D0%B0">Создание канала</a></li>
+<li><a href="#%D0%BE%D1%82%D0%BF%D1%80%D0%B0%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D0%B5">Отправка и получение</a></li>
+<li><a href="#c-%D0%B0%D0%BD%D0%B0%D0%BB%D0%BE%D0%B3-channelt">C# аналог: Channel<t></t></a></li>
+<li><a href="#%D0%B7%D0%B0%D0%BA%D1%80%D1%8B%D1%82%D0%B8%D0%B5-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB%D0%B0">Закрытие канала</a></li>
+<li><a href="#%D0%B8%D0%B4%D0%B8%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%BD%D1%8B%D0%B9-%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD-range-over-channel">Идиоматичный паттерн: range over channel</a></li>
+<li><a href="#%D0%BD%D0%B0%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB%D1%8B-directional-channels">Направленные каналы (directional channels)</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B1%D1%83%D1%84%D0%B5%D1%80%D0%B8%D0%B7%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB%D1%8B">Буферизированные каналы</a>
+<ul>
+<li><a href="#%D0%BD%D0%B5%D0%B1%D1%83%D1%84%D0%B5%D1%80%D0%B8%D0%B7%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B9-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB-%D0%BF%D0%BE-%D1%83%D0%BC%D0%BE%D0%BB%D1%87%D0%B0%D0%BD%D0%B8%D1%8E">Небуферизированный канал (по умолчанию)</a></li>
+<li><a href="#%D0%B1%D1%83%D1%84%D0%B5%D1%80%D0%B8%D0%B7%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B9-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB">Буферизированный канал</a></li>
+<li><a href="#c-%D0%B0%D0%BD%D0%B0%D0%BB%D0%BE%D0%B3">C# аналог</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C-%D0%B1%D1%83%D1%84%D0%B5%D1%80%D0%B8%D0%B7%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB%D1%8B">Когда использовать буферизированные каналы?</a></li>
+</ul>
+</li>
+<li><a href="#select-statement">Select statement</a>
+<ul>
+<li><a href="#%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D1%8B-select">Основы select</a></li>
+<li><a href="#c-%D0%B0%D0%BD%D0%B0%D0%BB%D0%BE%D0%B3-taskwhenany">C# аналог: Task.WhenAny</a></li>
+<li><a href="#default-case-%D0%BD%D0%B5%D0%B1%D0%BB%D0%BE%D0%BA%D0%B8%D1%80%D1%83%D1%8E%D1%89%D0%B0%D1%8F-%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D1%8F">Default case (неблокирующая операция)</a></li>
+<li><a href="#timeout-%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD">Timeout паттерн</a></li>
+<li><a href="#ticker-%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD-%D0%BF%D0%B5%D1%80%D0%B8%D0%BE%D0%B4%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B5-%D0%B2%D1%8B%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5">Ticker паттерн (периодическое выполнение)</a></li>
+<li><a href="#%D0%B8%D0%B4%D0%B8%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%BD%D1%8B%D0%B9-select-loop">Идиоматичный select loop</a></li>
+</ul>
+</li>
+<li><a href="#context-%D0%B8-cancellation">Context и cancellation</a>
+<ul>
+<li><a href="#c-cancellationtoken">C# CancellationToken</a></li>
+<li><a href="#go-contextcontext">Go context.Context</a></li>
+<li><a href="#%D1%82%D0%B8%D0%BF%D1%8B-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BA%D1%81%D1%82%D0%BE%D0%B2">Типы контекстов</a>
+<ul>
+<li><a href="#1-withcancel---%D1%80%D1%83%D1%87%D0%BD%D0%B0%D1%8F-%D0%BE%D1%82%D0%BC%D0%B5%D0%BD%D0%B0">1. WithCancel - ручная отмена</a></li>
+<li><a href="#2-withtimeout---%D0%B0%D0%B2%D1%82%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F-%D0%BE%D1%82%D0%BC%D0%B5%D0%BD%D0%B0-%D0%BF%D0%BE-%D1%82%D0%B0%D0%B9%D0%BC%D0%B0%D1%83%D1%82%D1%83">2. WithTimeout - автоматическая отмена по таймауту</a></li>
+<li><a href="#3-withdeadline---%D0%BE%D1%82%D0%BC%D0%B5%D0%BD%D0%B0-%D0%B2-%D0%BA%D0%BE%D0%BD%D0%BA%D1%80%D0%B5%D1%82%D0%BD%D0%BE%D0%B5-%D0%B2%D1%80%D0%B5%D0%BC%D1%8F">3. WithDeadline - отмена в конкретное время</a></li>
+<li><a href="#4-withvalue---%D0%BF%D0%B5%D1%80%D0%B5%D0%B4%D0%B0%D1%87%D0%B0-%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D0%B9">4. WithValue - передача значений</a></li>
+</ul>
+</li>
+<li><a href="#%D1%82%D0%B8%D0%BF%D0%B8%D0%B7%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BB%D1%8E%D1%87%D0%B8-%D0%B4%D0%BB%D1%8F-withvalue">Типизированные ключи для WithValue</a></li>
+<li><a href="#%D0%B0%D0%BD%D1%82%D0%B8%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD%D1%8B-withvalue">Антипаттерны WithValue</a></li>
+<li><a href="#contextbackground-vs-contexttodo">context.Background() vs context.TODO()</a></li>
+<li><a href="#%D0%B8%D0%B4%D0%B8%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%BD%D0%BE%D0%B5-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-context">Идиоматичное использование context</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BE%D1%82%D0%BC%D0%B5%D0%BD%D0%B0-%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D0%B8">Сравнение: отмена операции</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD%D1%8B-%D0%BA%D0%BE%D0%BD%D0%BA%D1%83%D1%80%D0%B5%D0%BD%D1%82%D0%BD%D0%BE%D1%81%D1%82%D0%B8">Паттерны конкурентности</a>
+<ul>
+<li><a href="#1-worker-pool">1. Worker Pool</a></li>
+<li><a href="#2-fan-out-fan-in">2. Fan-Out, Fan-In</a></li>
+<li><a href="#3-pipeline">3. Pipeline</a></li>
+<li><a href="#4-semaphore-%D0%BE%D0%B3%D1%80%D0%B0%D0%BD%D0%B8%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BA%D0%BE%D0%BD%D0%BA%D1%83%D1%80%D0%B5%D0%BD%D1%82%D0%BD%D0%BE%D1%81%D1%82%D0%B8">4. Semaphore (ограничение конкурентности)</a></li>
+<li><a href="#5-errgroup-golangorgxsyncerrgroup">5. errgroup (golang.org/x/sync/errgroup)</a></li>
+</ul>
+</li>
+<li><a href="#%D1%83%D1%82%D0%B5%D1%87%D0%BA%D0%B8-%D0%B3%D0%BE%D1%80%D1%83%D1%82%D0%B8%D0%BD">Утечки горутин</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-%D1%83%D1%82%D0%B5%D1%87%D0%BA%D0%B8">Пример утечки</a></li>
+<li><a href="#%D0%BA%D0%B0%D0%BA-%D0%B8%D0%B7%D0%B1%D0%B5%D0%B6%D0%B0%D1%82%D1%8C-%D1%83%D1%82%D0%B5%D1%87%D0%B5%D0%BA">Как избежать утечек</a>
+<ul>
+<li><a href="#1-%D0%B2%D1%81%D0%B5%D0%B3%D0%B4%D0%B0-%D0%B7%D0%B0%D0%BA%D1%80%D1%8B%D0%B2%D0%B0%D0%B9%D1%82%D0%B5-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB%D1%8B">1. Всегда закрывайте каналы</a></li>
+<li><a href="#2-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D1%83%D0%B9%D1%82%D0%B5-context-%D0%B4%D0%BB%D1%8F-%D0%BE%D1%82%D0%BC%D0%B5%D0%BD%D1%8B">2. Используйте context для отмены</a></li>
+<li><a href="#3-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D1%83%D0%B9%D1%82%D0%B5-%D0%B1%D1%83%D1%84%D0%B5%D1%80%D0%B8%D0%B7%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB%D1%8B-%D1%81-%D0%BE%D1%81%D1%82%D0%BE%D1%80%D0%BE%D0%B6%D0%BD%D0%BE%D1%81%D1%82%D1%8C%D1%8E">3. Используйте буферизированные каналы с осторожностью</a></li>
+<li><a href="#4-graceful-shutdown">4. Graceful shutdown</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BE%D0%B1%D0%BD%D0%B0%D1%80%D1%83%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5-%D1%83%D1%82%D0%B5%D1%87%D0%B5%D0%BA">Обнаружение утечек</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B">Практические примеры</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-%D0%BA%D0%BE%D0%BD%D0%BA%D1%83%D1%80%D0%B5%D0%BD%D1%82%D0%BD%D0%B0%D1%8F-%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BA%D0%B0-url">Пример 1: Конкурентная загрузка URL</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-producer-consumer-%D1%81-graceful-shutdown">Пример 2: Producer-Consumer с graceful shutdown</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-rate-limiter">Пример 3: Rate Limiter</a></li>
+</ul>
+</li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<p>Конкурентность в Go - это один из главных козырей языка и <strong>радикально отличается</strong> от C# async/await.</p>
+<h3 id="философия"><a class="header" href="#философия">Философия</a></h3>
+<p><strong>C#</strong>:</p>
+<ul>
+<li>Async/await построен вокруг <strong>Promise/Future</strong> модели</li>
+<li>Task представляет <strong>результат</strong> асинхронной операции</li>
+<li>Использует <strong>Thread Pool</strong> под капотом</li>
+<li>Callback-based (continuation)</li>
+</ul>
+<p><strong>Go</strong>:</p>
+<ul>
+<li>Горутины - это <strong>легковесные потоки</strong></li>
+<li>Каналы для <strong>коммуникации</strong> между горутинами</li>
+<li>“Don’t communicate by sharing memory; share memory by communicating”</li>
+<li>CSP (Communicating Sequential Processes) модель</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Ключевое отличие</strong>: В C# вы работаете с Task<t> (результат), в Go - с горутинами (процесс) и каналами (коммуникация).</t></p>
+</blockquote>
+<hr>
+<h2 id="горутины-vs-c-taskthread"><a class="header" href="#горутины-vs-c-taskthread">Горутины vs C# Task/Thread</a></h2>
+<h3 id="что-такое-горутина"><a class="header" href="#что-такое-горутина">Что такое горутина?</a></h3>
+<p>Горутина - это <strong>функция</strong>, выполняющаяся конкурентно с другим кодом. Это НЕ OS thread.</p>
+<p><strong>Характеристики</strong>:</p>
+<ul>
+<li>Легковесная (~2KB стека против 1MB у OS thread)</li>
+<li>Множественное мультиплексирование на OS threads (Go runtime управляет)</li>
+<li>Быстрое создание (nanoseconds)</li>
+<li>Можно создать миллионы горутин</li>
+</ul>
+<h3 id="c-thread"><a class="header" href="#c-thread">C# Thread</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">// OS Thread - тяжеловесный
+var thread = new Thread(() =&gt;
+{
+    Console.WriteLine("Running in thread");
+    Thread.Sleep(1000);
+});
+thread.Start();
+thread.Join(); // Ждём завершения
+</code></pre>
+<p><strong>Go</strong> (горутина):</p>
+<pre><code class="language-go">// Горутина - легковесная
+go func() {
+    fmt.Println("Running in goroutine")
+    time.Sleep(1 * time.Second)
+}()
+
+// Нет прямого аналога Join - используем другие механизмы
+</code></pre>
+<h3 id="c-task-asyncawait"><a class="header" href="#c-task-asyncawait">C# Task (async/await)</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">public async Task&lt;string&gt; FetchDataAsync(string url)
+{
+    using var client = new HttpClient();
+    var response = await client.GetStringAsync(url);
+    return response;
+}
+
+// Использование
+var data = await FetchDataAsync("https://api.example.com");
+Console.WriteLine(data);
+
+// Параллельные запросы
+var task1 = FetchDataAsync("url1");
+var task2 = FetchDataAsync("url2");
+var results = await Task.WhenAll(task1, task2);
+</code></pre>
+<p><strong>Go</strong> (горутины + каналы):</p>
+<pre><code class="language-go">func fetchData(url string) (string, error) {
+    resp, err := http.Get(url)
+    if err != nil {
+        return "", err
+    }
+    defer resp.Body.Close()
+
+    body, err := io.ReadAll(resp.Body)
+    if err != nil {
+        return "", err
+    }
+
+    return string(body), nil
+}
+
+// Использование с горутиной
+func main() {
+    // Канал для результата
+    resultCh := make(chan string, 1)
+    errCh := make(chan error, 1)
+
+    go func() {
+        data, err := fetchData("https://api.example.com")
+        if err != nil {
+            errCh &lt;- err
+            return
+        }
+        resultCh &lt;- data
+    }()
+
+    // Ожидание результата
+    select {
+    case data := &lt;-resultCh:
+        fmt.Println(data)
+    case err := &lt;-errCh:
+        fmt.Printf("Error: %v\n", err)
+    }
+}
+
+// Параллельные запросы
+func fetchMultiple(urls []string) ([]string, error) {
+    type result struct {
+        data string
+        err  error
+    }
+
+    resultsCh := make(chan result, len(urls))
+
+    // Запускаем горутину для каждого URL
+    for _, url := range urls {
+        go func(u string) {
+            data, err := fetchData(u)
+            resultsCh &lt;- result{data: data, err: err}
+        }(url)
+    }
+
+    // Собираем результаты
+    results := make([]string, 0, len(urls))
+    for i := 0; i &lt; len(urls); i++ {
+        res := &lt;-resultsCh
+        if res.err != nil {
+            return nil, res.err
+        }
+        results = append(results, res.data)
+    }
+
+    return results, nil
+}
+</code></pre>
+<h3 id="сравнение-создание-и-запуск"><a class="header" href="#сравнение-создание-и-запуск">Сравнение: создание и запуск</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">// Task.Run - запуск в ThreadPool
+Task.Run(() =&gt; DoWork());
+
+// async метод
+await DoWorkAsync();
+
+// Параллельно
+await Task.WhenAll(
+    DoWork1Async(),
+    DoWork2Async()
+);
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">// Запуск горутины
+go doWork()
+
+// Нет async/await - используем горутины напрямую
+
+// Параллельно (с sync.WaitGroup)
+var wg sync.WaitGroup
+
+wg.Add(2)
+go func() {
+    defer wg.Done()
+    doWork1()
+}()
+go func() {
+    defer wg.Done()
+    doWork2()
+}()
+
+wg.Wait() // Ждём завершения всех
+</code></pre>
+<h3 id="сравнительная-таблица"><a class="header" href="#сравнительная-таблица">Сравнительная таблица</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# Task</th><th>C# Thread</th><th>Go Goroutine</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Вес</strong></td><td>Легковесный</td><td>Тяжёлый (1MB)</td><td>Очень легковесный (2KB)</td></tr>
+<tr><td><strong>Стоимость создания</strong></td><td>Низкая</td><td>Высокая</td><td>Минимальная</td></tr>
+<tr><td><strong>Количество</strong></td><td>Тысячи</td><td>Десятки</td><td>Миллионы</td></tr>
+<tr><td><strong>Планировщик</strong></td><td>.NET ThreadPool</td><td>OS</td><td>Go runtime</td></tr>
+<tr><td><strong>Возвращаемое значение</strong></td><td>Task<t></t></td><td>Нет</td><td>Через каналы</td></tr>
+<tr><td><strong>Отмена</strong></td><td>CancellationToken</td><td>Thread.Abort (deprecated)</td><td>context.Context</td></tr>
+<tr><td><strong>Await</strong></td><td>async/await</td><td>thread.Join()</td><td>WaitGroup/каналы</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: В Go нет прямого аналога <code>await</code>. Вы <strong>не ждёте горутину напрямую</strong> - вы используете каналы или sync.WaitGroup.</p>
+</blockquote>
+<hr>
+<h2 id="каналы-основы"><a class="header" href="#каналы-основы">Каналы: основы</a></h2>
+<p>Канал - это <strong>typed conduit</strong> (типизированный канал) для передачи данных между горутинами.</p>
+<h3 id="создание-канала"><a class="header" href="#создание-канала">Создание канала</a></h3>
+<pre><code class="language-go">// Создание канала для int
+ch := make(chan int)
+
+// Канал для строк
+messages := make(chan string)
+
+// Канал для структур
+type User struct {
+    ID   int
+    Name string
+}
+users := make(chan User)
+</code></pre>
+<h3 id="отправка-и-получение"><a class="header" href="#отправка-и-получение">Отправка и получение</a></h3>
+<pre><code class="language-go">ch := make(chan string)
+
+// Отправка в канал (блокирующая операция)
+go func() {
+    ch &lt;- "hello" // Запись в канал
+}()
+
+// Получение из канала (блокирующая операция)
+msg := &lt;-ch // Чтение из канала
+fmt.Println(msg) // "hello"
+</code></pre>
+<blockquote>
+<p>💡 <strong>Важно</strong>: Отправка и получение <strong>блокируют</strong> горутину до тех пор, пока другая сторона не готова.</p>
+</blockquote>
+<h3 id="c-аналог-channel"><a class="header" href="#c-аналог-channel">C# аналог: Channel<t></t></a></h3>
+<p><strong>C#</strong> (System.Threading.Channels):</p>
+<pre><code class="language-csharp">var channel = Channel.CreateUnbounded&lt;string&gt;();
+
+// Отправка
+await channel.Writer.WriteAsync("hello");
+
+// Получение
+var msg = await channel.Reader.ReadAsync();
+Console.WriteLine(msg);
+
+// Закрытие
+channel.Writer.Complete();
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">ch := make(chan string)
+
+// Отправка
+ch &lt;- "hello"
+
+// Получение
+msg := &lt;-ch
+fmt.Println(msg)
+
+// Закрытие
+close(ch)
+</code></pre>
+<h3 id="закрытие-канала"><a class="header" href="#закрытие-канала">Закрытие канала</a></h3>
+<pre><code class="language-go">ch := make(chan int, 3)
+
+// Отправляем данные
+ch &lt;- 1
+ch &lt;- 2
+ch &lt;- 3
+
+// Закрываем канал
+close(ch)
+
+// Читаем все значения
+for val := range ch {
+    fmt.Println(val) // 1, 2, 3
+}
+
+// После close() чтение вернёт zero value
+val := &lt;-ch
+fmt.Println(val) // 0
+
+// Проверка, закрыт ли канал
+val, ok := &lt;-ch
+if !ok {
+    fmt.Println("Channel closed")
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: Закрывать канал должен <strong>отправитель</strong>, не получатель. Отправка в закрытый канал вызовет <strong>panic</strong>.</p>
+</blockquote>
+<h3 id="идиоматичный-паттерн-range-over-channel"><a class="header" href="#идиоматичный-паттерн-range-over-channel">Идиоматичный паттерн: range over channel</a></h3>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">func producer(ch chan&lt;- int) {
+    for i := 0; i &lt; 10; i++ {
+        ch &lt;- i
+    }
+    close(ch) // Важно закрыть!
+}
+
+func consumer(ch &lt;-chan int) {
+    for val := range ch { // Читаем до close()
+        fmt.Println(val)
+    }
+}
+
+func main() {
+    ch := make(chan int)
+
+    go producer(ch)
+    consumer(ch) // Блокируется до закрытия канала
+}
+</code></pre>
+<p><strong>C#</strong> (аналог):</p>
+<pre><code class="language-csharp">async Task Producer(ChannelWriter&lt;int&gt; writer)
+{
+    for (int i = 0; i &lt; 10; i++)
+    {
+        await writer.WriteAsync(i);
+    }
+    writer.Complete();
+}
+
+async Task Consumer(ChannelReader&lt;int&gt; reader)
+{
+    await foreach (var val in reader.ReadAllAsync())
+    {
+        Console.WriteLine(val);
+    }
+}
+
+var channel = Channel.CreateUnbounded&lt;int&gt;();
+_ = Producer(channel.Writer);
+await Consumer(channel.Reader);
+</code></pre>
+<h3 id="направленные-каналы-directional-channels"><a class="header" href="#направленные-каналы-directional-channels">Направленные каналы (directional channels)</a></h3>
+<pre><code class="language-go">// Только для отправки
+func send(ch chan&lt;- int, value int) {
+    ch &lt;- value
+    // val := &lt;-ch // ОШИБКА: нельзя читать
+}
+
+// Только для получения
+func receive(ch &lt;-chan int) int {
+    return &lt;-ch
+    // ch &lt;- 5 // ОШИБКА: нельзя писать
+}
+
+// Двунаправленный
+func bidirectional(ch chan int) {
+    ch &lt;- 42
+    val := &lt;-ch
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Используйте направленные каналы в сигнатурах функций для ясности и безопасности.</p>
+</blockquote>
+<hr>
+<h2 id="буферизированные-каналы"><a class="header" href="#буферизированные-каналы">Буферизированные каналы</a></h2>
+<h3 id="небуферизированный-канал-по-умолчанию"><a class="header" href="#небуферизированный-канал-по-умолчанию">Небуферизированный канал (по умолчанию)</a></h3>
+<pre><code class="language-go">ch := make(chan int) // Буфер = 0
+
+// Отправка блокируется до получения
+go func() {
+    ch &lt;- 42 // Блокируется здесь
+}()
+
+val := &lt;-ch // Разблокирует отправку
+fmt.Println(val)
+</code></pre>
+<h3 id="буферизированный-канал"><a class="header" href="#буферизированный-канал">Буферизированный канал</a></h3>
+<pre><code class="language-go">ch := make(chan int, 3) // Буфер на 3 элемента
+
+// Отправки не блокируются, пока буфер не заполнен
+ch &lt;- 1 // OK
+ch &lt;- 2 // OK
+ch &lt;- 3 // OK
+// ch &lt;- 4 // Блокируется - буфер полон
+
+val := &lt;-ch // Освобождает место
+ch &lt;- 4     // Теперь OK
+
+fmt.Println(len(ch)) // 3 (текущее количество)
+fmt.Println(cap(ch)) // 3 (capacity)
+</code></pre>
+<h3 id="c-аналог"><a class="header" href="#c-аналог">C# аналог</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">// Unbounded (бесконечный буфер)
+var channel = Channel.CreateUnbounded&lt;int&gt;();
+
+// Bounded (ограниченный буфер)
+var options = new BoundedChannelOptions(3)
+{
+    FullMode = BoundedChannelFullMode.Wait
+};
+var bounded = Channel.CreateBounded&lt;int&gt;(options);
+
+// Отправка
+await bounded.Writer.WriteAsync(1);
+await bounded.Writer.WriteAsync(2);
+await bounded.Writer.WriteAsync(3);
+// Следующий WriteAsync заблокируется
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">// Небуферизированный (синхронный)
+ch := make(chan int)
+
+// Буферизированный
+ch := make(chan int, 3)
+</code></pre>
+<h3 id="когда-использовать-буферизированные-каналы"><a class="header" href="#когда-использовать-буферизированные-каналы">Когда использовать буферизированные каналы?</a></h3>
+<p>✅ <strong>Используйте буферизированные каналы</strong>:</p>
+<ul>
+<li>Когда знаете точное количество элементов</li>
+<li>Для decoupling отправителя и получателя</li>
+<li>Для семафоров (ограничение конкурентности)</li>
+<li>Для worker pools</li>
+</ul>
+<p>❌ <strong>Не используйте</strong>:</p>
+<ul>
+<li>Как “решение” deadlock (обычно скрывает проблему)</li>
+<li>Произвольные большие буферы “на всякий случай”</li>
+</ul>
+<pre><code class="language-go">// ✅ Хорошо: буфер = количество workers
+results := make(chan Result, numWorkers)
+
+// ✅ Хорошо: семафор для ограничения конкурентности
+sem := make(chan struct{}, maxConcurrent)
+
+// ❌ Плохо: произвольный большой буфер
+ch := make(chan int, 10000) // Зачем так много?
+</code></pre>
+<hr>
+<h2 id="select-statement"><a class="header" href="#select-statement">Select statement</a></h2>
+<p><code>select</code> - это как <code>switch</code> для каналов. Позволяет ждать на <strong>нескольких каналах</strong> одновременно.</p>
+<h3 id="основы-select"><a class="header" href="#основы-select">Основы select</a></h3>
+<pre><code class="language-go">ch1 := make(chan string)
+ch2 := make(chan string)
+
+go func() {
+    time.Sleep(1 * time.Second)
+    ch1 &lt;- "from ch1"
+}()
+
+go func() {
+    time.Sleep(2 * time.Second)
+    ch2 &lt;- "from ch2"
+}()
+
+// Ждём первый доступный канал
+select {
+case msg1 := &lt;-ch1:
+    fmt.Println(msg1) // Сработает первым
+case msg2 := &lt;-ch2:
+    fmt.Println(msg2)
+}
+</code></pre>
+<h3 id="c-аналог-taskwhenany"><a class="header" href="#c-аналог-taskwhenany">C# аналог: Task.WhenAny</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">var task1 = Task.Run(async () =&gt;
+{
+    await Task.Delay(1000);
+    return "from task1";
+});
+
+var task2 = Task.Run(async () =&gt;
+{
+    await Task.Delay(2000);
+    return "from task2";
+});
+
+// Ждём первую завершившуюся задачу
+var completed = await Task.WhenAny(task1, task2);
+var result = await completed;
+Console.WriteLine(result); // "from task1"
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">select {
+case msg := &lt;-ch1:
+    fmt.Println(msg)
+case msg := &lt;-ch2:
+    fmt.Println(msg)
+}
+</code></pre>
+<h3 id="default-case-неблокирующая-операция"><a class="header" href="#default-case-неблокирующая-операция">Default case (неблокирующая операция)</a></h3>
+<pre><code class="language-go">ch := make(chan string)
+
+// Неблокирующая попытка чтения
+select {
+case msg := &lt;-ch:
+    fmt.Println("Received:", msg)
+default:
+    fmt.Println("No message available")
+}
+
+// Неблокирующая попытка записи
+select {
+case ch &lt;- "hello":
+    fmt.Println("Sent message")
+default:
+    fmt.Println("Channel full or no receiver")
+}
+</code></pre>
+<h3 id="timeout-паттерн"><a class="header" href="#timeout-паттерн">Timeout паттерн</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+
+try
+{
+    var result = await LongRunningTask(cts.Token);
+    Console.WriteLine(result);
+}
+catch (OperationCanceledException)
+{
+    Console.WriteLine("Timeout!");
+}
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">ch := make(chan string)
+
+go func() {
+    time.Sleep(10 * time.Second)
+    ch &lt;- "result"
+}()
+
+select {
+case result := &lt;-ch:
+    fmt.Println(result)
+case &lt;-time.After(5 * time.Second):
+    fmt.Println("Timeout!")
+}
+</code></pre>
+<h3 id="ticker-паттерн-периодическое-выполнение"><a class="header" href="#ticker-паттерн-периодическое-выполнение">Ticker паттерн (периодическое выполнение)</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">using var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
+
+while (await timer.WaitForNextTickAsync())
+{
+    Console.WriteLine("Tick");
+}
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">ticker := time.NewTicker(1 * time.Second)
+defer ticker.Stop()
+
+for {
+    select {
+    case &lt;-ticker.C:
+        fmt.Println("Tick")
+    case &lt;-done:
+        return
+    }
+}
+</code></pre>
+<h3 id="идиоматичный-select-loop"><a class="header" href="#идиоматичный-select-loop">Идиоматичный select loop</a></h3>
+<pre><code class="language-go">func worker(jobs &lt;-chan Job, results chan&lt;- Result, quit &lt;-chan struct{}) {
+    for {
+        select {
+        case job := &lt;-jobs:
+            // Обрабатываем задачу
+            result := process(job)
+            results &lt;- result
+
+        case &lt;-quit:
+            // Graceful shutdown
+            fmt.Println("Worker stopping")
+            return
+        }
+    }
+}
+</code></pre>
+<hr>
+<h2 id="context-и-cancellation"><a class="header" href="#context-и-cancellation">Context и cancellation</a></h2>
+<p><code>context.Context</code> - это стандартный способ передачи <strong>deadline</strong>, <strong>cancellation signals</strong> и <strong>request-scoped values</strong>.</p>
+<h3 id="c-cancellationtoken"><a class="header" href="#c-cancellationtoken">C# CancellationToken</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">public async Task DoWorkAsync(CancellationToken cancellationToken)
+{
+    while (!cancellationToken.IsCancellationRequested)
+    {
+        await Task.Delay(1000, cancellationToken);
+        Console.WriteLine("Working...");
+    }
+}
+
+// Использование
+var cts = new CancellationTokenSource();
+var task = DoWorkAsync(cts.Token);
+
+// Отмена через 5 секунд
+await Task.Delay(5000);
+cts.Cancel();
+
+await task;
+</code></pre>
+<h3 id="go-contextcontext"><a class="header" href="#go-contextcontext">Go context.Context</a></h3>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">func doWork(ctx context.Context) {
+    for {
+        select {
+        case &lt;-ctx.Done():
+            // Контекст отменён
+            fmt.Println("Cancelled:", ctx.Err())
+            return
+        default:
+            time.Sleep(1 * time.Second)
+            fmt.Println("Working...")
+        }
+    }
+}
+
+// Использование
+ctx, cancel := context.WithCancel(context.Background())
+defer cancel()
+
+go doWork(ctx)
+
+// Отмена через 5 секунд
+time.Sleep(5 * time.Second)
+cancel()
+
+time.Sleep(1 * time.Second) // Даём время завершиться
+</code></pre>
+<h3 id="типы-контекстов"><a class="header" href="#типы-контекстов">Типы контекстов</a></h3>
+<h4 id="1-withcancel---ручная-отмена"><a class="header" href="#1-withcancel---ручная-отмена">1. WithCancel - ручная отмена</a></h4>
+<pre><code class="language-go">ctx, cancel := context.WithCancel(context.Background())
+defer cancel()
+
+go func() {
+    &lt;-time.After(5 * time.Second)
+    cancel() // Отменяем через 5 сек
+}()
+
+doWork(ctx)
+</code></pre>
+<h4 id="2-withtimeout---автоматическая-отмена-по-таймауту"><a class="header" href="#2-withtimeout---автоматическая-отмена-по-таймауту">2. WithTimeout - автоматическая отмена по таймауту</a></h4>
+<pre><code class="language-go">ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+defer cancel()
+
+result, err := fetchWithTimeout(ctx, "https://api.example.com")
+if err != nil {
+    if errors.Is(err, context.DeadlineExceeded) {
+        fmt.Println("Timeout!")
+    }
+}
+</code></pre>
+<h4 id="3-withdeadline---отмена-в-конкретное-время"><a class="header" href="#3-withdeadline---отмена-в-конкретное-время">3. WithDeadline - отмена в конкретное время</a></h4>
+<pre><code class="language-go">deadline := time.Now().Add(10 * time.Second)
+ctx, cancel := context.WithDeadline(context.Background(), deadline)
+defer cancel()
+
+doWork(ctx)
+</code></pre>
+<h4 id="4-withvalue---передача-значений"><a class="header" href="#4-withvalue---передача-значений">4. WithValue - передача значений</a></h4>
+<pre><code class="language-go">type key string
+
+ctx := context.WithValue(context.Background(), key("userID"), 123)
+
+// В другой функции
+if userID, ok := ctx.Value(key("userID")).(int); ok {
+    fmt.Printf("User ID: %d\n", userID)
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: Не злоупотребляйте <code>WithValue</code>. Используйте только для request-scoped данных (trace ID, auth tokens и т.д.).</p>
+</blockquote>
+<h3 id="типизированные-ключи-для-withvalue"><a class="header" href="#типизированные-ключи-для-withvalue">Типизированные ключи для WithValue</a></h3>
+<p>Использовать голые строки в качестве ключей — распространённая ошибка C# разработчиков:</p>
+<pre><code class="language-go">// ❌ Не идиоматично: ключ типа string может совпасть с ключом из другого пакета
+ctx = context.WithValue(ctx, "userID", 123)
+ctx = context.WithValue(ctx, "requestID", "abc-123")
+</code></pre>
+<p>Правильный подход — <strong>неэкспортируемый тип внутри пакета</strong>:</p>
+<pre><code class="language-go">// ✅ Идиоматично: свой тип исключает коллизии ключей между пакетами
+type contextKey int
+
+const (
+    userIDKey    contextKey = iota
+    requestIDKey
+)
+
+// Хранение
+ctx = context.WithValue(ctx, userIDKey, 123)
+ctx = context.WithValue(ctx, requestIDKey, "abc-123")
+
+// Извлечение
+if userID, ok := ctx.Value(userIDKey).(int); ok {
+    fmt.Printf("User ID: %d\n", userID)
+}
+</code></pre>
+<p>Для больших проектов удобно обернуть в хелпер-функции, чтобы скрыть детали типа ключа:</p>
+<pre><code class="language-go">type contextKey int
+
+const userIDKey contextKey = iota
+
+func WithUserID(ctx context.Context, id int) context.Context {
+    return context.WithValue(ctx, userIDKey, id)
+}
+
+func UserID(ctx context.Context) (int, bool) {
+    id, ok := ctx.Value(userIDKey).(int)
+    return id, ok
+}
+
+// Использование в middleware
+func AuthMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        userID := extractUserIDFromToken(r)
+        ctx := WithUserID(r.Context(), userID)
+        next.ServeHTTP(w, r.WithContext(ctx))
+    })
+}
+
+// Использование в handler
+func getProfile(w http.ResponseWriter, r *http.Request) {
+    userID, ok := UserID(r.Context())
+    if !ok {
+        http.Error(w, "unauthorized", http.StatusUnauthorized)
+        return
+    }
+    // ...
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В C# <code>HttpContext.Items</code> — аналог <code>context.WithValue</code> для request-scoped данных. Та же идея: передавать данные через запрос, а не явными параметрами. Главное отличие — в Go ключ должен быть уникальным типом, а не строкой.</p>
+</blockquote>
+<h3 id="антипаттерны-withvalue"><a class="header" href="#антипаттерны-withvalue">Антипаттерны WithValue</a></h3>
+<p><code>context.WithValue</code> — не замена параметрам функций:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Использование</th><th style="text-align: center">Правильно</th><th style="text-align: center">Неправильно</th></tr>
+</thead>
+<tbody>
+<tr><td>Request ID для логов</td><td style="text-align: center">✅</td><td style="text-align: center"></td></tr>
+<tr><td>Trace ID для телеметрии</td><td style="text-align: center">✅</td><td style="text-align: center"></td></tr>
+<tr><td>Auth info из middleware</td><td style="text-align: center">✅</td><td style="text-align: center"></td></tr>
+<tr><td>Соединение с БД</td><td style="text-align: center"></td><td style="text-align: center">❌</td></tr>
+<tr><td>Logger</td><td style="text-align: center"></td><td style="text-align: center">❌</td></tr>
+<tr><td>Конфигурация</td><td style="text-align: center"></td><td style="text-align: center">❌</td></tr>
+<tr><td>Бизнес-параметры функции</td><td style="text-align: center"></td><td style="text-align: center">❌</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Плохо</strong> — скрытые зависимости через context:</p>
+<pre><code class="language-go">// ❌ Зависимости в context: код непрозрачен, сложно тестировать
+func setupHandler(db *sql.DB, logger *slog.Logger) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        ctx := context.WithValue(r.Context(), "db", db)
+        ctx = context.WithValue(ctx, "logger", logger)
+        getUser(ctx, 42)
+    }
+}
+
+func getUser(ctx context.Context, id int) (*User, error) {
+    db := ctx.Value("db").(*sql.DB) // паника если db нет в контексте
+    // ...
+}
+</code></pre>
+<p><strong>Хорошо</strong> — зависимости явные, context только для сквозных данных:</p>
+<pre><code class="language-go">// ✅ Зависимости — явные параметры; context — только для cancellation и trace
+type UserRepo struct {
+    db *sql.DB
+}
+
+func (r *UserRepo) GetUser(ctx context.Context, id int) (*User, error) {
+    row := r.db.QueryRowContext(ctx, "SELECT id, name FROM users WHERE id = $1", id)
+    var u User
+    return &amp;u, row.Scan(&amp;u.ID, &amp;u.Name)
+}
+</code></pre>
+<h3 id="contextbackground-vs-contexttodo"><a class="header" href="#contextbackground-vs-contexttodo">context.Background() vs context.TODO()</a></h3>
+<p>Обе функции возвращают пустой корневой контекст, но несут разную смысловую нагрузку:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Функция</th><th>Когда использовать</th></tr>
+</thead>
+<tbody>
+<tr><td><code>context.Background()</code></td><td>Корневой контекст в <code>main()</code>, в тестах, при инициализации серверов</td></tr>
+<tr><td><code>context.TODO()</code></td><td>Временная заглушка при рефакторинге, когда context ещё не внедрён</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-go">// ✅ Background — настоящий корневой контекст
+func main() {
+    ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM)
+    defer stop()
+    runServer(ctx)
+}
+
+func TestGetUser(t *testing.T) {
+    ctx := context.Background()
+    user, err := repo.GetUser(ctx, 1)
+    // ...
+}
+</code></pre>
+<pre><code class="language-go">// ✅ TODO — явный сигнал «здесь нужен рефакторинг»
+// Старый код без context
+func legacyFetchData() ([]byte, error) {
+    // TODO: добавить ctx как параметр после рефакторинга
+    return fetchFromDB(context.TODO())
+}
+
+// После рефакторинга:
+func fetchData(ctx context.Context) ([]byte, error) {
+    return fetchFromDB(ctx)
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: <code>context.TODO()</code> — аналог временного <code>CancellationToken.None</code> при поэтапном внедрении отмены в legacy-код. Линтеры (<code>go vet</code>, <code>staticcheck</code>) умеют находить <code>TODO()</code> в production-коде как напоминание о незавершённом рефакторинге.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Частая ошибка</strong>: <code>context.Background()</code> и <code>context.TODO()</code> функционально идентичны — разница только в намерении. Не используйте <code>TODO()</code> в production-коде, который не планируете рефакторить.</p>
+</blockquote>
+<h3 id="идиоматичное-использование-context"><a class="header" href="#идиоматичное-использование-context">Идиоматичное использование context</a></h3>
+<pre><code class="language-go">func fetchData(ctx context.Context, url string) ([]byte, error) {
+    req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+    if err != nil {
+        return nil, err
+    }
+
+    resp, err := http.DefaultClient.Do(req)
+    if err != nil {
+        return nil, err
+    }
+    defer resp.Body.Close()
+
+    return io.ReadAll(resp.Body)
+}
+
+// Использование с таймаутом
+func main() {
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
+
+    data, err := fetchData(ctx, "https://api.example.com")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Println(string(data))
+}
+</code></pre>
+<h3 id="сравнение-отмена-операции"><a class="header" href="#сравнение-отмена-операции">Сравнение: отмена операции</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">var cts = new CancellationTokenSource();
+
+var task = Task.Run(async () =&gt;
+{
+    for (int i = 0; i &lt; 100; i++)
+    {
+        cts.Token.ThrowIfCancellationRequested();
+        await Task.Delay(100);
+    }
+}, cts.Token);
+
+// Отменяем через 2 секунды
+await Task.Delay(2000);
+cts.Cancel();
+
+try
+{
+    await task;
+}
+catch (OperationCanceledException)
+{
+    Console.WriteLine("Task was cancelled");
+}
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">ctx, cancel := context.WithCancel(context.Background())
+
+go func() {
+    for i := 0; i &lt; 100; i++ {
+        select {
+        case &lt;-ctx.Done():
+            return
+        default:
+            time.Sleep(100 * time.Millisecond)
+        }
+    }
+}()
+
+// Отменяем через 2 секунды
+time.Sleep(2 * time.Second)
+cancel()
+</code></pre>
+<hr>
+<h2 id="паттерны-конкурентности"><a class="header" href="#паттерны-конкурентности">Паттерны конкурентности</a></h2>
+<h3 id="1-worker-pool"><a class="header" href="#1-worker-pool">1. Worker Pool</a></h3>
+<p><strong>Задача</strong>: Обработка большого количества задач фиксированным числом workers.</p>
+<pre><code class="language-go">func workerPool(numWorkers int, jobs &lt;-chan Job, results chan&lt;- Result) {
+    var wg sync.WaitGroup
+
+    for i := 0; i &lt; numWorkers; i++ {
+        wg.Add(1)
+        go func(id int) {
+            defer wg.Done()
+
+            for job := range jobs {
+                fmt.Printf("Worker %d processing job %d\n", id, job.ID)
+                result := process(job)
+                results &lt;- result
+            }
+        }(i)
+    }
+
+    wg.Wait()
+    close(results)
+}
+
+func main() {
+    jobs := make(chan Job, 100)
+    results := make(chan Result, 100)
+
+    // Запускаем worker pool
+    go workerPool(5, jobs, results)
+
+    // Отправляем задачи
+    for i := 0; i &lt; 100; i++ {
+        jobs &lt;- Job{ID: i}
+    }
+    close(jobs)
+
+    // Собираем результаты
+    for result := range results {
+        fmt.Printf("Result: %v\n", result)
+    }
+}
+</code></pre>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">var jobs = Channel.CreateBounded&lt;Job&gt;(100);
+var results = Channel.CreateBounded&lt;Result&gt;(100);
+
+// Workers
+var workers = Enumerable.Range(0, 5)
+    .Select(id =&gt; Task.Run(async () =&gt;
+    {
+        await foreach (var job in jobs.Reader.ReadAllAsync())
+        {
+            Console.WriteLine($"Worker {id} processing {job.ID}");
+            var result = Process(job);
+            await results.Writer.WriteAsync(result);
+        }
+    }))
+    .ToArray();
+
+// Отправляем задачи
+_ = Task.Run(async () =&gt;
+{
+    for (int i = 0; i &lt; 100; i++)
+    {
+        await jobs.Writer.WriteAsync(new Job { ID = i });
+    }
+    jobs.Writer.Complete();
+});
+
+// Собираем результаты
+_ = Task.Run(async () =&gt;
+{
+    await Task.WhenAll(workers);
+    results.Writer.Complete();
+});
+
+await foreach (var result in results.Reader.ReadAllAsync())
+{
+    Console.WriteLine($"Result: {result}");
+}
+</code></pre>
+<h3 id="2-fan-out-fan-in"><a class="header" href="#2-fan-out-fan-in">2. Fan-Out, Fan-In</a></h3>
+<p><strong>Fan-Out</strong>: Распределение работы по нескольким горутинам
+<strong>Fan-In</strong>: Сбор результатов из нескольких каналов в один</p>
+<pre><code class="language-go">// Fan-Out: одна горутина порождает N workers
+func fanOut(in &lt;-chan int, n int) []&lt;-chan int {
+    outputs := make([]&lt;-chan int, n)
+
+    for i := 0; i &lt; n; i++ {
+        out := make(chan int)
+        outputs[i] = out
+
+        go func(out chan&lt;- int) {
+            defer close(out)
+            for val := range in {
+                out &lt;- val * 2 // Обработка
+            }
+        }(out)
+    }
+
+    return outputs
+}
+
+// Fan-In: несколько каналов сливаются в один
+func fanIn(channels ...&lt;-chan int) &lt;-chan int {
+    out := make(chan int)
+
+    var wg sync.WaitGroup
+    wg.Add(len(channels))
+
+    for _, ch := range channels {
+        go func(c &lt;-chan int) {
+            defer wg.Done()
+            for val := range c {
+                out &lt;- val
+            }
+        }(ch)
+    }
+
+    go func() {
+        wg.Wait()
+        close(out)
+    }()
+
+    return out
+}
+
+// Использование
+func main() {
+    in := make(chan int)
+
+    // Fan-Out: создаём 3 workers
+    outputs := fanOut(in, 3)
+
+    // Fan-In: объединяем результаты
+    merged := fanIn(outputs...)
+
+    // Отправляем данные
+    go func() {
+        for i := 0; i &lt; 10; i++ {
+            in &lt;- i
+        }
+        close(in)
+    }()
+
+    // Получаем результаты
+    for result := range merged {
+        fmt.Println(result)
+    }
+}
+</code></pre>
+<h3 id="3-pipeline"><a class="header" href="#3-pipeline">3. Pipeline</a></h3>
+<p>Последовательная обработка данных через несколько стадий.</p>
+<pre><code class="language-go">// Стадия 1: генератор
+func generator(nums ...int) &lt;-chan int {
+    out := make(chan int)
+
+    go func() {
+        defer close(out)
+        for _, n := range nums {
+            out &lt;- n
+        }
+    }()
+
+    return out
+}
+
+// Стадия 2: возведение в квадрат
+func square(in &lt;-chan int) &lt;-chan int {
+    out := make(chan int)
+
+    go func() {
+        defer close(out)
+        for n := range in {
+            out &lt;- n * n
+        }
+    }()
+
+    return out
+}
+
+// Стадия 3: фильтр (только чётные)
+func filter(in &lt;-chan int) &lt;-chan int {
+    out := make(chan int)
+
+    go func() {
+        defer close(out)
+        for n := range in {
+            if n%2 == 0 {
+                out &lt;- n
+            }
+        }
+    }()
+
+    return out
+}
+
+// Использование pipeline
+func main() {
+    // Строим pipeline: generator -&gt; square -&gt; filter
+    nums := generator(1, 2, 3, 4, 5)
+    squared := square(nums)
+    filtered := filter(squared)
+
+    // Читаем результаты
+    for result := range filtered {
+        fmt.Println(result) // 4, 16
+    }
+}
+</code></pre>
+<h3 id="4-semaphore-ограничение-конкурентности"><a class="header" href="#4-semaphore-ограничение-конкурентности">4. Semaphore (ограничение конкурентности)</a></h3>
+<pre><code class="language-go">// Ограничиваем количество одновременных операций
+func processWithLimit(urls []string, maxConcurrent int) {
+    sem := make(chan struct{}, maxConcurrent)
+
+    var wg sync.WaitGroup
+
+    for _, url := range urls {
+        wg.Add(1)
+
+        go func(u string) {
+            defer wg.Done()
+
+            // Захватываем semaphore
+            sem &lt;- struct{}{}
+            defer func() { &lt;-sem }() // Освобождаем
+
+            // Обрабатываем
+            process(u)
+        }(url)
+    }
+
+    wg.Wait()
+}
+</code></pre>
+<p><strong>C# аналог (SemaphoreSlim)</strong>:</p>
+<pre><code class="language-csharp">var semaphore = new SemaphoreSlim(maxConcurrent);
+var tasks = new List&lt;Task&gt;();
+
+foreach (var url in urls)
+{
+    tasks.Add(Task.Run(async () =&gt;
+    {
+        await semaphore.WaitAsync();
+        try
+        {
+            await Process(url);
+        }
+        finally
+        {
+            semaphore.Release();
+        }
+    }));
+}
+
+await Task.WhenAll(tasks);
+</code></pre>
+<h3 id="5-errgroup-golangorgxsyncerrgroup"><a class="header" href="#5-errgroup-golangorgxsyncerrgroup">5. errgroup (golang.org/x/sync/errgroup)</a></h3>
+<p>Удобная обёртка для управления группой горутин с обработкой ошибок.</p>
+<pre><code class="language-go">import "golang.org/x/sync/errgroup"
+
+func fetchMultipleWithErrgroup(ctx context.Context, urls []string) ([]string, error) {
+    g, ctx := errgroup.WithContext(ctx)
+    results := make([]string, len(urls))
+
+    for i, url := range urls {
+        i, url := i, url // Захват переменных
+        g.Go(func() error {
+            data, err := fetchData(ctx, url)
+            if err != nil {
+                return err
+            }
+            results[i] = data
+            return nil
+        })
+    }
+
+    if err := g.Wait(); err != nil {
+        return nil, err
+    }
+
+    return results, nil
+}
+</code></pre>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">var tasks = urls.Select(async url =&gt;
+{
+    var data = await FetchData(url);
+    return data;
+});
+
+var results = await Task.WhenAll(tasks); // Бросит исключение при первой ошибке
+</code></pre>
+<hr>
+<h2 id="утечки-горутин"><a class="header" href="#утечки-горутин">Утечки горутин</a></h2>
+<p>Горутина “утекает”, если она <strong>никогда не завершится</strong>. Это утечка ресурсов.</p>
+<h3 id="пример-утечки"><a class="header" href="#пример-утечки">Пример утечки</a></h3>
+<pre><code class="language-go">// ❌ Утечка: горутина никогда не завершится
+func leak() {
+    ch := make(chan int)
+
+    go func() {
+        val := &lt;-ch // Блокируется навсегда
+        fmt.Println(val)
+    }()
+
+    // Канал не закрыли, ничего не отправили
+    // Горутина висит вечно
+}
+</code></pre>
+<h3 id="как-избежать-утечек"><a class="header" href="#как-избежать-утечек">Как избежать утечек</a></h3>
+<h4 id="1-всегда-закрывайте-каналы"><a class="header" href="#1-всегда-закрывайте-каналы">1. Всегда закрывайте каналы</a></h4>
+<pre><code class="language-go">// ✅ Правильно
+func noLeak() {
+    ch := make(chan int)
+
+    go func() {
+        for val := range ch {
+            fmt.Println(val)
+        }
+    }()
+
+    ch &lt;- 1
+    ch &lt;- 2
+    close(ch) // Горутина завершится
+}
+</code></pre>
+<h4 id="2-используйте-context-для-отмены"><a class="header" href="#2-используйте-context-для-отмены">2. Используйте context для отмены</a></h4>
+<pre><code class="language-go">// ✅ Правильно: с контекстом
+func fetchWithCancel(ctx context.Context, url string) error {
+    resultCh := make(chan []byte)
+    errCh := make(chan error)
+
+    go func() {
+        data, err := http.Get(url)
+        if err != nil {
+            errCh &lt;- err
+            return
+        }
+        resultCh &lt;- data
+    }()
+
+    select {
+    case &lt;-ctx.Done():
+        return ctx.Err()
+    case err := &lt;-errCh:
+        return err
+    case data := &lt;-resultCh:
+        process(data)
+        return nil
+    }
+}
+</code></pre>
+<h4 id="3-используйте-буферизированные-каналы-с-осторожностью"><a class="header" href="#3-используйте-буферизированные-каналы-с-осторожностью">3. Используйте буферизированные каналы с осторожностью</a></h4>
+<pre><code class="language-go">// ❌ Может утечь при панике в получателе
+ch := make(chan int)
+go func() {
+    ch &lt;- 42 // Блокируется, если получатель умер
+}()
+
+// ✅ Буфер = 1 предотвращает блокировку
+ch := make(chan int, 1)
+go func() {
+    ch &lt;- 42 // Не блокируется
+}()
+</code></pre>
+<h4 id="4-graceful-shutdown"><a class="header" href="#4-graceful-shutdown">4. Graceful shutdown</a></h4>
+<pre><code class="language-go">type Server struct {
+    quit chan struct{}
+}
+
+func (s *Server) Start() {
+    s.quit = make(chan struct{})
+
+    go func() {
+        ticker := time.NewTicker(1 * time.Second)
+        defer ticker.Stop()
+
+        for {
+            select {
+            case &lt;-ticker.C:
+                s.doWork()
+            case &lt;-s.quit:
+                fmt.Println("Shutting down")
+                return
+            }
+        }
+    }()
+}
+
+func (s *Server) Stop() {
+    close(s.quit)
+}
+</code></pre>
+<h3 id="обнаружение-утечек"><a class="header" href="#обнаружение-утечек">Обнаружение утечек</a></h3>
+<p>Используйте <strong>goleak</strong> (go.uber.org/goleak) в тестах:</p>
+<pre><code class="language-go">import "go.uber.org/goleak"
+
+func TestMyFunction(t *testing.T) {
+    defer goleak.VerifyNone(t)
+
+    // Тест код
+}
+</code></pre>
+<hr>
+<h2 id="практические-примеры"><a class="header" href="#практические-примеры">Практические примеры</a></h2>
+<h3 id="пример-1-конкурентная-загрузка-url"><a class="header" href="#пример-1-конкурентная-загрузка-url">Пример 1: Конкурентная загрузка URL</a></h3>
+<p><strong>Задача</strong>: Загрузить несколько URL конкурентно с ограничением и таймаутом.</p>
+<pre><code class="language-go">package main
+
+import (
+    "context"
+    "fmt"
+    "io"
+    "net/http"
+    "sync"
+    "time"
+)
+
+type Result struct {
+    URL  string
+    Data string
+    Err  error
+}
+
+func fetchURL(ctx context.Context, url string) (string, error) {
+    req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+    if err != nil {
+        return "", err
+    }
+
+    resp, err := http.DefaultClient.Do(req)
+    if err != nil {
+        return "", err
+    }
+    defer resp.Body.Close()
+
+    body, err := io.ReadAll(resp.Body)
+    if err != nil {
+        return "", err
+    }
+
+    return string(body), nil
+}
+
+func fetchMultiple(ctx context.Context, urls []string, maxConcurrent int) []Result {
+    results := make([]Result, len(urls))
+    sem := make(chan struct{}, maxConcurrent)
+
+    var wg sync.WaitGroup
+
+    for i, url := range urls {
+        wg.Add(1)
+
+        go func(index int, u string) {
+            defer wg.Done()
+
+            // Захватываем семафор
+            sem &lt;- struct{}{}
+            defer func() { &lt;-sem }()
+
+            // Загружаем с таймаутом
+            data, err := fetchURL(ctx, u)
+            results[index] = Result{
+                URL:  u,
+                Data: data,
+                Err:  err,
+            }
+        }(i, url)
+    }
+
+    wg.Wait()
+    return results
+}
+
+func main() {
+    urls := []string{
+        "https://example.com",
+        "https://golang.org",
+        "https://github.com",
+    }
+
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
+
+    results := fetchMultiple(ctx, urls, 2) // Макс 2 одновременных запроса
+
+    for _, result := range results {
+        if result.Err != nil {
+            fmt.Printf("%s: ERROR - %v\n", result.URL, result.Err)
+        } else {
+            fmt.Printf("%s: %d bytes\n", result.URL, len(result.Data))
+        }
+    }
+}
+</code></pre>
+<h3 id="пример-2-producer-consumer-с-graceful-shutdown"><a class="header" href="#пример-2-producer-consumer-с-graceful-shutdown">Пример 2: Producer-Consumer с graceful shutdown</a></h3>
+<pre><code class="language-go">package main
+
+import (
+    "context"
+    "fmt"
+    "math/rand"
+    "sync"
+    "time"
+)
+
+type Job struct {
+    ID int
+}
+
+type Result struct {
+    JobID int
+    Value int
+}
+
+func producer(ctx context.Context, jobs chan&lt;- Job, count int) {
+    defer close(jobs)
+
+    for i := 0; i &lt; count; i++ {
+        select {
+        case &lt;-ctx.Done():
+            fmt.Println("Producer cancelled")
+            return
+        case jobs &lt;- Job{ID: i}:
+            fmt.Printf("Produced job %d\n", i)
+        }
+    }
+}
+
+func worker(id int, ctx context.Context, jobs &lt;-chan Job, results chan&lt;- Result, wg *sync.WaitGroup) {
+    defer wg.Done()
+
+    for {
+        select {
+        case &lt;-ctx.Done():
+            fmt.Printf("Worker %d cancelled\n", id)
+            return
+
+        case job, ok := &lt;-jobs:
+            if !ok {
+                fmt.Printf("Worker %d finished (no more jobs)\n", id)
+                return
+            }
+
+            // Симуляция работы
+            time.Sleep(time.Duration(rand.Intn(500)) * time.Millisecond)
+
+            result := Result{
+                JobID: job.ID,
+                Value: job.ID * 2,
+            }
+
+            select {
+            case &lt;-ctx.Done():
+                return
+            case results &lt;- result:
+                fmt.Printf("Worker %d completed job %d\n", id, job.ID)
+            }
+        }
+    }
+}
+
+func main() {
+    ctx, cancel := context.WithCancel(context.Background())
+    defer cancel()
+
+    jobs := make(chan Job, 10)
+    results := make(chan Result, 10)
+
+    const numWorkers = 3
+    var wg sync.WaitGroup
+
+    // Запускаем workers
+    for i := 1; i &lt;= numWorkers; i++ {
+        wg.Add(1)
+        go worker(i, ctx, jobs, results, &amp;wg)
+    }
+
+    // Запускаем producer
+    go producer(ctx, jobs, 20)
+
+    // Закрываем results после завершения всех workers
+    go func() {
+        wg.Wait()
+        close(results)
+    }()
+
+    // Собираем результаты (или отменяем через 5 секунд)
+    timeout := time.After(5 * time.Second)
+
+    for {
+        select {
+        case result, ok := &lt;-results:
+            if !ok {
+                fmt.Println("All results collected")
+                return
+            }
+            fmt.Printf("Result: Job %d = %d\n", result.JobID, result.Value)
+
+        case &lt;-timeout:
+            fmt.Println("Timeout! Cancelling...")
+            cancel()
+            // Даём время workers завершиться
+            wg.Wait()
+            return
+        }
+    }
+}
+</code></pre>
+<h3 id="пример-3-rate-limiter"><a class="header" href="#пример-3-rate-limiter">Пример 3: Rate Limiter</a></h3>
+<pre><code class="language-go">package main
+
+import (
+    "context"
+    "fmt"
+    "time"
+)
+
+type RateLimiter struct {
+    rate     time.Duration
+    tokens   chan struct{}
+    stopOnce sync.Once
+    stop     chan struct{}
+}
+
+func NewRateLimiter(requestsPerSecond int) *RateLimiter {
+    rl := &amp;RateLimiter{
+        rate:   time.Second / time.Duration(requestsPerSecond),
+        tokens: make(chan struct{}, requestsPerSecond),
+        stop:   make(chan struct{}),
+    }
+
+    // Заполняем буфер токенами
+    for i := 0; i &lt; requestsPerSecond; i++ {
+        rl.tokens &lt;- struct{}{}
+    }
+
+    // Горутина пополнения токенов
+    go rl.refill()
+
+    return rl
+}
+
+func (rl *RateLimiter) refill() {
+    ticker := time.NewTicker(rl.rate)
+    defer ticker.Stop()
+
+    for {
+        select {
+        case &lt;-ticker.C:
+            select {
+            case rl.tokens &lt;- struct{}{}:
+            default:
+                // Буфер полон, пропускаем
+            }
+        case &lt;-rl.stop:
+            return
+        }
+    }
+}
+
+func (rl *RateLimiter) Allow(ctx context.Context) error {
+    select {
+    case &lt;-ctx.Done():
+        return ctx.Err()
+    case &lt;-rl.tokens:
+        return nil
+    }
+}
+
+func (rl *RateLimiter) Stop() {
+    rl.stopOnce.Do(func() {
+        close(rl.stop)
+    })
+}
+
+func main() {
+    limiter := NewRateLimiter(5) // 5 запросов в секунду
+    defer limiter.Stop()
+
+    ctx := context.Background()
+
+    for i := 0; i &lt; 20; i++ {
+        if err := limiter.Allow(ctx); err != nil {
+            fmt.Printf("Request %d failed: %v\n", i, err)
+            break
+        }
+
+        fmt.Printf("Request %d allowed at %v\n", i, time.Now().Format("15:04:05.000"))
+        // Выполняем запрос...
+    }
+}
+</code></pre>
+<hr><!-- AUTO: NAV -->
+<p><strong>Вопросы?</strong> Открой issue на <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/issues">GitHub</a></p>
+<p><a href="./README.html">← Назад к оглавлению</a> | <a href="./02_runtime_scheduler.html">Вперёд: Go Runtime и планировщик →</a></p>
+<!-- /AUTO: NAV -->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part1-basics/03_key_differences.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part2-advanced/02_runtime_scheduler.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part1-basics/03_key_differences.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part2-advanced/02_runtime_scheduler.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

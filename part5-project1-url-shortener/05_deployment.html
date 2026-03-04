@@ -1,0 +1,886 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>5. Деплой - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-e1a1ce5b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-c19b06e6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part5-project1-url-shortener/05_deployment.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="5-деплой-docker-compose-и-production"><a class="header" href="#5-деплой-docker-compose-и-production">5. Деплой: Docker Compose и Production</a></h1>
+<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<ul>
+<li><a href="#dockerfile">Dockerfile</a>
+<ul>
+<li><a href="#c-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4">C# подход</a></li>
+<li><a href="#go-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4">Go подход</a></li>
+</ul>
+</li>
+<li><a href="#docker-compose">Docker Compose</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-%D0%BF%D0%B5%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5-%D0%BE%D0%BA%D1%80%D1%83%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F">Конфигурация через переменные окружения</a>
+<ul>
+<li><a href="#c-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4-1">C# подход</a></li>
+<li><a href="#go-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4-1">Go подход</a></li>
+</ul>
+</li>
+<li><a href="#graceful-shutdown">Graceful shutdown</a></li>
+<li><a href="#health-checks">Health checks</a></li>
+<li><a href="#%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D0%BE%D0%B5-%D0%BB%D0%BE%D0%B3%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5">Структурированное логирование</a></li>
+<li><a href="#production-%D1%87%D0%B5%D0%BA-%D0%BB%D0%B8%D1%81%D1%82">Production чек-лист</a>
+<ul>
+<li><a href="#%D1%87%D0%B5%D0%BA-%D0%BB%D0%B8%D1%81%D1%82">Чек-лист</a></li>
+</ul>
+</li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0">Сравнительная таблица</a></li>
+<li><a href="#%D0%B8%D1%82%D0%BE%D0%B3%D0%B8-%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B0">Итоги проекта</a></li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<hr>
+<h2 id="dockerfile"><a class="header" href="#dockerfile">Dockerfile</a></h2>
+<p>Go компилируется в единственный бинарный файл без зависимостей runtime.
+Это делает Docker-образы минимальными.</p>
+<h3 id="c-подход"><a class="header" href="#c-подход">C# подход</a></h3>
+<pre><code class="language-dockerfile"># Многостадийный build для ASP.NET Core
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /app
+COPY *.csproj .
+RUN dotnet restore
+COPY . .
+RUN dotnet publish -c Release -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build /app/publish .
+ENTRYPOINT ["dotnet", "MyApp.dll"]
+# Итоговый размер: ~200-300 MB
+</code></pre>
+<h3 id="go-подход"><a class="header" href="#go-подход">Go подход</a></h3>
+<pre><code class="language-dockerfile"># ===== Стадия 1: Сборка =====
+FROM golang:1.26-alpine AS builder
+
+WORKDIR /app
+
+# Кэшируем зависимости отдельным слоем
+# Слой перестраивается только при изменении go.mod / go.sum
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Копируем исходники и собираем
+COPY . .
+
+# CGO_ENABLED=0 — статическая сборка, нет зависимостей от C-библиотек
+# GOOS=linux GOARCH=amd64 — кросс-компиляция (если разрабатываем на macOS/Windows)
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+    go build \
+    -ldflags="-w -s" \  # убираем отладочную информацию (уменьшает размер)
+    -o /app/server \
+    ./cmd/server
+
+# ===== Стадия 2: Минимальный образ =====
+# scratch — пустой образ (0 байт). Только наш бинарник + CA сертификаты.
+# Альтернатива: gcr.io/distroless/static-debian12 (чуть безопаснее)
+FROM scratch
+
+# CA сертификаты нужны для HTTPS-запросов из приложения (если есть)
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
+# Копируем только бинарник
+COPY --from=builder /app/server /server
+
+# Миграции (если применяем при старте)
+COPY migrations/ /migrations/
+
+# Непривилегированный пользователь (security best practice)
+# scratch не поддерживает USER инструкцию — используем числовой UID
+USER 65534:65534
+
+EXPOSE 8080
+
+# Health check встроен в Docker
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD ["/server", "-health"] || exit 1
+
+ENTRYPOINT ["/server"]
+</code></pre>
+<blockquote>
+<p>💡 <strong>Размер образа</strong>: Go scratch образ ~7-15 MB vs ASP.NET Core ~200 MB.
+Меньше образ = быстрее pull, меньше attack surface, ниже стоимость registry.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong><code>-ldflags="-w -s"</code></strong>: <code>-w</code> убирает DWARF отладочную информацию, <code>-s</code> убирает
+символьную таблицу. Уменьшает размер бинарника на 30-40%. Без этих флагов
+<code>go build</code> включает всё необходимое для <code>dlv</code> отладчика.</p>
+</blockquote>
+<hr>
+<h2 id="docker-compose"><a class="header" href="#docker-compose">Docker Compose</a></h2>
+<pre><code class="language-yaml"># docker-compose.yml
+version: "3.9"
+
+services:
+  # ===== Приложение =====
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      # Конфигурация через переменные окружения
+      - ADDR=:8080
+      - DATABASE_URL=postgres://urlshortener:secret@postgres:5432/urlshortener?sslmode=disable
+      - REDIS_URL=redis://redis:6379
+      - BASE_URL=http://localhost:8080
+      - RATE_LIMIT=100    # запросов/сек
+      - RATE_BURST=20     # burst
+    depends_on:
+      postgres:
+        condition: service_healthy  # ждём пока PG не скажет что готов
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # ===== PostgreSQL =====
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: urlshortener
+      POSTGRES_USER: urlshortener
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Автоматически применяем миграции при первом запуске
+      - ./migrations:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "5432:5432"   # только для локальной разработки
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U urlshortener -d urlshortener"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ===== Redis =====
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"   # только для локальной разработки
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+</code></pre>
+<p><strong>Команды</strong>:</p>
+<pre><code class="language-bash"># Запуск всего стека
+docker compose up -d
+
+# Логи приложения
+docker compose logs -f app
+
+# Остановка
+docker compose down
+
+# Остановка с удалением данных (volumes)
+docker compose down -v
+
+# Перестройка образа при изменении кода
+docker compose up -d --build app
+</code></pre>
+<blockquote>
+<p>💡 <strong><code>depends_on: condition: service_healthy</code></strong>: Приложение стартует только когда
+PostgreSQL и Redis прошли healthcheck. Без этого возможен race condition:
+приложение стартует раньше БД и падает при попытке подключиться.</p>
+</blockquote>
+<hr>
+<h2 id="конфигурация-через-переменные-окружения"><a class="header" href="#конфигурация-через-переменные-окружения">Конфигурация через переменные окружения</a></h2>
+<h3 id="c-подход-1"><a class="header" href="#c-подход-1">C# подход</a></h3>
+<pre><code class="language-json">// appsettings.json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Database=urlshortener;..."
+  },
+  "Redis": {
+    "ConnectionString": "localhost:6379"
+  },
+  "RateLimit": {
+    "RequestsPerSecond": 100
+  }
+}
+</code></pre>
+<pre><code class="language-csharp">// Program.cs
+builder.Services.Configure&lt;RateLimitOptions&gt;(
+    builder.Configuration.GetSection("RateLimit"));
+var connStr = builder.Configuration.GetConnectionString("DefaultConnection");
+</code></pre>
+<h3 id="go-подход-1"><a class="header" href="#go-подход-1">Go подход</a></h3>
+<pre><code class="language-go">// internal/config/config.go
+package config
+
+import (
+    "fmt"
+    "os"
+    "strconv"
+)
+
+// Config — полная конфигурация приложения.
+// Все значения из переменных окружения с дефолтами для разработки.
+type Config struct {
+    // Сервер
+    Addr    string // :8080
+    BaseURL string // http://localhost:8080
+
+    // База данных
+    DatabaseURL     string
+    DatabaseMaxConns int
+
+    // Redis
+    RedisURL string
+
+    // Rate limiting
+    RateLimit float64 // запросов в секунду
+    RateBurst int
+
+    // Приложение
+    ShutdownTimeout int // секунд для graceful shutdown
+}
+
+// Load читает конфигурацию из переменных окружения.
+// Возвращает ошибку если обязательные поля отсутствуют.
+func Load() (Config, error) {
+    cfg := Config{
+        // Значения по умолчанию (для локальной разработки)
+        Addr:            getEnv("ADDR", ":8080"),
+        BaseURL:         getEnv("BASE_URL", "http://localhost:8080"),
+        DatabaseURL:     getEnv("DATABASE_URL", ""),
+        DatabaseMaxConns: getEnvInt("DB_MAX_CONNS", 25),
+        RedisURL:        getEnv("REDIS_URL", "redis://localhost:6379"),
+        RateLimit:       getEnvFloat("RATE_LIMIT", 100),
+        RateBurst:       getEnvInt("RATE_BURST", 20),
+        ShutdownTimeout: getEnvInt("SHUTDOWN_TIMEOUT", 30),
+    }
+
+    // Проверяем обязательные поля
+    if cfg.DatabaseURL == "" {
+        return Config{}, fmt.Errorf("DATABASE_URL не задан")
+    }
+
+    return cfg, nil
+}
+
+func getEnv(key, defaultValue string) string {
+    if v := os.Getenv(key); v != "" {
+        return v
+    }
+    return defaultValue
+}
+
+func getEnvInt(key string, defaultValue int) int {
+    if v := os.Getenv(key); v != "" {
+        if n, err := strconv.Atoi(v); err == nil {
+            return n
+        }
+    }
+    return defaultValue
+}
+
+func getEnvFloat(key string, defaultValue float64) float64 {
+    if v := os.Getenv(key); v != "" {
+        if f, err := strconv.ParseFloat(v, 64); err == nil {
+            return f
+        }
+    }
+    return defaultValue
+}
+</code></pre>
+<p><strong>.env.example</strong> (для локальной разработки):</p>
+<pre><code class="language-bash"># .env.example — копируем в .env и настраиваем
+
+# Сервер
+ADDR=:8080
+BASE_URL=http://localhost:8080
+
+# База данных
+DATABASE_URL=postgres://urlshortener:secret@localhost:5432/urlshortener?sslmode=disable
+DB_MAX_CONNS=25
+
+# Redis
+REDIS_URL=redis://localhost:6379
+
+# Rate limiting (запросов в секунду)
+RATE_LIMIT=100
+RATE_BURST=20
+
+# Graceful shutdown (секунды)
+SHUTDOWN_TIMEOUT=30
+</code></pre>
+<blockquote>
+<p>⚠️ <strong><code>.env</code> в <code>.gitignore</code></strong>: Никогда не коммитьте <code>.env</code> с реальными секретами.
+Только <code>.env.example</code> с заглушками. В production секреты хранятся в Vault,
+AWS Secrets Manager или Kubernetes Secrets.</p>
+</blockquote>
+<hr>
+<h2 id="graceful-shutdown"><a class="header" href="#graceful-shutdown">Graceful shutdown</a></h2>
+<p>Graceful shutdown позволяет завершить обработку текущих запросов перед остановкой.
+В C# это встроено в <code>IHostedService</code>. В Go — реализуется вручную.</p>
+<pre><code class="language-go">// cmd/server/main.go (graceful shutdown блок)
+func run(ctx context.Context, cfg config.Config) error {
+    // ... инициализация ...
+
+    srv := &amp;http.Server{
+        Addr:         cfg.Addr,
+        Handler:      router,
+        ReadTimeout:  15 * time.Second,
+        WriteTimeout: 15 * time.Second,
+        IdleTimeout:  60 * time.Second,
+    }
+
+    // Канал для ошибок сервера
+    serverErr := make(chan error, 1)
+
+    // Запускаем сервер в горутине
+    go func() {
+        slog.Info("сервер запущен", "addr", cfg.Addr)
+        if err := srv.ListenAndServe(); err != http.ErrServerClosed {
+            serverErr &lt;- err
+        }
+    }()
+
+    // Ожидаем сигнал ОС или ошибку сервера
+    shutdown := make(chan os.Signal, 1)
+    signal.Notify(shutdown, syscall.SIGINT, syscall.SIGTERM)
+
+    select {
+    case err := &lt;-serverErr:
+        return fmt.Errorf("ошибка сервера: %w", err)
+
+    case sig := &lt;-shutdown:
+        slog.Info("получен сигнал завершения", "signal", sig.String())
+
+        // Graceful shutdown с таймаутом
+        shutdownCtx, cancel := context.WithTimeout(
+            context.Background(),
+            time.Duration(cfg.ShutdownTimeout)*time.Second,
+        )
+        defer cancel()
+
+        // Shutdown ждёт завершения активных соединений
+        if err := srv.Shutdown(shutdownCtx); err != nil {
+            // Принудительно закрываем если не успели за таймаут
+            srv.Close()
+            return fmt.Errorf("graceful shutdown: %w", err)
+        }
+    }
+
+    slog.Info("сервер остановлен")
+    return nil
+}
+</code></pre>
+<pre class="mermaid">sequenceDiagram
+    participant OS as ОС
+    participant App as Приложение
+    participant Srv as HTTP Server
+    participant Req as Активные запросы
+
+    OS-&gt;&gt;App: SIGTERM
+    App-&gt;&gt;Srv: Shutdown(ctx, 30s)
+    Srv-&gt;&gt;Srv: Перестать принимать новые
+    Srv-&gt;&gt;Req: Ждём завершения
+    Req--&gt;&gt;Srv: Запросы завершены
+    Srv--&gt;&gt;App: nil (успех)
+    App--&gt;&gt;OS: exit 0
+</pre>
+
+<hr>
+<h2 id="health-checks"><a class="header" href="#health-checks">Health checks</a></h2>
+<p>Health check нужен для:</p>
+<ul>
+<li><strong>Load balancer</strong> (nginx, AWS ALB) — убирать нездоровые инстансы</li>
+<li><strong>Docker / Kubernetes</strong> — перезапускать проблемные контейнеры</li>
+<li><strong>Мониторинг</strong> — alerting при деградации</li>
+</ul>
+<pre><code class="language-go">// internal/handler/health.go
+package handler
+
+import (
+    "context"
+    "net/http"
+    "time"
+
+    "github.com/jackc/pgx/v5/pgxpool"
+    "github.com/redis/go-redis/v9"
+)
+
+// HealthChecker содержит зависимости для проверки здоровья.
+type HealthChecker struct {
+    db    *pgxpool.Pool
+    redis *redis.Client
+}
+
+func NewHealthChecker(db *pgxpool.Pool, redis *redis.Client) *HealthChecker {
+    return &amp;HealthChecker{db: db, redis: redis}
+}
+
+// healthStatus — статус компонентов.
+type healthStatus struct {
+    Status     string            `json:"status"`          // "ok" | "degraded"
+    Components map[string]string `json:"components"`
+}
+
+// Check возвращает статус всех зависимостей.
+// Если хотя бы одна зависимость недоступна — статус "degraded", код 503.
+func (h *HealthChecker) Check(w http.ResponseWriter, r *http.Request) {
+    ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
+    defer cancel()
+
+    components := make(map[string]string)
+    overall := "ok"
+
+    // Проверяем PostgreSQL
+    if err := h.db.Ping(ctx); err != nil {
+        components["postgres"] = "unavailable: " + err.Error()
+        overall = "degraded"
+    } else {
+        components["postgres"] = "ok"
+    }
+
+    // Проверяем Redis
+    if err := h.redis.Ping(ctx).Err(); err != nil {
+        components["redis"] = "unavailable: " + err.Error()
+        overall = "degraded"
+    } else {
+        components["redis"] = "ok"
+    }
+
+    status := healthStatus{
+        Status:     overall,
+        Components: components,
+    }
+
+    // 200 если всё ок, 503 если что-то недоступно
+    httpStatus := http.StatusOK
+    if overall != "ok" {
+        httpStatus = http.StatusServiceUnavailable
+    }
+
+    writeJSON(w, httpStatus, status)
+}
+</code></pre>
+<p><strong>Пример ответов</strong>:</p>
+<pre><code class="language-json">// GET /health — всё ок
+{
+  "status": "ok",
+  "components": {
+    "postgres": "ok",
+    "redis": "ok"
+  }
+}
+
+// GET /health — Redis недоступен
+{
+  "status": "degraded",
+  "components": {
+    "postgres": "ok",
+    "redis": "unavailable: dial tcp: connection refused"
+  }
+}
+</code></pre>
+<hr>
+<h2 id="структурированное-логирование"><a class="header" href="#структурированное-логирование">Структурированное логирование</a></h2>
+<p><code>log/slog</code> — стандартный пакет Go 1.21+. Нет необходимости в Serilog/NLog.</p>
+<pre><code class="language-go">// cmd/server/main.go — инициализация логгера
+logger := slog.New(slog.NewJSONHandler(os.Stdout, &amp;slog.HandlerOptions{
+    Level: slog.LevelInfo,
+    // AddSource: true, // добавляет файл:строку в каждое сообщение
+}))
+slog.SetDefault(logger)
+
+// В хэндлерах — структурированные атрибуты
+slog.Info("создан URL",
+    "code", result.Code,
+    "original_url", req.URL,
+    "remote_addr", r.RemoteAddr,
+)
+
+slog.Error("ошибка базы данных",
+    "operation", "GetByCode",
+    "code", code,
+    "err", err,
+)
+</code></pre>
+<p><strong>Пример вывода JSON</strong>:</p>
+<pre><code class="language-json">{"time":"2024-01-15T10:23:45Z","level":"INFO","msg":"сервер запущен","addr":":8080"}
+{"time":"2024-01-15T10:23:50Z","level":"INFO","msg":"http request","method":"POST","path":"/api/urls","status":201,"duration_ms":3}
+{"time":"2024-01-15T10:23:51Z","level":"INFO","msg":"http request","method":"GET","path":"/aB3xY9","status":302,"duration_ms":1}
+{"time":"2024-01-15T10:23:52Z","level":"ERROR","msg":"ошибка базы данных","operation":"GetByCode","code":"xyz","err":"connection refused"}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: <code>slog</code> ≈ <code>ILogger&lt;T&gt;</code> из Microsoft.Extensions.Logging
+со структурированным выводом. Не нужна внешняя библиотека для базовых нужд.</p>
+</blockquote>
+<hr>
+<h2 id="production-чек-лист"><a class="header" href="#production-чек-лист">Production чек-лист</a></h2>
+<pre class="mermaid">graph LR
+    subgraph Security["Безопасность"]
+        S1["Непривилег. пользователь&lt;br/&gt;USER 65534"]
+        S2["Нет секретов в образе"]
+        S3["Read-only filesystem"]
+    end
+
+    subgraph Reliability["Надёжность"]
+        R1["Graceful shutdown"]
+        R2["Health checks"]
+        R3["Restart policy"]
+    end
+
+    subgraph Observability["Наблюдаемость"]
+        O1["JSON логи"]
+        O2["Метрики (Prometheus)"]
+        O3["Трейсинг (OpenTelemetry)"]
+    end
+
+    subgraph Performance["Производительность"]
+        P1["Connection pool tuning"]
+        P2["Redis maxmemory policy"]
+        P3["HTTP timeouts"]
+    end
+</pre>
+
+<h3 id="чек-лист"><a class="header" href="#чек-лист">Чек-лист</a></h3>
+<p><strong>Безопасность</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"> Непривилегированный пользователь в контейнере (не root)</li>
+<li><input disabled="" type="checkbox"> Секреты не в образе, не в git (только env vars / secrets manager)</li>
+<li><input disabled="" type="checkbox"> <code>.env</code> в <code>.gitignore</code></li>
+<li><input disabled="" type="checkbox"> HTTPS (TLS termination на load balancer или nginx)</li>
+<li><input disabled="" type="checkbox"> Rate limiting настроен для production нагрузки</li>
+<li><input disabled="" type="checkbox"> SQL-параметризованные запросы (нет конкатенации строк)</li>
+</ul>
+<p><strong>Надёжность</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"> Graceful shutdown обрабатывает SIGTERM</li>
+<li><input disabled="" type="checkbox"> Health check endpoint возвращает 503 при деградации</li>
+<li><input disabled="" type="checkbox"> <code>restart: unless-stopped</code> в docker-compose</li>
+<li><input disabled="" type="checkbox"> <code>depends_on: condition: service_healthy</code> для зависимостей</li>
+<li><input disabled="" type="checkbox"> Таймауты на все операции (HTTP, DB, Redis)</li>
+</ul>
+<p><strong>Наблюдаемость</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"> Структурированные JSON-логи</li>
+<li><input disabled="" type="checkbox"> Логируется: метод, путь, статус, latency</li>
+<li><input disabled="" type="checkbox"> Ошибки логируются с контекстом (code, err)</li>
+<li><input disabled="" type="checkbox"> Prometheus метрики (опционально для этого проекта)</li>
+</ul>
+<p><strong>Производительность</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"> <code>pgxpool</code> настроен: MaxConns, MinConns, MaxConnLifetime</li>
+<li><input disabled="" type="checkbox"> Redis <code>maxmemory</code> и политика вытеснения (<code>allkeys-lru</code>)</li>
+<li><input disabled="" type="checkbox"> HTTP таймауты: ReadTimeout, WriteTimeout, IdleTimeout</li>
+<li><input disabled="" type="checkbox"> <code>CGO_ENABLED=0</code> для статической сборки</li>
+</ul>
+<hr>
+<h2 id="сравнительная-таблица"><a class="header" href="#сравнительная-таблица">Сравнительная таблица</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# / ASP.NET Core</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>Dockerfile base</td><td><code>mcr.microsoft.com/dotnet/aspnet:8.0</code> (~200 MB)</td><td><code>scratch</code> (~7 MB)</td></tr>
+<tr><td>Runtime</td><td>.NET runtime (нужен в образе)</td><td>Нет (статический бинарник)</td></tr>
+<tr><td>Graceful shutdown</td><td><code>IHostedService</code> / <code>IHostApplicationLifetime</code></td><td><code>server.Shutdown(ctx)</code> вручную</td></tr>
+<tr><td>Health checks</td><td><code>IHealthCheck</code> + <code>AddHealthChecks()</code></td><td>Обычный HTTP хэндлер</td></tr>
+<tr><td>Конфигурация</td><td><code>appsettings.json</code> + <code>IConfiguration</code></td><td><code>os.Getenv</code> / env-пакеты</td></tr>
+<tr><td>Секреты</td><td>Azure Key Vault / User Secrets</td><td>Vault / AWS Secrets Manager / env</td></tr>
+<tr><td>Логирование</td><td>Serilog / NLog / <code>ILogger&lt;T&gt;</code></td><td><code>log/slog</code> (stdlib)</td></tr>
+<tr><td>Сигналы ОС</td><td><code>IHostApplicationLifetime</code></td><td><code>signal.Notify(chan, SIGTERM)</code></td></tr>
+<tr><td>Docker Compose</td><td>Аналогично</td><td>Аналогично</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="итоги-проекта"><a class="header" href="#итоги-проекта">Итоги проекта</a></h2>
+<p>Поздравляем! Вы построили полноценный production-ready URL Shortener на Go:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Компонент</th><th>Реализован</th></tr>
+</thead>
+<tbody>
+<tr><td>Доменная модель + ошибки</td><td>✅</td></tr>
+<tr><td>PostgreSQL репозиторий (pgx)</td><td>✅</td></tr>
+<tr><td>Redis кэш (cache-aside)</td><td>✅</td></tr>
+<tr><td>HTTP API (net/http)</td><td>✅</td></tr>
+<tr><td>Миграция на chi</td><td>✅</td></tr>
+<tr><td>Middleware (logging, recovery, rate limit)</td><td>✅</td></tr>
+<tr><td>Unit + handler тесты</td><td>✅</td></tr>
+<tr><td>Integration тесты (testcontainers-go)</td><td>✅</td></tr>
+<tr><td>Бенчмарки</td><td>✅</td></tr>
+<tr><td>Docker + Docker Compose</td><td>✅</td></tr>
+<tr><td>Graceful shutdown</td><td>✅</td></tr>
+<tr><td>Health checks</td><td>✅</td></tr>
+<tr><td>Структурированное логирование</td><td>✅</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Что изучили</strong>:</p>
+<ul>
+<li>Идиоматичный Go: структуры, интерфейсы, ошибки</li>
+<li>Работа с PostgreSQL без ORM (pgx)</li>
+<li>Кэширование в Redis (cache-aside паттерн)</li>
+<li>HTTP сервер: net/http → chi</li>
+<li>Тестирование без mock-библиотек</li>
+<li>Docker для Go приложений</li>
+</ul>
+<hr><!-- AUTO: NAV -->
+<p><strong>Вопросы?</strong> Открой issue на <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/issues">GitHub</a></p>
+<p><a href="./04_testing.html">← Назад: 4. Тестирование и бенчмарки</a> | <a href="../part5-project2-ecommerce/">Вперёд: Проект 2: E-commerce Platform →</a></p>
+<!-- /AUTO: NAV -->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part5-project1-url-shortener/04_testing.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part5-project2-ecommerce/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part5-project1-url-shortener/04_testing.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part5-project2-ecommerce/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,2899 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>6.3 Производительность - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-e1a1ce5b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-c19b06e6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part6-best-practices/03_performance.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="63-производительность"><a class="header" href="#63-производительность">6.3 Производительность</a></h1>
+<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<ul>
+<li><a href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5">Введение</a>
+<ul>
+<li><a href="#%D0%B4%D0%BB%D1%8F-%D0%BA%D0%BE%D0%B3%D0%BE-%D1%8D%D1%82%D0%BE%D1%82-%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB">Для кого этот раздел</a></li>
+<li><a href="#c-vs-go-%D0%BA%D1%83%D0%BB%D1%8C%D1%82%D1%83%D1%80%D0%B0-%D0%BF%D1%80%D0%BE%D0%B8%D0%B7%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D0%B8">C# vs Go: культура производительности</a></li>
+</ul>
+</li>
+<li><a href="#1-%D1%84%D0%B8%D0%BB%D0%BE%D1%81%D0%BE%D1%84%D0%B8%D1%8F-%D0%BE%D0%BF%D1%82%D0%B8%D0%BC%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8">1. Философия оптимизации</a>
+<ul>
+<li><a href="#11-premature-optimization">1.1 Premature optimization</a></li>
+<li><a href="#12-costbenefit-%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7">1.2 Cost/Benefit анализ</a></li>
+<li><a href="#13-%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%BE%D0%BF%D1%82%D0%B8%D0%BC%D0%B8%D0%B7%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D1%82%D1%8C">1.3 Когда оптимизировать</a></li>
+</ul>
+</li>
+<li><a href="#2-zero-allocation-patterns">2. Zero-Allocation Patterns</a>
+<ul>
+<li><a href="#21-http-handlers-%D0%B1%D0%B5%D0%B7-%D0%B0%D0%BB%D0%BB%D0%BE%D0%BA%D0%B0%D1%86%D0%B8%D0%B9">2.1 HTTP Handlers без аллокаций</a></li>
+<li><a href="#22-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0-%D1%81-byte-%D0%B2%D0%BC%D0%B5%D1%81%D1%82%D0%BE-string">2.2 Работа с []byte вместо string</a></li>
+<li><a href="#23-syncpool-%D0%BF%D1%80%D0%BE%D0%B4%D0%B2%D0%B8%D0%BD%D1%83%D1%82%D1%8B%D0%B5-%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD%D1%8B">2.3 sync.Pool: продвинутые паттерны</a></li>
+<li><a href="#24-stack-allocated-buffers">2.4 Stack-allocated buffers</a></li>
+</ul>
+</li>
+<li><a href="#3-%D0%BA%D0%BE%D0%BD%D1%82%D1%80%D0%BE%D0%BB%D1%8C-escape-analysis">3. Контроль Escape Analysis</a>
+<ul>
+<li><a href="#31-%D0%BF%D1%80%D0%B0%D0%B2%D0%B8%D0%BB%D0%B0-%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%89%D0%B5%D0%BD%D0%B8%D1%8F">3.1 Правила размещения</a></li>
+<li><a href="#32-%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD%D1%8B-%D0%BF%D1%80%D0%B5%D0%B4%D0%BE%D1%82%D0%B2%D1%80%D0%B0%D1%89%D0%B5%D0%BD%D0%B8%D1%8F-escape">3.2 Паттерны предотвращения escape</a></li>
+<li><a href="#33-%D0%B8%D0%B7%D0%BC%D0%B5%D1%80%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B8-ci-%D0%B8%D0%BD%D1%82%D0%B5%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D1%8F">3.3 Измерение и CI интеграция</a></li>
+</ul>
+</li>
+<li><a href="#4-memory-layout-%D0%B8-alignment">4. Memory Layout и Alignment</a>
+<ul>
+<li><a href="#41-struct-padding-%D0%B2-go">4.1 Struct padding в Go</a></li>
+<li><a href="#42-fieldalignment-%D0%BB%D0%B8%D0%BD%D1%82%D0%B5%D1%80">4.2 fieldalignment линтер</a></li>
+<li><a href="#43-cache-friendly-%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D1%8B">4.3 Cache-friendly структуры</a></li>
+</ul>
+</li>
+<li><a href="#5-compiler-optimizations">5. Compiler Optimizations</a>
+<ul>
+<li><a href="#51-inlining">5.1 Inlining</a></li>
+<li><a href="#52-bounds-check-elimination">5.2 Bounds Check Elimination</a></li>
+<li><a href="#53-dead-code-elimination">5.3 Dead Code Elimination</a></li>
+<li><a href="#54-%D0%BA%D0%B0%D0%BA-%D0%BF%D0%BE%D0%BC%D0%BE%D1%87%D1%8C-%D0%BA%D0%BE%D0%BC%D0%BF%D0%B8%D0%BB%D1%8F%D1%82%D0%BE%D1%80%D1%83">5.4 Как помочь компилятору</a></li>
+</ul>
+</li>
+<li><a href="#6-runtime-%D0%B2-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80%D0%B0%D1%85">6. Runtime в контейнерах</a>
+<ul>
+<li><a href="#61-gomaxprocs-%D0%B8-cgroups">6.1 GOMAXPROCS и cgroups</a></li>
+<li><a href="#62-uber-goautomaxprocs">6.2 uber-go/automaxprocs</a></li>
+<li><a href="#63-gomemlimit-%D0%B2-kubernetes">6.3 GOMEMLIMIT в Kubernetes</a></li>
+</ul>
+</li>
+<li><a href="#7-production-memory-patterns">7. Production Memory Patterns</a>
+<ul>
+<li><a href="#71-backpressure-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-bounded-channels">7.1 Backpressure через bounded channels</a></li>
+<li><a href="#72-rate-limiting-memory-usage">7.2 Rate limiting memory usage</a></li>
+<li><a href="#73-graceful-degradation">7.3 Graceful degradation</a></li>
+</ul>
+</li>
+<li><a href="#8-real-world-case-studies">8. Real-World Case Studies</a>
+<ul>
+<li><a href="#81-high-throughput-json-api">8.1 High-throughput JSON API</a></li>
+<li><a href="#82-memory-efficient-batch-processing">8.2 Memory-efficient batch processing</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B">Практические примеры</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-zero-allocation-http-service">Пример 1: Zero-Allocation HTTP Service</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-memory-efficient-data-pipeline">Пример 2: Memory-Efficient Data Pipeline</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-production-performance-audit">Пример 3: Production Performance Audit</a></li>
+</ul>
+</li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<p>Этот раздел фокусируется на <strong>превентивных практиках производительности</strong> — best practices, которые помогают избежать проблем изначально. Он дополняет материалы по профилированию и GC, рассмотренные ранее:</p>
+<ul>
+<li><strong><a href="../part2-advanced/03_gc.html">Раздел 2.3 (GC)</a></strong> — сборка мусора, базовый escape analysis, GOGC/GOMEMLIMIT</li>
+<li><strong><a href="../part2-advanced/07_profiling_optimization.html">Раздел 2.7 (Профилирование)</a></strong> — pprof, go tool trace, методология “Measure → Identify → Optimize → Verify”</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Ключевое различие</strong>: Раздел 2.7 отвечает на вопрос “Как найти проблему?”. Этот раздел отвечает на вопрос “Как не создавать проблем изначально?”.</p>
+</blockquote>
+<h3 id="для-кого-этот-раздел"><a class="header" href="#для-кого-этот-раздел">Для кого этот раздел</a></h3>
+<p>Для C# разработчиков, которые:</p>
+<ul>
+<li>Уже знакомы с профилированием Go (pprof, benchmarks)</li>
+<li>Понимают, как работает GC в Go</li>
+<li>Хотят писать production-ready код с предсказуемой производительностью</li>
+</ul>
+<h3 id="c-vs-go-культура-производительности"><a class="header" href="#c-vs-go-культура-производительности">C# vs Go: культура производительности</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# / .NET</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Hot path оптимизация</strong></td><td><code>Span&lt;T&gt;</code>, <code>stackalloc</code>, <code>ArrayPool&lt;T&gt;</code></td><td><code>[]byte</code>, stack arrays, <code>sync.Pool</code></td></tr>
+<tr><td><strong>Object pooling</strong></td><td><code>ObjectPool&lt;T&gt;</code> (MS.Extensions)</td><td><code>sync.Pool</code></td></tr>
+<tr><td><strong>Memory alignment</strong></td><td><code>StructLayout</code>, <code>FieldOffset</code></td><td>Автоматическое + <code>fieldalignment</code></td></tr>
+<tr><td><strong>Container awareness</strong></td><td>.NET 5+ автоматически</td><td>Требует <code>automaxprocs</code></td></tr>
+<tr><td><strong>Inlining hints</strong></td><td><code>[MethodImpl(AggressiveInlining)]</code></td><td><code>//go:noinline</code> (hint)</td></tr>
+<tr><td><strong>Zero-copy strings</strong></td><td><code>Span&lt;char&gt;</code>, <code>ReadOnlySpan&lt;char&gt;</code></td><td><code>unsafe.String()</code>, <code>[]byte</code></td></tr>
+<tr><td><strong>Escape analysis</strong></td><td>Нет (всё на heap кроме stackalloc)</td><td>Автоматический, можно контролировать</td></tr>
+<tr><td><strong>GC tuning</strong></td><td><code>GCSettings</code>, <code>GCHeapHardLimit</code></td><td><code>GOGC</code>, <code>GOMEMLIMIT</code></td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Философское различие</strong>:</p>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                 КУЛЬТУРА ПРОИЗВОДИТЕЛЬНОСТИ                      │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   C# / .NET:                                                     │
+│   ──────────                                                     │
+│   • GC достаточно умный — доверяй ему                           │
+│   • Оптимизируй только после профилирования                     │
+│   • Span&lt;T&gt; и stackalloc для критических путей                  │
+│   • Богатый набор high-level абстракций                         │
+│                                                                  │
+│   Go:                                                            │
+│   ────                                                           │
+│   • Простота важнее микро-оптимизаций                           │
+│   • Аллокации дешевле, чем в Java/C#, но не бесплатны           │
+│   • Предпочитай value types и stack allocation                  │
+│   • Меньше абстракций = меньше overhead                         │
+│                                                                  │
+│   Общее:                                                         │
+│   ──────                                                         │
+│   • Measure first, optimize second                               │
+│   • Premature optimization — корень зла                          │
+│   • Читаемость &gt; производительность (в большинстве случаев)     │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h2 id="1-философия-оптимизации"><a class="header" href="#1-философия-оптимизации">1. Философия оптимизации</a></h2>
+<h3 id="11-premature-optimization"><a class="header" href="#11-premature-optimization">1.1 Premature optimization</a></h3>
+<blockquote>
+<p>“Premature optimization is the root of all evil” — Donald Knuth</p>
+</blockquote>
+<p>Эта цитата часто неправильно интерпретируется. Полная версия:</p>
+<blockquote>
+<p>“We should forget about small efficiencies, say about 97% of the time: premature optimization is the root of all evil. <strong>Yet we should not pass up our opportunities in that critical 3%.</strong>”</p>
+</blockquote>
+<p><strong>Что это значит для Go разработчика</strong>:</p>
+<pre><code class="language-go">// ❌ Преждевременная оптимизация: sync.Pool для редко создаваемых объектов
+var configPool = sync.Pool{
+    New: func() any { return &amp;Config{} },
+}
+
+func LoadConfig() *Config {
+    cfg := configPool.Get().(*Config)
+    // ... загрузка конфига (раз в минуту)
+    return cfg
+}
+// Overhead пула больше, чем выигрыш — конфиг создаётся редко
+
+// ❌ Преждевременная оптимизация: ручное управление памятью
+func processItems(items []Item) {
+    // Зачем? items и так на стеке если не escape
+    buf := make([]byte, 0, 1024)
+    _ = buf
+}
+
+// ✅ Правильно: оптимизируй после профилирования
+// Сначала напиши читаемый код:
+func processItems(items []Item) []Result {
+    results := make([]Result, 0, len(items)) // ← OK: preallocation при известном размере
+    for _, item := range items {
+        results = append(results, process(item))
+    }
+    return results
+}
+</code></pre>
+<p><strong>Признаки преждевременной оптимизации</strong>:</p>
+<ul>
+<li>Нет benchmarks, доказывающих проблему</li>
+<li>Оптимизация кода, который вызывается редко</li>
+<li>Усложнение ради теоретического выигрыша</li>
+<li>“Это может понадобиться в будущем”</li>
+</ul>
+<h3 id="12-costbenefit-анализ"><a class="header" href="#12-costbenefit-анализ">1.2 Cost/Benefit анализ</a></h3>
+<p>Перед оптимизацией задай вопросы:</p>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│               COST/BENEFIT АНАЛИЗ ОПТИМИЗАЦИИ                    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   ВОПРОСЫ:                                                       │
+│                                                                  │
+│   1. Какой текущий latency P99? ──────────── [   ] ms            │
+│   2. Какой целевой SLO? ──────────────────── [   ] ms            │
+│   3. Сколько RPS на этот endpoint? ────────── [   ] req/s        │
+│   4. Сколько времени займёт оптимизация? ─── [   ] часов         │
+│   5. Насколько усложнится код? ──────────── [низко/средне/высоко]│
+│   6. Кто будет поддерживать этот код? ────── [   ]               │
+│                                                                  │
+│   ФОРМУЛА:                                                       │
+│                                                                  │
+│   ROI = (Latency_saved × RPS × Hours_saved) /                    │
+│         (Dev_hours × Maintenance_cost)                           │
+│                                                                  │
+│   Если ROI &lt; 1 — оптимизация не оправдана                       │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Пример расчёта</strong>:</p>
+<pre><code class="language-go">/*
+Ситуация A: Оптимизация endpoint с 100 RPS
+─────────────────────────────────────────
+- Текущий P99: 50ms
+- После оптимизации: 30ms (экономия 20ms)
+- Время на оптимизацию: 8 часов
+- Усложнение: среднее
+
+Выигрыш: 20ms × 100 req/s = 2 секунды CPU в секунду
+Вопрос: стоит ли 8 часов работы ради 2s CPU/s?
+Ответ: Вероятно НЕТ (если P99 в рамках SLO)
+
+Ситуация B: Оптимизация endpoint с 50,000 RPS
+─────────────────────────────────────────────
+- Текущий P99: 50ms
+- После оптимизации: 30ms
+- Время на оптимизацию: 8 часов
+
+Выигрыш: 20ms × 50,000 req/s = 1000 секунд CPU в секунду
+Ответ: Однозначно ДА
+*/
+</code></pre>
+<h3 id="13-когда-оптимизировать"><a class="header" href="#13-когда-оптимизировать">1.3 Когда оптимизировать</a></h3>
+<p><strong>Checklist: пора оптимизировать</strong></p>
+<pre><code class="language-go">/*
+Оптимизация ОПРАВДАНА если:
+
+[ ] P99 latency превышает SLO
+    └── Пример: SLO = 100ms, текущий P99 = 150ms
+
+[ ] Memory usage приближается к limit
+    └── Пример: Pod limit = 512MB, usage = 480MB
+
+[ ] CPU throttling в Kubernetes
+    └── Пример: container_cpu_cfs_throttled_seconds_total растёт
+
+[ ] GC pause влияет на latency
+    └── Пример: GODEBUG=gctrace=1 показывает паузы &gt;10ms
+
+[ ] Benchmark показывает hot path
+    └── Пример: pprof показывает 60% времени в одной функции
+
+[ ] Известный паттерн с простым решением
+    └── Пример: конкатенация строк в цикле → strings.Builder
+
+Оптимизация НЕ ОПРАВДАНА если:
+
+[ ] "Может пригодиться в будущем"
+[ ] "Я видел так в статье"
+[ ] "Это выглядит неэффективно"
+[ ] Нет измерений до и после
+[ ] Код станет значительно сложнее
+*/
+</code></pre>
+<p><strong>Сравнение с C#</strong>:</p>
+<pre><code class="language-csharp">// C# — типичный путь к оптимизации
+// 1. Application Insights показывает slow endpoint
+// 2. dotTrace/PerfView для профилирования
+// 3. Span&lt;T&gt; / stackalloc для hot paths
+// 4. BenchmarkDotNet для верификации
+
+[Benchmark]
+public void ProcessData()
+{
+    Span&lt;byte&gt; buffer = stackalloc byte[256];
+    // ...
+}
+</code></pre>
+<pre><code class="language-go">// Go — типичный путь к оптимизации
+// 1. Prometheus/Grafana показывает slow endpoint
+// 2. pprof для профилирования
+// 3. Preallocations / sync.Pool для hot paths
+// 4. go test -bench для верификации
+
+func BenchmarkProcessData(b *testing.B) {
+    for i := 0; i &lt; b.N; i++ {
+        processData()
+    }
+}
+</code></pre>
+<hr>
+<h2 id="2-zero-allocation-patterns"><a class="header" href="#2-zero-allocation-patterns">2. Zero-Allocation Patterns</a></h2>
+<p>Zero-allocation (или low-allocation) паттерны критичны для high-throughput сервисов. Каждая аллокация — это потенциальная работа для GC.</p>
+<blockquote>
+<p>💡 <strong>Связь с другими разделами</strong>: Базовые концепции аллокаций описаны в <a href="../part2-advanced/03_gc.html">разделе 2.3 (GC)</a>. Здесь фокус на практических паттернах.</p>
+</blockquote>
+<h3 id="21-http-handlers-без-аллокаций"><a class="header" href="#21-http-handlers-без-аллокаций">2.1 HTTP Handlers без аллокаций</a></h3>
+<p><strong>Проблема</strong>: типичный HTTP handler создаёт много объектов на каждый запрос.</p>
+<pre><code class="language-go">// ❌ Типичный handler — много аллокаций
+func handleUserBad(w http.ResponseWriter, r *http.Request) {
+    // Аллокация 1: декодирование JSON в новую структуру
+    var req UserRequest
+    if err := json.NewDecoder(r.Body).Decode(&amp;req); err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    // Аллокация 2: создание ответа
+    resp := UserResponse{
+        ID:        req.ID,
+        Name:      req.Name,
+        CreatedAt: time.Now(),
+    }
+
+    // Аллокация 3: сериализация JSON
+    json.NewEncoder(w).Encode(resp)
+}
+</code></pre>
+<p><strong>Решение</strong>: пулы объектов + переиспользование encoder/decoder.</p>
+<pre><code class="language-go">// ✅ Optimized handler с sync.Pool
+
+// Пулы для запросов и ответов
+var (
+    requestPool = sync.Pool{
+        New: func() any {
+            return &amp;UserRequest{}
+        },
+    }
+
+    responsePool = sync.Pool{
+        New: func() any {
+            return &amp;UserResponse{}
+        },
+    }
+
+    // Пул для bytes.Buffer (для JSON encoding)
+    bufferPool = sync.Pool{
+        New: func() any {
+            return bytes.NewBuffer(make([]byte, 0, 1024))
+        },
+    }
+)
+
+func handleUserGood(w http.ResponseWriter, r *http.Request) {
+    // Получаем объекты из пула
+    req := requestPool.Get().(*UserRequest)
+    resp := responsePool.Get().(*UserResponse)
+    buf := bufferPool.Get().(*bytes.Buffer)
+
+    // Гарантируем возврат в пул
+    defer func() {
+        // Очищаем перед возвратом
+        *req = UserRequest{}
+        requestPool.Put(req)
+
+        *resp = UserResponse{}
+        responsePool.Put(resp)
+
+        buf.Reset()
+        bufferPool.Put(buf)
+    }()
+
+    // Декодируем в существующий объект
+    if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    // Заполняем существующий объект
+    resp.ID = req.ID
+    resp.Name = req.Name
+    resp.CreatedAt = time.Now()
+
+    // Сериализуем в буфер
+    if err := json.NewEncoder(buf).Encode(resp); err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    w.Write(buf.Bytes())
+}
+
+// Структуры с Reset методом для удобства
+type UserRequest struct {
+    ID   int64  `json:"id"`
+    Name string `json:"name"`
+}
+
+type UserResponse struct {
+    ID        int64     `json:"id"`
+    Name      string    `json:"name"`
+    CreatedAt time.Time `json:"created_at"`
+}
+</code></pre>
+<p><strong>Benchmark сравнение</strong>:</p>
+<pre><code class="language-go">func BenchmarkHandlerBad(b *testing.B) {
+    req := httptest.NewRequest("POST", "/user",
+        strings.NewReader(`{"id":1,"name":"test"}`))
+    w := httptest.NewRecorder()
+
+    b.ResetTimer()
+    for i := 0; i &lt; b.N; i++ {
+        handleUserBad(w, req)
+        req.Body = io.NopCloser(strings.NewReader(`{"id":1,"name":"test"}`))
+        w.Body.Reset()
+    }
+}
+
+func BenchmarkHandlerGood(b *testing.B) {
+    req := httptest.NewRequest("POST", "/user",
+        strings.NewReader(`{"id":1,"name":"test"}`))
+    w := httptest.NewRecorder()
+
+    b.ResetTimer()
+    for i := 0; i &lt; b.N; i++ {
+        handleUserGood(w, req)
+        req.Body = io.NopCloser(strings.NewReader(`{"id":1,"name":"test"}`))
+        w.Body.Reset()
+    }
+}
+
+/*
+Результаты:
+BenchmarkHandlerBad-8     500000    2840 ns/op    1024 B/op    12 allocs/op
+BenchmarkHandlerGood-8   1500000     856 ns/op      64 B/op     2 allocs/op
+
+Улучшение: 3.3x по скорости, 16x по аллокациям
+*/
+</code></pre>
+<h3 id="22-работа-с-byte-вместо-string"><a class="header" href="#22-работа-с-byte-вместо-string">2.2 Работа с []byte вместо string</a></h3>
+<p>В Go <code>string</code> — immutable, а <code>[]byte</code> — mutable. Для high-performance кода часто лучше работать с <code>[]byte</code>.</p>
+<pre><code class="language-go">// ❌ Много конвертаций string ↔ []byte
+func processBad(data []byte) string {
+    s := string(data)           // Аллокация: копия данных в string
+    s = strings.ToUpper(s)      // Аллокация: новая строка
+    s = strings.TrimSpace(s)    // Аллокация: новая строка
+    return s
+}
+
+// ✅ Работа с []byte напрямую
+func processGood(data []byte) []byte {
+    // bytes.ToUpper модифицирует in-place если capacity достаточен
+    data = bytes.ToUpper(data)
+    data = bytes.TrimSpace(data)
+    return data
+}
+</code></pre>
+<p><strong>Zero-copy конвертация</strong> (Go 1.20+):</p>
+<pre><code class="language-go">import "unsafe"
+
+// Zero-copy string → []byte (ТОЛЬКО для чтения!)
+func stringToBytes(s string) []byte {
+    return unsafe.Slice(unsafe.StringData(s), len(s))
+}
+
+// Zero-copy []byte → string
+func bytesToString(b []byte) string {
+    return unsafe.String(unsafe.SliceData(b), len(b))
+}
+
+// Пример использования
+func processZeroCopy(data []byte) string {
+    // Обрабатываем как bytes
+    data = bytes.ToUpper(data)
+    data = bytes.TrimSpace(data)
+
+    // Zero-copy конвертация в string
+    // ⚠️ ВАЖНО: data НЕ должна модифицироваться после этого!
+    return bytesToString(data)
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Предупреждение</strong>: <code>unsafe.String</code> и <code>unsafe.Slice</code> создают string/slice, которые делят память с оригиналом. Модификация оригинала после конвертации — undefined behavior.</p>
+</blockquote>
+<p><strong>Сравнение с C#</strong>:</p>
+<pre><code class="language-csharp">// C# — Span&lt;T&gt; для zero-copy операций
+ReadOnlySpan&lt;char&gt; span = "Hello World".AsSpan();
+ReadOnlySpan&lt;char&gt; trimmed = span.Trim(); // Zero-copy
+
+// Для bytes
+ReadOnlySpan&lt;byte&gt; bytes = data.AsSpan();
+</code></pre>
+<pre><code class="language-go">// Go — работа с []byte
+data := []byte("Hello World")
+trimmed := bytes.TrimSpace(data) // Может быть zero-copy
+
+// Или explicit zero-copy через unsafe
+s := unsafe.String(&amp;data[0], len(data))
+</code></pre>
+<h3 id="23-syncpool-продвинутые-паттерны"><a class="header" href="#23-syncpool-продвинутые-паттерны">2.3 sync.Pool: продвинутые паттерны</a></h3>
+<blockquote>
+<p>💡 <strong>Базовое использование sync.Pool</strong>: см. <a href="../part2-advanced/03_gc.html">раздел 2.3 (GC)</a>. Здесь рассмотрим продвинутые паттерны.</p>
+</blockquote>
+<p><strong>Паттерн 1: Typed Pool с Generics (Go 1.18+)</strong></p>
+<pre><code class="language-go">// TypedPool — generic-обёртка над sync.Pool
+type TypedPool[T any] struct {
+    pool sync.Pool
+    new  func() T
+}
+
+// NewTypedPool создаёт типизированный пул
+func NewTypedPool[T any](newFunc func() T) *TypedPool[T] {
+    return &amp;TypedPool[T]{
+        pool: sync.Pool{
+            New: func() any {
+                return newFunc()
+            },
+        },
+        new: newFunc,
+    }
+}
+
+func (p *TypedPool[T]) Get() T {
+    return p.pool.Get().(T)
+}
+
+func (p *TypedPool[T]) Put(x T) {
+    p.pool.Put(x)
+}
+
+// Использование
+var bufPool = NewTypedPool(func() *bytes.Buffer {
+    return bytes.NewBuffer(make([]byte, 0, 4096))
+})
+
+func processWithTypedPool() {
+    buf := bufPool.Get()
+    defer func() {
+        buf.Reset()
+        bufPool.Put(buf)
+    }()
+
+    buf.WriteString("Hello")
+    // ...
+}
+</code></pre>
+<p><strong>Паттерн 2: Pool с метриками</strong></p>
+<pre><code class="language-go">import (
+    "sync"
+    "sync/atomic"
+
+    "github.com/prometheus/client_golang/prometheus"
+)
+
+// MeteredPool — пул с Prometheus метриками
+type MeteredPool[T any] struct {
+    pool    sync.Pool
+    name    string
+    gets    atomic.Int64
+    puts    atomic.Int64
+    news    atomic.Int64
+
+    // Prometheus метрики
+    getsTotal prometheus.Counter
+    putsTotal prometheus.Counter
+    newsTotal prometheus.Counter
+}
+
+func NewMeteredPool[T any](name string, newFunc func() T) *MeteredPool[T] {
+    p := &amp;MeteredPool[T]{
+        name: name,
+        getsTotal: prometheus.NewCounter(prometheus.CounterOpts{
+            Name: "pool_gets_total",
+            Help: "Total number of Get calls",
+            ConstLabels: prometheus.Labels{"pool": name},
+        }),
+        putsTotal: prometheus.NewCounter(prometheus.CounterOpts{
+            Name: "pool_puts_total",
+            Help: "Total number of Put calls",
+            ConstLabels: prometheus.Labels{"pool": name},
+        }),
+        newsTotal: prometheus.NewCounter(prometheus.CounterOpts{
+            Name: "pool_news_total",
+            Help: "Total number of New allocations",
+            ConstLabels: prometheus.Labels{"pool": name},
+        }),
+    }
+
+    p.pool.New = func() any {
+        p.news.Add(1)
+        p.newsTotal.Inc()
+        return newFunc()
+    }
+
+    // Регистрируем метрики
+    prometheus.MustRegister(p.getsTotal, p.putsTotal, p.newsTotal)
+
+    return p
+}
+
+func (p *MeteredPool[T]) Get() T {
+    p.gets.Add(1)
+    p.getsTotal.Inc()
+    return p.pool.Get().(T)
+}
+
+func (p *MeteredPool[T]) Put(x T) {
+    p.puts.Add(1)
+    p.putsTotal.Inc()
+    p.pool.Put(x)
+}
+
+// Stats возвращает статистику пула
+func (p *MeteredPool[T]) Stats() (gets, puts, news int64) {
+    return p.gets.Load(), p.puts.Load(), p.news.Load()
+}
+</code></pre>
+<p><strong>Паттерн 3: Pool с ограничением размера объектов</strong></p>
+<pre><code class="language-go">// SizedPool — пул с проверкой размера буфера
+type SizedPool struct {
+    pool    sync.Pool
+    maxSize int
+}
+
+func NewSizedPool(initialSize, maxSize int) *SizedPool {
+    return &amp;SizedPool{
+        pool: sync.Pool{
+            New: func() any {
+                return bytes.NewBuffer(make([]byte, 0, initialSize))
+            },
+        },
+        maxSize: maxSize,
+    }
+}
+
+func (p *SizedPool) Get() *bytes.Buffer {
+    return p.pool.Get().(*bytes.Buffer)
+}
+
+func (p *SizedPool) Put(buf *bytes.Buffer) {
+    // Не возвращаем слишком большие буферы — они занимают много памяти
+    if buf.Cap() &gt; p.maxSize {
+        // Пусть GC соберёт
+        return
+    }
+    buf.Reset()
+    p.pool.Put(buf)
+}
+</code></pre>
+<p><strong>Когда sync.Pool вреден</strong>:</p>
+<pre><code class="language-go">/*
+НЕ используй sync.Pool если:
+
+1. Объекты маленькие (&lt; 64 bytes)
+   └── Overhead пула &gt; выигрыш
+
+2. Объекты создаются редко
+   └── Пул очищается между GC циклами
+
+3. Объекты имеют сложную инициализацию
+   └── Reset может пропустить состояние
+
+4. Нужен детерминированный lifetime
+   └── sync.Pool не гарантирует сохранение объектов
+*/
+
+// ❌ Плохо: маленький объект
+var pointPool = sync.Pool{
+    New: func() any { return &amp;Point{} }, // 16 bytes — слишком мало
+}
+
+// ❌ Плохо: редко создаётся
+var configPool = sync.Pool{
+    New: func() any { return &amp;Config{} }, // Создаётся раз в минуту
+}
+
+// ✅ Хорошо: большой объект, часто создаётся
+var bufferPool = sync.Pool{
+    New: func() any { return make([]byte, 0, 4096) }, // 4KB, каждый запрос
+}
+</code></pre>
+<h3 id="24-stack-allocated-buffers"><a class="header" href="#24-stack-allocated-buffers">2.4 Stack-allocated buffers</a></h3>
+<p>Небольшие буферы можно размещать на стеке, избегая heap allocation.</p>
+<pre><code class="language-go">// ❌ Heap allocation
+func formatIntBad(n int64) string {
+    buf := make([]byte, 0, 20) // Escapes to heap
+    buf = strconv.AppendInt(buf, n, 10)
+    return string(buf)
+}
+
+// ✅ Stack allocation
+func formatIntGood(n int64) string {
+    var buf [20]byte // Stack-allocated array
+    result := strconv.AppendInt(buf[:0], n, 10)
+    return string(result)
+}
+
+// Benchmark:
+// BenchmarkFormatIntBad-8    10000000    112 ns/op    24 B/op    2 allocs/op
+// BenchmarkFormatIntGood-8   20000000     64 ns/op     8 B/op    1 allocs/op
+</code></pre>
+<p><strong>Паттерн: буфер для небольших строк</strong></p>
+<pre><code class="language-go">// SmallString оптимизирован для коротких строк
+const smallStringSize = 64
+
+func buildSmallString(parts ...string) string {
+    // Считаем общий размер
+    total := 0
+    for _, p := range parts {
+        total += len(p)
+    }
+
+    // Если помещается в stack buffer
+    if total &lt;= smallStringSize {
+        var buf [smallStringSize]byte
+        b := buf[:0]
+        for _, p := range parts {
+            b = append(b, p...)
+        }
+        return string(b)
+    }
+
+    // Иначе используем heap
+    var sb strings.Builder
+    sb.Grow(total)
+    for _, p := range parts {
+        sb.WriteString(p)
+    }
+    return sb.String()
+}
+</code></pre>
+<p><strong>Сравнение с C#</strong>:</p>
+<pre><code class="language-csharp">// C# — stackalloc для stack allocation
+Span&lt;byte&gt; buffer = stackalloc byte[20];
+// Используем buffer...
+
+// Или для строк
+Span&lt;char&gt; chars = stackalloc char[64];
+</code></pre>
+<pre><code class="language-go">// Go — массив фиксированного размера
+var buffer [20]byte
+// buffer[:] для получения slice
+
+// Или для строк
+var chars [64]byte
+result := string(chars[:n])
+</code></pre>
+<hr>
+<h2 id="3-контроль-escape-analysis"><a class="header" href="#3-контроль-escape-analysis">3. Контроль Escape Analysis</a></h2>
+<p>Escape Analysis определяет, где размещать объект: на стеке (быстро, автоматически очищается) или на heap (требует GC).</p>
+<blockquote>
+<p>💡 <strong>Базовые концепции</strong>: см. <a href="../part2-advanced/03_gc.html">раздел 2.3 (GC)</a>. Здесь фокус на том, как <strong>контролировать</strong> размещение.</p>
+</blockquote>
+<h3 id="31-правила-размещения"><a class="header" href="#31-правила-размещения">3.1 Правила размещения</a></h3>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                    ESCAPE ANALYSIS: DECISION TREE                │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   Объект размещается на STACK если:                             │
+│   ─────────────────────────────────                             │
+│   1. Размер известен на этапе компиляции                        │
+│   2. Не возвращается из функции                                 │
+│   3. Не сохраняется в heap-allocated структуру                  │
+│   4. Не передаётся в interface{}                                │
+│   5. Не захватывается closure, которая escapes                  │
+│   6. Размер &lt; некоторого порога (~64KB, зависит от версии Go)   │
+│                                                                  │
+│   Объект размещается на HEAP если:                              │
+│   ─────────────────────────────────                             │
+│   • Любое из условий выше не выполняется                        │
+│   • Компилятор не может доказать, что объект "умрёт" с функцией │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Таблица: что вызывает escape</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Ситуация</th><th>Escapes?</th><th>Пример</th></tr>
+</thead>
+<tbody>
+<tr><td>Возврат указателя</td><td>Да</td><td><code>return &amp;x</code></td></tr>
+<tr><td>Возврат значения</td><td>Нет</td><td><code>return x</code></td></tr>
+<tr><td>Сохранение в поле struct на heap</td><td>Да</td><td><code>obj.field = &amp;x</code></td></tr>
+<tr><td>Передача в <code>interface{}</code></td><td>Да</td><td><code>fmt.Println(x)</code></td></tr>
+<tr><td>Slice с неизвестным размером</td><td>Зависит</td><td><code>make([]int, n)</code></td></tr>
+<tr><td>Closure захватывает переменную</td><td>Зависит</td><td><code>go func() { use(x) }()</code></td></tr>
+<tr><td>Передача в другую горутину</td><td>Да</td><td><code>ch &lt;- &amp;x</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="32-паттерны-предотвращения-escape"><a class="header" href="#32-паттерны-предотвращения-escape">3.2 Паттерны предотвращения escape</a></h3>
+<p><strong>Паттерн 1: Возврат значения вместо указателя</strong></p>
+<pre><code class="language-go">// ❌ Escapes: возвращаем указатель
+func newPointBad(x, y int) *Point {
+    p := Point{X: x, Y: y}
+    return &amp;p // p escapes to heap
+}
+
+// ✅ Не escapes: возвращаем значение
+func newPointGood(x, y int) Point {
+    return Point{X: x, Y: y} // Копируется, но остаётся на stack
+}
+
+// Использование
+func process() {
+    p1 := newPointBad(1, 2)   // Heap allocation
+    p2 := newPointGood(3, 4)  // Stack allocation
+    _ = p1
+    _ = p2
+}
+</code></pre>
+<p><strong>Паттерн 2: Out-параметр вместо возврата (C-style)</strong></p>
+<pre><code class="language-go">// ❌ Escapes: возвращаем slice
+func parseBad(data []byte) ([]Token, error) {
+    tokens := make([]Token, 0, 100) // Escapes
+    // ... parsing
+    return tokens, nil
+}
+
+// ✅ Не escapes: out-параметр
+func parseGood(data []byte, tokens *[]Token) error {
+    *tokens = (*tokens)[:0] // Переиспользуем backing array
+    // ... parsing
+    return nil
+}
+
+// Использование
+func process(data []byte) {
+    // Вариант 1: каждый раз новый slice (heap)
+    tokens, _ := parseBad(data)
+
+    // Вариант 2: переиспользование (может быть stack)
+    var tokens []Token
+    for _, data := range chunks {
+        parseGood(data, &amp;tokens)
+        // process tokens...
+    }
+}
+</code></pre>
+<p><strong>Паттерн 3: Slice of values вместо slice of pointers</strong></p>
+<pre><code class="language-go">// ❌ Slice of pointers: каждый элемент — отдельная heap allocation
+type NodeBad struct {
+    Children []*NodeBad
+}
+
+// ✅ Slice of values: одна allocation на весь slice
+type NodeGood struct {
+    Children []NodeGood
+}
+
+// Для рекурсивных структур — иногда указатели неизбежны
+// Но для плоских данных:
+
+// ❌ Плохо
+users := make([]*User, n)
+for i := range users {
+    users[i] = &amp;User{ID: i} // n allocations
+}
+
+// ✅ Хорошо
+users := make([]User, n)
+for i := range users {
+    users[i] = User{ID: i} // 1 allocation
+}
+</code></pre>
+<p><strong>Паттерн 4: Избегание <code>interface{}</code></strong></p>
+<pre><code class="language-go">// ❌ interface{} вызывает boxing
+func processBad(items []any) {
+    for _, item := range items {
+        if v, ok := item.(int); ok {
+            // ...
+        }
+    }
+}
+
+// ✅ Конкретный тип
+func processGood(items []int) {
+    for _, item := range items {
+        // item уже int, без boxing
+        _ = item
+    }
+}
+
+// ✅ Generics (Go 1.18+)
+func processGeneric[T any](items []T) {
+    for _, item := range items {
+        _ = item
+    }
+}
+</code></pre>
+<h3 id="33-измерение-и-ci-интеграция"><a class="header" href="#33-измерение-и-ci-интеграция">3.3 Измерение и CI интеграция</a></h3>
+<p><strong>Просмотр решений escape analysis</strong>:</p>
+<pre><code class="language-bash"># Базовый вывод
+go build -gcflags="-m" ./...
+
+# Подробный вывод (рекомендуется)
+go build -gcflags="-m -m" ./...
+
+# Для конкретного пакета
+go build -gcflags="-m -m" ./pkg/handler/...
+
+# Вывод в файл для анализа
+go build -gcflags="-m -m" ./... 2&gt;&amp;1 | grep "escapes to heap"
+</code></pre>
+<p><strong>Пример вывода</strong>:</p>
+<pre><code>./handler.go:42:6: req escapes to heap:
+./handler.go:42:6:   flow: ~r0 = &amp;req:
+./handler.go:42:6:     from &amp;req (address-of) at ./handler.go:45:9
+./handler.go:42:6:     from return &amp;req (return) at ./handler.go:45:2
+</code></pre>
+<p><strong>CI интеграция: детектирование новых escapes</strong></p>
+<pre><code class="language-yaml"># .github/workflows/escape-check.yml
+name: Escape Analysis Check
+
+on: [pull_request]
+
+jobs:
+  escape-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Для сравнения с main
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+
+      - name: Check for new heap escapes
+        run: |
+          # Escape analysis для текущей ветки
+          go build -gcflags="-m" ./... 2&gt;&amp;1 | grep "escapes to heap" | sort &gt; current_escapes.txt
+
+          # Checkout main и анализ
+          git checkout main
+          go build -gcflags="-m" ./... 2&gt;&amp;1 | grep "escapes to heap" | sort &gt; main_escapes.txt
+          git checkout -
+
+          # Сравнение
+          NEW_ESCAPES=$(comm -23 current_escapes.txt main_escapes.txt)
+          if [ -n "$NEW_ESCAPES" ]; then
+            echo "::warning::New heap escapes detected:"
+            echo "$NEW_ESCAPES"
+            # Не фейлим, но предупреждаем
+          fi
+</code></pre>
+<p><strong>Makefile target</strong>:</p>
+<pre><code class="language-makefile">.PHONY: escape
+escape:
+	@echo "Analyzing escape analysis..."
+	@go build -gcflags="-m -m" ./... 2&gt;&amp;1 | grep -E "(escapes to heap|moved to heap)" | \
+		sort | uniq -c | sort -rn | head -20
+</code></pre>
+<hr>
+<h2 id="4-memory-layout-и-alignment"><a class="header" href="#4-memory-layout-и-alignment">4. Memory Layout и Alignment</a></h2>
+<p>Go автоматически выравнивает поля структур для эффективного доступа CPU. Понимание этого помогает оптимизировать память.</p>
+<h3 id="41-struct-padding-в-go"><a class="header" href="#41-struct-padding-в-go">4.1 Struct padding в Go</a></h3>
+<p><strong>Правила выравнивания</strong>:</p>
+<ul>
+<li><code>bool</code>, <code>int8</code>, <code>uint8</code>: 1 byte alignment</li>
+<li><code>int16</code>, <code>uint16</code>: 2 byte alignment</li>
+<li><code>int32</code>, <code>uint32</code>, <code>float32</code>: 4 byte alignment</li>
+<li><code>int64</code>, <code>uint64</code>, <code>float64</code>, указатели: 8 byte alignment (на 64-bit)</li>
+</ul>
+<pre><code class="language-go">import (
+    "fmt"
+    "unsafe"
+)
+
+// ❌ Неоптимальный порядок: 24 bytes
+type BadLayout struct {
+    a bool    // 1 byte
+    // 7 bytes padding
+    b int64   // 8 bytes
+    c bool    // 1 byte
+    // 7 bytes padding
+}
+
+// ✅ Оптимальный порядок: 16 bytes
+type GoodLayout struct {
+    b int64   // 8 bytes
+    a bool    // 1 byte
+    c bool    // 1 byte
+    // 6 bytes padding (в конце struct для array alignment)
+}
+
+func main() {
+    fmt.Printf("BadLayout size: %d\n", unsafe.Sizeof(BadLayout{}))   // 24
+    fmt.Printf("GoodLayout size: %d\n", unsafe.Sizeof(GoodLayout{})) // 16
+
+    // Проверка offset полей
+    var good GoodLayout
+    fmt.Printf("b offset: %d\n", unsafe.Offsetof(good.b)) // 0
+    fmt.Printf("a offset: %d\n", unsafe.Offsetof(good.a)) // 8
+    fmt.Printf("c offset: %d\n", unsafe.Offsetof(good.c)) // 9
+}
+</code></pre>
+<p><strong>Визуализация памяти</strong>:</p>
+<pre><code>BadLayout (24 bytes):
+┌────┬───────────────┬────────────────┬────┬───────────────┐
+│ a  │    padding    │       b        │ c  │    padding    │
+│1 B │     7 B       │      8 B       │1 B │     7 B       │
+└────┴───────────────┴────────────────┴────┴───────────────┘
+
+GoodLayout (16 bytes):
+┌────────────────┬────┬────┬──────────────┐
+│       b        │ a  │ c  │   padding    │
+│      8 B       │1 B │1 B │     6 B      │
+└────────────────┴────┴────┴──────────────┘
+</code></pre>
+<p><strong>Сложный пример</strong>:</p>
+<pre><code class="language-go">// ❌ 40 bytes
+type User struct {
+    Active    bool      // 1 + 7 padding
+    ID        int64     // 8
+    Age       uint8     // 1 + 3 padding
+    Score     float32   // 4
+    Name      string    // 16 (ptr + len)
+}
+
+// ✅ 32 bytes (20% экономии)
+type UserOptimized struct {
+    ID        int64     // 8
+    Name      string    // 16
+    Score     float32   // 4
+    Age       uint8     // 1
+    Active    bool      // 1 + 2 padding
+}
+</code></pre>
+<h3 id="42-fieldalignment-линтер"><a class="header" href="#42-fieldalignment-линтер">4.2 fieldalignment линтер</a></h3>
+<p><strong>Установка и использование</strong>:</p>
+<pre><code class="language-bash"># Установка
+go install golang.org/x/tools/go/analysis/passes/fieldalignment/cmd/fieldalignment@latest
+
+# Проверка
+fieldalignment ./...
+
+# Автоматическое исправление
+fieldalignment -fix ./...
+</code></pre>
+<p><strong>Интеграция с golangci-lint</strong>:</p>
+<pre><code class="language-yaml"># .golangci.yml
+linters:
+  enable:
+    - fieldalignment
+
+linters-settings:
+  govet:
+    enable:
+      - fieldalignment
+
+issues:
+  # Можно исключить определённые пакеты
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - fieldalignment
+    - path: pkg/api/
+      linters:
+        - fieldalignment  # API стабильность важнее
+</code></pre>
+<p><strong>Когда игнорировать</strong>:</p>
+<pre><code class="language-go">// Иногда порядок полей важен для читаемости или API
+
+// ✅ OK: логическая группировка важнее
+type Config struct {
+    // Connection settings
+    Host string
+    Port int
+
+    // Timeouts (логически связаны)
+    ConnectTimeout time.Duration
+    ReadTimeout    time.Duration
+    WriteTimeout   time.Duration
+
+    // Feature flags
+    EnableTLS bool
+    EnableLog bool
+}
+
+//nolint:fieldalignment // Порядок полей — часть API
+type APIResponse struct {
+    Status  string `json:"status"`
+    Message string `json:"message"`
+    Data    any    `json:"data"`
+}
+</code></pre>
+<h3 id="43-cache-friendly-структуры"><a class="header" href="#43-cache-friendly-структуры">4.3 Cache-friendly структуры</a></h3>
+<p>CPU загружает данные из RAM в cache lines (обычно 64 bytes). Структуры, помещающиеся в cache line, обрабатываются быстрее.</p>
+<p><strong>Hot/Cold separation</strong>:</p>
+<pre><code class="language-go">// ❌ Все поля вместе
+type Entity struct {
+    // Hot data (часто используется)
+    ID       int64
+    Position Vector3
+    Velocity Vector3
+
+    // Cold data (редко используется)
+    Name        string
+    Description string
+    CreatedAt   time.Time
+    UpdatedAt   time.Time
+    Metadata    map[string]string
+}
+
+// ✅ Разделение hot/cold
+type EntityHot struct {
+    ID       int64   // 8
+    Position Vector3 // 24
+    Velocity Vector3 // 24
+    // Итого: 56 bytes — помещается в cache line
+}
+
+type EntityCold struct {
+    Name        string
+    Description string
+    CreatedAt   time.Time
+    UpdatedAt   time.Time
+    Metadata    map[string]string
+}
+
+type Entity struct {
+    EntityHot              // Embedded hot data
+    Cold      *EntityCold  // Указатель на cold data
+}
+</code></pre>
+<p><strong>Array of Structs vs Struct of Arrays</strong>:</p>
+<pre><code class="language-go">// AoS (Array of Structs) — стандартный подход
+type ParticleAoS struct {
+    X, Y, Z    float64
+    VX, VY, VZ float64
+}
+particles := make([]ParticleAoS, 10000)
+
+// SoA (Struct of Arrays) — cache-friendly для SIMD
+type ParticlesSoA struct {
+    X, Y, Z    []float64
+    VX, VY, VZ []float64
+}
+
+// SoA позволяет обрабатывать X координаты всех частиц подряд
+// Лучше для SIMD и prefetching
+func updatePositionsSoA(p *ParticlesSoA, dt float64) {
+    for i := range p.X {
+        p.X[i] += p.VX[i] * dt
+        p.Y[i] += p.VY[i] * dt
+        p.Z[i] += p.VZ[i] * dt
+    }
+}
+
+// Benchmark показывает 2-4x улучшение для SoA в тесных циклах
+</code></pre>
+<p><strong>Сравнение с C#</strong>:</p>
+<pre><code class="language-csharp">// C# — явное управление layout
+[StructLayout(LayoutKind.Sequential)]
+public struct Point
+{
+    public int X;
+    public int Y;
+}
+
+[StructLayout(LayoutKind.Explicit)]
+public struct Union
+{
+    [FieldOffset(0)] public int Int;
+    [FieldOffset(0)] public float Float;
+}
+</code></pre>
+<pre><code class="language-go">// Go — автоматическое управление, но можно влиять через порядок полей
+type Point struct {
+    X int
+    Y int
+}
+
+// Union в Go невозможен без unsafe
+// Но редко нужен
+</code></pre>
+<hr>
+<h2 id="5-compiler-optimizations"><a class="header" href="#5-compiler-optimizations">5. Compiler Optimizations</a></h2>
+<p>Go compiler выполняет множество оптимизаций. Понимание их помогает писать код, который компилятор может оптимизировать.</p>
+<h3 id="51-inlining"><a class="header" href="#51-inlining">5.1 Inlining</a></h3>
+<p>Inlining — замена вызова функции её телом. Устраняет overhead вызова и открывает возможности для дальнейших оптимизаций.</p>
+<p><strong>Просмотр решений об inlining</strong>:</p>
+<pre><code class="language-bash"># Какие функции заинлайнены
+go build -gcflags="-m" ./...
+
+# Подробнее: почему функция НЕ заинлайнена
+go build -gcflags="-m -m" ./...
+</code></pre>
+<p><strong>Факторы, влияющие на inlining</strong>:</p>
+<pre><code class="language-go">// ✅ Будет заинлайнена: маленькая, простая
+func add(a, b int) int {
+    return a + b
+}
+
+// ❌ НЕ будет заинлайнена: слишком большая
+func complexFunction(data []int) int {
+    result := 0
+    for i := 0; i &lt; len(data); i++ {
+        if data[i] &gt; 0 {
+            result += data[i] * 2
+        } else {
+            result -= data[i]
+        }
+        // ... много кода
+    }
+    return result
+}
+
+// ❌ НЕ будет заинлайнена: содержит defer
+func withDefer() {
+    defer cleanup()
+    // ...
+}
+
+// ❌ НЕ будет заинлайнена: содержит recover
+func withRecover() {
+    defer func() {
+        if r := recover(); r != nil {
+            // ...
+        }
+    }()
+}
+
+// ❌ НЕ будет заинлайнена: вызов через interface
+type Worker interface {
+    Do()
+}
+
+func callWorker(w Worker) {
+    w.Do() // Virtual call, не инлайнится
+}
+</code></pre>
+<p><strong>Бюджет inlining</strong>:</p>
+<p>Go использует “бюджет” для решения об inlining. Каждая операция имеет “стоимость”:</p>
+<ul>
+<li>Простые операции: 1</li>
+<li>Вызовы функций: 57 (если функция не инлайнится)</li>
+<li>Условия, циклы: увеличивают стоимость</li>
+</ul>
+<p>Бюджет по умолчанию: 80 (может меняться между версиями).</p>
+<p><strong>Директивы компилятора</strong>:</p>
+<pre><code class="language-go">// Запретить inlining (для бенчмарков, отладки)
+//go:noinline
+func mustNotInline(x int) int {
+    return x * 2
+}
+
+// Подсказка инлайнить (не гарантия!)
+// Появилась в Go 1.20, но официально не документирована
+//go:inline
+func shouldInline(x int) int {
+    return x + 1
+}
+
+// Запретить оптимизации (для отладки)
+//go:norace
+//go:nosplit
+</code></pre>
+<h3 id="52-bounds-check-elimination"><a class="header" href="#52-bounds-check-elimination">5.2 Bounds Check Elimination</a></h3>
+<p>Go проверяет границы массивов/слайсов при каждом доступе. BCE (Bounds Check Elimination) убирает эти проверки, когда компилятор доказывает их безопасность.</p>
+<p><strong>Паттерны для BCE</strong>:</p>
+<pre><code class="language-go">// ❌ Bounds check на каждой итерации
+func sumBad(data []int) int {
+    sum := 0
+    for i := 0; i &lt; len(data); i++ {
+        sum += data[i] // Bounds check
+    }
+    return sum
+}
+
+// ✅ BCE: range автоматически безопасен
+func sumGood(data []int) int {
+    sum := 0
+    for _, v := range data {
+        sum += v // Без bounds check
+    }
+    return sum
+}
+
+// ✅ BCE: явная проверка в начале
+func processSlice(data []byte) {
+    if len(data) &lt; 8 {
+        return
+    }
+    // Компилятор знает: len &gt;= 8
+    _ = data[0] // Без bounds check
+    _ = data[7] // Без bounds check
+}
+
+// ✅ BCE: трюк с последним элементом
+func processFixed(data []byte) {
+    if len(data) &lt; 8 {
+        return
+    }
+    _ = data[7] // Проверяем последний нужный индекс
+    // Теперь все data[0:8] без bounds check
+    for i := 0; i &lt; 8; i++ {
+        _ = data[i]
+    }
+}
+</code></pre>
+<p><strong>Просмотр bounds checks</strong>:</p>
+<pre><code class="language-bash"># Показать, где остались bounds checks
+go build -gcflags="-d=ssa/check_bce/debug=1" ./...
+</code></pre>
+<h3 id="53-dead-code-elimination"><a class="header" href="#53-dead-code-elimination">5.3 Dead Code Elimination</a></h3>
+<p>Компилятор удаляет код, который никогда не выполняется.</p>
+<pre><code class="language-go">const debug = false
+
+func process() {
+    // Этот блок будет полностью удалён компилятором
+    if debug {
+        log.Println("Debug info...")
+        expensiveDebugOperation()
+    }
+
+    // Реальный код
+    doWork()
+}
+</code></pre>
+<p><strong>Build tags для conditional compilation</strong>:</p>
+<pre><code class="language-go">// debug.go
+//go:build debug
+
+package mypackage
+
+const Debug = true
+
+// release.go
+//go:build !debug
+
+package mypackage
+
+const Debug = false
+
+// usage.go
+package mypackage
+
+func Process() {
+    if Debug {
+        // Удаляется в release build
+        debugLog()
+    }
+}
+</code></pre>
+<pre><code class="language-bash"># Debug build
+go build -tags debug ./...
+
+# Release build (по умолчанию)
+go build ./...
+</code></pre>
+<h3 id="54-как-помочь-компилятору"><a class="header" href="#54-как-помочь-компилятору">5.4 Как помочь компилятору</a></h3>
+<p><strong>1. Используй <code>const</code> где возможно</strong>:</p>
+<pre><code class="language-go">// ❌ var не оптимизируется
+var bufSize = 1024
+buf := make([]byte, bufSize)
+
+// ✅ const позволяет оптимизации
+const bufSize = 1024
+buf := make([]byte, bufSize) // Размер известен на compile time
+</code></pre>
+<p><strong>2. Простые циклы</strong>:</p>
+<pre><code class="language-go">// ❌ Сложное условие в цикле
+for i := 0; i &lt; len(data) &amp;&amp; !done; i++ {
+    // ...
+}
+
+// ✅ Простой цикл
+for i := 0; i &lt; len(data); i++ {
+    if done {
+        break
+    }
+    // ...
+}
+
+// ✅ Ещё лучше: range
+for i, v := range data {
+    if done {
+        break
+    }
+    _ = i
+    _ = v
+}
+</code></pre>
+<p><strong>3. Избегай complex expressions в условиях</strong>:</p>
+<pre><code class="language-go">// ❌ Вычисление в условии
+for i := 0; i &lt; computeLimit(); i++ {
+    // computeLimit() вызывается каждую итерацию!
+}
+
+// ✅ Вычисление до цикла
+limit := computeLimit()
+for i := 0; i &lt; limit; i++ {
+    // ...
+}
+</code></pre>
+<p><strong>4. Помогай escape analysis</strong>:</p>
+<pre><code class="language-go">// ❌ Escapes из-за interface{}
+func process(v any) {
+    // ...
+}
+
+// ✅ Конкретный тип
+func processInt(v int) {
+    // Не escapes
+}
+
+// ✅ Generics
+func processGeneric[T any](v T) {
+    // Может не escape в зависимости от T
+}
+</code></pre>
+<hr>
+<h2 id="6-runtime-в-контейнерах"><a class="header" href="#6-runtime-в-контейнерах">6. Runtime в контейнерах</a></h2>
+<p>Go runtime по умолчанию не знает о container limits. Это приводит к проблемам в Kubernetes/Docker.</p>
+<h3 id="61-gomaxprocs-и-cgroups"><a class="header" href="#61-gomaxprocs-и-cgroups">6.1 GOMAXPROCS и cgroups</a></h3>
+<p><strong>Проблема</strong>:</p>
+<pre><code class="language-go">/*
+Хост: 32 CPU cores
+Container limit: 2 CPU cores
+
+По умолчанию:
+- GOMAXPROCS = 32 (видит все CPU хоста)
+- Go создаёт 32 OS threads для P (processors)
+- Результат: чрезмерный context switching, CPU throttling
+
+Container CPU = requests: 2, limits: 2
+GOMAXPROCS = 32
+→ 32 горутины конкурируют за 2 CPU
+→ Kubernetes throttles container
+→ Latency spikes
+*/
+
+import "runtime"
+
+func main() {
+    // По умолчанию — все CPU хоста
+    fmt.Println(runtime.GOMAXPROCS(0)) // 32 (не 2!)
+}
+</code></pre>
+<p><strong>Ручное решение</strong>:</p>
+<pre><code class="language-go">import (
+    "os"
+    "runtime"
+    "strconv"
+)
+
+func init() {
+    // Читаем из environment
+    if val := os.Getenv("GOMAXPROCS"); val == "" {
+        // Kubernetes не устанавливает GOMAXPROCS
+        // Нужно вычислять из cgroup limits
+    }
+}
+
+// Можно установить через переменную окружения
+// GOMAXPROCS=2 ./myapp
+</code></pre>
+<h3 id="62-uber-goautomaxprocs"><a class="header" href="#62-uber-goautomaxprocs">6.2 uber-go/automaxprocs</a></h3>
+<p><strong>Автоматическое решение</strong>:</p>
+<pre><code class="language-go">import (
+    _ "go.uber.org/automaxprocs" // Автоматически устанавливает GOMAXPROCS
+)
+
+func main() {
+    // GOMAXPROCS теперь соответствует container CPU limit
+    // Например, 2 для container с 2 CPU
+}
+</code></pre>
+<p><strong>С логированием</strong>:</p>
+<pre><code class="language-go">import (
+    "log/slog"
+
+    "go.uber.org/automaxprocs"
+    "go.uber.org/automaxprocs/maxprocs"
+)
+
+func main() {
+    // С кастомным логгером
+    undo, err := maxprocs.Set(
+        maxprocs.Logger(func(format string, args ...any) {
+            slog.Info("automaxprocs", "message", fmt.Sprintf(format, args...))
+        }),
+    )
+    if err != nil {
+        slog.Error("failed to set GOMAXPROCS", "error", err)
+    }
+    defer undo()
+
+    // ... приложение
+}
+</code></pre>
+<p><strong>Kubernetes deployment</strong>:</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  template:
+    spec:
+      containers:
+      - name: myapp
+        image: myapp:latest
+        resources:
+          requests:
+            cpu: "2"      # Гарантированные 2 CPU
+            memory: "512Mi"
+          limits:
+            cpu: "2"      # Максимум 2 CPU
+            memory: "512Mi"
+        # automaxprocs автоматически установит GOMAXPROCS=2
+</code></pre>
+<p><strong>Сравнение с .NET</strong>:</p>
+<pre><code class="language-csharp">// .NET 5+ автоматически определяет container limits
+// Но можно переопределить:
+Environment.SetEnvironmentVariable("DOTNET_PROCESSOR_COUNT", "2");
+Environment.SetEnvironmentVariable("COMPlus_gcServer", "1");
+</code></pre>
+<pre><code class="language-go">// Go требует явной библиотеки
+import _ "go.uber.org/automaxprocs"
+</code></pre>
+<h3 id="63-gomemlimit-в-kubernetes"><a class="header" href="#63-gomemlimit-в-kubernetes">6.3 GOMEMLIMIT в Kubernetes</a></h3>
+<p><strong>GOMEMLIMIT</strong> (Go 1.19+) — soft limit для памяти Go runtime.</p>
+<pre><code class="language-go">/*
+Формула:
+GOMEMLIMIT = container_memory_limit * 0.8
+
+Почему 0.8:
+- OS и non-Go allocations нуждаются в памяти
+- OOM killer срабатывает на container limit
+- 20% запас для безопасности
+*/
+
+// Пример: container limit = 512MB
+// GOMEMLIMIT = 512 * 0.8 = 410MB ≈ 400MiB
+</code></pre>
+<p><strong>Способ 1: Environment variable</strong></p>
+<pre><code class="language-yaml"># Kubernetes deployment
+spec:
+  containers:
+  - name: myapp
+    env:
+    - name: GOMEMLIMIT
+      value: "400MiB"  # 80% от 512MB limit
+    - name: GOGC
+      value: "100"     # Или меньше для агрессивного GC
+    resources:
+      limits:
+        memory: "512Mi"
+</code></pre>
+<p><strong>Способ 2: Downward API</strong></p>
+<pre><code class="language-yaml">spec:
+  containers:
+  - name: myapp
+    env:
+    - name: POD_MEMORY_LIMIT
+      valueFrom:
+        resourceFieldRef:
+          containerName: myapp
+          resource: limits.memory
+    resources:
+      limits:
+        memory: "512Mi"
+</code></pre>
+<pre><code class="language-go">import (
+    "os"
+    "runtime/debug"
+    "strconv"
+)
+
+func init() {
+    if limitStr := os.Getenv("POD_MEMORY_LIMIT"); limitStr != "" {
+        limit, err := strconv.ParseInt(limitStr, 10, 64)
+        if err == nil {
+            // 80% от limit
+            goMemLimit := int64(float64(limit) * 0.8)
+            debug.SetMemoryLimit(goMemLimit)
+        }
+    }
+}
+</code></pre>
+<p><strong>Способ 3: Автоматическая библиотека</strong></p>
+<pre><code class="language-go">import (
+    _ "go.uber.org/automaxprocs"
+    "github.com/KimMachineGun/automemlimit"
+)
+
+func init() {
+    // Автоматически устанавливает GOMEMLIMIT на основе cgroup
+    automemlimit.SetGoMemLimitWithOpts(
+        automemlimit.WithRatio(0.8),
+        automemlimit.WithProvider(automemlimit.FromCgroup),
+    )
+}
+</code></pre>
+<p><strong>Production configuration</strong>:</p>
+<pre><code class="language-go">package main
+
+import (
+    "log/slog"
+    "os"
+    "runtime"
+    "runtime/debug"
+
+    _ "go.uber.org/automaxprocs"
+)
+
+func main() {
+    // Log runtime settings
+    slog.Info("runtime configuration",
+        "GOMAXPROCS", runtime.GOMAXPROCS(0),
+        "GOMEMLIMIT", debug.SetMemoryLimit(-1), // -1 возвращает текущее значение
+        "GOGC", os.Getenv("GOGC"),
+    )
+
+    // ... приложение
+}
+</code></pre>
+<hr>
+<h2 id="7-production-memory-patterns"><a class="header" href="#7-production-memory-patterns">7. Production Memory Patterns</a></h2>
+<p>Паттерны для контроля потребления памяти в production.</p>
+<h3 id="71-backpressure-через-bounded-channels"><a class="header" href="#71-backpressure-через-bounded-channels">7.1 Backpressure через bounded channels</a></h3>
+<p><strong>Backpressure</strong> — механизм, при котором producer замедляется, когда consumer не успевает обрабатывать.</p>
+<pre><code class="language-go">// ❌ Unbounded: producer может заполнить всю память
+tasks := make(chan Task) // unbounded (на самом деле 0, но producer блокируется)
+
+// Хуже: буферизованный без контроля
+tasks := make(chan Task, 1000000) // 1M задач в памяти!
+
+// ✅ Bounded channel с backpressure
+const maxPendingTasks = 1000
+tasks := make(chan Task, maxPendingTasks)
+
+// Producer блокируется, когда буфер полон
+func produce(tasks chan&lt;- Task) {
+    for {
+        task := generateTask()
+        tasks &lt;- task // Блокируется при len(tasks) == maxPendingTasks
+    }
+}
+
+// Consumer
+func consume(tasks &lt;-chan Task) {
+    for task := range tasks {
+        process(task)
+    }
+}
+</code></pre>
+<p><strong>Semaphore pattern</strong>:</p>
+<pre><code class="language-go">// Ограничение concurrent operations
+type Semaphore struct {
+    ch chan struct{}
+}
+
+func NewSemaphore(max int) *Semaphore {
+    return &amp;Semaphore{
+        ch: make(chan struct{}, max),
+    }
+}
+
+func (s *Semaphore) Acquire() {
+    s.ch &lt;- struct{}{}
+}
+
+func (s *Semaphore) Release() {
+    &lt;-s.ch
+}
+
+// Использование
+func processWithLimit(items []Item, maxConcurrent int) {
+    sem := NewSemaphore(maxConcurrent)
+    var wg sync.WaitGroup
+
+    for _, item := range items {
+        sem.Acquire()
+        wg.Add(1)
+
+        go func(item Item) {
+            defer func() {
+                sem.Release()
+                wg.Done()
+            }()
+            process(item)
+        }(item)
+    }
+
+    wg.Wait()
+}
+</code></pre>
+<p><strong>errgroup с лимитом</strong>:</p>
+<pre><code class="language-go">import "golang.org/x/sync/errgroup"
+
+func processItems(ctx context.Context, items []Item) error {
+    g, ctx := errgroup.WithContext(ctx)
+
+    // Ограничиваем concurrent goroutines
+    g.SetLimit(10)
+
+    for _, item := range items {
+        item := item // Capture для closure
+        g.Go(func() error {
+            return processItem(ctx, item)
+        })
+    }
+
+    return g.Wait()
+}
+</code></pre>
+<h3 id="72-rate-limiting-memory-usage"><a class="header" href="#72-rate-limiting-memory-usage">7.2 Rate limiting memory usage</a></h3>
+<p><strong>Мониторинг памяти</strong>:</p>
+<pre><code class="language-go">import "runtime"
+
+// MemoryMonitor отслеживает использование памяти
+type MemoryMonitor struct {
+    threshold uint64 // Порог в bytes
+    interval  time.Duration
+    onExceed  func(current, threshold uint64)
+}
+
+func (m *MemoryMonitor) Start(ctx context.Context) {
+    ticker := time.NewTicker(m.interval)
+    defer ticker.Stop()
+
+    for {
+        select {
+        case &lt;-ctx.Done():
+            return
+        case &lt;-ticker.C:
+            var stats runtime.MemStats
+            runtime.ReadMemStats(&amp;stats)
+
+            if stats.Alloc &gt; m.threshold {
+                m.onExceed(stats.Alloc, m.threshold)
+            }
+        }
+    }
+}
+
+// Использование
+func main() {
+    monitor := &amp;MemoryMonitor{
+        threshold: 400 * 1024 * 1024, // 400MB
+        interval:  5 * time.Second,
+        onExceed: func(current, threshold uint64) {
+            slog.Warn("memory threshold exceeded",
+                "current_mb", current/1024/1024,
+                "threshold_mb", threshold/1024/1024,
+            )
+            // Можно запустить GC или снизить нагрузку
+            runtime.GC()
+        },
+    }
+
+    go monitor.Start(context.Background())
+}
+</code></pre>
+<p><strong>Adaptive rate limiting</strong>:</p>
+<pre><code class="language-go">// AdaptiveRateLimiter снижает throughput при высоком memory usage
+type AdaptiveRateLimiter struct {
+    baseRate      float64 // Базовый rate (requests/sec)
+    memThreshold  uint64  // Порог памяти
+
+    mu            sync.RWMutex
+    currentRate   float64
+    limiter       *rate.Limiter
+}
+
+func NewAdaptiveRateLimiter(baseRate float64, memThreshold uint64) *AdaptiveRateLimiter {
+    arl := &amp;AdaptiveRateLimiter{
+        baseRate:     baseRate,
+        memThreshold: memThreshold,
+        currentRate:  baseRate,
+        limiter:      rate.NewLimiter(rate.Limit(baseRate), int(baseRate)),
+    }
+
+    go arl.monitor()
+    return arl
+}
+
+func (arl *AdaptiveRateLimiter) monitor() {
+    ticker := time.NewTicker(time.Second)
+    for range ticker.C {
+        var stats runtime.MemStats
+        runtime.ReadMemStats(&amp;stats)
+
+        // Вычисляем коэффициент
+        ratio := float64(stats.Alloc) / float64(arl.memThreshold)
+
+        var newRate float64
+        switch {
+        case ratio &gt; 0.9:
+            newRate = arl.baseRate * 0.1 // 10% при критичной памяти
+        case ratio &gt; 0.8:
+            newRate = arl.baseRate * 0.5 // 50%
+        case ratio &gt; 0.7:
+            newRate = arl.baseRate * 0.8 // 80%
+        default:
+            newRate = arl.baseRate // 100%
+        }
+
+        arl.mu.Lock()
+        if newRate != arl.currentRate {
+            arl.currentRate = newRate
+            arl.limiter.SetLimit(rate.Limit(newRate))
+            slog.Info("rate limit adjusted",
+                "new_rate", newRate,
+                "memory_ratio", ratio,
+            )
+        }
+        arl.mu.Unlock()
+    }
+}
+
+func (arl *AdaptiveRateLimiter) Allow() bool {
+    return arl.limiter.Allow()
+}
+
+func (arl *AdaptiveRateLimiter) Wait(ctx context.Context) error {
+    return arl.limiter.Wait(ctx)
+}
+</code></pre>
+<h3 id="73-graceful-degradation"><a class="header" href="#73-graceful-degradation">7.3 Graceful degradation</a></h3>
+<p><strong>Circuit breaker для памяти</strong>:</p>
+<pre><code class="language-go">// MemoryCircuitBreaker прекращает приём запросов при критичной памяти
+type MemoryCircuitBreaker struct {
+    threshold    uint64
+    cooldown     time.Duration
+
+    mu           sync.RWMutex
+    isOpen       bool
+    lastTripped  time.Time
+}
+
+func NewMemoryCircuitBreaker(threshold uint64, cooldown time.Duration) *MemoryCircuitBreaker {
+    mcb := &amp;MemoryCircuitBreaker{
+        threshold: threshold,
+        cooldown:  cooldown,
+    }
+
+    go mcb.monitor()
+    return mcb
+}
+
+func (mcb *MemoryCircuitBreaker) monitor() {
+    ticker := time.NewTicker(time.Second)
+    for range ticker.C {
+        var stats runtime.MemStats
+        runtime.ReadMemStats(&amp;stats)
+
+        mcb.mu.Lock()
+        if stats.Alloc &gt; mcb.threshold {
+            if !mcb.isOpen {
+                mcb.isOpen = true
+                mcb.lastTripped = time.Now()
+                slog.Warn("memory circuit breaker OPEN",
+                    "memory_mb", stats.Alloc/1024/1024,
+                )
+            }
+        } else if mcb.isOpen &amp;&amp; time.Since(mcb.lastTripped) &gt; mcb.cooldown {
+            mcb.isOpen = false
+            slog.Info("memory circuit breaker CLOSED")
+        }
+        mcb.mu.Unlock()
+    }
+}
+
+func (mcb *MemoryCircuitBreaker) Allow() bool {
+    mcb.mu.RLock()
+    defer mcb.mu.RUnlock()
+    return !mcb.isOpen
+}
+
+// Middleware для HTTP
+func (mcb *MemoryCircuitBreaker) Middleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        if !mcb.Allow() {
+            http.Error(w, "Service temporarily unavailable", http.StatusServiceUnavailable)
+            return
+        }
+        next.ServeHTTP(w, r)
+    })
+}
+</code></pre>
+<p><strong>Load shedding</strong>:</p>
+<pre><code class="language-go">// LoadShedder отбрасывает запросы при перегрузке
+type LoadShedder struct {
+    maxQueueSize int
+    queue        chan struct{}
+}
+
+func NewLoadShedder(maxQueueSize int) *LoadShedder {
+    return &amp;LoadShedder{
+        maxQueueSize: maxQueueSize,
+        queue:        make(chan struct{}, maxQueueSize),
+    }
+}
+
+// TryEnqueue пытается добавить в очередь, возвращает false если очередь полна
+func (ls *LoadShedder) TryEnqueue() bool {
+    select {
+    case ls.queue &lt;- struct{}{}:
+        return true
+    default:
+        return false // Очередь полна, отбрасываем
+    }
+}
+
+func (ls *LoadShedder) Dequeue() {
+    &lt;-ls.queue
+}
+
+// Middleware
+func (ls *LoadShedder) Middleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        if !ls.TryEnqueue() {
+            // Load shedding: отбрасываем запрос
+            w.Header().Set("Retry-After", "5")
+            http.Error(w, "Server overloaded", http.StatusServiceUnavailable)
+
+            // Метрика
+            loadSheddedTotal.Inc()
+            return
+        }
+        defer ls.Dequeue()
+
+        next.ServeHTTP(w, r)
+    })
+}
+</code></pre>
+<hr>
+<h2 id="8-real-world-case-studies"><a class="header" href="#8-real-world-case-studies">8. Real-World Case Studies</a></h2>
+<h3 id="81-high-throughput-json-api"><a class="header" href="#81-high-throughput-json-api">8.1 High-throughput JSON API</a></h3>
+<p><strong>Ситуация</strong>: REST API с 50,000 RPS, P99 latency 200ms (SLO: 100ms).</p>
+<p><strong>Анализ</strong> (pprof):</p>
+<pre><code>(pprof) top
+Showing nodes accounting for 65% of total
+      flat  flat%   sum%        cum   cum%
+    2.30s  35.0%  35.0%      2.30s  35.0%  encoding/json.(*decodeState).object
+    1.20s  18.0%  53.0%      1.20s  18.0%  runtime.mallocgc
+    0.80s  12.0%  65.0%      0.80s  12.0%  encoding/json.Marshal
+</code></pre>
+<p><strong>Проблема</strong>: JSON encoding/decoding занимает 50%+ CPU, много аллокаций.</p>
+<p><strong>Решение</strong>:</p>
+<pre><code class="language-go">// До: стандартная библиотека
+func handleRequest(w http.ResponseWriter, r *http.Request) {
+    var req Request
+    json.NewDecoder(r.Body).Decode(&amp;req)
+
+    resp := process(req)
+    json.NewEncoder(w).Encode(resp)
+}
+
+// После: easyjson + sync.Pool
+//go:generate easyjson -all types.go
+
+var (
+    requestPool = sync.Pool{
+        New: func() any { return &amp;Request{} },
+    }
+    responsePool = sync.Pool{
+        New: func() any { return &amp;Response{} },
+    }
+)
+
+func handleRequestOptimized(w http.ResponseWriter, r *http.Request) {
+    req := requestPool.Get().(*Request)
+    defer func() {
+        req.Reset()
+        requestPool.Put(req)
+    }()
+
+    // easyjson — без reflection
+    if _, err := easyjson.UnmarshalFromReader(r.Body, req); err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    resp := responsePool.Get().(*Response)
+    defer func() {
+        resp.Reset()
+        responsePool.Put(resp)
+    }()
+
+    processInto(req, resp)
+
+    w.Header().Set("Content-Type", "application/json")
+    easyjson.MarshalToHTTPResponseWriter(resp, w)
+}
+</code></pre>
+<p><strong>Результат</strong>:</p>
+<pre><code>Before:
+  P99 latency: 200ms
+  Allocs/req: 45
+  GC pause: 15ms avg
+
+After:
+  P99 latency: 45ms (77% improvement)
+  Allocs/req: 8
+  GC pause: 3ms avg
+</code></pre>
+<h3 id="82-memory-efficient-batch-processing"><a class="header" href="#82-memory-efficient-batch-processing">8.2 Memory-efficient batch processing</a></h3>
+<p><strong>Ситуация</strong>: Обработка 10M записей из файла, OOM при 2GB limit.</p>
+<p><strong>Анализ</strong>:</p>
+<pre><code class="language-go">// Проблема: загрузка всех данных в память
+func processBad(filename string) error {
+    data, err := os.ReadFile(filename) // 5GB файл в память
+    if err != nil {
+        return err
+    }
+
+    var records []Record
+    json.Unmarshal(data, &amp;records) // Ещё 3GB для структур
+
+    for _, r := range records {
+        process(r)
+    }
+    return nil
+}
+</code></pre>
+<p><strong>Решение: streaming + bounded concurrency</strong>:</p>
+<pre><code class="language-go">func processGood(ctx context.Context, filename string) error {
+    file, err := os.Open(filename)
+    if err != nil {
+        return err
+    }
+    defer file.Close()
+
+    // Streaming JSON decoder
+    decoder := json.NewDecoder(file)
+
+    // Bounded worker pool
+    const numWorkers = 10
+    const batchSize = 100
+
+    g, ctx := errgroup.WithContext(ctx)
+    g.SetLimit(numWorkers)
+
+    // Пул для batch буферов
+    batchPool := sync.Pool{
+        New: func() any {
+            return make([]Record, 0, batchSize)
+        },
+    }
+
+    batch := batchPool.Get().([]Record)
+
+    // Читаем token за token
+    _, err = decoder.Token() // Открывающая скобка массива
+    if err != nil {
+        return err
+    }
+
+    for decoder.More() {
+        select {
+        case &lt;-ctx.Done():
+            return ctx.Err()
+        default:
+        }
+
+        var record Record
+        if err := decoder.Decode(&amp;record); err != nil {
+            return err
+        }
+
+        batch = append(batch, record)
+
+        // Отправляем batch на обработку
+        if len(batch) &gt;= batchSize {
+            batchToProcess := batch
+            batch = batchPool.Get().([]Record)[:0]
+
+            g.Go(func() error {
+                defer func() {
+                    batchPool.Put(batchToProcess[:0])
+                }()
+                return processBatch(ctx, batchToProcess)
+            })
+        }
+    }
+
+    // Обрабатываем остаток
+    if len(batch) &gt; 0 {
+        g.Go(func() error {
+            defer batchPool.Put(batch[:0])
+            return processBatch(ctx, batch)
+        })
+    }
+
+    return g.Wait()
+}
+
+func processBatch(ctx context.Context, records []Record) error {
+    for _, r := range records {
+        select {
+        case &lt;-ctx.Done():
+            return ctx.Err()
+        default:
+        }
+
+        if err := processRecord(r); err != nil {
+            return err
+        }
+    }
+    return nil
+}
+</code></pre>
+<p><strong>Результат</strong>:</p>
+<pre><code>Before:
+  Peak memory: 8GB
+  Result: OOM killed
+
+After:
+  Peak memory: 150MB (constant)
+  Processing time: 12 minutes
+  Memory usage: stable throughout
+</code></pre>
+<hr>
+<h2 id="практические-примеры"><a class="header" href="#практические-примеры">Практические примеры</a></h2>
+<h3 id="пример-1-zero-allocation-http-service"><a class="header" href="#пример-1-zero-allocation-http-service">Пример 1: Zero-Allocation HTTP Service</a></h3>
+<p>Полная реализация HTTP сервиса с минимальными аллокациями.</p>
+<pre><code class="language-go">package main
+
+import (
+    "bytes"
+    "context"
+    "encoding/json"
+    "log/slog"
+    "net/http"
+    "sync"
+    "time"
+
+    _ "go.uber.org/automaxprocs"
+)
+
+// Request и Response structures
+type UserRequest struct {
+    ID   int64  `json:"id"`
+    Name string `json:"name"`
+}
+
+func (r *UserRequest) Reset() {
+    r.ID = 0
+    r.Name = ""
+}
+
+type UserResponse struct {
+    ID        int64     `json:"id"`
+    Name      string    `json:"name"`
+    CreatedAt time.Time `json:"created_at"`
+    Status    string    `json:"status"`
+}
+
+func (r *UserResponse) Reset() {
+    r.ID = 0
+    r.Name = ""
+    r.CreatedAt = time.Time{}
+    r.Status = ""
+}
+
+// Pools
+var (
+    requestPool = sync.Pool{
+        New: func() any { return &amp;UserRequest{} },
+    }
+    responsePool = sync.Pool{
+        New: func() any { return &amp;UserResponse{} },
+    }
+    bufferPool = sync.Pool{
+        New: func() any { return bytes.NewBuffer(make([]byte, 0, 1024)) },
+    }
+)
+
+// Handler
+type UserHandler struct {
+    logger *slog.Logger
+}
+
+func NewUserHandler(logger *slog.Logger) *UserHandler {
+    return &amp;UserHandler{logger: logger}
+}
+
+func (h *UserHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+    if r.Method != http.MethodPost {
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+        return
+    }
+
+    // Get objects from pools
+    req := requestPool.Get().(*UserRequest)
+    resp := responsePool.Get().(*UserResponse)
+    buf := bufferPool.Get().(*bytes.Buffer)
+
+    defer func() {
+        req.Reset()
+        requestPool.Put(req)
+
+        resp.Reset()
+        responsePool.Put(resp)
+
+        buf.Reset()
+        bufferPool.Put(buf)
+    }()
+
+    // Decode request
+    if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+        http.Error(w, "Invalid JSON", http.StatusBadRequest)
+        return
+    }
+
+    // Process (simulate business logic)
+    resp.ID = req.ID
+    resp.Name = req.Name
+    resp.CreatedAt = time.Now()
+    resp.Status = "created"
+
+    // Encode response
+    if err := json.NewEncoder(buf).Encode(resp); err != nil {
+        http.Error(w, "Internal error", http.StatusInternalServerError)
+        return
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    w.Write(buf.Bytes())
+}
+
+func main() {
+    logger := slog.Default()
+
+    handler := NewUserHandler(logger)
+
+    server := &amp;http.Server{
+        Addr:         ":8080",
+        Handler:      handler,
+        ReadTimeout:  5 * time.Second,
+        WriteTimeout: 10 * time.Second,
+        IdleTimeout:  120 * time.Second,
+    }
+
+    logger.Info("starting server", "addr", server.Addr)
+    if err := server.ListenAndServe(); err != nil {
+        logger.Error("server error", "error", err)
+    }
+}
+</code></pre>
+<h3 id="пример-2-memory-efficient-data-pipeline"><a class="header" href="#пример-2-memory-efficient-data-pipeline">Пример 2: Memory-Efficient Data Pipeline</a></h3>
+<p>Streaming обработка больших файлов с контролем памяти.</p>
+<pre><code class="language-go">package main
+
+import (
+    "bufio"
+    "context"
+    "encoding/csv"
+    "fmt"
+    "io"
+    "log/slog"
+    "os"
+    "runtime"
+    "sync"
+    "time"
+
+    "golang.org/x/sync/errgroup"
+)
+
+// Record представляет одну запись
+type Record struct {
+    ID    string
+    Name  string
+    Value float64
+}
+
+// Pipeline обрабатывает данные потоково
+type Pipeline struct {
+    workers    int
+    batchSize  int
+    logger     *slog.Logger
+
+    // Memory monitoring
+    memThreshold uint64
+}
+
+func NewPipeline(workers, batchSize int, memThresholdMB uint64, logger *slog.Logger) *Pipeline {
+    return &amp;Pipeline{
+        workers:      workers,
+        batchSize:    batchSize,
+        memThreshold: memThresholdMB * 1024 * 1024,
+        logger:       logger,
+    }
+}
+
+func (p *Pipeline) Process(ctx context.Context, inputPath, outputPath string) error {
+    // Open input
+    inputFile, err := os.Open(inputPath)
+    if err != nil {
+        return fmt.Errorf("open input: %w", err)
+    }
+    defer inputFile.Close()
+
+    // Open output
+    outputFile, err := os.Create(outputPath)
+    if err != nil {
+        return fmt.Errorf("create output: %w", err)
+    }
+    defer outputFile.Close()
+
+    outputWriter := bufio.NewWriter(outputFile)
+    defer outputWriter.Flush()
+
+    // CSV reader
+    reader := csv.NewReader(bufio.NewReader(inputFile))
+
+    // Skip header
+    if _, err := reader.Read(); err != nil {
+        return fmt.Errorf("read header: %w", err)
+    }
+
+    // Channels for pipeline
+    batches := make(chan []Record, p.workers)
+    results := make(chan []Record, p.workers)
+
+    // Batch pool
+    batchPool := sync.Pool{
+        New: func() any {
+            return make([]Record, 0, p.batchSize)
+        },
+    }
+
+    g, ctx := errgroup.WithContext(ctx)
+
+    // Memory monitor goroutine
+    memCtx, memCancel := context.WithCancel(ctx)
+    defer memCancel()
+
+    go p.monitorMemory(memCtx)
+
+    // Reader goroutine
+    g.Go(func() error {
+        defer close(batches)
+
+        batch := batchPool.Get().([]Record)[:0]
+
+        for {
+            select {
+            case &lt;-ctx.Done():
+                return ctx.Err()
+            default:
+            }
+
+            row, err := reader.Read()
+            if err == io.EOF {
+                break
+            }
+            if err != nil {
+                return fmt.Errorf("read row: %w", err)
+            }
+
+            record := Record{
+                ID:   row[0],
+                Name: row[1],
+            }
+            fmt.Sscanf(row[2], "%f", &amp;record.Value)
+
+            batch = append(batch, record)
+
+            if len(batch) &gt;= p.batchSize {
+                select {
+                case batches &lt;- batch:
+                    batch = batchPool.Get().([]Record)[:0]
+                case &lt;-ctx.Done():
+                    return ctx.Err()
+                }
+            }
+        }
+
+        if len(batch) &gt; 0 {
+            batches &lt;- batch
+        }
+
+        return nil
+    })
+
+    // Worker goroutines
+    var workerWg sync.WaitGroup
+    for i := 0; i &lt; p.workers; i++ {
+        workerWg.Add(1)
+        g.Go(func() error {
+            defer workerWg.Done()
+
+            for batch := range batches {
+                processed := p.processBatch(batch)
+
+                select {
+                case results &lt;- processed:
+                case &lt;-ctx.Done():
+                    return ctx.Err()
+                }
+
+                // Return batch to pool
+                batchPool.Put(batch[:0])
+            }
+            return nil
+        })
+    }
+
+    // Close results when workers done
+    go func() {
+        workerWg.Wait()
+        close(results)
+    }()
+
+    // Writer goroutine
+    g.Go(func() error {
+        for batch := range results {
+            for _, record := range batch {
+                fmt.Fprintf(outputWriter, "%s,%s,%.2f\n",
+                    record.ID, record.Name, record.Value)
+            }
+            // Return to pool
+            batchPool.Put(batch[:0])
+        }
+        return nil
+    })
+
+    return g.Wait()
+}
+
+func (p *Pipeline) processBatch(batch []Record) []Record {
+    // Process records in place
+    for i := range batch {
+        batch[i].Value = batch[i].Value * 1.1 // Example transformation
+    }
+    return batch
+}
+
+func (p *Pipeline) monitorMemory(ctx context.Context) {
+    ticker := time.NewTicker(time.Second)
+    defer ticker.Stop()
+
+    for {
+        select {
+        case &lt;-ctx.Done():
+            return
+        case &lt;-ticker.C:
+            var stats runtime.MemStats
+            runtime.ReadMemStats(&amp;stats)
+
+            if stats.Alloc &gt; p.memThreshold {
+                p.logger.Warn("high memory usage",
+                    "alloc_mb", stats.Alloc/1024/1024,
+                    "threshold_mb", p.memThreshold/1024/1024,
+                )
+                runtime.GC()
+            }
+        }
+    }
+}
+
+func main() {
+    logger := slog.Default()
+
+    pipeline := NewPipeline(
+        4,    // workers
+        1000, // batchSize
+        400,  // memThresholdMB
+        logger,
+    )
+
+    ctx := context.Background()
+
+    start := time.Now()
+    if err := pipeline.Process(ctx, "input.csv", "output.csv"); err != nil {
+        logger.Error("pipeline failed", "error", err)
+        os.Exit(1)
+    }
+
+    logger.Info("pipeline completed", "duration", time.Since(start))
+}
+</code></pre>
+<h3 id="пример-3-production-performance-audit"><a class="header" href="#пример-3-production-performance-audit">Пример 3: Production Performance Audit</a></h3>
+<p>Инструменты для аудита производительности.</p>
+<p><strong>Makefile</strong>:</p>
+<pre><code class="language-makefile">.PHONY: bench bench-compare profile-cpu profile-mem escape lint-perf
+
+# Benchmark
+bench:
+	go test -bench=. -benchmem -count=5 ./... | tee bench.txt
+
+bench-compare:
+	@if [ ! -f bench-old.txt ]; then \
+		echo "No baseline. Run 'make bench' first and save to bench-old.txt"; \
+		exit 1; \
+	fi
+	go test -bench=. -benchmem -count=5 ./... | tee bench-new.txt
+	benchstat bench-old.txt bench-new.txt
+
+# Profiling
+profile-cpu:
+	go test -bench=BenchmarkHotPath -cpuprofile=cpu.prof ./pkg/handler
+	go tool pprof -http=:8080 cpu.prof
+
+profile-mem:
+	go test -bench=BenchmarkHotPath -memprofile=mem.prof ./pkg/handler
+	go tool pprof -http=:8080 mem.prof
+
+profile-live:
+	curl -o cpu.prof http://localhost:6060/debug/pprof/profile?seconds=30
+	go tool pprof -http=:8080 cpu.prof
+
+# Escape analysis
+escape:
+	go build -gcflags="-m -m" ./... 2&gt;&amp;1 | grep -E "(escapes|moved)" | \
+		sort | uniq -c | sort -rn | head -30
+
+escape-diff:
+	@echo "Checking for new escapes..."
+	@go build -gcflags="-m" ./... 2&gt;&amp;1 | grep "escapes to heap" | sort &gt; /tmp/escapes-current.txt
+	@git stash
+	@go build -gcflags="-m" ./... 2&gt;&amp;1 | grep "escapes to heap" | sort &gt; /tmp/escapes-base.txt
+	@git stash pop
+	@echo "New escapes:"
+	@comm -23 /tmp/escapes-current.txt /tmp/escapes-base.txt
+
+# Performance linters
+lint-perf:
+	golangci-lint run --enable=prealloc,gocritic,govet ./...
+
+# Full audit
+audit: lint-perf escape bench
+	@echo "Performance audit complete"
+</code></pre>
+<p><strong>.golangci.yml</strong> (performance focused):</p>
+<pre><code class="language-yaml"># .golangci.yml - performance-focused configuration
+linters:
+  enable:
+    # Memory
+    - prealloc          # Suggest preallocations
+    - gocritic          # Various checks including performance
+    - govet             # Including fieldalignment
+
+    # General quality that affects performance
+    - ineffassign       # Unused assignments
+    - staticcheck       # SA* checks
+    - unused            # Unused code
+
+linters-settings:
+  govet:
+    enable:
+      - fieldalignment  # Struct field ordering
+
+  gocritic:
+    enabled-checks:
+      - appendAssign     # Inefficient append
+      - appendCombine    # Can combine appends
+      - hugeParam        # Large params by value
+      - rangeValCopy     # Large values in range
+      - sliceClear       # Use clear() instead of loop
+
+  prealloc:
+    simple: true
+    range-loops: true
+    for-loops: true
+
+issues:
+  exclude-rules:
+    # Тесты могут быть менее оптимальными
+    - path: _test\.go
+      linters:
+        - prealloc
+        - gocritic
+
+    # Generated code
+    - path: \.pb\.go
+      linters:
+        - govet
+</code></pre>
+<p><strong>GitHub Actions workflow</strong>:</p>
+<pre><code class="language-yaml"># .github/workflows/performance.yml
+name: Performance Check
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+
+      - name: Run benchmarks (current)
+        run: go test -bench=. -benchmem -count=5 ./... | tee bench-new.txt
+
+      - name: Checkout base branch
+        run: git checkout ${{ github.base_ref }}
+
+      - name: Run benchmarks (base)
+        run: go test -bench=. -benchmem -count=5 ./... | tee bench-old.txt
+
+      - name: Checkout PR branch
+        run: git checkout ${{ github.head_ref }}
+
+      - name: Install benchstat
+        run: go install golang.org/x/perf/cmd/benchstat@latest
+
+      - name: Compare benchmarks
+        run: |
+          benchstat bench-old.txt bench-new.txt | tee comparison.txt
+
+          # Check for significant regressions (&gt;10%)
+          if grep -E "\+[1-9][0-9]\.[0-9]+%" comparison.txt; then
+            echo "::warning::Significant performance regression detected"
+          fi
+
+      - name: Upload benchmark results
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results
+          path: |
+            bench-old.txt
+            bench-new.txt
+            comparison.txt
+
+  escape-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+
+      - name: Check escape analysis
+        run: |
+          go build -gcflags="-m" ./... 2&gt;&amp;1 | grep "escapes to heap" | sort &gt; escapes.txt
+
+          NEW_COUNT=$(wc -l &lt; escapes.txt)
+          echo "Total heap escapes: $NEW_COUNT"
+
+          # Optional: compare with baseline
+          if [ -f .baseline-escapes.txt ]; then
+            BASE_COUNT=$(wc -l &lt; .baseline-escapes.txt)
+            if [ $NEW_COUNT -gt $BASE_COUNT ]; then
+              echo "::warning::New heap escapes detected: $NEW_COUNT vs baseline $BASE_COUNT"
+            fi
+          fi
+
+      - name: Upload escape analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: escape-analysis
+          path: escapes.txt
+</code></pre>
+<hr><!-- AUTO: NAV -->
+<p><strong>Вопросы?</strong> Открой issue на <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/issues">GitHub</a></p>
+<p><a href="./02_tools.html">← Назад: Инструменты</a> | <a href="./04_production_checklist.html">Вперёд: Production Checklist →</a></p>
+<!-- /AUTO: NAV -->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part6-best-practices/02_tools.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part6-best-practices/04_production_checklist.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part6-best-practices/02_tools.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part6-best-practices/04_production_checklist.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

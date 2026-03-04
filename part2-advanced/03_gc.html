@@ -1,0 +1,1639 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>2.3 Сборка мусора (GC) - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-e1a1ce5b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-c19b06e6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part2-advanced/03_gc.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="23-сборка-мусора-gc"><a class="header" href="#23-сборка-мусора-gc">2.3 Сборка мусора (GC)</a></h1>
+<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<ul>
+<li><a href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5">Введение</a>
+<ul>
+<li><a href="#%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5-%D0%BE%D1%82%D0%BB%D0%B8%D1%87%D0%B8%D1%8F">Ключевые отличия</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B0%D1%80%D1%85%D0%B8%D1%82%D0%B5%D0%BA%D1%82%D1%83%D1%80%D0%B0-gc-%D0%B2-go-vs-net">Архитектура GC в Go vs .NET</a>
+<ul>
+<li><a href="#net-gc-%D0%B4%D0%BB%D1%8F-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BA%D1%81%D1%82%D0%B0">.NET GC (для контекста)</a></li>
+<li><a href="#go-gc-tri-color-mark-and-sweep">Go GC (Tri-Color Mark-and-Sweep)</a></li>
+</ul>
+</li>
+<li><a href="#tri-color-mark-and-sweep-%D0%B0%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC">Tri-Color Mark-and-Sweep алгоритм</a>
+<ul>
+<li><a href="#%D0%BA%D0%B0%D0%BA-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82">Как работает</a></li>
+<li><a href="#%D1%84%D0%B0%D0%B7%D1%8B-gc">Фазы GC</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-net">Сравнение с .NET</a></li>
+<li><a href="#%D0%B2%D0%B8%D0%B7%D1%83%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F">Визуализация</a></li>
+<li><a href="#%D1%83%D0%BB%D1%83%D1%87%D1%88%D0%B5%D0%BD%D0%B8%D1%8F-gc-%D0%B2-go-123-126">Улучшения GC в Go 1.23-1.26</a>
+<ul>
+<li><a href="#swiss-tables-%D0%B4%D0%BB%D1%8F-%D0%B2%D1%81%D1%82%D1%80%D0%BE%D0%B5%D0%BD%D0%BD%D1%8B%D1%85-map-go-124">Swiss Tables для встроенных map (Go 1.24)</a></li>
+<li><a href="#%D0%BF%D0%B0%D0%BA%D0%B5%D1%82-weakpointert-go-124">Пакет weak.Pointer[T] (Go 1.24)</a></li>
+<li><a href="#green-tea-gc-go-126--%D0%BF%D0%BE-%D1%83%D0%BC%D0%BE%D0%BB%D1%87%D0%B0%D0%BD%D0%B8%D1%8E">Green Tea GC (Go 1.26 — по умолчанию)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#write-barriers-%D0%B8-concurrent-gc">Write Barriers и concurrent GC</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%BE%D0%B1%D0%BB%D0%B5%D0%BC%D0%B0-concurrent-gc">Проблема concurrent GC</a></li>
+<li><a href="#write-barriers">Write Barriers</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-net-1">Сравнение с .NET</a></li>
+</ul>
+</li>
+<li><a href="#gogc-%D0%B8-gomemlimit">GOGC и GOMEMLIMIT</a>
+<ul>
+<li><a href="#gogc-%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D1%8B%D0%B9-%D0%BF%D0%B0%D1%80%D0%B0%D0%BC%D0%B5%D1%82%D1%80">GOGC (главный параметр)</a></li>
+<li><a href="#gomemlimit-go-119">GOMEMLIMIT (Go 1.19+)</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0">Сравнительная таблица</a></li>
+</ul>
+</li>
+<li><a href="#escape-analysis-stack-vs-heap">Escape Analysis: Stack vs Heap</a>
+<ul>
+<li><a href="#%D1%87%D1%82%D0%BE-%D1%82%D0%B0%D0%BA%D0%BE%D0%B5-escape-analysis">Что такое Escape Analysis</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B0%D0%B2%D0%B8%D0%BB%D0%B0-escape-analysis">Правила Escape Analysis</a></li>
+<li><a href="#%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%BA%D0%B0-escape-analysis">Проверка escape analysis</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-c">Сравнение с C#</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BF%D1%80%D0%BE%D1%84%D0%B8%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D0%B8-%D0%B4%D0%B8%D0%B0%D0%B3%D0%BD%D0%BE%D1%81%D1%82%D0%B8%D0%BA%D0%B0">Профилирование и диагностика</a>
+<ul>
+<li><a href="#runtimememstats">runtime.MemStats</a></li>
+<li><a href="#pprof-%D0%B4%D0%BB%D1%8F-gc-%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0">pprof для GC анализа</a></li>
+<li><a href="#godebug-%D0%B4%D0%BB%D1%8F-gc-%D1%82%D1%80%D0%B0%D1%81%D1%81%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B8">GODEBUG для GC трассировки</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-c-1">Сравнение с C#</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BE%D0%BF%D1%82%D0%B8%D0%BC%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%BF%D0%BE%D0%B4-gc">Оптимизация под GC</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BD%D1%86%D0%B8%D0%BF%D1%8B-%D0%BE%D0%BF%D1%82%D0%B8%D0%BC%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8">Принципы оптимизации</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B5%D0%B4%D0%B2%D0%B0%D1%80%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D0%B0%D0%BB%D0%BB%D0%BE%D0%BA%D0%B0%D1%86%D0%B8%D1%8F">Предварительная аллокация</a></li>
+<li><a href="#%D0%B8%D0%B7%D0%B1%D0%B5%D0%B3%D0%B0%D0%BD%D0%B8%D0%B5-%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D1%84%D0%B5%D0%B9%D1%81%D0%BE%D0%B2-%D0%B2-hot-path">Избегание интерфейсов в hot path</a></li>
+<li><a href="#batch-%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0">Batch обработка</a></li>
+</ul>
+</li>
+<li><a href="#syncpool-%D0%B8-%D0%BF%D0%B5%D1%80%D0%B5%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BE%D0%B1%D1%8A%D0%B5%D0%BA%D1%82%D0%BE%D0%B2">sync.Pool и переиспользование объектов</a>
+<ul>
+<li><a href="#%D1%87%D1%82%D0%BE-%D1%82%D0%B0%D0%BA%D0%BE%D0%B5-syncpool">Что такое sync.Pool</a></li>
+<li><a href="#%D0%B1%D0%B0%D0%B7%D0%BE%D0%B2%D0%BE%D0%B5-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5">Базовое использование</a></li>
+<li><a href="#syncpool-%D0%B4%D0%BB%D1%8F-%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80">sync.Pool для структур</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-c-2">Сравнение с C#</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C-syncpool">Когда использовать sync.Pool</a></li>
+<li><a href="#%D0%BF%D1%80%D0%BE%D0%B4%D0%B2%D0%B8%D0%BD%D1%83%D1%82%D1%8B%D0%B9-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-http-handler-%D1%81-syncpool">Продвинутый пример: HTTP handler с sync.Pool</a></li>
+<li><a href="#%D0%BE%D0%B3%D1%80%D0%B0%D0%BD%D0%B8%D1%87%D0%B5%D0%BD%D0%B8%D1%8F-syncpool">Ограничения sync.Pool</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B">Практические примеры</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-%D0%BE%D0%BF%D1%82%D0%B8%D0%BC%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-json-%D0%BF%D0%B0%D1%80%D1%81%D0%B8%D0%BD%D0%B3%D0%B0">Пример 1: Оптимизация JSON парсинга</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3-gc-%D0%B2-production">Пример 2: Мониторинг GC в production</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-%D0%BE%D0%BF%D1%82%D0%B8%D0%BC%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%BF%D0%BE%D0%B4-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80%D1%8B">Пример 3: Оптимизация под контейнеры</a></li>
+</ul>
+</li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<blockquote>
+<p>💡 <strong>Рекомендуется</strong>: Перед изучением этого раздела ознакомьтесь с <a href="02a_memory_allocator.html">2.2a Аллокатор памяти</a> для понимания низкоуровневых структур (mheap, mspan, mcache), которые GC использует для работы.</p>
+</blockquote>
+<p>Сборка мусора в Go разработана с фокусом на <strong>низкие паузы</strong> (&lt; 1ms) и <strong>предсказуемость</strong>, что критично для высоконагруженных сервисов. Философия Go GC радикально отличается от .NET.</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В .NET GC оптимизирован для <strong>throughput</strong> (пропускной способности) с паузами до 100ms+. В Go GC оптимизирован для <strong>low latency</strong> с паузами &lt; 1ms.</p>
+</blockquote>
+<blockquote>
+<p>🚀 <strong>Актуально (2026)</strong>: Этот раздел описывает GC в Go 1.26 (текущая стабильная версия). Go 1.26 включает <strong>Green Tea GC</strong> по умолчанию — новый алгоритм сканирования со снижением CPU затрат на GC на 10-40% за счёт улучшенной cache-locality. Go 1.24 добавил <strong>Swiss Tables</strong> для встроенных <code>map</code> и пакет <code>weak</code> для слабых ссылок. Существующий код получает эти улучшения без изменений.</p>
+</blockquote>
+<h3 id="ключевые-отличия"><a class="header" href="#ключевые-отличия">Ключевые отличия</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>.NET GC</th><th>Go GC</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Алгоритм</strong></td><td>Generational (Gen0/1/2)</td><td>Tri-color mark-and-sweep</td></tr>
+<tr><td><strong>Поколения</strong></td><td>3 поколения</td><td>Нет поколений</td></tr>
+<tr><td><strong>Паузы</strong></td><td>10-100ms (full GC)</td><td>&lt; 1ms (целевая метрика)</td></tr>
+<tr><td><strong>Concurrent</strong></td><td>Частично (background GC)</td><td>Полностью concurrent</td></tr>
+<tr><td><strong>Compaction</strong></td><td>Есть (Gen0/1)</td><td>Нет (fragmentation возможна)</td></tr>
+<tr><td><strong>Цель</strong></td><td>Throughput</td><td>Low latency</td></tr>
+<tr><td><strong>Настройка</strong></td><td>Много параметров</td><td>GOGC, GOMEMLIMIT</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="архитектура-gc-в-go-vs-net"><a class="header" href="#архитектура-gc-в-go-vs-net">Архитектура GC в Go vs .NET</a></h2>
+<h3 id="net-gc-для-контекста"><a class="header" href="#net-gc-для-контекста">.NET GC (для контекста)</a></h3>
+<p><strong>C#</strong> (Generational GC):</p>
+<pre><code class="language-csharp">// .NET GC работает с поколениями
+// Gen0: короткоживущие объекты (&lt; 1MB обычно)
+// Gen1: средней продолжительности
+// Gen2: долгоживущие объекты + LOH (Large Object Heap)
+
+var list = new List&lt;int&gt;(); // Аллокация в Gen0
+
+// После нескольких Gen0 сборок выживший объект переходит в Gen1
+// Затем в Gen2
+
+// Полная сборка (Gen2 + LOH) может занять 100ms+
+GC.Collect(2, GCCollectionMode.Forced); // Принудительная сборка
+</code></pre>
+<p><strong>Проблемы .NET GC</strong>:</p>
+<ul>
+<li><strong>Stop-the-World паузы</strong> при полной сборке Gen2</li>
+<li><strong>Unpredictable latency</strong> — сложно предсказать, когда будет пауза</li>
+<li><strong>Large Object Heap</strong> не компактируется → fragmentation</li>
+</ul>
+<h3 id="go-gc-tri-color-mark-and-sweep"><a class="header" href="#go-gc-tri-color-mark-and-sweep">Go GC (Tri-Color Mark-and-Sweep)</a></h3>
+<p><strong>Go</strong> (Concurrent Mark-Sweep):</p>
+<pre><code class="language-go">// Go GC не использует поколения
+// Все объекты обрабатываются одинаково
+// Concurrent сборка с минимальными паузами
+
+package main
+
+import (
+    "fmt"
+    "runtime"
+    "runtime/debug"
+)
+
+func main() {
+    // Получение статистики GC
+    var m runtime.MemStats
+    runtime.ReadMemStats(&amp;m)
+
+    fmt.Printf("Аллокировано: %d MB\n", m.Alloc/1024/1024)
+    fmt.Printf("Всего аллокаций: %d MB\n", m.TotalAlloc/1024/1024)
+    fmt.Printf("Системная память: %d MB\n", m.Sys/1024/1024)
+    fmt.Printf("Количество GC: %d\n", m.NumGC)
+    fmt.Printf("Последняя пауза GC: %v\n", m.PauseNs[(m.NumGC+255)%256])
+
+    // Настройка GC
+    debug.SetGCPercent(100) // GOGC=100 (по умолчанию)
+
+    // Принудительный запуск GC (редко нужно в продакшене)
+    runtime.GC()
+}
+</code></pre>
+<p><strong>Преимущества Go GC</strong>:</p>
+<ul>
+<li>✅ <strong>Predictable latency</strong> — паузы &lt; 1ms</li>
+<li>✅ <strong>Concurrent</strong> — работает параллельно с приложением</li>
+<li>✅ <strong>Простая настройка</strong> — два основных параметра</li>
+</ul>
+<p><strong>Недостатки</strong>:</p>
+<ul>
+<li>❌ <strong>Нет компактификации</strong> — возможна фрагментация памяти</li>
+<li>❌ <strong>Больше CPU overhead</strong> — из-за concurrent работы</li>
+<li>❌ <strong>Нет оптимизации для короткоживущих объектов</strong> (как Gen0 в .NET)</li>
+</ul>
+<hr>
+<h2 id="tri-color-mark-and-sweep-алгоритм"><a class="header" href="#tri-color-mark-and-sweep-алгоритм">Tri-Color Mark-and-Sweep алгоритм</a></h2>
+<h3 id="как-работает"><a class="header" href="#как-работает">Как работает</a></h3>
+<p>Go GC использует <strong>три цвета</strong> для маркировки объектов:</p>
+<pre><code>┌─────────┐
+│  White  │ ← Потенциально мертвые объекты (будут удалены)
+└─────────┘
+┌─────────┐
+│  Grey   │ ← Живые объекты, которые нужно просканировать
+└─────────┘
+┌─────────┐
+│  Black  │ ← Живые объекты, уже просканированные
+└─────────┘
+</code></pre>
+<h3 id="фазы-gc"><a class="header" href="#фазы-gc">Фазы GC</a></h3>
+<pre><code class="language-go">// Псевдокод работы Go GC
+
+// 1. SWEEP TERMINATION (STW ~ 10-30μs)
+//    - Завершение предыдущей фазы sweep
+//    - Включение write barriers
+
+// 2. MARK (concurrent)
+//    - Все объекты изначально WHITE
+//    - Корневые объекты → GREY
+//    - Сканирование GREY → BLACK, их потомки → GREY
+//    - Работает параллельно с приложением (25% CPU)
+
+// 3. MARK TERMINATION (STW ~ 60-90μs)
+//    - Завершение маркировки
+//    - Выключение write barriers
+//    - Подготовка к sweep
+
+// 4. SWEEP (concurrent)
+//    - Удаление WHITE объектов
+//    - Возврат памяти в аллокатор
+</code></pre>
+<h3 id="сравнение-с-net"><a class="header" href="#сравнение-с-net">Сравнение с .NET</a></h3>
+<p><strong>C#</strong> (Mark-Compact):</p>
+<pre><code class="language-csharp">// .NET GC Gen0 сборка:
+// 1. Stop-the-World
+// 2. Mark живых объектов
+// 3. Compact (перемещение объектов в начало кучи)
+// 4. Обновление указателей
+// 5. Resume
+
+// Пауза: 1-5ms для Gen0, 10-100ms+ для Gen2
+</code></pre>
+<p><strong>Go</strong> (Mark-Sweep):</p>
+<pre><code class="language-go">// Go GC:
+// 1. STW (10-30μs) - sweep termination
+// 2. Concurrent Mark (работает параллельно)
+// 3. STW (60-90μs) - mark termination
+// 4. Concurrent Sweep
+
+// Общая STW пауза: &lt; 1ms
+</code></pre>
+<h3 id="визуализация"><a class="header" href="#визуализация">Визуализация</a></h3>
+<pre><code>.NET GC (Generational):
+┌────────────────────────────────┐
+│  Gen0  │  Gen1  │     Gen2     │
+│ (fast) │ (mid)  │    (slow)    │
+└────────────────────────────────┘
+    ↓         ↓          ↓
+  1-5ms    5-20ms    10-100ms+
+
+Go GC (Concurrent):
+┌────────────────────────────────┐
+│      Concurrent Mark/Sweep     │
+│     (работает параллельно)     │
+└────────────────────────────────┘
+STW: 10-30μs + 60-90μs = &lt; 1ms
+</code></pre>
+<h3 id="улучшения-gc-в-go-123-126"><a class="header" href="#улучшения-gc-в-go-123-126">Улучшения GC в Go 1.23-1.26</a></h3>
+<blockquote>
+<p>🚀 <strong>Go 1.23</strong> (август 2024): Автоматическая сборка Timer/Ticker — исправлена критическая утечка памяти. Теперь неостановленные таймеры собираются GC автоматически.</p>
+</blockquote>
+<h4 id="swiss-tables-для-встроенных-map-go-124"><a class="header" href="#swiss-tables-для-встроенных-map-go-124">Swiss Tables для встроенных map (Go 1.24)</a></h4>
+<p>Go 1.24 переписал внутреннюю реализацию встроенных <code>map</code> с использованием <strong>Swiss Tables</strong> — алгоритма Google с SIMD-оптимизациями:</p>
+<ul>
+<li><strong>~2-3% снижение CPU</strong> на map-тяжёлых workload-ах</li>
+<li>Лучшая cache-locality: ключи группируются по 8 в «bucket» с probe sequence</li>
+<li>SIMD-инструкции на Ice Lake, AMD Zen 4+ для параллельного поиска по bucket</li>
+<li>Меньше GC-давления за счёт более компактного расположения данных</li>
+</ul>
+<pre><code class="language-go">// API не изменился — код работает быстрее «бесплатно»
+m := make(map[string]int)
+m["key"] = 42
+</code></pre>
+<h4 id="пакет-weakpointert-go-124"><a class="header" href="#пакет-weakpointert-go-124">Пакет weak.Pointer[T] (Go 1.24)</a></h4>
+<p>Go 1.24 добавил пакет <code>weak</code> для <strong>слабых ссылок</strong> — указателей, которые не препятствуют сборке мусора. Аналог <code>WeakReference&lt;T&gt;</code> в C#.</p>
+<p><strong>C#:</strong></p>
+<pre><code class="language-csharp">// WeakReference&lt;T&gt; — не предотвращает GC
+var weakRef = new WeakReference&lt;ExpensiveObject&gt;(obj);
+if (weakRef.TryGetTarget(out var target))
+{
+    target.DoWork();
+}
+</code></pre>
+<p><strong>Go 1.24 (weak.Pointer[T]):</strong></p>
+<pre><code class="language-go">import "weak"
+
+// Создаём слабую ссылку
+obj := &amp;ExpensiveObject{Data: "valuable"}
+weakPtr := weak.Make(obj)
+
+// Объект жив — можно разыменовать
+if strong := weakPtr.Value(); strong != nil {
+    strong.DoWork()
+}
+
+// После GC: weakPtr.Value() вернёт nil
+obj = nil
+runtime.GC() // Объект может быть собран
+</code></pre>
+<p><strong>Применение <code>weak.Pointer[T]</code>:</strong></p>
+<pre><code class="language-go">// Кэш без утечек памяти (замена finalizer-паттернов)
+type Cache struct {
+    entries map[string]weak.Pointer[CacheEntry]
+}
+
+func (c *Cache) Get(key string) *CacheEntry {
+    if wp, ok := c.entries[key]; ok {
+        return wp.Value() // nil если GC собрал объект
+    }
+    return nil
+}
+
+func (c *Cache) Set(key string, entry *CacheEntry) {
+    c.entries[key] = weak.Make(entry)
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: <code>weak.Pointer[T]</code> — типобезопасная версия <code>WeakReference&lt;T&gt;</code>. Используйте для кэшей и наблюдателей, где нежелательно удерживать объекты в памяти.</p>
+</blockquote>
+<h4 id="green-tea-gc-go-126--по-умолчанию"><a class="header" href="#green-tea-gc-go-126--по-умолчанию">Green Tea GC (Go 1.26 — по умолчанию)</a></h4>
+<blockquote>
+<p>🚀 <strong>Go 1.26</strong> (февраль 2026): <strong>Green Tea GC</strong> стал алгоритмом по умолчанию.</p>
+</blockquote>
+<p><strong>Что изменилось:</strong></p>
+<ul>
+<li>Переход с <strong>per-object</strong> на <strong>per-span</strong> сканирование</li>
+<li>GC сканирует целые <code>mspan</code> блоки, а не отдельные объекты — меньше cache misses</li>
+<li><strong>10-40% снижение CPU затрат</strong> на GC в типичных сценариях</li>
+<li>Дополнительно <strong>~10% ускорение</strong> на процессорах с SIMD (Ice Lake, AMD Zen 4+) за счёт параллельной обработки span-bitmap</li>
+<li>Никаких изменений в коде не требуется — улучшение прозрачное</li>
+</ul>
+<pre><code class="language-go">// Пример: сервис с высокой аллокацией — выигрыш от Green Tea GC
+func processRequests(requests []*Request) {
+    for _, req := range requests {
+        // Каждая обработка создаёт временные объекты
+        result := &amp;Result{
+            Data:   transform(req.Data),
+            Meta:   extractMeta(req),
+        }
+        send(result)
+    }
+    // Green Tea GC: сканирует mspan целиком — меньше cache misses
+    // при очистке временных result/meta объектов
+}
+</code></pre>
+<p><strong>Источники</strong>: <a href="https://go.dev/doc/go1.24">Go 1.24</a> | <a href="https://go.dev/doc/go1.26">Go 1.26</a> | <a href="https://github.com/golang/go/issues/73581">Green Tea GC Issue</a></p>
+<hr>
+<h2 id="write-barriers-и-concurrent-gc"><a class="header" href="#write-barriers-и-concurrent-gc">Write Barriers и concurrent GC</a></h2>
+<h3 id="проблема-concurrent-gc"><a class="header" href="#проблема-concurrent-gc">Проблема concurrent GC</a></h3>
+<p>Когда GC работает concurrent (параллельно с приложением), возникает проблема:</p>
+<pre><code class="language-go">// Проблема: приложение изменяет граф объектов во время маркировки
+
+// До GC:
+// A (black) → B (white)
+
+// Во время GC приложение делает:
+// A.field = C  // C был white, не отмаркирован
+// B.field = nil
+
+// Результат: C может быть удален, хотя он живой!
+</code></pre>
+<h3 id="write-barriers"><a class="header" href="#write-barriers">Write Barriers</a></h3>
+<p><strong>Write barrier</strong> — это код, который вставляется компилятором при записи указателей:</p>
+<pre><code class="language-go">// Псевдокод write barrier в Go
+
+func writePointer(slot *unsafe.Pointer, ptr unsafe.Pointer) {
+    // Если GC активен и объект black пытается указать на white
+    if gcActive &amp;&amp; isBlack(slot) &amp;&amp; isWhite(ptr) {
+        // Закрасить white объект в grey
+        shade(ptr)
+    }
+    *slot = ptr // Реальная запись
+}
+</code></pre>
+<p><strong>Стоимость write barriers</strong>:</p>
+<pre><code class="language-go">// Write barriers добавляют overhead к записям указателей
+// Но работают только во время GC (не всегда)
+
+// Примерная стоимость:
+// Без GC: 1-2 CPU цикла на запись указателя
+// С GC:   10-20 CPU циклов на запись указателя
+
+// Оптимизация: избегайте частых записей указателей в hot path
+</code></pre>
+<h3 id="сравнение-с-net-1"><a class="header" href="#сравнение-с-net-1">Сравнение с .NET</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">// .NET также использует write barriers для concurrent GC
+// Но только в background GC (Gen2)
+
+// Стоимость в .NET аналогична Go
+</code></pre>
+<hr>
+<h2 id="gogc-и-gomemlimit"><a class="header" href="#gogc-и-gomemlimit">GOGC и GOMEMLIMIT</a></h2>
+<h3 id="gogc-главный-параметр"><a class="header" href="#gogc-главный-параметр">GOGC (главный параметр)</a></h3>
+<p><code>GOGC</code> определяет, <strong>когда</strong> запускать следующий GC:</p>
+<pre><code class="language-bash"># GOGC=100 (по умолчанию)
+# Следующий GC запускается, когда heap вырастет на 100% от live set
+
+# Пример:
+# Live set = 100 MB (объекты, которые пережили предыдущий GC)
+# GOGC=100 → следующий GC при heap = 200 MB
+# GOGC=200 → следующий GC при heap = 300 MB
+# GOGC=50  → следующий GC при heap = 150 MB
+</code></pre>
+<p><strong>Go</strong> пример:</p>
+<pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "runtime"
+    "runtime/debug"
+)
+
+func demonstrateGOGC() {
+    // Установка GOGC программно
+    oldGOGC := debug.SetGCPercent(200) // Удвоить интервал между GC
+    fmt.Printf("Старый GOGC: %d\n", oldGOGC)
+
+    // Или через переменную окружения:
+    // GOGC=200 go run main.go
+
+    // Отключить GC (используется редко, для тестов)
+    debug.SetGCPercent(-1)
+
+    // Вернуть обратно
+    debug.SetGCPercent(100)
+}
+
+func demonstrateMemoryTrade() {
+    // Trade-off: больше GOGC → больше памяти, меньше CPU на GC
+
+    // GOGC=100 (по умолчанию):
+    // - Средний расход памяти
+    // - Средний CPU на GC (~1-5%)
+
+    // GOGC=200:
+    // - Вдвое больше памяти
+    // - Вдвое меньше CPU на GC
+
+    // GOGC=50:
+    // - Меньше памяти
+    // - Больше CPU на GC
+
+    var m runtime.MemStats
+    runtime.ReadMemStats(&amp;m)
+
+    fmt.Printf("Live heap: %d MB\n", m.Alloc/1024/1024)
+    fmt.Printf("Sys memory: %d MB\n", m.Sys/1024/1024)
+    fmt.Printf("GC cycles: %d\n", m.NumGC)
+}
+</code></pre>
+<h3 id="gomemlimit-go-119"><a class="header" href="#gomemlimit-go-119">GOMEMLIMIT (Go 1.19+)</a></h3>
+<p><strong>Жесткий лимит памяти</strong> (аналог GC.MemoryLimit в .NET):</p>
+<pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "runtime/debug"
+)
+
+func demonstrateMemLimit() {
+    // Установка лимита памяти: 2 GB
+    debug.SetMemoryLimit(2 * 1024 * 1024 * 1024)
+
+    // Или через переменную окружения:
+    // GOMEMLIMIT=2GiB go run main.go
+
+    // Как это работает:
+    // - GC будет запускаться чаще, если приближаемся к лимиту
+    // - Предотвращает OOM в контейнерах с ограниченной памятью
+
+    // Полезно в Kubernetes:
+    // GOMEMLIMIT=1900MiB (если pod limit = 2GB)
+}
+</code></pre>
+<h3 id="сравнительная-таблица"><a class="header" href="#сравнительная-таблица">Сравнительная таблица</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Параметр</th><th>Что делает</th><th>Когда использовать</th></tr>
+</thead>
+<tbody>
+<tr><td><code>GOGC=100</code></td><td>По умолчанию (2x памяти)</td><td>Большинство случаев</td></tr>
+<tr><td><code>GOGC=200</code></td><td>Меньше GC, больше памяти</td><td>CPU-bound, много RAM</td></tr>
+<tr><td><code>GOGC=50</code></td><td>Больше GC, меньше памяти</td><td>Memory-constrained</td></tr>
+<tr><td><code>GOMEMLIMIT</code></td><td>Жесткий лимит памяти</td><td>Контейнеры, Cloud</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>C# аналоги</strong>:</p>
+<pre><code class="language-csharp">// .NET не имеет прямого аналога GOGC
+// Но есть настройки:
+
+// Workstation GC vs Server GC
+&lt;ServerGarbageCollection&gt;true&lt;/ServerGarbageCollection&gt;
+
+// Concurrent GC
+&lt;ConcurrentGarbageCollection&gt;true&lt;/ConcurrentGarbageCollection&gt;
+
+// GC Heap Count (Go 1.19+)
+&lt;GCHeapCount&gt;4&lt;/GCHeapCount&gt;
+
+// Memory limit (.NET 6+)
+GC.MemoryLimit = 2_000_000_000; // Аналог GOMEMLIMIT
+</code></pre>
+<hr>
+<h2 id="escape-analysis-stack-vs-heap"><a class="header" href="#escape-analysis-stack-vs-heap">Escape Analysis: Stack vs Heap</a></h2>
+<h3 id="что-такое-escape-analysis"><a class="header" href="#что-такое-escape-analysis">Что такое Escape Analysis</a></h3>
+<p>Компилятор Go анализирует, <strong>где</strong> разместить переменную:</p>
+<ul>
+<li><strong>Stack</strong> — быстро, автоматически очищается при возврате из функции</li>
+<li><strong>Heap</strong> — медленно, требует GC для очистки</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В C# все reference types всегда в куче. В Go компилятор сам решает, где разместить объект, даже если это указатель.</p>
+</blockquote>
+<h3 id="правила-escape-analysis"><a class="header" href="#правила-escape-analysis">Правила Escape Analysis</a></h3>
+<pre><code class="language-go">package main
+
+import "fmt"
+
+// ✅ НЕ escape: возвращается значение
+func noEscape1() int {
+    x := 42
+    return x // x на стеке
+}
+
+// ✅ НЕ escape: локальное использование
+func noEscape2() {
+    s := make([]int, 100) // s на стеке (если не слишком большой)
+    _ = s
+}
+
+// ❌ ESCAPE: возвращается указатель
+func escape1() *int {
+    x := 42
+    return &amp;x // x escape в heap (возвращается наружу)
+}
+
+// ❌ ESCAPE: сохраняется в глобальную переменную
+var global *int
+
+func escape2() {
+    x := 42
+    global = &amp;x // x escape в heap
+}
+
+// ❌ ESCAPE: передается в горутину
+func escape3() {
+    x := 42
+    go func() {
+        fmt.Println(x) // x escape в heap (используется в другой горутине)
+    }()
+}
+
+// ❌ ESCAPE: слишком большой для стека
+func escape4() {
+    // Массивы &gt; ~64KB обычно escape в heap
+    var huge [100000]int
+    _ = huge // escape в heap
+}
+
+// ❌ ESCAPE: передается в интерфейс
+func escape5() {
+    x := 42
+    fmt.Println(x) // x escape в heap (fmt.Println принимает interface{})
+}
+</code></pre>
+<h3 id="проверка-escape-analysis"><a class="header" href="#проверка-escape-analysis">Проверка escape analysis</a></h3>
+<pre><code class="language-bash"># Компиляция с выводом escape analysis
+go build -gcflags="-m -m" main.go
+
+# Пример вывода:
+# ./main.go:10:2: x escapes to heap
+# ./main.go:10:2:   flow: ~r0 = &amp;x
+# ./main.go:9:6: moved to heap: x
+</code></pre>
+<p><strong>Go</strong> пример с анализом:</p>
+<pre><code class="language-go">package main
+
+import "fmt"
+
+func stackAllocation() {
+    // Анализ покажет: "does not escape"
+    x := 42
+    y := x * 2
+    _ = y
+}
+
+func heapAllocation() *int {
+    // Анализ покажет: "moved to heap: x"
+    x := 42
+    return &amp;x
+}
+
+func interfaceEscape() {
+    // Анализ покажет: "x escapes to heap"
+    x := 42
+    fmt.Println(x) // interface{} вызывает escape
+}
+
+func main() {
+    stackAllocation()  // Быстро, без GC
+    _ = heapAllocation() // Медленно, требует GC
+    interfaceEscape()   // Escape из-за interface{}
+}
+</code></pre>
+<h3 id="сравнение-с-c"><a class="header" href="#сравнение-с-c">Сравнение с C#</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">// В C# все reference types в куче, value types на стеке (если локальные)
+
+public class Example
+{
+    // Всегда в куче
+    public int[] HeapArray() =&gt; new int[100];
+
+    // Стек (value type)
+    public int StackValue() =&gt; 42;
+
+    // ref struct (C# 7.2+) - только стек
+    public ref struct StackOnlyStruct
+    {
+        public Span&lt;int&gt; Data;
+    }
+}
+
+// .NET также имеет Span&lt;T&gt; и stackalloc для оптимизаций
+Span&lt;int&gt; stack = stackalloc int[100]; // На стеке!
+</code></pre>
+<p><strong>Go более гибкий</strong>:</p>
+<pre><code class="language-go">// Go может разместить даже указатели на стеке
+func flexible() {
+    // Указатель, но НЕ escape → стек
+    p := &amp;struct{ x int }{42}
+    _ = p.x // Используется локально
+    // p на стеке, несмотря на &amp;
+}
+</code></pre>
+<hr>
+<h2 id="профилирование-и-диагностика"><a class="header" href="#профилирование-и-диагностика">Профилирование и диагностика</a></h2>
+<h3 id="runtimememstats"><a class="header" href="#runtimememstats">runtime.MemStats</a></h3>
+<pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "runtime"
+    "time"
+)
+
+func printMemStats() {
+    var m runtime.MemStats
+    runtime.ReadMemStats(&amp;m)
+
+    fmt.Printf("=== Memory Stats ===\n")
+    fmt.Printf("Alloc      = %v MB\n", bToMb(m.Alloc))
+    fmt.Printf("TotalAlloc = %v MB\n", bToMb(m.TotalAlloc))
+    fmt.Printf("Sys        = %v MB\n", bToMb(m.Sys))
+    fmt.Printf("NumGC      = %v\n", m.NumGC)
+    fmt.Printf("HeapAlloc  = %v MB\n", bToMb(m.HeapAlloc))
+    fmt.Printf("HeapSys    = %v MB\n", bToMb(m.HeapSys))
+    fmt.Printf("HeapIdle   = %v MB\n", bToMb(m.HeapIdle))
+    fmt.Printf("HeapInuse  = %v MB\n", bToMb(m.HeapInuse))
+    fmt.Printf("HeapReleased = %v MB\n", bToMb(m.HeapReleased))
+
+    // Паузы GC
+    fmt.Printf("PauseTotal = %v ms\n", float64(m.PauseTotalNs)/1e6)
+    fmt.Printf("Last Pause = %v μs\n", m.PauseNs[(m.NumGC+255)%256]/1000)
+}
+
+func bToMb(b uint64) uint64 {
+    return b / 1024 / 1024
+}
+
+func main() {
+    printMemStats()
+
+    // Создаем нагрузку
+    data := make([][]byte, 0)
+    for i := 0; i &lt; 100; i++ {
+        data = append(data, make([]byte, 1024*1024)) // 1 MB
+    }
+
+    time.Sleep(100 * time.Millisecond)
+    printMemStats()
+
+    // Освобождаем
+    data = nil
+    runtime.GC()
+    time.Sleep(100 * time.Millisecond)
+    printMemStats()
+}
+</code></pre>
+<h3 id="pprof-для-gc-анализа"><a class="header" href="#pprof-для-gc-анализа">pprof для GC анализа</a></h3>
+<pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "log"
+    "net/http"
+    _ "net/http/pprof" // Импорт для side-effect
+    "time"
+)
+
+func main() {
+    // Запуск pprof HTTP сервера
+    go func() {
+        log.Println(http.ListenAndServe("localhost:6060", nil))
+    }()
+
+    // Симуляция работы
+    for {
+        allocateMemory()
+        time.Sleep(100 * time.Millisecond)
+    }
+}
+
+func allocateMemory() {
+    // Аллокация 10 MB
+    data := make([]byte, 10*1024*1024)
+    _ = data
+}
+
+// Использование:
+// 1. Запустить программу
+// 2. Открыть http://localhost:6060/debug/pprof/
+// 3. Или использовать CLI:
+//    go tool pprof http://localhost:6060/debug/pprof/heap
+//    go tool pprof http://localhost:6060/debug/pprof/allocs
+</code></pre>
+<p><strong>Команды pprof</strong>:</p>
+<pre><code class="language-bash"># Heap профиль (текущее использование памяти)
+go tool pprof http://localhost:6060/debug/pprof/heap
+
+# Allocs профиль (все аллокации)
+go tool pprof http://localhost:6060/debug/pprof/allocs
+
+# В интерактивном режиме:
+(pprof) top           # Топ функций по памяти
+(pprof) list funcName # Исходный код функции с аннотациями
+(pprof) web           # Визуализация графа (требует graphviz)
+
+# Сравнение двух профилей:
+go tool pprof -base=old.prof new.prof
+</code></pre>
+<h3 id="godebug-для-gc-трассировки"><a class="header" href="#godebug-для-gc-трассировки">GODEBUG для GC трассировки</a></h3>
+<pre><code class="language-bash"># Вывод информации о каждом GC
+GODEBUG=gctrace=1 go run main.go
+
+# Пример вывода:
+# gc 1 @0.001s 0%: 0.018+0.23+0.004 ms clock, 0.15+0.083/0.19/0.14+0.037 ms cpu, 4-&gt;4-&gt;0 MB, 5 MB goal, 8 P
+#
+# Расшифровка:
+# gc 1         - номер GC
+# @0.001s      - время с запуска программы
+# 0%           - % времени в GC с начала программы
+# 0.018+0.23+0.004 ms clock - wall time (STW + mark + STW)
+# 4-&gt;4-&gt;0 MB   - heap до GC -&gt; heap после mark -&gt; live heap
+# 5 MB goal    - целевой размер heap для следующего GC
+# 8 P          - количество процессоров (GOMAXPROCS)
+
+# Более детальный вывод:
+GODEBUG=gctrace=2 go run main.go
+</code></pre>
+<h3 id="сравнение-с-c-1"><a class="header" href="#сравнение-с-c-1">Сравнение с C#</a></h3>
+<p><strong>C#</strong> (Visual Studio Diagnostic Tools):</p>
+<pre><code class="language-csharp">// В .NET используются:
+// - Visual Studio Profiler
+// - dotnet-counters
+// - PerfView
+// - dotMemory (JetBrains)
+
+// Пример с dotnet-counters:
+// dotnet-counters monitor --process-id 1234
+
+// Метрики GC:
+// - Gen0/Gen1/Gen2 collections
+// - Heap size
+// - % Time in GC
+// - Allocation rate
+</code></pre>
+<hr>
+<h2 id="оптимизация-под-gc"><a class="header" href="#оптимизация-под-gc">Оптимизация под GC</a></h2>
+<h3 id="принципы-оптимизации"><a class="header" href="#принципы-оптимизации">Принципы оптимизации</a></h3>
+<pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "strings"
+)
+
+// ❌ ПЛОХО: много маленьких аллокаций
+func badStringConcat(items []string) string {
+    result := ""
+    for _, item := range items {
+        result += item // Каждая операция = новая аллокация
+    }
+    return result
+}
+
+// ✅ ХОРОШО: strings.Builder (минимум аллокаций)
+func goodStringConcat(items []string) string {
+    var sb strings.Builder
+    sb.Grow(len(items) * 10) // Предварительная аллокация
+    for _, item := range items {
+        sb.WriteString(item)
+    }
+    return sb.String()
+}
+
+// ❌ ПЛОХО: аллокация на каждой итерации
+func badLoop() {
+    for i := 0; i &lt; 1000; i++ {
+        data := make([]int, 100) // 1000 аллокаций
+        _ = data
+    }
+}
+
+// ✅ ХОРОШО: переиспользование буфера
+func goodLoop() {
+    data := make([]int, 100) // Одна аллокация
+    for i := 0; i &lt; 1000; i++ {
+        // Очистка и переиспользование
+        for j := range data {
+            data[j] = 0
+        }
+        _ = data
+    }
+}
+
+// ❌ ПЛОХО: возврат указателя на локальную переменную
+func badReturn() *User {
+    u := User{Name: "Alice"} // Escape в heap
+    return &amp;u
+}
+
+// ✅ ХОРОШО: возврат значения (если возможно)
+func goodReturn() User {
+    return User{Name: "Alice"} // На стеке (если не escape)
+}
+</code></pre>
+<h3 id="предварительная-аллокация"><a class="header" href="#предварительная-аллокация">Предварительная аллокация</a></h3>
+<pre><code class="language-go">package main
+
+// ❌ ПЛОХО: постоянные реаллокации
+func badSliceGrowth() []int {
+    var result []int // cap = 0
+    for i := 0; i &lt; 10000; i++ {
+        result = append(result, i) // Множественные реаллокации
+    }
+    return result
+}
+
+// ✅ ХОРОШО: предварительная аллокация
+func goodSliceGrowth() []int {
+    result := make([]int, 0, 10000) // cap = 10000 сразу
+    for i := 0; i &lt; 10000; i++ {
+        result = append(result, i) // Без реаллокаций
+    }
+    return result
+}
+
+// Сравнение производительности:
+// bad:  ~100 аллокаций (при росте capacity)
+// good: 1 аллокация
+</code></pre>
+<h3 id="избегание-интерфейсов-в-hot-path"><a class="header" href="#избегание-интерфейсов-в-hot-path">Избегание интерфейсов в hot path</a></h3>
+<pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "os"
+    "strconv"
+)
+
+// ❌ ПЛОХО: интерфейс вызывает escape
+func badLogging(value int) {
+    fmt.Println(value) // value escape в heap
+}
+
+// ✅ ХОРОШО: прямая работа (если возможно)
+func goodLogging(value int) {
+    // Использовать специализированную функцию
+    // Или буферизированный логгер (псевдокод)
+    // logger.LogInt(value) // Может не вызвать escape
+
+    // Реальный пример: использовать буфер
+    var buf [64]byte
+    s := strconv.AppendInt(buf[:0], int64(value), 10)
+    _, _ = os.Stdout.Write(s)
+}
+
+// ❌ ПЛОХО: interface{} в структуре
+type BadCache struct {
+    data map[string]interface{} // Любое значение → escape
+}
+
+// ✅ ХОРОШО: конкретный тип (или generics в Go 1.18+)
+type GoodCache struct {
+    data map[string]*User // Конкретный тип
+}
+
+// ✅ ЕЩЕ ЛУЧШЕ: generics (Go 1.18+)
+type BestCache[T any] struct {
+    data map[string]T
+}
+</code></pre>
+<h3 id="batch-обработка"><a class="header" href="#batch-обработка">Batch обработка</a></h3>
+<pre><code class="language-go">package main
+
+// ❌ ПЛОХО: обработка по одному
+func badBatch(items []Item) {
+    for _, item := range items {
+        process(item) // Много syscalls / аллокаций
+    }
+}
+
+// ✅ ХОРОШО: batch обработка
+func goodBatch(items []Item) {
+    const batchSize = 100
+    for i := 0; i &lt; len(items); i += batchSize {
+        end := i + batchSize
+        if end &gt; len(items) {
+            end = len(items)
+        }
+        processBatch(items[i:end]) // Меньше overhead
+    }
+}
+</code></pre>
+<hr>
+<h2 id="syncpool-и-переиспользование-объектов"><a class="header" href="#syncpool-и-переиспользование-объектов">sync.Pool и переиспользование объектов</a></h2>
+<h3 id="что-такое-syncpool"><a class="header" href="#что-такое-syncpool">Что такое sync.Pool</a></h3>
+<p><code>sync.Pool</code> — это кэш для переиспользования объектов, чтобы снизить давление на GC.</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Аналог <code>ArrayPool&lt;T&gt;</code> в .NET, но более общий.</p>
+</blockquote>
+<h3 id="базовое-использование"><a class="header" href="#базовое-использование">Базовое использование</a></h3>
+<pre><code class="language-go">package main
+
+import (
+    "bytes"
+    "sync"
+)
+
+var bufferPool = sync.Pool{
+    New: func() interface{} {
+        // Функция создания нового объекта
+        return new(bytes.Buffer)
+    },
+}
+
+func processData(data []byte) []byte {
+    // Получить буфер из пула
+    buf := bufferPool.Get().(*bytes.Buffer)
+    defer func() {
+        buf.Reset() // Очистить перед возвратом
+        bufferPool.Put(buf) // Вернуть в пул
+    }()
+
+    // Использование буфера
+    buf.Write(data)
+    buf.WriteString(" processed")
+
+    // Копирование результата (buf вернется в пул)
+    result := make([]byte, buf.Len())
+    copy(result, buf.Bytes())
+    return result
+}
+
+func main() {
+    data := []byte("hello")
+    result := processData(data)
+    println(string(result))
+}
+</code></pre>
+<h3 id="syncpool-для-структур"><a class="header" href="#syncpool-для-структур">sync.Pool для структур</a></h3>
+<pre><code class="language-go">package main
+
+import (
+    "sync"
+)
+
+type Request struct {
+    ID   int
+    Data []byte
+}
+
+var requestPool = sync.Pool{
+    New: func() interface{} {
+        return &amp;Request{
+            Data: make([]byte, 0, 1024), // Предварительная аллокация
+        }
+    },
+}
+
+func handleRequest(id int, data []byte) {
+    // Получить объект из пула
+    req := requestPool.Get().(*Request)
+    defer requestPool.Put(req)
+
+    // Инициализация
+    req.ID = id
+    req.Data = append(req.Data[:0], data...) // Переиспользование слайса
+
+    // Обработка
+    processRequest(req)
+
+    // НЕ нужно очищать вручную - это сделает New при необходимости
+}
+
+func processRequest(req *Request) {
+    // Ваша логика
+}
+</code></pre>
+<h3 id="сравнение-с-c-2"><a class="header" href="#сравнение-с-c-2">Сравнение с C#</a></h3>
+<p><strong>C#</strong> (ArrayPool):</p>
+<pre><code class="language-csharp">using System.Buffers;
+
+public class Example
+{
+    private static ArrayPool&lt;byte&gt; pool = ArrayPool&lt;byte&gt;.Shared;
+
+    public void ProcessData(byte[] data)
+    {
+        // Аренда массива из пула
+        byte[] buffer = pool.Rent(1024);
+        try
+        {
+            // Использование buffer
+            Array.Copy(data, buffer, data.Length);
+            // ...
+        }
+        finally
+        {
+            // Возврат в пул
+            pool.Return(buffer, clearArray: true);
+        }
+    }
+}
+
+// .NET также имеет MemoryPool&lt;T&gt; для более общих случаев
+</code></pre>
+<h3 id="когда-использовать-syncpool"><a class="header" href="#когда-использовать-syncpool">Когда использовать sync.Pool</a></h3>
+<p>✅ <strong>Используйте sync.Pool</strong>:</p>
+<ul>
+<li>Временные буферы (bytes.Buffer, strings.Builder)</li>
+<li>Часто создаваемые структуры в hot path</li>
+<li>Большие объекты (&gt; 1 KB), которые переиспользуются</li>
+</ul>
+<p>❌ <strong>НЕ используйте sync.Pool</strong>:</p>
+<ul>
+<li>Для долгоживущих объектов</li>
+<li>Для маленьких объектов (&lt; 100 bytes)</li>
+<li>Когда объектов создается мало</li>
+</ul>
+<h3 id="продвинутый-пример-http-handler-с-syncpool"><a class="header" href="#продвинутый-пример-http-handler-с-syncpool">Продвинутый пример: HTTP handler с sync.Pool</a></h3>
+<pre><code class="language-go">package main
+
+import (
+    "encoding/json"
+    "net/http"
+    "sync"
+)
+
+type Response struct {
+    Status string `json:"status"`
+    Data   []byte `json:"data"`
+}
+
+var responsePool = sync.Pool{
+    New: func() interface{} {
+        return &amp;Response{
+            Data: make([]byte, 0, 1024),
+        }
+    },
+}
+
+func handler(w http.ResponseWriter, r *http.Request) {
+    // Получить Response из пула
+    resp := responsePool.Get().(*Response)
+    defer responsePool.Put(resp)
+
+    // Сброс состояния
+    resp.Status = ""
+    resp.Data = resp.Data[:0]
+
+    // Заполнение
+    resp.Status = "ok"
+    resp.Data = append(resp.Data, []byte("hello world")...)
+
+    // Отправка (JSON encoder сам аллоцирует буфер)
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(resp)
+}
+
+func main() {
+    http.HandleFunc("/", handler)
+    http.ListenAndServe(":8080", nil)
+}
+</code></pre>
+<h3 id="ограничения-syncpool"><a class="header" href="#ограничения-syncpool">Ограничения sync.Pool</a></h3>
+<p>⚠️ <strong>Важно</strong>:</p>
+<ul>
+<li>Pool может быть <strong>очищен GC</strong> в любой момент</li>
+<li><strong>НЕ гарантируется</strong>, что объект останется в пуле</li>
+<li><strong>НЕ используйте</strong> для объектов с важным состоянием</li>
+<li>Объекты должны быть <strong>безопасны для переиспользования</strong></li>
+</ul>
+<pre><code class="language-go">// ❌ ОПАСНО: состояние может быть потеряно
+var connectionPool = sync.Pool{
+    New: func() interface{} {
+        conn, _ := sql.Open("postgres", "...")
+        return conn // Плохо! Соединение может закрыться
+    },
+}
+
+// ✅ ПРАВИЛЬНО: используйте специализированные пулы
+// Для соединений: database/sql уже имеет пул
+db, _ := sql.Open("postgres", "...")
+db.SetMaxIdleConns(10)
+db.SetMaxOpenConns(100)
+</code></pre>
+<hr>
+<h2 id="практические-примеры"><a class="header" href="#практические-примеры">Практические примеры</a></h2>
+<h3 id="пример-1-оптимизация-json-парсинга"><a class="header" href="#пример-1-оптимизация-json-парсинга">Пример 1: Оптимизация JSON парсинга</a></h3>
+<p><strong>Задача</strong>: Парсить миллионы JSON сообщений с минимальным давлением на GC.</p>
+<p><strong>❌ Неоптимизированная версия</strong>:</p>
+<pre><code class="language-go">package main
+
+import (
+    "encoding/json"
+    "fmt"
+)
+
+type Message struct {
+    ID      int    `json:"id"`
+    Content string `json:"content"`
+}
+
+func badJSONParsing(data []byte) {
+    var msg Message
+    json.Unmarshal(data, &amp;msg) // Аллокация каждый раз
+    fmt.Println(msg)
+}
+
+func main() {
+    data := []byte(`{"id":1,"content":"hello"}`)
+    for i := 0; i &lt; 1_000_000; i++ {
+        badJSONParsing(data) // 1M аллокаций
+    }
+}
+</code></pre>
+<p><strong>✅ Оптимизированная версия</strong> (с sync.Pool):</p>
+<pre><code class="language-go">package main
+
+import (
+    "encoding/json"
+    "fmt"
+    "sync"
+)
+
+type Message struct {
+    ID      int    `json:"id"`
+    Content string `json:"content"`
+}
+
+var messagePool = sync.Pool{
+    New: func() interface{} {
+        return &amp;Message{}
+    },
+}
+
+func goodJSONParsing(data []byte) {
+    msg := messagePool.Get().(*Message)
+    defer messagePool.Put(msg)
+
+    // Сброс состояния
+    msg.ID = 0
+    msg.Content = ""
+
+    json.Unmarshal(data, msg)
+    fmt.Println(msg)
+}
+
+func main() {
+    data := []byte(`{"id":1,"content":"hello"}`)
+    for i := 0; i &lt; 1_000_000; i++ {
+        goodJSONParsing(data) // Значительно меньше аллокаций
+    }
+}
+</code></pre>
+<p><strong>Benchmark</strong>:</p>
+<pre><code class="language-go">package main
+
+import (
+    "encoding/json"
+    "sync"
+    "testing"
+)
+
+type Message struct {
+    ID      int    `json:"id"`
+    Content string `json:"content"`
+}
+
+var data = []byte(`{"id":1,"content":"hello"}`)
+
+// Без pool
+func BenchmarkWithoutPool(b *testing.B) {
+    for i := 0; i &lt; b.N; i++ {
+        var msg Message
+        json.Unmarshal(data, &amp;msg)
+    }
+}
+
+// С pool
+var messagePool = sync.Pool{
+    New: func() interface{} { return &amp;Message{} },
+}
+
+func BenchmarkWithPool(b *testing.B) {
+    for i := 0; i &lt; b.N; i++ {
+        msg := messagePool.Get().(*Message)
+        json.Unmarshal(data, msg)
+        messagePool.Put(msg)
+    }
+}
+
+// Результаты:
+// BenchmarkWithoutPool-8    500000    3000 ns/op    400 B/op    5 allocs/op
+// BenchmarkWithPool-8       800000    1500 ns/op    100 B/op    2 allocs/op
+//
+// Прирост: 2x скорость, 4x меньше аллокаций
+</code></pre>
+<hr>
+<h3 id="пример-2-мониторинг-gc-в-production"><a class="header" href="#пример-2-мониторинг-gc-в-production">Пример 2: Мониторинг GC в production</a></h3>
+<p><strong>Задача</strong>: Отслеживать метрики GC и экспортировать в Prometheus.</p>
+<pre><code class="language-go">package main
+
+import (
+    "runtime"
+    "time"
+
+    "github.com/prometheus/client_golang/prometheus"
+    "github.com/prometheus/client_golang/prometheus/promauto"
+)
+
+var (
+    gcDuration = promauto.NewHistogram(prometheus.HistogramOpts{
+        Name:    "go_gc_duration_seconds",
+        Help:    "GC pause duration in seconds",
+        Buckets: []float64{0.0001, 0.0005, 0.001, 0.005, 0.01, 0.05, 0.1},
+    })
+
+    heapAlloc = promauto.NewGauge(prometheus.GaugeOpts{
+        Name: "go_heap_alloc_bytes",
+        Help: "Current heap allocation in bytes",
+    })
+
+    gcCount = promauto.NewCounter(prometheus.CounterOpts{
+        Name: "go_gc_total",
+        Help: "Total number of GC cycles",
+    })
+)
+
+func monitorGC() {
+    var lastNumGC uint32
+
+    ticker := time.NewTicker(10 * time.Second)
+    defer ticker.Stop()
+
+    for range ticker.C {
+        var m runtime.MemStats
+        runtime.ReadMemStats(&amp;m)
+
+        // Heap allocation
+        heapAlloc.Set(float64(m.Alloc))
+
+        // GC count
+        if m.NumGC &gt; lastNumGC {
+            newGCs := m.NumGC - lastNumGC
+            gcCount.Add(float64(newGCs))
+
+            // Последняя пауза GC
+            lastPause := m.PauseNs[(m.NumGC+255)%256]
+            gcDuration.Observe(float64(lastPause) / 1e9) // В секунды
+
+            lastNumGC = m.NumGC
+        }
+    }
+}
+
+func main() {
+    go monitorGC()
+
+    // Ваше приложение
+    select {}
+}
+</code></pre>
+<hr>
+<h3 id="пример-3-оптимизация-под-контейнеры"><a class="header" href="#пример-3-оптимизация-под-контейнеры">Пример 3: Оптимизация под контейнеры</a></h3>
+<p><strong>Задача</strong>: Настроить GC для работы в Kubernetes pod с ограниченной памятью.</p>
+<pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "os"
+    "runtime"
+    "runtime/debug"
+    "strconv"
+)
+
+func setupGCForContainers() {
+    // 1. Определить лимит памяти контейнера
+    memLimitStr := os.Getenv("MEMORY_LIMIT") // Например, "2Gi"
+    if memLimitStr != "" {
+        memLimit := parseMemory(memLimitStr)
+
+        // Установить GOMEMLIMIT = 90% от лимита контейнера
+        softLimit := int64(float64(memLimit) * 0.9)
+        debug.SetMemoryLimit(softLimit)
+
+        fmt.Printf("Memory limit: %d MB (soft: %d MB)\n",
+            memLimit/1024/1024, softLimit/1024/1024)
+    }
+
+    // 2. Настроить GOGC в зависимости от workload
+    workload := os.Getenv("WORKLOAD_TYPE") // "cpu" или "memory"
+    switch workload {
+    case "cpu":
+        // CPU-bound: реже GC, больше памяти
+        debug.SetGCPercent(200)
+    case "memory":
+        // Memory-bound: чаще GC, меньше памяти
+        debug.SetGCPercent(50)
+    default:
+        // По умолчанию
+        debug.SetGCPercent(100)
+    }
+
+    // 3. Настроить GOMAXPROCS (обычно автоматически)
+    // В контейнере может быть неправильно определен CPU count
+    cpuLimit := os.Getenv("CPU_LIMIT") // Например, "2"
+    if cpuLimit != "" {
+        cpus, _ := strconv.Atoi(cpuLimit)
+        runtime.GOMAXPROCS(cpus)
+        fmt.Printf("GOMAXPROCS: %d\n", cpus)
+    }
+}
+
+func parseMemory(s string) int64 {
+    // Упрощенный парсинг "2Gi", "500Mi"
+    // В production используйте библиотеку
+    if len(s) &lt; 2 {
+        return 0
+    }
+
+    unit := s[len(s)-2:]
+    value, _ := strconv.ParseInt(s[:len(s)-2], 10, 64)
+
+    switch unit {
+    case "Gi":
+        return value * 1024 * 1024 * 1024
+    case "Mi":
+        return value * 1024 * 1024
+    case "Ki":
+        return value * 1024
+    default:
+        return value
+    }
+}
+
+func main() {
+    setupGCForContainers()
+
+    // Вывод текущих настроек
+    fmt.Printf("GOGC: %d%%\n", debug.SetGCPercent(-1))
+    debug.SetGCPercent(100) // Восстановить
+
+    var m runtime.MemStats
+    runtime.ReadMemStats(&amp;m)
+    fmt.Printf("Initial heap: %d MB\n", m.Alloc/1024/1024)
+}
+</code></pre>
+<p><strong>Kubernetes ConfigMap</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  MEMORY_LIMIT: "2Gi"
+  CPU_LIMIT: "2"
+  WORKLOAD_TYPE: "cpu"
+</code></pre>
+<hr><!-- AUTO: NAV -->
+<p><strong>Вопросы?</strong> Открой issue на <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/issues">GitHub</a></p>
+<p><a href="./02a_memory_allocator.html">← Назад: Аллокатор памяти Go (Memory Allocator Internals)</a> | <a href="./04_sync_primitives.html">Вперёд: Примитивы синхронизации →</a></p>
+<!-- /AUTO: NAV -->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part2-advanced/02a_memory_allocator.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part2-advanced/04_sync_primitives.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part2-advanced/02a_memory_allocator.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part2-advanced/04_sync_primitives.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,2627 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>4.2 Кэширование - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-e1a1ce5b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-c19b06e6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part4-infrastructure/02_caching.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="42-кэширование"><a class="header" href="#42-кэширование">4.2 Кэширование</a></h1>
+<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<ul>
+<li><a href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5">Введение</a>
+<ul>
+<li><a href="#%D1%8D%D0%BA%D0%BE%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0-%D0%BA%D1%8D%D1%88%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F-c-vs-go">Экосистема кэширования: C# vs Go</a></li>
+<li><a href="#%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D0%BE%D0%B5-%D0%BE%D1%82%D0%BB%D0%B8%D1%87%D0%B8%D0%B5-%D0%BE%D1%82-c">Ключевое отличие от C#</a></li>
+<li><a href="#%D1%87%D1%82%D0%BE-%D0%B2%D1%8B-%D1%83%D0%B7%D0%BD%D0%B0%D0%B5%D1%82%D0%B5">Что вы узнаете</a></li>
+</ul>
+</li>
+<li><a href="#redis-%D0%B2-go-go-redis">Redis в Go: go-redis</a>
+<ul>
+<li><a href="#%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5">Установка и подключение</a></li>
+<li><a href="#%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0-%D0%BA%D0%BB%D1%8E%D1%87-%D0%BD%D0%B5-%D0%BD%D0%B0%D0%B9%D0%B4%D0%B5%D0%BD">Обработка “ключ не найден”</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D0%B4%D0%BB%D1%8F-production">Конфигурация для Production</a></li>
+<li><a href="#redis-cluster-%D0%B8-sentinel">Redis Cluster и Sentinel</a></li>
+<li><a href="#%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D0%BD%D1%8B%D0%B5-%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D0%B8">Основные операции</a>
+<ul>
+<li><a href="#strings-%D0%B0%D0%BD%D0%B0%D0%BB%D0%BE%D0%B3-c-stringset--stringget">Strings (аналог C# <code>StringSet</code> / <code>StringGet</code>)</a></li>
+<li><a href="#hashes-%D0%B0%D0%BD%D0%B0%D0%BB%D0%BE%D0%B3-c-hashset--hashget">Hashes (аналог C# <code>HashSet</code> / <code>HashGet</code>)</a></li>
+<li><a href="#lists-sets-sorted-sets">Lists, Sets, Sorted Sets</a></li>
+<li><a href="#%D0%BA%D0%BB%D1%8E%D1%87%D0%B8-ttl-expire-delete">Ключи: TTL, Expire, Delete</a></li>
+</ul>
+</li>
+<li><a href="#pipelining-%D0%B8-%D1%82%D1%80%D0%B0%D0%BD%D0%B7%D0%B0%D0%BA%D1%86%D0%B8%D0%B8">Pipelining и транзакции</a>
+<ul>
+<li><a href="#pipeline--%D0%B1%D0%B0%D1%82%D1%87-%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D0%B8">Pipeline — батч-операции</a></li>
+<li><a href="#%D1%82%D1%80%D0%B0%D0%BD%D0%B7%D0%B0%D0%BA%D1%86%D0%B8%D0%B8-multiexec">Транзакции (MULTI/EXEC)</a></li>
+<li><a href="#watch--%D0%BE%D0%BF%D1%82%D0%B8%D0%BC%D0%B8%D1%81%D1%82%D0%B8%D1%87%D0%BD%D1%8B%D0%B5-%D0%B1%D0%BB%D0%BE%D0%BA%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B8">Watch — оптимистичные блокировки</a></li>
+</ul>
+</li>
+<li><a href="#pubsub">Pub/Sub</a></li>
+<li><a href="#%D1%80%D0%B0%D1%81%D0%BF%D1%80%D0%B5%D0%B4%D0%B5%D0%BB%D1%91%D0%BD%D0%BD%D1%8B%D0%B5-%D0%B1%D0%BB%D0%BE%D0%BA%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B8-redlock">Распределённые блокировки (Redlock)</a></li>
+</ul>
+</li>
+<li><a href="#in-memory-%D0%BA%D1%8D%D1%88%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5">In-Memory кэширование</a>
+<ul>
+<li><a href="#syncmap-%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C">sync.Map: когда использовать</a></li>
+<li><a href="#map--rwmutex-%D0%BF%D1%80%D0%BE%D1%81%D1%82%D0%B5%D0%B9%D1%88%D0%B8%D0%B9-%D0%BA%D1%8D%D1%88">map + RWMutex: простейший кэш</a></li>
+<li><a href="#patrickmngo-cache-%D0%BF%D1%80%D0%BE%D1%81%D1%82%D0%BE%D0%B9-ttl-%D0%BA%D1%8D%D1%88">patrickmn/go-cache: простой TTL кэш</a></li>
+<li><a href="#dgraph-ioristretto-%D0%B2%D1%8B%D1%81%D0%BE%D0%BA%D0%BE%D0%BF%D1%80%D0%BE%D0%B8%D0%B7%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9-%D0%BA%D1%8D%D1%88">dgraph-io/ristretto: высокопроизводительный кэш</a></li>
+<li><a href="#allegrobigcache-gc-friendly-%D0%BA%D1%8D%D1%88">allegro/bigcache: GC-friendly кэш</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-in-memory-%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA">Сравнительная таблица in-memory библиотек</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B0%D0%B1%D1%81%D1%82%D1%80%D0%B0%D0%BA%D1%86%D0%B8%D1%8F-%D0%BD%D0%B0%D0%B4-%D0%BA%D1%8D%D1%88%D0%B0%D0%BC%D0%B8-ekogocache">Абстракция над кэшами: eko/gocache</a>
+<ul>
+<li><a href="#%D0%B5%D0%B4%D0%B8%D0%BD%D1%8B%D0%B9-%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D1%84%D0%B5%D0%B9%D1%81-%D0%B4%D0%BB%D1%8F-%D1%80%D0%B0%D0%B7%D0%BD%D1%8B%D1%85-%D0%B1%D1%8D%D0%BA%D0%B5%D0%BD%D0%B4%D0%BE%D0%B2">Единый интерфейс для разных бэкендов</a></li>
+<li><a href="#chain-cache-l1--l2">Chain Cache (L1 + L2)</a></li>
+<li><a href="#loadable-cache-auto-populate">Loadable Cache (auto-populate)</a></li>
+<li><a href="#metric-cache">Metric Cache</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C-gocache-vs-%D1%81%D0%BE%D0%B1%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%83%D1%8E-%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8E">Когда использовать gocache vs собственную реализацию</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD%D1%8B-%D0%BA%D1%8D%D1%88%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F">Паттерны кэширования</a>
+<ul>
+<li><a href="#cache-aside-lazy-loading">Cache-Aside (Lazy Loading)</a></li>
+<li><a href="#write-through">Write-Through</a></li>
+<li><a href="#write-behind-write-back">Write-Behind (Write-Back)</a></li>
+<li><a href="#read-through">Read-Through</a></li>
+<li><a href="#cache-stampede-prevention-singleflight">Cache Stampede Prevention (singleflight)</a></li>
+<li><a href="#%D1%81%D1%82%D1%80%D0%B0%D1%82%D0%B5%D0%B3%D0%B8%D0%B8-ttl">Стратегии TTL</a></li>
+<li><a href="#%D0%B8%D0%BD%D0%B2%D0%B0%D0%BB%D0%B8%D0%B4%D0%B0%D1%86%D0%B8%D1%8F-%D0%BA%D1%8D%D1%88%D0%B0">Инвалидация кэша</a></li>
+</ul>
+</li>
+<li><a href="#multi-level-%D0%BA%D1%8D%D1%88%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-l1--l2">Multi-Level кэширование (L1 + L2)</a>
+<ul>
+<li><a href="#%D0%B0%D1%80%D1%85%D0%B8%D1%82%D0%B5%D0%BA%D1%82%D1%83%D1%80%D0%B0">Архитектура</a></li>
+<li><a href="#%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F">Реализация</a></li>
+<li><a href="#%D0%B8%D0%BD%D0%B2%D0%B0%D0%BB%D0%B8%D0%B4%D0%B0%D1%86%D0%B8%D1%8F-%D0%BC%D0%B5%D0%B6%D0%B4%D1%83-%D0%B8%D0%BD%D1%81%D1%82%D0%B0%D0%BD%D1%81%D0%B0%D0%BC%D0%B8">Инвалидация между инстансами</a></li>
+</ul>
+</li>
+<li><a href="#production-concerns">Production Concerns</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B5%D0%B2-%D0%BA%D1%8D%D1%88%D0%B0-cache-warming">Прогрев кэша (Cache Warming)</a></li>
+<li><a href="#%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3">Мониторинг</a></li>
+<li><a href="#%D1%81%D0%B5%D1%80%D0%B8%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F">Сериализация</a></li>
+<li><a href="#connection-pooling-%D0%B8-resilience">Connection Pooling и Resilience</a></li>
+<li><a href="#%D0%BF%D0%B0%D0%BC%D1%8F%D1%82%D1%8C-%D0%B8-gc">Память и GC</a></li>
+<li><a href="#opentelemetry-instrumentation">OpenTelemetry Instrumentation</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B">Практические примеры</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-production-ready-redis-cache-layer">Пример 1: Production-Ready Redis Cache Layer</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-multi-level-cache-%D1%81-singleflight">Пример 2: Multi-Level Cache с singleflight</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-session-storage-%D1%81-redis">Пример 3: Session Storage с Redis</a></li>
+</ul>
+</li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<p>В <a href="../part3-web-api/03_database.html">разделе 3.3</a> мы настроили работу с PostgreSQL, а в <a href="./01_production_postgresql.html">разделе 4.1</a> довели её до production-уровня. Но даже идеально оптимизированная база данных не спасёт от проблем под высокой нагрузкой — именно здесь на помощь приходит <strong>кэширование</strong>.</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В ASP.NET Core вы привыкли к <code>IMemoryCache</code>, <code>IDistributedCache</code>, <code>StackExchange.Redis</code>, а также к готовым абстракциям вроде <code>LazyCache</code> и <code>FusionCache</code>. В Go единого интерфейса кэширования нет — вместо этого вы комбинируете конкретные библиотеки и паттерны. Это требует больше ручной работы, но даёт полный контроль над производительностью и поведением.</p>
+</blockquote>
+<h3 id="экосистема-кэширования-c-vs-go"><a class="header" href="#экосистема-кэширования-c-vs-go">Экосистема кэширования: C# vs Go</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Концепция</th><th>C# (.NET)</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Единый API</strong></td><td><code>IDistributedCache</code></td><td>Нет стандартного интерфейса</td></tr>
+<tr><td><strong>In-memory</strong></td><td><code>IMemoryCache</code></td><td><code>map</code> + <code>sync.RWMutex</code> / go-cache / ristretto</td></tr>
+<tr><td><strong>Distributed</strong></td><td><code>StackExchange.Redis</code></td><td>go-redis</td></tr>
+<tr><td><strong>Multi-level</strong></td><td><code>FusionCache</code> / <code>HybridCache</code></td><td>Ручная композиция (или eko/gocache)</td></tr>
+<tr><td><strong>Абстракция</strong></td><td><code>LazyCache</code></td><td>eko/gocache</td></tr>
+<tr><td><strong>Stampede protection</strong></td><td>Встроено в <code>LazyCache</code></td><td><code>singleflight</code> (ручная интеграция)</td></tr>
+<tr><td><strong>GC-friendly</strong></td><td>Не актуально (CLR GC иначе работает)</td><td>bigcache, freecache (критично для Go GC)</td></tr>
+<tr><td><strong>Output caching</strong></td><td><code>[OutputCache]</code> middleware</td><td>Нет аналога, реализуется вручную</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="ключевое-отличие-от-c"><a class="header" href="#ключевое-отличие-от-c">Ключевое отличие от C#</a></h3>
+<p>В .NET вы обычно:</p>
+<ol>
+<li>Регистрируете <code>IDistributedCache</code> в DI</li>
+<li>Инжектите интерфейс в сервис</li>
+<li>Используете <code>GetAsync</code> / <code>SetAsync</code></li>
+<li>Фреймворк сам управляет сериализацией и подключением</li>
+</ol>
+<p>В Go вы:</p>
+<ol>
+<li>Создаёте клиент конкретной библиотеки (go-redis, ristretto и т.д.)</li>
+<li>Передаёте его через конструктор (composition)</li>
+<li>Вызываете типизированные методы напрямую</li>
+<li>Сами управляете сериализацией, TTL и обработкой ошибок</li>
+</ol>
+<p>Это больше кода, но меньше “магии” — вы точно знаете, что происходит на каждом шаге.</p>
+<h3 id="что-вы-узнаете"><a class="header" href="#что-вы-узнаете">Что вы узнаете</a></h3>
+<ul>
+<li>Работа с Redis через go-redis v9: подключение, операции, pipelining, Pub/Sub, блокировки</li>
+<li>In-memory кэширование: go-cache, ristretto, bigcache — и когда какой выбрать</li>
+<li>Паттерны: Cache-Aside, Write-Through, Read-Through, stampede prevention</li>
+<li>Multi-level кэширование (L1 in-memory + L2 Redis)</li>
+<li>Production: мониторинг, сериализация, GC impact, resilience</li>
+</ul>
+<hr>
+<h2 id="redis-в-go-go-redis"><a class="header" href="#redis-в-go-go-redis">Redis в Go: go-redis</a></h2>
+<p><a href="https://github.com/redis/go-redis">go-redis</a> — основная библиотека для работы с Redis в Go. Это аналог <code>StackExchange.Redis</code> из мира .NET, но с важными отличиями в API и подходе к подключениям.</p>
+<h3 id="установка-и-подключение"><a class="header" href="#установка-и-подключение">Установка и подключение</a></h3>
+<pre><code class="language-bash">go get github.com/redis/go-redis/v9
+</code></pre>
+<p><strong>C# — StackExchange.Redis</strong>:</p>
+<pre><code class="language-csharp">// C#: ConnectionMultiplexer — синглтон, потокобезопасный
+var redis = ConnectionMultiplexer.Connect("localhost:6379");
+IDatabase db = redis.GetDatabase();
+
+// Операции — синхронные или async
+string? value = await db.StringGetAsync("key");
+await db.StringSetAsync("key", "value", TimeSpan.FromMinutes(5));
+</code></pre>
+<p><strong>Go — go-redis</strong>:</p>
+<pre><code class="language-go">package main
+
+import (
+    "context"
+    "fmt"
+    "time"
+
+    "github.com/redis/go-redis/v9"
+)
+
+func main() {
+    // go-redis клиент — потокобезопасный, используйте один на приложение
+    rdb := redis.NewClient(&amp;redis.Options{
+        Addr:     "localhost:6379",
+        Password: "",  // без пароля
+        DB:       0,   // default DB
+    })
+    defer rdb.Close()
+
+    ctx := context.Background()
+
+    // Проверка подключения
+    if err := rdb.Ping(ctx).Err(); err != nil {
+        panic(fmt.Sprintf("не удалось подключиться к Redis: %v", err))
+    }
+
+    // Базовые операции — всегда с context
+    err := rdb.Set(ctx, "key", "value", 5*time.Minute).Err()
+    if err != nil {
+        panic(err)
+    }
+
+    val, err := rdb.Get(ctx, "key").Result()
+    if err != nil {
+        panic(err)
+    }
+    fmt.Println("key:", val) // key: value
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Ключевое отличие от C#</strong>: В go-redis <strong>каждая операция принимает <code>context.Context</code></strong>. Это позволяет задавать таймауты и отмену для каждого вызова, в отличие от <code>StackExchange.Redis</code>, где таймауты настраиваются глобально.</p>
+</blockquote>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# (StackExchange.Redis)</th><th>Go (go-redis)</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Подключение</strong></td><td><code>ConnectionMultiplexer.Connect()</code></td><td><code>redis.NewClient()</code></td></tr>
+<tr><td><strong>Мультиплексирование</strong></td><td>Да, одно TCP-соединение</td><td>Пул соединений (по умолчанию 10)</td></tr>
+<tr><td><strong>Context/Cancellation</strong></td><td><code>CancellationToken</code> (опционально)</td><td><code>context.Context</code> (обязательно)</td></tr>
+<tr><td><strong>Результат</strong></td><td><code>RedisValue</code> (неявное приведение)</td><td>Типизированные команды (<code>StringCmd</code>, <code>IntCmd</code>)</td></tr>
+<tr><td><strong>Ошибки</strong></td><td>Исключения</td><td><code>error</code> (проверяйте <code>redis.Nil</code> для “not found”)</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="обработка-ключ-не-найден"><a class="header" href="#обработка-ключ-не-найден">Обработка “ключ не найден”</a></h3>
+<pre><code class="language-go">val, err := rdb.Get(ctx, "nonexistent").Result()
+if err == redis.Nil {
+    // Ключ не существует — это НЕ ошибка
+    fmt.Println("ключ не найден")
+} else if err != nil {
+    // Реальная ошибка (сеть, таймаут и т.д.)
+    return fmt.Errorf("ошибка Redis: %w", err)
+} else {
+    fmt.Println("значение:", val)
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Частая ошибка C# разработчиков</strong>: В C# <code>StringGet</code> возвращает <code>RedisValue</code>, который может быть <code>IsNull</code>. В Go отсутствие ключа — это <strong>специальная ошибка</strong> <code>redis.Nil</code>, а не нулевое значение. Всегда проверяйте <code>err == redis.Nil</code> перед <code>err != nil</code>.</p>
+</blockquote>
+<h3 id="конфигурация-для-production"><a class="header" href="#конфигурация-для-production">Конфигурация для Production</a></h3>
+<pre><code class="language-go">rdb := redis.NewClient(&amp;redis.Options{
+    Addr:     "redis-primary.internal:6379",
+    Password: os.Getenv("REDIS_PASSWORD"),
+    DB:       0,
+
+    // === Пул соединений ===
+    PoolSize:     50,              // максимум соединений (default: 10 * NumCPU)
+    MinIdleConns: 10,              // минимум idle соединений
+    MaxIdleConns: 30,              // максимум idle соединений
+
+    // === Таймауты ===
+    DialTimeout:  5 * time.Second, // таймаут подключения (default: 5s)
+    ReadTimeout:  3 * time.Second, // таймаут чтения (default: 3s)
+    WriteTimeout: 3 * time.Second, // таймаут записи (default: 3s)
+    PoolTimeout:  4 * time.Second, // ожидание свободного соединения из пула
+
+    // === Retry ===
+    MaxRetries:      3,                    // количество повторов
+    MinRetryBackoff: 8 * time.Millisecond, // мин. задержка между повторами
+    MaxRetryBackoff: 512 * time.Millisecond,
+
+    // === TLS ===
+    TLSConfig: &amp;tls.Config{
+        MinVersion: tls.VersionTLS12,
+        // Для production с проверкой сертификата:
+        // InsecureSkipVerify: false,
+        // RootCAs: certPool,
+    },
+})
+</code></pre>
+<p><strong>Сравнение параметров пула</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Параметр</th><th>C# (StackExchange.Redis)</th><th>Go (go-redis)</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Модель</strong></td><td>Мультиплексирование (1 TCP)</td><td>Пул соединений (N TCP)</td></tr>
+<tr><td><strong>Размер пула</strong></td><td>Нет (одно соединение)</td><td><code>PoolSize</code> (default: 10*CPU)</td></tr>
+<tr><td><strong>Idle</strong></td><td>N/A</td><td><code>MinIdleConns</code>, <code>MaxIdleConns</code></td></tr>
+<tr><td><strong>Retry</strong></td><td><code>ConnectRetry</code></td><td><code>MaxRetries</code>, <code>MinRetryBackoff</code></td></tr>
+<tr><td><strong>TLS</strong></td><td><code>ssl=true</code> в connection string</td><td><code>TLSConfig</code></td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Важное отличие</strong>: <code>StackExchange.Redis</code> использует <strong>мультиплексирование</strong> — все команды идут через одно TCP-соединение. go-redis использует <strong>пул соединений</strong> — каждая горутина берёт соединение из пула. Это лучше для Go, где тысячи горутин могут одновременно обращаться к Redis.</p>
+</blockquote>
+<h3 id="redis-cluster-и-sentinel"><a class="header" href="#redis-cluster-и-sentinel">Redis Cluster и Sentinel</a></h3>
+<pre><code class="language-go">// Redis Cluster — автоматический шардинг
+rdbCluster := redis.NewClusterClient(&amp;redis.ClusterOptions{
+    Addrs: []string{
+        "redis-node-1:6379",
+        "redis-node-2:6379",
+        "redis-node-3:6379",
+    },
+    Password:     os.Getenv("REDIS_PASSWORD"),
+    PoolSize:     50,
+    ReadTimeout:  3 * time.Second,
+    WriteTimeout: 3 * time.Second,
+
+    // Чтение с реплик для снижения нагрузки на primary
+    RouteByLatency: true,
+    // или RouteRandomly: true,
+})
+
+// Redis Sentinel — автоматический failover
+rdbSentinel := redis.NewFailoverClient(&amp;redis.FailoverOptions{
+    MasterName:    "mymaster",
+    SentinelAddrs: []string{
+        "sentinel-1:26379",
+        "sentinel-2:26379",
+        "sentinel-3:26379",
+    },
+    Password:     os.Getenv("REDIS_PASSWORD"),
+    PoolSize:     50,
+    ReadTimeout:  3 * time.Second,
+    WriteTimeout: 3 * time.Second,
+})
+</code></pre>
+<h3 id="основные-операции"><a class="header" href="#основные-операции">Основные операции</a></h3>
+<h4 id="strings-аналог-c-stringset--stringget"><a class="header" href="#strings-аналог-c-stringset--stringget">Strings (аналог C# <code>StringSet</code> / <code>StringGet</code>)</a></h4>
+<pre><code class="language-go">ctx := context.Background()
+
+// Set с TTL
+err := rdb.Set(ctx, "user:1:name", "Alice", 10*time.Minute).Err()
+
+// Set только если ключ НЕ существует (аналог C# When.NotExists)
+ok, err := rdb.SetNX(ctx, "lock:resource", "owner-1", 30*time.Second).Result()
+
+// Get с проверкой существования
+val, err := rdb.Get(ctx, "user:1:name").Result()
+if err == redis.Nil {
+    // ключ не найден
+}
+
+// Атомарный инкремент (аналог C# StringIncrement)
+newVal, err := rdb.Incr(ctx, "counter").Result()
+// или с шагом:
+newVal, err = rdb.IncrBy(ctx, "counter", 5).Result()
+
+// Множественные операции
+err = rdb.MSet(ctx, "key1", "val1", "key2", "val2").Err()
+vals, err := rdb.MGet(ctx, "key1", "key2").Result() // []interface{}
+</code></pre>
+<h4 id="hashes-аналог-c-hashset--hashget"><a class="header" href="#hashes-аналог-c-hashset--hashget">Hashes (аналог C# <code>HashSet</code> / <code>HashGet</code>)</a></h4>
+<pre><code class="language-go">// Сохранить объект как hash (аналог C# HashSet)
+err := rdb.HSet(ctx, "user:1", map[string]interface{}{
+    "name":  "Alice",
+    "email": "alice@example.com",
+    "age":   30,
+}).Err()
+
+// Получить одно поле
+name, err := rdb.HGet(ctx, "user:1", "name").Result()
+
+// Получить все поля (аналог C# HashGetAll)
+fields, err := rdb.HGetAll(ctx, "user:1").Result() // map[string]string
+
+// Scan в структуру
+type User struct {
+    Name  string `redis:"name"`
+    Email string `redis:"email"`
+    Age   int    `redis:"age"`
+}
+
+var user User
+err = rdb.HGetAll(ctx, "user:1").Scan(&amp;user)
+</code></pre>
+<blockquote>
+<p>💡 <strong>Scan в структуру</strong> — мощная фича go-redis. В C# вам пришлось бы вручную маппить <code>HashEntry[]</code> в объект. В Go достаточно тегов <code>redis:"field_name"</code>.</p>
+</blockquote>
+<h4 id="lists-sets-sorted-sets"><a class="header" href="#lists-sets-sorted-sets">Lists, Sets, Sorted Sets</a></h4>
+<pre><code class="language-go">// Lists (очередь)
+rdb.LPush(ctx, "queue:tasks", "task-1", "task-2")
+task, err := rdb.RPop(ctx, "queue:tasks").Result()
+// Блокирующий Pop (аналог BrokeredMessage в C#)
+result, err := rdb.BLPop(ctx, 5*time.Second, "queue:tasks").Result()
+
+// Sets (уникальные значения)
+rdb.SAdd(ctx, "tags:article:1", "go", "redis", "caching")
+isMember, _ := rdb.SIsMember(ctx, "tags:article:1", "go").Result()
+members, _ := rdb.SMembers(ctx, "tags:article:1").Result()
+
+// Sorted Sets (с рейтингом — аналог SortedSetAdd в C#)
+rdb.ZAdd(ctx, "leaderboard", redis.Z{Score: 100, Member: "player-1"})
+rdb.ZAdd(ctx, "leaderboard", redis.Z{Score: 200, Member: "player-2"})
+
+// Top-10 игроков (по убыванию)
+players, _ := rdb.ZRevRangeWithScores(ctx, "leaderboard", 0, 9).Result()
+for _, p := range players {
+    fmt.Printf("%s: %.0f\n", p.Member, p.Score)
+}
+</code></pre>
+<h4 id="ключи-ttl-expire-delete"><a class="header" href="#ключи-ttl-expire-delete">Ключи: TTL, Expire, Delete</a></h4>
+<pre><code class="language-go">// Установить TTL на существующий ключ
+rdb.Expire(ctx, "session:abc", 30*time.Minute)
+
+// Узнать оставшееся время жизни
+ttl, _ := rdb.TTL(ctx, "session:abc").Result()
+fmt.Println("TTL:", ttl) // 29m58s
+
+// Проверить существование
+exists, _ := rdb.Exists(ctx, "user:1").Result() // 1 или 0
+
+// Удалить
+deleted, _ := rdb.Del(ctx, "key1", "key2").Result() // кол-во удалённых
+</code></pre>
+<h3 id="pipelining-и-транзакции"><a class="header" href="#pipelining-и-транзакции">Pipelining и транзакции</a></h3>
+<h4 id="pipeline--батч-операции"><a class="header" href="#pipeline--батч-операции">Pipeline — батч-операции</a></h4>
+<p>Pipeline отправляет несколько команд за одно сетевое обращение, значительно снижая латентность.</p>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">// C#: IBatch — аналог Pipeline
+var batch = db.CreateBatch();
+var task1 = batch.StringSetAsync("key1", "val1");
+var task2 = batch.StringSetAsync("key2", "val2");
+var task3 = batch.StringGetAsync("key1");
+batch.Execute();
+await Task.WhenAll(task1, task2);
+string? result = await task3;
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">// Pipeline — команды буферизуются и отправляются одним пакетом
+pipe := rdb.Pipeline()
+
+// Добавляем команды в pipeline (ещё не отправлены)
+incr := pipe.Incr(ctx, "counter")
+pipe.Expire(ctx, "counter", time.Hour)
+get := pipe.Get(ctx, "user:1:name")
+
+// Отправляем все команды разом
+_, err := pipe.Exec(ctx)
+if err != nil &amp;&amp; err != redis.Nil {
+    return err
+}
+
+// Читаем результаты
+fmt.Println("counter:", incr.Val())
+fmt.Println("name:", get.Val())
+</code></pre>
+<p>Альтернативный синтаксис с callback:</p>
+<pre><code class="language-go">results, err := rdb.Pipelined(ctx, func(pipe redis.Pipeliner) error {
+    pipe.Set(ctx, "key1", "val1", time.Hour)
+    pipe.Set(ctx, "key2", "val2", time.Hour)
+    pipe.Set(ctx, "key3", "val3", time.Hour)
+    return nil
+})
+// results содержит Cmd для каждой команды
+</code></pre>
+<blockquote>
+<p>💡 <strong>Производительность</strong>: Pipeline с 100 командами может быть в 10-50x быстрее, чем 100 отдельных вызовов, потому что экономит на сетевых round-trip.</p>
+</blockquote>
+<h4 id="транзакции-multiexec"><a class="header" href="#транзакции-multiexec">Транзакции (MULTI/EXEC)</a></h4>
+<pre><code class="language-go">// TxPipeline — атомарное выполнение (MULTI/EXEC)
+// Аналог C# ITransaction
+_, err := rdb.TxPipelined(ctx, func(pipe redis.Pipeliner) error {
+    pipe.Set(ctx, "balance:user1", 900, 0)
+    pipe.Set(ctx, "balance:user2", 1100, 0)
+    return nil
+})
+// Либо ОБА Set выполнятся, либо ни один
+</code></pre>
+<h4 id="watch--оптимистичные-блокировки"><a class="header" href="#watch--оптимистичные-блокировки">Watch — оптимистичные блокировки</a></h4>
+<pre><code class="language-go">// Watch + MULTI/EXEC — аналог optimistic concurrency в C#
+// Повторяем, пока транзакция не завершится без конфликта
+const maxRetries = 100
+
+for i := 0; i &lt; maxRetries; i++ {
+    err := rdb.Watch(ctx, func(tx *redis.Tx) error {
+        // Читаем текущее значение
+        balance, err := tx.Get(ctx, "balance:user1").Int64()
+        if err != nil &amp;&amp; err != redis.Nil {
+            return err
+        }
+
+        if balance &lt; 100 {
+            return fmt.Errorf("недостаточно средств: %d", balance)
+        }
+
+        // Атомарно обновляем, если ключ не изменился
+        _, err = tx.TxPipelined(ctx, func(pipe redis.Pipeliner) error {
+            pipe.Set(ctx, "balance:user1", balance-100, 0)
+            pipe.Set(ctx, "balance:user2", balance+100, 0)
+            return nil
+        })
+        return err
+    }, "balance:user1") // Watch за этим ключом
+
+    if err == nil {
+        break // Успех
+    }
+    if err == redis.TxFailedErr {
+        continue // Ключ изменился, повторяем
+    }
+    return err // Реальная ошибка
+}
+</code></pre>
+<h3 id="pubsub"><a class="header" href="#pubsub">Pub/Sub</a></h3>
+<p>Redis Pub/Sub позволяет отправлять сообщения между сервисами. Это <strong>fire-and-forget</strong> — если подписчик не подключён, сообщение теряется.</p>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: Pub/Sub — <strong>не очередь сообщений</strong>. Для надёжной доставки используйте Redis Streams или выделенную очередь (см. <a href="./03_message_queues.html">раздел 4.3</a>).</p>
+</blockquote>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">// C#: StackExchange.Redis Pub/Sub
+var sub = redis.GetSubscriber();
+await sub.SubscribeAsync("notifications", (channel, message) =&gt;
+{
+    Console.WriteLine($"Получено: {message}");
+});
+
+await sub.PublishAsync("notifications", "Hello!");
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">// Подписка
+sub := rdb.Subscribe(ctx, "notifications")
+defer sub.Close()
+
+// Получение сообщений в горутине
+ch := sub.Channel()
+go func() {
+    for msg := range ch {
+        fmt.Printf("Канал: %s, Сообщение: %s\n", msg.Channel, msg.Payload)
+    }
+}()
+
+// Публикация
+err := rdb.Publish(ctx, "notifications", "Hello!").Err()
+</code></pre>
+<p><strong>Pattern-подписка</strong> (по маске):</p>
+<pre><code class="language-go">// Подписка на все каналы "events.*"
+sub := rdb.PSubscribe(ctx, "events.*")
+defer sub.Close()
+
+for msg := range sub.Channel() {
+    fmt.Printf("Pattern: %s, Канал: %s, Сообщение: %s\n",
+        msg.Pattern, msg.Channel, msg.Payload)
+}
+</code></pre>
+<h3 id="распределённые-блокировки-redlock"><a class="header" href="#распределённые-блокировки-redlock">Распределённые блокировки (Redlock)</a></h3>
+<p>Для координации между инстансами приложения часто нужны распределённые блокировки. В Go для этого используется библиотека <a href="https://github.com/go-redsync/redsync">redsync</a>.</p>
+<p><strong>C# — RedLock.net</strong>:</p>
+<pre><code class="language-csharp">// C#: RedLock.net
+await using var redLock = await redlockFactory.CreateLockAsync(
+    "resource:123",
+    TimeSpan.FromSeconds(30));
+
+if (redLock.IsAcquired)
+{
+    // Критическая секция
+}
+</code></pre>
+<p><strong>Go — redsync</strong>:</p>
+<pre><code class="language-go">import (
+    "github.com/go-redsync/redsync/v4"
+    "github.com/go-redsync/redsync/v4/redis/goredis/v9"
+)
+
+// Создаём redsync (один раз при старте)
+pool := goredis.NewPool(rdb)
+rs := redsync.New(pool)
+
+// Создаём мьютекс
+mutex := rs.NewMutex("lock:resource:123",
+    redsync.WithExpiry(30*time.Second),       // TTL блокировки
+    redsync.WithTries(32),                     // макс. попыток
+    redsync.WithRetryDelay(100*time.Millisecond),
+)
+
+// Захват блокировки
+if err := mutex.LockContext(ctx); err != nil {
+    return fmt.Errorf("не удалось захватить блокировку: %w", err)
+}
+defer func() {
+    if ok, err := mutex.UnlockContext(ctx); !ok || err != nil {
+        log.Printf("ошибка при снятии блокировки: %v", err)
+    }
+}()
+
+// Критическая секция — только один инстанс выполняет этот код
+processResource(ctx, "resource:123")
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Ограничения Redlock</strong>: Алгоритм Redlock имеет известные проблемы (описанные Martin Kleppmann). Для критичных операций рассмотрите блокировки на уровне БД (SELECT FOR UPDATE) или etcd/ZooKeeper. Для большинства задач (дедупликация, rate limiting) Redlock работает отлично.</p>
+</blockquote>
+<p><strong>Когда использовать распределённые блокировки</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Задача</th><th>Redis Lock</th><th>DB Lock</th><th>etcd/ZooKeeper</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Дедупликация задач</strong></td><td>✅ Хорошо</td><td>➖ Медленно</td><td>➖ Overkill</td></tr>
+<tr><td><strong>Rate limiting</strong></td><td>✅ Хорошо</td><td>➖ Медленно</td><td>➖ Overkill</td></tr>
+<tr><td><strong>Финансовые операции</strong></td><td>⚠️ С осторожностью</td><td>✅ Надёжно</td><td>✅ Надёжно</td></tr>
+<tr><td><strong>Leader election</strong></td><td>⚠️ Не рекомендуется</td><td>➖</td><td>✅ Идеально</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="in-memory-кэширование"><a class="header" href="#in-memory-кэширование">In-Memory кэширование</a></h2>
+<p>In-memory кэш — это первая линия защиты от нагрузки на БД и Redis. Обращение к локальной памяти на порядки быстрее сетевого вызова (наносекунды vs микросекунды). Однако в Go есть нюанс, которого нет в C#: <strong>GC сканирует все указатели в heap</strong>, и миллионы закэшированных объектов могут вызвать паузы GC.</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В .NET вы используете <code>IMemoryCache</code> и не думаете о GC — CLR GC работает с поколениями и крупными объектами в Large Object Heap. В Go GC работает иначе (см. <a href="../part2-advanced/03_gc.html">раздел 2.3</a>), и выбор библиотеки кэширования напрямую влияет на паузы GC.</p>
+</blockquote>
+<h3 id="syncmap-когда-использовать"><a class="header" href="#syncmap-когда-использовать">sync.Map: когда использовать</a></h3>
+<p><code>sync.Map</code> подробно рассмотрен в <a href="../part2-advanced/04_sync_primitives.html">разделе 2.4</a>. Здесь — краткие рекомендации для кэширования.</p>
+<p><strong>Когда sync.Map подходит</strong>:</p>
+<ul>
+<li>Конфигурации, загруженные один раз при старте</li>
+<li>DNS-кэш (редкие записи, частые чтения)</li>
+<li>Кэш скомпилированных регулярных выражений</li>
+</ul>
+<p><strong>Когда sync.Map НЕ подходит для кэширования</strong>:</p>
+<ul>
+<li>Нет TTL — записи живут вечно</li>
+<li>Нет ограничения размера — память растёт бесконтрольно</li>
+<li>Нет политики вытеснения (eviction) — нет LRU/LFU</li>
+<li>Нет метрик (hit/miss rate)</li>
+</ul>
+<pre><code class="language-go">// sync.Map — подходит ТОЛЬКО для write-once/read-many сценариев
+var configCache sync.Map
+
+// Загрузка при старте
+configCache.Store("feature.enabled", true)
+configCache.Store("max.retries", 3)
+
+// Чтение (потокобезопасно, без блокировок на read path)
+if val, ok := configCache.Load("feature.enabled"); ok {
+    enabled := val.(bool)
+    // ...
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Для кэширования с TTL и eviction используйте специализированные библиотеки</strong>, описанные ниже.</p>
+</blockquote>
+<h3 id="map--rwmutex-простейший-кэш"><a class="header" href="#map--rwmutex-простейший-кэш">map + RWMutex: простейший кэш</a></h3>
+<p>Прежде чем тянуть зависимости, иногда достаточно <code>map</code> с <code>sync.RWMutex</code> и generics.</p>
+<p><strong>C# — Dictionary с lock</strong>:</p>
+<pre><code class="language-csharp">// C#: простейший потокобезопасный кэш
+public class SimpleCache&lt;TKey, TValue&gt; where TKey : notnull
+{
+    private readonly Dictionary&lt;TKey, (TValue Value, DateTime Expiry)&gt; _cache = new();
+    private readonly object _lock = new();
+
+    public bool TryGet(TKey key, out TValue value)
+    {
+        lock (_lock)
+        {
+            if (_cache.TryGetValue(key, out var entry) &amp;&amp; entry.Expiry &gt; DateTime.UtcNow)
+            {
+                value = entry.Value;
+                return true;
+            }
+            value = default!;
+            return false;
+        }
+    }
+}
+</code></pre>
+<p><strong>Go — map + RWMutex с generics</strong>:</p>
+<pre><code class="language-go">// Простейший TTL-кэш с generics (Go 1.18+)
+type SimpleCache[K comparable, V any] struct {
+    mu    sync.RWMutex
+    items map[K]cacheItem[V]
+}
+
+type cacheItem[V any] struct {
+    value     V
+    expiresAt time.Time
+}
+
+func NewSimpleCache[K comparable, V any]() *SimpleCache[K, V] {
+    return &amp;SimpleCache[K, V]{
+        items: make(map[K]cacheItem[V]),
+    }
+}
+
+func (c *SimpleCache[K, V]) Set(key K, value V, ttl time.Duration) {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+    c.items[key] = cacheItem[V]{
+        value:     value,
+        expiresAt: time.Now().Add(ttl),
+    }
+}
+
+func (c *SimpleCache[K, V]) Get(key K) (V, bool) {
+    c.mu.RLock()
+    defer c.mu.RUnlock()
+
+    item, ok := c.items[key]
+    if !ok || time.Now().After(item.expiresAt) {
+        var zero V
+        return zero, false
+    }
+    return item.value, true
+}
+
+func (c *SimpleCache[K, V]) Delete(key K) {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+    delete(c.items, key)
+}
+</code></pre>
+<p><strong>Когда этого достаточно</strong>:</p>
+<ul>
+<li>Небольшой кэш (&lt; 10 000 записей)</li>
+<li>Простые требования (TTL, без eviction)</li>
+<li>Не хотите добавлять зависимости</li>
+</ul>
+<p><strong>Когда нужна библиотека</strong>:</p>
+<ul>
+<li>Нужна политика вытеснения (LRU/LFU)</li>
+<li>Тысячи и более записей (конкуренция на мьютексе)</li>
+<li>Нужны метрики hit/miss</li>
+<li>Важна производительность GC</li>
+</ul>
+<h3 id="patrickmngo-cache-простой-ttl-кэш"><a class="header" href="#patrickmngo-cache-простой-ttl-кэш">patrickmn/go-cache: простой TTL кэш</a></h3>
+<p><a href="https://github.com/patrickmn/go-cache">go-cache</a> — простая, проверенная временем библиотека для in-memory кэширования с автоматической очисткой просроченных записей.</p>
+<pre><code class="language-bash">go get github.com/patrickmn/go-cache
+</code></pre>
+<p><strong>C# аналог</strong>: <code>MemoryCache</code> с <code>MemoryCacheEntryOptions</code>.</p>
+<pre><code class="language-go">import "github.com/patrickmn/go-cache"
+
+// Создаём кэш: default TTL 5 минут, очистка каждые 10 минут
+c := cache.New(5*time.Minute, 10*time.Minute)
+
+// Set (с default TTL)
+c.Set("user:1", &amp;User{Name: "Alice"}, cache.DefaultExpiration)
+
+// Set с кастомным TTL
+c.Set("session:abc", sessionData, 30*time.Minute)
+
+// Set без TTL (живёт вечно)
+c.Set("config:version", "1.0", cache.NoExpiration)
+
+// Get с type assertion
+if val, found := c.Get("user:1"); found {
+    user := val.(*User) // type assertion — нет generics
+    fmt.Println(user.Name)
+}
+
+// Delete
+c.Delete("user:1")
+
+// Атомарный инкремент
+c.IncrementInt("counter", 1)
+
+// Количество элементов
+count := c.ItemCount()
+</code></pre>
+<p><strong>Достоинства</strong>:</p>
+<ul>
+<li>Простой API, минимум конфигурации</li>
+<li>Автоматическая очистка просроченных записей (janitor goroutine)</li>
+<li>Потокобезопасный</li>
+</ul>
+<p><strong>Недостатки</strong>:</p>
+<ul>
+<li>Хранит <code>interface{}</code> — нет generics, нужен type assertion</li>
+<li>Нет политики вытеснения — только TTL</li>
+<li>Нет ограничения размера — память может расти бесконтрольно</li>
+<li>GC pressure при большом количестве записей (всё хранится как указатели)</li>
+<li>Не поддерживается активно (последний релиз — 2020)</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Идеально для</strong>: Небольших кэшей (до 100K записей) с простыми требованиями TTL. Если нужна eviction policy или высокая производительность — используйте ristretto.</p>
+</blockquote>
+<h3 id="dgraph-ioristretto-высокопроизводительный-кэш"><a class="header" href="#dgraph-ioristretto-высокопроизводительный-кэш">dgraph-io/ristretto: высокопроизводительный кэш</a></h3>
+<p><a href="https://github.com/dgraph-io/ristretto">ristretto</a> — высокопроизводительный кэш от команды Dgraph, использующий <strong>TinyLFU</strong> (admission policy) и <strong>Sampled LFU</strong> (eviction policy) для оптимального hit ratio.</p>
+<pre><code class="language-bash">go get github.com/dgraph-io/ristretto/v2
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Ristretto ближе всего к <code>LazyCache</code> по философии — он оптимизирует hit ratio через admission policy. Но в отличие от <code>LazyCache</code>, ristretto v2 поддерживает generics.</p>
+</blockquote>
+<pre><code class="language-go">import "github.com/dgraph-io/ristretto/v2"
+
+// Создаём кэш с generics (v2)
+cache, err := ristretto.NewCache(&amp;ristretto.Config[string, *User]{
+    // NumCounters: количество ключей для отслеживания частоты (TinyLFU)
+    // Рекомендация: 10x от ожидаемого количества ключей
+    NumCounters: 100_000,
+
+    // MaxCost: максимальный "вес" всех элементов
+    // Например, максимум 64MB данных (если cost = размер в байтах)
+    MaxCost: 64 &lt;&lt; 20, // 64 MB
+
+    // BufferItems: размер буфера для асинхронной записи
+    // 64 — рекомендуемое значение
+    BufferItems: 64,
+})
+if err != nil {
+    panic(err)
+}
+defer cache.Close()
+
+// Set с cost (вес элемента)
+user := &amp;User{Name: "Alice", Email: "alice@example.com"}
+cache.SetWithTTL("user:1", user, 1, 5*time.Minute)
+// cost=1 — если считаем по количеству элементов
+// cost=len(data) — если считаем по размеру данных
+
+// Важно: Set асинхронный! Значение может быть недоступно сразу
+cache.Wait() // ждём, пока буфер обработается
+
+// Get
+if user, found := cache.Get("user:1"); found {
+    fmt.Println(user.Name) // уже типизированный *User!
+}
+
+// Delete
+cache.Del("user:1")
+
+// Метрики
+metrics := cache.Metrics
+fmt.Printf("Hits: %d, Misses: %d, Hit Ratio: %.2f%%\n",
+    metrics.Hits(), metrics.Misses(),
+    metrics.Ratio()*100)
+</code></pre>
+<p><strong>Как работает TinyLFU admission</strong>:</p>
+<pre><code>Новый элемент "X" → Проверка admission policy:
+  1. Достаточно ли часто запрашивается "X"?
+  2. Если да → допускаем в кэш
+  3. Если кэш полон → вытесняем менее популярный элемент
+  4. Если "X" непопулярен → НЕ кладём в кэш (защита от scan pollution)
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Важный нюанс</strong>: <code>Set</code> в ristretto <strong>асинхронный и не гарантирует запись</strong>! Admission policy может отклонить элемент, если он недостаточно “популярен”. Это нормально — ristretto оптимизирует общий hit ratio, а не отдельные записи. Для данных, которые <strong>обязательно</strong> должны быть в кэше, это неподходящий инструмент.</p>
+</blockquote>
+<p><strong>Достоинства</strong>:</p>
+<ul>
+<li>Высокий hit ratio благодаря TinyLFU</li>
+<li>Generics в v2 — типобезопасность</li>
+<li>Cost-based eviction — ограничение по памяти</li>
+<li>Встроенные метрики (hits, misses, ratio)</li>
+<li>Конкурентный доступ без общих блокировок</li>
+</ul>
+<p><strong>Недостатки</strong>:</p>
+<ul>
+<li><code>Set</code> асинхронный — значение может не попасть в кэш</li>
+<li>Сложнее в настройке, чем go-cache</li>
+<li>Eventual consistency (буферизация записей)</li>
+</ul>
+<h3 id="allegrobigcache-gc-friendly-кэш"><a class="header" href="#allegrobigcache-gc-friendly-кэш">allegro/bigcache: GC-friendly кэш</a></h3>
+<p><a href="https://github.com/allegro/bigcache">bigcache</a> — кэш, спроектированный для <strong>минимального влияния на GC</strong>. Критически важен для сценариев с миллионами записей.</p>
+<pre><code class="language-bash">go get github.com/allegro/bigcache/v3
+</code></pre>
+<p><strong>Проблема</strong>: Обычный <code>map[string]*Object</code> с миллионом записей создаёт миллион указателей. Go GC при каждом цикле сканирует <strong>все</strong> указатели в heap — это может вызвать паузы в десятки миллисекунд.</p>
+<p><strong>Как bigcache решает проблему</strong>:</p>
+<pre><code>Обычный map:     map[string]*Value  → миллионы указателей → GC сканирует всё
+bigcache:        map[uint64]uint32  → БЕЗ указателей → GC не трогает
+                 + []byte (данные)  → один большой slice → GC видит ОДИН объект
+</code></pre>
+<p>Подробнее об этом трюке — в <a href="../part2-advanced/03_gc.html">разделе 2.3</a>.</p>
+<pre><code class="language-go">import "github.com/allegro/bigcache/v3"
+
+cache, err := bigcache.New(context.Background(), bigcache.Config{
+    // Количество шардов (должно быть степенью 2)
+    Shards: 1024,
+
+    // TTL для всех записей (одинаковый!)
+    LifeWindow: 10 * time.Minute,
+
+    // Очистка просроченных записей
+    CleanWindow: 5 * time.Minute,
+
+    // Начальный размер каждого шарда (в записях)
+    MaxEntriesInWindow: 1000 * 10 * 60, // ожидаемые записи за LifeWindow
+
+    // Максимальный размер одной записи (в байтах)
+    MaxEntrySize: 500,
+
+    // Вывод логов
+    Verbose: false,
+
+    // Максимальный размер кэша (MB). 0 = без ограничений
+    HardMaxCacheSize: 256,
+})
+if err != nil {
+    panic(err)
+}
+defer cache.Close()
+
+// Set — только []byte!
+data, _ := json.Marshal(&amp;User{Name: "Alice"})
+cache.Set("user:1", data)
+
+// Get — возвращает []byte
+entry, err := cache.Get("user:1")
+if err != nil {
+    // bigcache возвращает ошибку для miss (не sentinel value)
+    fmt.Println("miss:", err)
+    return
+}
+
+var user User
+json.Unmarshal(entry, &amp;user)
+</code></pre>
+<p><strong>Достоинства</strong>:</p>
+<ul>
+<li>Минимальное влияние на GC — идеален для миллионов записей</li>
+<li>Быстрый: шардирование снижает конкуренцию на блокировках</li>
+<li>Ограничение по памяти (<code>HardMaxCacheSize</code>)</li>
+</ul>
+<p><strong>Недостатки</strong>:</p>
+<ul>
+<li>Работает <strong>только с <code>[]byte</code></strong> — нужна ручная сериализация</li>
+<li><strong>Один TTL для всех записей</strong> — нельзя задать TTL per-key</li>
+<li>Hash-коллизии могут перезаписать данные (редко, но возможно)</li>
+<li>Нет admission/eviction policy (FIFO в рамках шарда)</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Когда выбирать bigcache</strong>: У вас миллионы записей и важна стабильная латентность (P99). Типичный пример — кэш сессий, DNS-записей, или результатов API.</p>
+</blockquote>
+<h3 id="сравнительная-таблица-in-memory-библиотек"><a class="header" href="#сравнительная-таблица-in-memory-библиотек">Сравнительная таблица in-memory библиотек</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Характеристика</th><th><code>map</code> + <code>RWMutex</code></th><th>go-cache</th><th>ristretto v2</th><th>bigcache</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Generics</strong></td><td>✅ Да</td><td>❌ <code>interface{}</code></td><td>✅ Да (v2)</td><td>❌ <code>[]byte</code></td></tr>
+<tr><td><strong>TTL</strong></td><td>Ручной</td><td>✅ Per-key</td><td>✅ Per-key</td><td>⚠️ Глобальный</td></tr>
+<tr><td><strong>Eviction Policy</strong></td><td>❌ Нет</td><td>❌ Только TTL</td><td>✅ TinyLFU</td><td>❌ FIFO</td></tr>
+<tr><td><strong>Max Size</strong></td><td>❌ Нет</td><td>❌ Нет</td><td>✅ Cost-based</td><td>✅ MB-based</td></tr>
+<tr><td><strong>GC Pressure</strong></td><td>🔴 Высокая</td><td>🔴 Высокая</td><td>🟡 Средняя</td><td>🟢 Минимальная</td></tr>
+<tr><td><strong>Метрики</strong></td><td>❌ Нет</td><td>❌ Нет</td><td>✅ Встроенные</td><td>❌ Нет</td></tr>
+<tr><td><strong>Потокобезопасность</strong></td><td>✅ Да</td><td>✅ Да</td><td>✅ Да</td><td>✅ Да</td></tr>
+<tr><td><strong>Сложность</strong></td><td>Минимальная</td><td>Низкая</td><td>Средняя</td><td>Низкая</td></tr>
+<tr><td><strong>Лучший сценарий</strong></td><td>&lt; 1K записей</td><td>&lt; 100K записей</td><td>Важен hit ratio</td><td>&gt; 1M записей</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Блок-схема выбора</strong>:</p>
+<pre><code>Сколько записей в кэше?
+│
+├── &lt; 1 000 → map + RWMutex (не тяните зависимости)
+│
+├── 1K - 100K
+│   ├── Нужен лучший hit ratio? → ristretto
+│   └── Простой TTL кэш? → go-cache
+│
+└── &gt; 100K
+    ├── Записи &gt; 1 KB? → bigcache (GC-friendly)
+    ├── Нужен hit ratio? → ristretto (но следите за GC)
+    └── Критична P99 латентность? → bigcache
+</code></pre>
+<hr>
+<h2 id="абстракция-над-кэшами-ekogocache"><a class="header" href="#абстракция-над-кэшами-ekogocache">Абстракция над кэшами: eko/gocache</a></h2>
+<p>В C# есть <code>IDistributedCache</code> — стандартный интерфейс, за которым может стоять Redis, SQL Server или in-memory хранилище. В Go стандартного интерфейса нет, но библиотека <a href="https://github.com/eko/gocache">eko/gocache</a> предоставляет подобную абстракцию.</p>
+<pre><code class="language-bash">go get github.com/eko/gocache/lib/v4
+go get github.com/eko/gocache/store/redis/v4
+go get github.com/eko/gocache/store/ristretto/v4
+go get github.com/eko/gocache/store/bigcache/v4
+</code></pre>
+<h3 id="единый-интерфейс-для-разных-бэкендов"><a class="header" href="#единый-интерфейс-для-разных-бэкендов">Единый интерфейс для разных бэкендов</a></h3>
+<pre><code class="language-go">import (
+    "github.com/eko/gocache/lib/v4/cache"
+    "github.com/eko/gocache/lib/v4/store"
+    redisstore "github.com/eko/gocache/store/redis/v4"
+    ristrettostore "github.com/eko/gocache/store/ristretto/v4"
+)
+
+// Redis store
+redisStore := redisstore.NewRedis(rdb)
+
+// Ristretto store
+ristrettoStore := ristrettostore.NewRistretto(ristrettoCache)
+
+// Единый API для любого store
+cacheManager := cache.New[*User](redisStore)
+
+// Set / Get / Delete — одинаковый API
+err := cacheManager.Set(ctx, "user:1", &amp;User{Name: "Alice"},
+    store.WithExpiration(5*time.Minute),
+)
+
+user, err := cacheManager.Get(ctx, "user:1")
+// user уже типизированный *User
+
+err = cacheManager.Delete(ctx, "user:1")
+</code></pre>
+<h3 id="chain-cache-l1--l2"><a class="header" href="#chain-cache-l1--l2">Chain Cache (L1 + L2)</a></h3>
+<p>Главная фича gocache — <strong>цепочка кэшей</strong>, аналог <code>FusionCache</code> / <code>HybridCache</code> в .NET:</p>
+<pre><code class="language-go">import "github.com/eko/gocache/lib/v4/cache"
+
+// L1: быстрый in-memory (ristretto)
+ristrettoStore := ristrettostore.NewRistretto(ristrettoCache)
+
+// L2: общий distributed (Redis)
+redisStore := redisstore.NewRedis(rdb)
+
+// Chain: сначала L1, потом L2
+chainCache := cache.NewChain[*User](
+    cache.New[*User](ristrettoStore),
+    cache.New[*User](redisStore),
+)
+
+// Get: ristretto → (miss) → Redis → (miss) → error
+user, err := chainCache.Get(ctx, "user:1")
+
+// Set: записывает в ОБА уровня
+err = chainCache.Set(ctx, "user:1", user,
+    store.WithExpiration(5*time.Minute),
+)
+</code></pre>
+<h3 id="loadable-cache-auto-populate"><a class="header" href="#loadable-cache-auto-populate">Loadable Cache (auto-populate)</a></h3>
+<pre><code class="language-go">// Loadable cache — автоматически загружает данные при miss
+// Аналог C# LazyCache.GetOrAdd()
+loadableCache := cache.NewLoadable[*User](
+    // Функция загрузки данных
+    func(ctx context.Context, key any) (*User, error) {
+        return userRepo.FindByID(ctx, key.(string))
+    },
+    // Кэш (может быть chain cache)
+    chainCache,
+)
+
+// Get: cache hit → return
+// Get: cache miss → вызов loader → сохранение в кэш → return
+user, err := loadableCache.Get(ctx, "user:1")
+</code></pre>
+<h3 id="metric-cache"><a class="header" href="#metric-cache">Metric Cache</a></h3>
+<pre><code class="language-go">import "github.com/eko/gocache/lib/v4/metrics"
+
+// Оборачиваем кэш в метрики (Prometheus)
+metricCache := metrics.NewMetrics[*User](
+    promMetrics,       // *metrics.Prometheus
+    chainCache,
+)
+// Автоматически отправляет hit/miss метрики в Prometheus
+</code></pre>
+<h3 id="когда-использовать-gocache-vs-собственную-реализацию"><a class="header" href="#когда-использовать-gocache-vs-собственную-реализацию">Когда использовать gocache vs собственную реализацию</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Критерий</th><th>gocache</th><th>Своя реализация</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Несколько бэкендов</strong></td><td>✅ Chain из коробки</td><td>Нужно писать самому</td></tr>
+<tr><td><strong>Auto-populate</strong></td><td>✅ Loadable cache</td><td>Нужно писать самому</td></tr>
+<tr><td><strong>Метрики</strong></td><td>✅ Prometheus из коробки</td><td>Нужно писать самому</td></tr>
+<tr><td><strong>Контроль</strong></td><td>Ограничен API gocache</td><td>Полный контроль</td></tr>
+<tr><td><strong>Зависимости</strong></td><td>Добавляет 4+ модуля</td><td>Минимум</td></tr>
+<tr><td><strong>Stampede protection</strong></td><td>❌ Нет (нужен singleflight)</td><td>Можете добавить</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Идиоматичный Go</strong>: Многие Go-команды предпочитают собственную реализацию поверх конкретных библиотек (go-redis + ristretto), чем абстракцию gocache. Это больше кода, но меньше зависимостей и полный контроль. Мы покажем оба подхода в практических примерах.</p>
+</blockquote>
+<hr>
+<h2 id="паттерны-кэширования"><a class="header" href="#паттерны-кэширования">Паттерны кэширования</a></h2>
+<p>Независимо от выбора библиотеки, вам нужно решить <strong>как</strong> кэшировать данные. Паттерны кэширования определяют, когда данные попадают в кэш, когда обновляются и как обеспечивается консистентность.</p>
+<h3 id="cache-aside-lazy-loading"><a class="header" href="#cache-aside-lazy-loading">Cache-Aside (Lazy Loading)</a></h3>
+<p>Самый распространённый паттерн. Приложение само управляет кэшем: проверяет → при miss загружает из БД → кладёт в кэш.</p>
+<pre><code>Клиент → Приложение:
+  1. Проверить кэш
+  2. Cache HIT  → вернуть данные
+  3. Cache MISS → запросить БД → сохранить в кэш → вернуть данные
+</code></pre>
+<p><strong>C# — IDistributedCache</strong>:</p>
+<pre><code class="language-csharp">// C#: типичный Cache-Aside
+public async Task&lt;User?&gt; GetUserAsync(string id)
+{
+    var cached = await _cache.GetStringAsync($"user:{id}");
+    if (cached != null)
+        return JsonSerializer.Deserialize&lt;User&gt;(cached);
+
+    var user = await _dbContext.Users.FindAsync(id);
+    if (user != null)
+    {
+        await _cache.SetStringAsync($"user:{id}",
+            JsonSerializer.Serialize(user),
+            new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+            });
+    }
+    return user;
+}
+</code></pre>
+<p><strong>Go — Cache-Aside</strong>:</p>
+<pre><code class="language-go">func (s *UserService) GetUser(ctx context.Context, id string) (*User, error) {
+    key := fmt.Sprintf("user:%s", id)
+
+    // 1. Проверяем кэш
+    cached, err := s.redis.Get(ctx, key).Bytes()
+    if err == nil {
+        var user User
+        if err := json.Unmarshal(cached, &amp;user); err == nil {
+            return &amp;user, nil
+        }
+        // Ошибка десериализации — идём в БД
+    } else if err != redis.Nil {
+        // Ошибка Redis (не miss) — логируем, но не падаем
+        s.logger.Warn("ошибка Redis", "error", err, "key", key)
+    }
+
+    // 2. Cache miss — загружаем из БД
+    user, err := s.repo.FindByID(ctx, id)
+    if err != nil {
+        return nil, fmt.Errorf("поиск пользователя: %w", err)
+    }
+
+    // 3. Сохраняем в кэш (асинхронно, ошибка не критична)
+    data, _ := json.Marshal(user)
+    if err := s.redis.Set(ctx, key, data, 5*time.Minute).Err(); err != nil {
+        s.logger.Warn("не удалось закэшировать", "error", err, "key", key)
+    }
+
+    return user, nil
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Важный принцип</strong>: Ошибка кэширования <strong>не должна</strong> ломать основную логику. Кэш — это оптимизация, а не источник правды. Если Redis недоступен, приложение должно работать (медленнее, но работать).</p>
+</blockquote>
+<p><strong>Достоинства</strong>: Кэшируются только запрошенные данные. Простой в реализации.</p>
+<p><strong>Недостатки</strong>: Первый запрос всегда медленный (cold cache). Данные могут устареть (stale).</p>
+<h3 id="write-through"><a class="header" href="#write-through">Write-Through</a></h3>
+<p>Данные записываются в кэш <strong>одновременно</strong> с записью в БД. Кэш всегда актуален.</p>
+<pre><code class="language-go">func (s *UserService) UpdateUser(ctx context.Context, user *User) error {
+    // 1. Записываем в БД
+    if err := s.repo.Update(ctx, user); err != nil {
+        return fmt.Errorf("обновление пользователя: %w", err)
+    }
+
+    // 2. Обновляем кэш (синхронно!)
+    key := fmt.Sprintf("user:%s", user.ID)
+    data, _ := json.Marshal(user)
+    if err := s.redis.Set(ctx, key, data, 5*time.Minute).Err(); err != nil {
+        // Кэш не обновился — данные устареют, но не потеряются
+        s.logger.Warn("не удалось обновить кэш", "error", err, "key", key)
+    }
+
+    return nil
+}
+</code></pre>
+<p><strong>Достоинства</strong>: Кэш всегда содержит актуальные данные. Нет stale reads.</p>
+<p><strong>Недостатки</strong>: Увеличенная латентность записи (БД + кэш). Кэшируются данные, которые могут никогда не быть прочитаны.</p>
+<h3 id="write-behind-write-back"><a class="header" href="#write-behind-write-back">Write-Behind (Write-Back)</a></h3>
+<p>Данные сначала записываются в кэш, а в БД — <strong>асинхронно</strong> через буфер. Минимальная латентность записи, но есть риск потери данных.</p>
+<pre><code class="language-go">type WriteBackCache struct {
+    redis  *redis.Client
+    writes chan writeOp
+    repo   UserRepository
+}
+
+type writeOp struct {
+    key  string
+    user *User
+}
+
+func NewWriteBackCache(rdb *redis.Client, repo UserRepository) *WriteBackCache {
+    wbc := &amp;WriteBackCache{
+        redis:  rdb,
+        writes: make(chan writeOp, 1000), // буфер на 1000 операций
+        repo:   repo,
+    }
+    go wbc.processWrites() // фоновая горутина для записи в БД
+    return wbc
+}
+
+func (wbc *WriteBackCache) Set(ctx context.Context, user *User) error {
+    key := fmt.Sprintf("user:%s", user.ID)
+    data, _ := json.Marshal(user)
+
+    // 1. Записываем в кэш (быстро)
+    if err := wbc.redis.Set(ctx, key, data, 10*time.Minute).Err(); err != nil {
+        return err
+    }
+
+    // 2. Отправляем в очередь для записи в БД (неблокирующе)
+    select {
+    case wbc.writes &lt;- writeOp{key: key, user: user}:
+    default:
+        // Буфер полон — записываем синхронно
+        return wbc.repo.Update(ctx, user)
+    }
+    return nil
+}
+
+func (wbc *WriteBackCache) processWrites() {
+    for op := range wbc.writes {
+        ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+        if err := wbc.repo.Update(ctx, op.user); err != nil {
+            log.Printf("ошибка записи в БД: %v (key=%s)", err, op.key)
+            // TODO: retry logic, DLQ
+        }
+        cancel()
+    }
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Риск потери данных</strong>: Если приложение упадёт до записи в БД, данные из буфера будут потеряны. Используйте только для некритичных данных (счётчики просмотров, last seen и т.д.).</p>
+</blockquote>
+<h3 id="read-through"><a class="header" href="#read-through">Read-Through</a></h3>
+<p>Кэш сам загружает данные при miss — приложение работает только с кэшем.</p>
+<pre><code class="language-go">// Read-Through с помощью функции-загрузчика
+type ReadThroughCache[V any] struct {
+    cache  *redis.Client
+    loader func(ctx context.Context, key string) (V, error)
+    ttl    time.Duration
+}
+
+func (c *ReadThroughCache[V]) Get(ctx context.Context, key string) (V, error) {
+    // 1. Пробуем кэш
+    cached, err := c.cache.Get(ctx, key).Bytes()
+    if err == nil {
+        var val V
+        if err := json.Unmarshal(cached, &amp;val); err == nil {
+            return val, nil
+        }
+    }
+
+    // 2. Cache miss — вызываем loader
+    val, err := c.loader(ctx, key)
+    if err != nil {
+        return val, err
+    }
+
+    // 3. Сохраняем в кэш
+    data, _ := json.Marshal(val)
+    c.cache.Set(ctx, key, data, c.ttl)
+
+    return val, nil
+}
+
+// Использование
+userCache := &amp;ReadThroughCache[*User]{
+    cache: rdb,
+    loader: func(ctx context.Context, key string) (*User, error) {
+        id := strings.TrimPrefix(key, "user:")
+        return userRepo.FindByID(ctx, id)
+    },
+    ttl: 5 * time.Minute,
+}
+
+user, err := userCache.Get(ctx, "user:123")
+</code></pre>
+<blockquote>
+<p>💡 <strong>Read-Through vs Cache-Aside</strong>: В Cache-Aside приложение явно управляет кэшем. В Read-Through логика загрузки инкапсулирована в кэш. Read-Through проще использовать, но менее гибок.</p>
+</blockquote>
+<h3 id="cache-stampede-prevention-singleflight"><a class="header" href="#cache-stampede-prevention-singleflight">Cache Stampede Prevention (singleflight)</a></h3>
+<p><strong>Cache stampede</strong> (также known as “thundering herd”) — ситуация, когда TTL ключа истекает и сотни горутин одновременно запрашивают одни и те же данные из БД.</p>
+<pre><code>TTL ключа "popular:item" истёк
+  → 500 горутин одновременно делают GET → miss
+  → 500 запросов к БД
+  → 500 SET в Redis
+  → БД перегружена, Redis перегружен
+</code></pre>
+<p>Решение — <strong><code>singleflight</code></strong> (подробнее о нём в <a href="../part2-advanced/04_sync_primitives.html">разделе 2.4</a>). Только одна горутина выполняет запрос, остальные ждут её результат.</p>
+<p><strong>C# — LazyCache (встроенная защита)</strong>:</p>
+<pre><code class="language-csharp">// C#: LazyCache автоматически предотвращает stampede
+var user = await _lazyCache.GetOrAddAsync($"user:{id}", async entry =&gt;
+{
+    entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
+    return await _dbContext.Users.FindAsync(id);
+});
+</code></pre>
+<p><strong>Go — singleflight + кэш</strong>:</p>
+<pre><code class="language-go">import "golang.org/x/sync/singleflight"
+
+type CachedUserService struct {
+    redis  *redis.Client
+    repo   UserRepository
+    sf     singleflight.Group
+}
+
+func (s *CachedUserService) GetUser(ctx context.Context, id string) (*User, error) {
+    key := fmt.Sprintf("user:%s", id)
+
+    // 1. Проверяем кэш
+    cached, err := s.redis.Get(ctx, key).Bytes()
+    if err == nil {
+        var user User
+        if err := json.Unmarshal(cached, &amp;user); err == nil {
+            return &amp;user, nil
+        }
+    }
+
+    // 2. Cache miss — singleflight: только ОДНА горутина идёт в БД
+    result, err, shared := s.sf.Do(key, func() (interface{}, error) {
+        // Повторная проверка кэша (другая горутина могла уже заполнить)
+        cached, err := s.redis.Get(ctx, key).Bytes()
+        if err == nil {
+            var user User
+            if err := json.Unmarshal(cached, &amp;user); err == nil {
+                return &amp;user, nil
+            }
+        }
+
+        // Загружаем из БД
+        user, err := s.repo.FindByID(ctx, id)
+        if err != nil {
+            return nil, err
+        }
+
+        // Сохраняем в кэш
+        data, _ := json.Marshal(user)
+        s.redis.Set(ctx, key, data, 5*time.Minute)
+
+        return user, nil
+    })
+
+    if err != nil {
+        return nil, err
+    }
+
+    _ = shared // true, если результат был shared с другими горутинами
+    return result.(*User), nil
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Это самый важный паттерн кэширования в Go</strong>. Без <code>singleflight</code> кэш под нагрузкой может усилить проблему вместо того, чтобы её решить.</p>
+</blockquote>
+<h3 id="стратегии-ttl"><a class="header" href="#стратегии-ttl">Стратегии TTL</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Стратегия</th><th>Описание</th><th>Когда использовать</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Fixed TTL</strong></td><td>Ключ живёт ровно N минут</td><td>Большинство случаев</td></tr>
+<tr><td><strong>Sliding</strong></td><td>TTL обновляется при каждом доступе</td><td>Сессии, “горячие” данные</td></tr>
+<tr><td><strong>Jittered</strong></td><td>TTL = base ± random</td><td>Предотвращение thundering herd</td></tr>
+<tr><td><strong>No TTL + Event</strong></td><td>Без TTL, инвалидация по событию</td><td>Критичная консистентность</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Jittered TTL</strong> — добавляем случайный разброс, чтобы ключи не истекали одновременно:</p>
+<pre><code class="language-go">// Без jitter: все ключи истекают одновременно → stampede
+ttl := 5 * time.Minute
+
+// С jitter: ключи истекают в разное время → плавная нагрузка
+func jitteredTTL(base time.Duration, jitterPercent float64) time.Duration {
+    jitter := time.Duration(float64(base) * jitterPercent * (rand.Float64()*2 - 1))
+    return base + jitter
+}
+
+ttl := jitteredTTL(5*time.Minute, 0.1) // 4.5 - 5.5 минут
+</code></pre>
+<p><strong>Sliding TTL</strong> — обновление TTL при каждом обращении:</p>
+<pre><code class="language-go">func (s *SessionService) GetSession(ctx context.Context, sessionID string) (*Session, error) {
+    key := "session:" + sessionID
+
+    data, err := s.redis.Get(ctx, key).Bytes()
+    if err != nil {
+        return nil, err
+    }
+
+    // Продлеваем TTL при каждом доступе (sliding)
+    s.redis.Expire(ctx, key, 30*time.Minute)
+
+    var session Session
+    json.Unmarshal(data, &amp;session)
+    return &amp;session, nil
+}
+</code></pre>
+<h3 id="инвалидация-кэша"><a class="header" href="#инвалидация-кэша">Инвалидация кэша</a></h3>
+<blockquote>
+<p>“В компьютерных науках есть только две сложные вещи: инвалидация кэша и именование.”</p>
+</blockquote>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Подход</th><th>Реализация</th><th>Плюсы</th><th>Минусы</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>TTL</strong></td><td><code>Set(key, val, 5*time.Minute)</code></td><td>Простой, автоматический</td><td>Stale данные до истечения TTL</td></tr>
+<tr><td><strong>Явное удаление</strong></td><td><code>Del(key)</code> при обновлении</td><td>Точный, немедленный</td><td>Нужно знать все ключи</td></tr>
+<tr><td><strong>Pub/Sub</strong></td><td>Публикация события инвалидации</td><td>Распределённый</td><td>Redis Pub/Sub ненадёжен</td></tr>
+<tr><td><strong>Tag-based</strong></td><td>Группы ключей по тегу</td><td>Удобная массовая инвалидация</td><td>Сложная реализация</td></tr>
+<tr><td><strong>Version-based</strong></td><td><code>user:v3:123</code> вместо <code>user:123</code></td><td>Мгновенный, без удаления</td><td>Старые версии остаются</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Явное удаление</strong> при обновлении:</p>
+<pre><code class="language-go">func (s *UserService) UpdateUser(ctx context.Context, user *User) error {
+    if err := s.repo.Update(ctx, user); err != nil {
+        return err
+    }
+
+    // Инвалидируем все связанные ключи
+    keys := []string{
+        fmt.Sprintf("user:%s", user.ID),
+        fmt.Sprintf("user:email:%s", user.Email),
+        fmt.Sprintf("user:list:page:*"), // паттерн — нужен SCAN
+    }
+    s.redis.Del(ctx, keys[:2]...) // точные ключи
+
+    // Для паттернов — используем SCAN (не KEYS!)
+    s.invalidateByPattern(ctx, "user:list:page:*")
+
+    return nil
+}
+
+func (s *UserService) invalidateByPattern(ctx context.Context, pattern string) {
+    iter := s.redis.Scan(ctx, 0, pattern, 100).Iterator()
+    var keys []string
+    for iter.Next(ctx) {
+        keys = append(keys, iter.Val())
+    }
+    if len(keys) &gt; 0 {
+        s.redis.Del(ctx, keys...)
+    }
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Никогда не используйте <code>KEYS</code></strong> в production! Команда <code>KEYS</code> блокирует Redis на время выполнения. Используйте <code>SCAN</code> — он итерирует по ключам порциями, не блокируя сервер.</p>
+</blockquote>
+<p><strong>Version-based</strong> ключи — элегантное решение без удаления:</p>
+<pre><code class="language-go">// Вместо инвалидации — меняем версию
+// Старые ключи автоматически истекут по TTL
+
+func (s *UserService) getCacheVersion(ctx context.Context) (int64, error) {
+    return s.redis.Get(ctx, "user:cache:version").Int64()
+}
+
+func (s *UserService) GetUser(ctx context.Context, id string) (*User, error) {
+    version, _ := s.getCacheVersion(ctx)
+    key := fmt.Sprintf("user:v%d:%s", version, id)
+    // ...
+}
+
+func (s *UserService) InvalidateAll(ctx context.Context) error {
+    // Инкрементируем версию — все старые ключи больше не читаются
+    return s.redis.Incr(ctx, "user:cache:version").Err()
+}
+</code></pre>
+<hr>
+<h2 id="multi-level-кэширование-l1--l2"><a class="header" href="#multi-level-кэширование-l1--l2">Multi-Level кэширование (L1 + L2)</a></h2>
+<p>В production-системах с высокой нагрузкой одного уровня кэша недостаточно. <strong>Multi-level cache</strong> комбинирует in-memory (L1) и distributed (L2) кэши для оптимальной производительности.</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Это аналог <code>FusionCache</code> / <code>HybridCache</code> из .NET 9. L1 — <code>IMemoryCache</code>, L2 — <code>IDistributedCache</code>. В Go вы строите эту архитектуру вручную.</p>
+</blockquote>
+<h3 id="архитектура"><a class="header" href="#архитектура">Архитектура</a></h3>
+<pre><code>Запрос → L1 (ristretto, in-memory)
+           │
+           ├── HIT → возврат (наносекунды)
+           │
+           └── MISS → L2 (Redis, distributed)
+                        │
+                        ├── HIT → сохранить в L1 → возврат (микросекунды)
+                        │
+                        └── MISS → БД → сохранить в L2 + L1 → возврат (миллисекунды)
+</code></pre>
+<p><strong>Зачем два уровня</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th></th><th>L1 (in-memory)</th><th>L2 (Redis)</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Скорость</strong></td><td>~100 ns</td><td>~500 µs (сеть)</td></tr>
+<tr><td><strong>Объём</strong></td><td>Ограничен RAM процесса</td><td>Десятки GB</td></tr>
+<tr><td><strong>Scope</strong></td><td>Локальный для инстанса</td><td>Общий для всех инстансов</td></tr>
+<tr><td><strong>Консистентность</strong></td><td>Может быть stale между инстансами</td><td>Единый источник</td></tr>
+<tr><td><strong>TTL</strong></td><td>Короткий (1-5 минут)</td><td>Длинный (10-60 минут)</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="реализация"><a class="header" href="#реализация">Реализация</a></h3>
+<pre><code class="language-go">type MultiLevelCache[V any] struct {
+    l1    *ristretto.Cache[string, V]   // in-memory
+    l2    *redis.Client                  // distributed
+    sf    singleflight.Group             // stampede prevention
+    ttlL1 time.Duration
+    ttlL2 time.Duration
+}
+
+func NewMultiLevelCache[V any](
+    l1 *ristretto.Cache[string, V],
+    l2 *redis.Client,
+    ttlL1, ttlL2 time.Duration,
+) *MultiLevelCache[V] {
+    return &amp;MultiLevelCache[V]{
+        l1:    l1,
+        l2:    l2,
+        ttlL1: ttlL1,
+        ttlL2: ttlL2,
+    }
+}
+
+func (c *MultiLevelCache[V]) Get(
+    ctx context.Context,
+    key string,
+    loader func(ctx context.Context) (V, error),
+) (V, error) {
+    // 1. Проверяем L1 (наносекунды)
+    if val, found := c.l1.Get(key); found {
+        return val, nil
+    }
+
+    // 2. singleflight — только одна горутина идёт дальше
+    result, err, _ := c.sf.Do(key, func() (interface{}, error) {
+        // 3. Проверяем L2 (Redis)
+        cached, err := c.l2.Get(ctx, key).Bytes()
+        if err == nil {
+            var val V
+            if err := json.Unmarshal(cached, &amp;val); err == nil {
+                // Заполняем L1
+                c.l1.SetWithTTL(key, val, 1, c.ttlL1)
+                return val, nil
+            }
+        }
+
+        // 4. Cache miss на обоих уровнях — загружаем из источника
+        val, err := loader(ctx)
+        if err != nil {
+            return val, err
+        }
+
+        // 5. Заполняем оба уровня
+        data, _ := json.Marshal(val)
+        c.l2.Set(ctx, key, data, c.ttlL2)
+        c.l1.SetWithTTL(key, val, 1, c.ttlL1)
+
+        return val, nil
+    })
+
+    if err != nil {
+        var zero V
+        return zero, err
+    }
+    return result.(V), nil
+}
+
+func (c *MultiLevelCache[V]) Invalidate(ctx context.Context, key string) {
+    c.l1.Del(key)
+    c.l2.Del(ctx, key)
+}
+
+func (c *MultiLevelCache[V]) Set(ctx context.Context, key string, val V) error {
+    c.l1.SetWithTTL(key, val, 1, c.ttlL1)
+    data, err := json.Marshal(val)
+    if err != nil {
+        return err
+    }
+    return c.l2.Set(ctx, key, data, c.ttlL2).Err()
+}
+</code></pre>
+<h3 id="инвалидация-между-инстансами"><a class="header" href="#инвалидация-между-инстансами">Инвалидация между инстансами</a></h3>
+<p>Проблема: Pod A обновляет данные → удаляет из L2 → но L1 на Pod B, Pod C всё ещё содержит stale данные.</p>
+<p>Решение: <strong>Redis Pub/Sub</strong> для уведомления об инвалидации.</p>
+<pre><code class="language-go">type DistributedCache[V any] struct {
+    *MultiLevelCache[V]
+    pubsub    *redis.PubSub
+    channel   string
+    cancelCtx context.CancelFunc
+}
+
+func NewDistributedCache[V any](
+    l1 *ristretto.Cache[string, V],
+    l2 *redis.Client,
+    ttlL1, ttlL2 time.Duration,
+    channel string,
+) *DistributedCache[V] {
+    ctx, cancel := context.WithCancel(context.Background())
+
+    dc := &amp;DistributedCache[V]{
+        MultiLevelCache: NewMultiLevelCache(l1, l2, ttlL1, ttlL2),
+        channel:         channel,
+        cancelCtx:       cancel,
+    }
+
+    // Подписываемся на канал инвалидации
+    dc.pubsub = l2.Subscribe(ctx, channel)
+    go dc.listenInvalidations(ctx)
+
+    return dc
+}
+
+func (dc *DistributedCache[V]) listenInvalidations(ctx context.Context) {
+    ch := dc.pubsub.Channel()
+    for {
+        select {
+        case &lt;-ctx.Done():
+            return
+        case msg := &lt;-ch:
+            // Другой инстанс попросил инвалидировать ключ
+            dc.l1.Del(msg.Payload)
+        }
+    }
+}
+
+// Инвалидация: удаляем из L1, L2, и уведомляем все инстансы
+func (dc *DistributedCache[V]) Invalidate(ctx context.Context, key string) {
+    dc.l1.Del(key)
+    dc.l2.Del(ctx, key)
+    // Уведомляем другие инстансы удалить из своих L1
+    dc.l2.Publish(ctx, dc.channel, key)
+}
+
+func (dc *DistributedCache[V]) Close() {
+    dc.cancelCtx()
+    dc.pubsub.Close()
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Pub/Sub ненадёжен</strong>: Если инстанс временно отключился от Redis, он пропустит сообщения об инвалидации. Комбинируйте Pub/Sub с <strong>коротким TTL на L1</strong> (1-5 минут) — даже если инвалидация не дошла, данные обновятся при истечении TTL.</p>
+</blockquote>
+<hr>
+<h2 id="production-concerns"><a class="header" href="#production-concerns">Production Concerns</a></h2>
+<h3 id="прогрев-кэша-cache-warming"><a class="header" href="#прогрев-кэша-cache-warming">Прогрев кэша (Cache Warming)</a></h3>
+<p>После деплоя или рестарта кэш пуст. Первые запросы попадают сразу в БД, что может вызвать пик нагрузки.</p>
+<p><strong>C# — IHostedService</strong>:</p>
+<pre><code class="language-csharp">// C#: прогрев кэша при старте
+public class CacheWarmingService : BackgroundService
+{
+    protected override async Task ExecuteAsync(CancellationToken ct)
+    {
+        var popularUsers = await _db.Users.OrderByDescending(u =&gt; u.LastLogin)
+            .Take(1000).ToListAsync(ct);
+        foreach (var user in popularUsers)
+            await _cache.SetAsync($"user:{user.Id}", user);
+    }
+}
+</code></pre>
+<p><strong>Go — errgroup для параллельного прогрева</strong>:</p>
+<pre><code class="language-go">func WarmCache(ctx context.Context, rdb *redis.Client, repo UserRepository) error {
+    // Загружаем популярные данные
+    users, err := repo.FindMostActive(ctx, 1000)
+    if err != nil {
+        return fmt.Errorf("загрузка пользователей: %w", err)
+    }
+
+    g, ctx := errgroup.WithContext(ctx)
+    g.SetLimit(20) // параллельность: 20 горутин
+
+    for _, user := range users {
+        user := user // capture loop variable
+        g.Go(func() error {
+            key := fmt.Sprintf("user:%s", user.ID)
+            data, _ := json.Marshal(user)
+            return rdb.Set(ctx, key, data, 30*time.Minute).Err()
+        })
+    }
+
+    return g.Wait()
+}
+
+// Вызов при старте приложения
+func main() {
+    // ... инициализация ...
+
+    // Прогрев кэша в фоне (не блокируем старт сервера)
+    go func() {
+        ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+        defer cancel()
+        if err := WarmCache(ctx, rdb, repo); err != nil {
+            slog.Error("ошибка прогрева кэша", "error", err)
+        } else {
+            slog.Info("кэш прогрет", "keys", 1000)
+        }
+    }()
+
+    // Сервер начинает работать сразу
+    server.ListenAndServe()
+}
+</code></pre>
+<h3 id="мониторинг"><a class="header" href="#мониторинг">Мониторинг</a></h3>
+<p>Кэш без мониторинга — это чёрный ящик. Ключевые метрики:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Метрика</th><th>Описание</th><th>Тревога</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Hit Rate</strong></td><td>% запросов из кэша</td><td>&lt; 80% — проблема</td></tr>
+<tr><td><strong>Miss Rate</strong></td><td>% промахов</td><td>&gt; 20% — расследовать</td></tr>
+<tr><td><strong>Eviction Rate</strong></td><td>Частота вытеснений</td><td>Резкий рост — мало памяти</td></tr>
+<tr><td><strong>Latency P99</strong></td><td>Задержка 99-го перцентиля</td><td>&gt; 5ms для Redis</td></tr>
+<tr><td><strong>Pool Usage</strong></td><td>Использование пула соединений</td><td>&gt; 80% — увеличить пул</td></tr>
+<tr><td><strong>Memory Usage</strong></td><td>Объём памяти кэша</td><td>Приближение к лимиту</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Prometheus метрики для кэша</strong>:</p>
+<pre><code class="language-go">import "github.com/prometheus/client_golang/prometheus"
+
+var (
+    cacheOps = prometheus.NewCounterVec(
+        prometheus.CounterOpts{
+            Name: "cache_operations_total",
+            Help: "Количество операций кэша",
+        },
+        []string{"operation", "result"}, // operation: get/set/del, result: hit/miss/error
+    )
+
+    cacheLatency = prometheus.NewHistogramVec(
+        prometheus.HistogramOpts{
+            Name:    "cache_operation_duration_seconds",
+            Help:    "Латентность операций кэша",
+            Buckets: prometheus.DefBuckets,
+        },
+        []string{"operation", "level"}, // level: l1/l2
+    )
+
+    cacheSize = prometheus.NewGauge(prometheus.GaugeOpts{
+        Name: "cache_entries_total",
+        Help: "Количество записей в кэше",
+    })
+)
+
+func init() {
+    prometheus.MustRegister(cacheOps, cacheLatency, cacheSize)
+}
+
+// Middleware для метрик
+func (c *InstrumentedCache) Get(ctx context.Context, key string) ([]byte, error) {
+    start := time.Now()
+    defer func() {
+        cacheLatency.WithLabelValues("get", "l2").Observe(time.Since(start).Seconds())
+    }()
+
+    val, err := c.inner.Get(ctx, key).Bytes()
+    if err == redis.Nil {
+        cacheOps.WithLabelValues("get", "miss").Inc()
+        return nil, err
+    }
+    if err != nil {
+        cacheOps.WithLabelValues("get", "error").Inc()
+        return nil, err
+    }
+
+    cacheOps.WithLabelValues("get", "hit").Inc()
+    return val, nil
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Правило</strong>: Hit rate ниже 80% означает, что кэш не приносит достаточной пользы. Проверьте: правильные ли данные кэшируются? Достаточен ли TTL? Не слишком ли маленький размер кэша?</p>
+</blockquote>
+<h3 id="сериализация"><a class="header" href="#сериализация">Сериализация</a></h3>
+<p>В C# <code>IDistributedCache</code> работает с <code>byte[]</code>, и вы обычно используете <code>System.Text.Json</code>. В Go для кэширования есть несколько вариантов:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Формат</th><th>Библиотека</th><th>Скорость</th><th>Размер</th><th>Читаемость</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>JSON</strong></td><td><code>encoding/json</code></td><td>Средняя</td><td>Большой</td><td>Да</td></tr>
+<tr><td><strong>MessagePack</strong></td><td><code>vmihailenco/msgpack</code></td><td>Быстрая</td><td>Компактный</td><td>Нет</td></tr>
+<tr><td><strong>Protocol Buffers</strong></td><td><code>google.golang.org/protobuf</code></td><td>Быстрая</td><td>Компактный</td><td>Нет</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>JSON</strong> — простой, но медленный:</p>
+<pre><code class="language-go">import "encoding/json"
+
+func cacheSet(ctx context.Context, rdb *redis.Client, key string, val any, ttl time.Duration) error {
+    data, err := json.Marshal(val)
+    if err != nil {
+        return err
+    }
+    return rdb.Set(ctx, key, data, ttl).Err()
+}
+</code></pre>
+<p><strong>MessagePack</strong> — оптимальный баланс скорости и размера:</p>
+<pre><code class="language-go">import "github.com/vmihailenco/msgpack/v5"
+
+func cacheSetMsgpack(ctx context.Context, rdb *redis.Client, key string, val any, ttl time.Duration) error {
+    data, err := msgpack.Marshal(val)
+    if err != nil {
+        return err
+    }
+    return rdb.Set(ctx, key, data, ttl).Err()
+}
+
+func cacheGetMsgpack[V any](ctx context.Context, rdb *redis.Client, key string) (V, error) {
+    var val V
+    data, err := rdb.Get(ctx, key).Bytes()
+    if err != nil {
+        return val, err
+    }
+    err = msgpack.Unmarshal(data, &amp;val)
+    return val, err
+}
+</code></pre>
+<p><strong>Примерные характеристики</strong> (типичный объект User):</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Формат</th><th>Размер</th><th>Marshal</th><th>Unmarshal</th></tr>
+</thead>
+<tbody>
+<tr><td>JSON</td><td>195 bytes</td><td>800 ns</td><td>1200 ns</td></tr>
+<tr><td>MessagePack</td><td>128 bytes</td><td>350 ns</td><td>450 ns</td></tr>
+<tr><td>Protobuf</td><td>98 bytes</td><td>200 ns</td><td>280 ns</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Рекомендация</strong>: Для большинства случаев <strong>MessagePack</strong> — лучший выбор. Он в ~2x быстрее JSON, на ~35% компактнее, и не требует генерации кода (в отличие от Protobuf). Protobuf выбирайте, если данные уже определены через <code>.proto</code> файлы.</p>
+</blockquote>
+<h3 id="connection-pooling-и-resilience"><a class="header" href="#connection-pooling-и-resilience">Connection Pooling и Resilience</a></h3>
+<p>go-redis имеет встроенный пул соединений. Мониторинг пула:</p>
+<pre><code class="language-go">// Статистика пула соединений
+stats := rdb.PoolStats()
+fmt.Printf("Hits: %d, Misses: %d, Timeouts: %d\n",
+    stats.Hits, stats.Misses, stats.Timeouts)
+fmt.Printf("Total: %d, Idle: %d, Stale: %d\n",
+    stats.TotalConns, stats.IdleConns, stats.StaleConns)
+</code></pre>
+<p><strong>Circuit Breaker</strong> для Redis (подробнее о паттерне — в <a href="./01_production_postgresql.html">разделе 4.1</a>):</p>
+<pre><code class="language-go">import "github.com/sony/gobreaker/v2"
+
+type ResilientCache struct {
+    rdb *redis.Client
+    cb  *gobreaker.CircuitBreaker[[]byte]
+}
+
+func NewResilientCache(rdb *redis.Client) *ResilientCache {
+    cb := gobreaker.NewCircuitBreaker[[]byte](gobreaker.Settings{
+        Name:        "redis-cache",
+        MaxRequests: 5,                 // запросов в half-open
+        Interval:    10 * time.Second,  // сброс счётчиков
+        Timeout:     30 * time.Second,  // время в open state
+        ReadyToTrip: func(counts gobreaker.Counts) bool {
+            return counts.ConsecutiveFailures &gt; 5
+        },
+    })
+
+    return &amp;ResilientCache{rdb: rdb, cb: cb}
+}
+
+func (rc *ResilientCache) Get(ctx context.Context, key string) ([]byte, error) {
+    result, err := rc.cb.Execute(func() ([]byte, error) {
+        return rc.rdb.Get(ctx, key).Bytes()
+    })
+    if err != nil {
+        // Circuit breaker open или Redis недоступен
+        // Graceful degradation — идём напрямую в БД
+        return nil, err
+    }
+    return result, nil
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Graceful degradation</strong>: Когда Redis недоступен, приложение должно продолжать работать, обращаясь напрямую к БД. Это медленнее, но лучше, чем ошибки 500.</p>
+</blockquote>
+<h3 id="память-и-gc"><a class="header" href="#память-и-gc">Память и GC</a></h3>
+<p>Влияние разных подходов к кэшированию на Go GC (подробнее — <a href="../part2-advanced/03_gc.html">раздел 2.3</a>):</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Подход</th><th>1M записей</th><th>GC Pause</th><th>Почему</th></tr>
+</thead>
+<tbody>
+<tr><td><code>map[string]*Object</code></td><td>~500 MB</td><td>10-50 ms</td><td>Миллионы указателей сканируются GC</td></tr>
+<tr><td><code>map[string]Object</code> (по значению)</td><td>~400 MB</td><td>5-20 ms</td><td>Меньше указателей, но string — это указатель</td></tr>
+<tr><td>bigcache</td><td>~300 MB</td><td>&lt; 1 ms</td><td><code>map[uint64]uint32</code> — нет указателей</td></tr>
+<tr><td>ristretto</td><td>~350 MB</td><td>3-10 ms</td><td>Шардирование снижает конкуренцию</td></tr>
+<tr><td>Redis (external)</td><td>0 MB в Go</td><td>0 ms</td><td>Данные в отдельном процессе</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-go">// Мониторинг GC для оценки влияния кэша
+import "runtime"
+
+func logGCStats() {
+    var stats runtime.MemStats
+    runtime.ReadMemStats(&amp;stats)
+
+    slog.Info("memory stats",
+        "alloc_mb", stats.Alloc/1024/1024,
+        "sys_mb", stats.Sys/1024/1024,
+        "gc_pause_ns", stats.PauseNs[(stats.NumGC+255)%256],
+        "num_gc", stats.NumGC,
+    )
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Если GC pause &gt; 5ms</strong> и у вас большой in-memory кэш — рассмотрите переход на bigcache или вынос данных в Redis.</p>
+</blockquote>
+<h3 id="opentelemetry-instrumentation"><a class="header" href="#opentelemetry-instrumentation">OpenTelemetry Instrumentation</a></h3>
+<p>go-redis имеет официальный пакет для OpenTelemetry:</p>
+<pre><code class="language-bash">go get github.com/redis/go-redis/extra/redisotel/v9
+</code></pre>
+<pre><code class="language-go">import "github.com/redis/go-redis/extra/redisotel/v9"
+
+rdb := redis.NewClient(&amp;redis.Options{
+    Addr: "localhost:6379",
+})
+
+// Включаем tracing
+if err := redisotel.InstrumentTracing(rdb); err != nil {
+    panic(err)
+}
+
+// Включаем метрики
+if err := redisotel.InstrumentMetrics(rdb); err != nil {
+    panic(err)
+}
+
+// Теперь все операции Redis автоматически создают spans
+// и экспортируют метрики в OpenTelemetry collector
+</code></pre>
+<p>Подробнее об OpenTelemetry — в <a href="./05_observability.html">разделе 4.5</a>.</p>
+<hr>
+<h2 id="практические-примеры"><a class="header" href="#практические-примеры">Практические примеры</a></h2>
+<h3 id="пример-1-production-ready-redis-cache-layer"><a class="header" href="#пример-1-production-ready-redis-cache-layer">Пример 1: Production-Ready Redis Cache Layer</a></h3>
+<p>Полноценный cache-сервис с generics, msgpack сериализацией, Prometheus метриками и graceful degradation.</p>
+<pre><code class="language-go">package cache
+
+import (
+    "context"
+    "errors"
+    "fmt"
+    "log/slog"
+    "time"
+
+    "github.com/prometheus/client_golang/prometheus"
+    "github.com/redis/go-redis/v9"
+    "github.com/vmihailenco/msgpack/v5"
+)
+
+var ErrCacheMiss = errors.New("cache miss")
+
+// Метрики
+var (
+    opsTotal = prometheus.NewCounterVec(
+        prometheus.CounterOpts{
+            Name: "cache_operations_total",
+            Help: "Total cache operations",
+        },
+        []string{"op", "result"},
+    )
+    opDuration = prometheus.NewHistogramVec(
+        prometheus.HistogramOpts{
+            Name:    "cache_operation_duration_seconds",
+            Help:    "Cache operation duration",
+            Buckets: []float64{.0001, .0005, .001, .005, .01, .05, .1},
+        },
+        []string{"op"},
+    )
+)
+
+func init() {
+    prometheus.MustRegister(opsTotal, opDuration)
+}
+
+// RedisCache — production-ready кэш с generics
+type RedisCache[V any] struct {
+    rdb    *redis.Client
+    prefix string
+    logger *slog.Logger
+}
+
+func NewRedisCache[V any](rdb *redis.Client, prefix string, logger *slog.Logger) *RedisCache[V] {
+    return &amp;RedisCache[V]{
+        rdb:    rdb,
+        prefix: prefix,
+        logger: logger,
+    }
+}
+
+func (c *RedisCache[V]) key(id string) string {
+    return fmt.Sprintf("%s:%s", c.prefix, id)
+}
+
+func (c *RedisCache[V]) Get(ctx context.Context, id string) (V, error) {
+    start := time.Now()
+    defer func() {
+        opDuration.WithLabelValues("get").Observe(time.Since(start).Seconds())
+    }()
+
+    var zero V
+    data, err := c.rdb.Get(ctx, c.key(id)).Bytes()
+    if err == redis.Nil {
+        opsTotal.WithLabelValues("get", "miss").Inc()
+        return zero, ErrCacheMiss
+    }
+    if err != nil {
+        opsTotal.WithLabelValues("get", "error").Inc()
+        c.logger.Warn("cache get error", "key", c.key(id), "error", err)
+        return zero, ErrCacheMiss // graceful degradation
+    }
+
+    var val V
+    if err := msgpack.Unmarshal(data, &amp;val); err != nil {
+        opsTotal.WithLabelValues("get", "error").Inc()
+        c.logger.Warn("cache unmarshal error", "key", c.key(id), "error", err)
+        // Удаляем битые данные
+        c.rdb.Del(ctx, c.key(id))
+        return zero, ErrCacheMiss
+    }
+
+    opsTotal.WithLabelValues("get", "hit").Inc()
+    return val, nil
+}
+
+func (c *RedisCache[V]) Set(ctx context.Context, id string, val V, ttl time.Duration) {
+    start := time.Now()
+    defer func() {
+        opDuration.WithLabelValues("set").Observe(time.Since(start).Seconds())
+    }()
+
+    data, err := msgpack.Marshal(val)
+    if err != nil {
+        opsTotal.WithLabelValues("set", "error").Inc()
+        c.logger.Warn("cache marshal error", "key", c.key(id), "error", err)
+        return
+    }
+
+    if err := c.rdb.Set(ctx, c.key(id), data, ttl).Err(); err != nil {
+        opsTotal.WithLabelValues("set", "error").Inc()
+        c.logger.Warn("cache set error", "key", c.key(id), "error", err)
+        return
+    }
+
+    opsTotal.WithLabelValues("set", "ok").Inc()
+}
+
+func (c *RedisCache[V]) Delete(ctx context.Context, id string) {
+    if err := c.rdb.Del(ctx, c.key(id)).Err(); err != nil {
+        c.logger.Warn("cache delete error", "key", c.key(id), "error", err)
+    }
+}
+
+// GetOrLoad — Cache-Aside + singleflight в одном методе
+func (c *RedisCache[V]) GetOrLoad(
+    ctx context.Context,
+    id string,
+    ttl time.Duration,
+    loader func(ctx context.Context) (V, error),
+) (V, error) {
+    // 1. Пробуем кэш
+    val, err := c.Get(ctx, id)
+    if err == nil {
+        return val, nil
+    }
+
+    // 2. Загружаем из источника
+    val, err = loader(ctx)
+    if err != nil {
+        return val, err
+    }
+
+    // 3. Кэшируем (не блокируя основной flow)
+    c.Set(ctx, id, val, ttl)
+
+    return val, nil
+}
+</code></pre>
+<p><strong>Использование</strong>:</p>
+<pre><code class="language-go">// Создание
+userCache := cache.NewRedisCache[*User](rdb, "user", slog.Default())
+
+// Cache-Aside
+user, err := userCache.GetOrLoad(ctx, "123", 5*time.Minute, func(ctx context.Context) (*User, error) {
+    return repo.FindByID(ctx, "123")
+})
+</code></pre>
+<h3 id="пример-2-multi-level-cache-с-singleflight"><a class="header" href="#пример-2-multi-level-cache-с-singleflight">Пример 2: Multi-Level Cache с singleflight</a></h3>
+<p>L1 (ristretto) + L2 (Redis) + singleflight + Pub/Sub инвалидация.</p>
+<pre><code class="language-go">package cache
+
+import (
+    "context"
+    "encoding/json"
+    "fmt"
+    "log/slog"
+    "time"
+
+    "github.com/dgraph-io/ristretto/v2"
+    "github.com/redis/go-redis/v9"
+    "golang.org/x/sync/singleflight"
+)
+
+type TwoLevelCache[V any] struct {
+    l1         *ristretto.Cache[string, V]
+    l2         *redis.Client
+    sf         singleflight.Group
+    pubsub     *redis.PubSub
+    channel    string
+    ttlL1      time.Duration
+    ttlL2      time.Duration
+    logger     *slog.Logger
+    cancelFunc context.CancelFunc
+}
+
+type TwoLevelConfig struct {
+    L1NumCounters int64
+    L1MaxCost     int64
+    L1TTL         time.Duration
+    L2TTL         time.Duration
+    Channel       string
+}
+
+func NewTwoLevelCache[V any](
+    rdb *redis.Client,
+    cfg TwoLevelConfig,
+    logger *slog.Logger,
+) (*TwoLevelCache[V], error) {
+    l1, err := ristretto.NewCache(&amp;ristretto.Config[string, V]{
+        NumCounters: cfg.L1NumCounters,
+        MaxCost:     cfg.L1MaxCost,
+        BufferItems: 64,
+    })
+    if err != nil {
+        return nil, fmt.Errorf("создание ristretto cache: %w", err)
+    }
+
+    ctx, cancel := context.WithCancel(context.Background())
+
+    c := &amp;TwoLevelCache[V]{
+        l1:         l1,
+        l2:         rdb,
+        channel:    cfg.Channel,
+        ttlL1:      cfg.L1TTL,
+        ttlL2:      cfg.L2TTL,
+        logger:     logger,
+        cancelFunc: cancel,
+    }
+
+    // Подписка на инвалидации от других инстансов
+    c.pubsub = rdb.Subscribe(ctx, cfg.Channel)
+    go c.listenInvalidations(ctx)
+
+    return c, nil
+}
+
+func (c *TwoLevelCache[V]) Get(
+    ctx context.Context,
+    key string,
+    loader func(ctx context.Context) (V, error),
+) (V, error) {
+    // L1 — наносекунды
+    if val, ok := c.l1.Get(key); ok {
+        return val, nil
+    }
+
+    // singleflight — дедупликация конкурентных запросов
+    result, err, _ := c.sf.Do(key, func() (interface{}, error) {
+        // L2 — микросекунды
+        data, err := c.l2.Get(ctx, key).Bytes()
+        if err == nil {
+            var val V
+            if err := json.Unmarshal(data, &amp;val); err == nil {
+                c.l1.SetWithTTL(key, val, 1, c.ttlL1)
+                return val, nil
+            }
+        }
+
+        // Загрузка из источника — миллисекунды
+        val, err := loader(ctx)
+        if err != nil {
+            return val, err
+        }
+
+        // Заполняем оба уровня
+        c.l1.SetWithTTL(key, val, 1, c.ttlL1)
+        if data, err := json.Marshal(val); err == nil {
+            c.l2.Set(ctx, key, data, c.ttlL2)
+        }
+
+        return val, nil
+    })
+
+    if err != nil {
+        var zero V
+        return zero, err
+    }
+    return result.(V), nil
+}
+
+func (c *TwoLevelCache[V]) Invalidate(ctx context.Context, key string) {
+    c.l1.Del(key)
+    c.l2.Del(ctx, key)
+    // Уведомляем другие инстансы
+    c.l2.Publish(ctx, c.channel, key)
+}
+
+func (c *TwoLevelCache[V]) listenInvalidations(ctx context.Context) {
+    ch := c.pubsub.Channel()
+    for {
+        select {
+        case &lt;-ctx.Done():
+            return
+        case msg := &lt;-ch:
+            if msg != nil {
+                c.l1.Del(msg.Payload)
+                c.logger.Debug("L1 invalidated by remote",
+                    "key", msg.Payload)
+            }
+        }
+    }
+}
+
+func (c *TwoLevelCache[V]) Close() {
+    c.cancelFunc()
+    c.pubsub.Close()
+    c.l1.Close()
+}
+</code></pre>
+<p><strong>Использование</strong>:</p>
+<pre><code class="language-go">cache, err := NewTwoLevelCache[*Product](rdb, TwoLevelConfig{
+    L1NumCounters: 100_000,
+    L1MaxCost:     50 &lt;&lt; 20, // 50 MB
+    L1TTL:         2 * time.Minute,
+    L2TTL:         15 * time.Minute,
+    Channel:       "cache:invalidate:products",
+}, slog.Default())
+defer cache.Close()
+
+// Чтение с автозагрузкой
+product, err := cache.Get(ctx, "product:42", func(ctx context.Context) (*Product, error) {
+    return productRepo.FindByID(ctx, 42)
+})
+
+// Инвалидация при обновлении (все инстансы получат уведомление)
+cache.Invalidate(ctx, "product:42")
+</code></pre>
+<h3 id="пример-3-session-storage-с-redis"><a class="header" href="#пример-3-session-storage-с-redis">Пример 3: Session Storage с Redis</a></h3>
+<p>HTTP сессии в Redis — аналог ASP.NET Core Distributed Session.</p>
+<pre><code class="language-go">package session
+
+import (
+    "context"
+    "crypto/rand"
+    "encoding/hex"
+    "encoding/json"
+    "fmt"
+    "net/http"
+    "time"
+
+    "github.com/redis/go-redis/v9"
+)
+
+const (
+    cookieName = "session_id"
+    keyPrefix  = "session:"
+    defaultTTL = 30 * time.Minute
+)
+
+// Session — данные сессии
+type Session struct {
+    ID   string
+    Data map[string]any
+}
+
+// Store — хранилище сессий в Redis
+type Store struct {
+    rdb *redis.Client
+    ttl time.Duration
+}
+
+func NewStore(rdb *redis.Client) *Store {
+    return &amp;Store{rdb: rdb, ttl: defaultTTL}
+}
+
+func (s *Store) generateID() string {
+    b := make([]byte, 16)
+    rand.Read(b)
+    return hex.EncodeToString(b)
+}
+
+func (s *Store) Get(ctx context.Context, sessionID string) (*Session, error) {
+    key := keyPrefix + sessionID
+    data, err := s.rdb.Get(ctx, key).Bytes()
+    if err == redis.Nil {
+        return nil, nil // сессия не найдена
+    }
+    if err != nil {
+        return nil, fmt.Errorf("получение сессии: %w", err)
+    }
+
+    var sessionData map[string]any
+    if err := json.Unmarshal(data, &amp;sessionData); err != nil {
+        return nil, fmt.Errorf("десериализация сессии: %w", err)
+    }
+
+    // Продлеваем TTL (sliding expiration)
+    s.rdb.Expire(ctx, key, s.ttl)
+
+    return &amp;Session{ID: sessionID, Data: sessionData}, nil
+}
+
+func (s *Store) Save(ctx context.Context, session *Session) error {
+    key := keyPrefix + session.ID
+    data, err := json.Marshal(session.Data)
+    if err != nil {
+        return fmt.Errorf("сериализация сессии: %w", err)
+    }
+    return s.rdb.Set(ctx, key, data, s.ttl).Err()
+}
+
+func (s *Store) Destroy(ctx context.Context, sessionID string) error {
+    return s.rdb.Del(ctx, keyPrefix+sessionID).Err()
+}
+
+// Middleware — HTTP middleware для работы с сессиями
+func Middleware(store *Store) func(http.Handler) http.Handler {
+    return func(next http.Handler) http.Handler {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            var session *Session
+
+            // Читаем session ID из cookie
+            cookie, err := r.Cookie(cookieName)
+            if err == nil {
+                session, _ = store.Get(r.Context(), cookie.Value)
+            }
+
+            // Создаём новую сессию если нет существующей
+            if session == nil {
+                session = &amp;Session{
+                    ID:   store.generateID(),
+                    Data: make(map[string]any),
+                }
+            }
+
+            // Устанавливаем cookie
+            http.SetCookie(w, &amp;http.Cookie{
+                Name:     cookieName,
+                Value:    session.ID,
+                Path:     "/",
+                HttpOnly: true,
+                Secure:   true,
+                SameSite: http.SameSiteLaxMode,
+                MaxAge:   int(defaultTTL.Seconds()),
+            })
+
+            // Добавляем сессию в context
+            ctx := context.WithValue(r.Context(), sessionKey, session)
+
+            // ResponseWriter wrapper для сохранения сессии после ответа
+            sw := &amp;sessionWriter{
+                ResponseWriter: w,
+                session:        session,
+                store:          store,
+                ctx:            ctx,
+            }
+
+            next.ServeHTTP(sw, r.WithContext(ctx))
+
+            // Сохраняем сессию после обработки запроса
+            if sw.modified {
+                store.Save(ctx, session)
+            }
+        })
+    }
+}
+
+type contextKeyType string
+
+const sessionKey contextKeyType = "session"
+
+// FromContext — получение сессии из context
+func FromContext(ctx context.Context) *Session {
+    session, _ := ctx.Value(sessionKey).(*Session)
+    return session
+}
+
+type sessionWriter struct {
+    http.ResponseWriter
+    session  *Session
+    store    *Store
+    ctx      context.Context
+    modified bool
+}
+</code></pre>
+<p><strong>Использование с chi router</strong>:</p>
+<pre><code class="language-go">func main() {
+    rdb := redis.NewClient(&amp;redis.Options{Addr: "localhost:6379"})
+    store := session.NewStore(rdb)
+
+    r := chi.NewRouter()
+    r.Use(session.Middleware(store))
+
+    r.Post("/login", func(w http.ResponseWriter, r *http.Request) {
+        sess := session.FromContext(r.Context())
+        sess.Data["user_id"] = "123"
+        sess.Data["logged_in"] = true
+        // Сессия автоматически сохранится в Redis
+
+        w.Write([]byte("OK"))
+    })
+
+    r.Get("/profile", func(w http.ResponseWriter, r *http.Request) {
+        sess := session.FromContext(r.Context())
+        userID, ok := sess.Data["user_id"].(string)
+        if !ok {
+            http.Error(w, "not authenticated", http.StatusUnauthorized)
+            return
+        }
+        fmt.Fprintf(w, "User: %s", userID)
+    })
+
+    http.ListenAndServe(":8080", r)
+}
+</code></pre>
+<hr><!-- AUTO: NAV -->
+<p><strong>Вопросы?</strong> Открой issue на <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/issues">GitHub</a></p>
+<p><a href="./01_production_postgresql.html">← Назад: Production PostgreSQL</a> | <a href="./03_message_queues.html">Вперёд: Очереди сообщений →</a></p>
+<!-- /AUTO: NAV -->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part4-infrastructure/01_production_postgresql.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part4-infrastructure/03_message_queues.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part4-infrastructure/01_production_postgresql.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part4-infrastructure/03_message_queues.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

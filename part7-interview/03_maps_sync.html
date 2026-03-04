@@ -1,0 +1,970 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>7.3 Задачи на map и синхронизацию - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-e1a1ce5b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-c19b06e6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part7-interview/03_maps_sync.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="73-задачи-на-map-и-синхронизацию"><a class="header" href="#73-задачи-на-map-и-синхронизацию">7.3 Задачи на map и синхронизацию</a></h1>
+<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<ul>
+<li><a href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5-%D1%87%D1%82%D0%BE-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D1%8F%D1%8E%D1%82">Введение: что проверяют</a>
+<ul>
+<li><a href="#%D0%BC%D0%BE%D0%B4%D0%B5%D0%BB%D1%8C-%D0%BF%D0%B0%D0%BC%D1%8F%D1%82%D0%B8-go-%D0%BA%D1%80%D0%B0%D1%82%D0%BA%D0%BE">Модель памяти Go (кратко)</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-1-concurrent-cache">Задача 1: Concurrent Cache</a>
+<ul>
+<li><a href="#%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0">Формулировка</a></li>
+<li><a href="#%D1%87%D1%82%D0%BE-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D1%8F%D1%8E%D1%82">Что проверяют</a></li>
+<li><a href="#%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D1%8F-%D1%81-ttl">Версия с TTL</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C-syncmap-%D0%B2%D0%BC%D0%B5%D1%81%D1%82%D0%BE-rwmutex">Когда использовать sync.Map вместо RWMutex?</a></li>
+<li><a href="#%D1%82%D0%B8%D0%BF%D0%B8%D1%87%D0%BD%D1%8B%D0%B5-%D0%BE%D1%88%D0%B8%D0%B1%D0%BA%D0%B8">Типичные ошибки</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-2-%D1%87%D0%B0%D1%81%D1%82%D0%BE%D1%82%D0%BD%D1%8B%D0%B9-%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7-%D1%81%D0%BB%D0%BE%D0%B2-concurrent">Задача 2: Частотный анализ слов (concurrent)</a>
+<ul>
+<li><a href="#%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-1">Формулировка</a></li>
+<li><a href="#go-%D1%80%D0%B5%D1%88%D0%B5%D0%BD%D0%B8%D0%B5">Go решение</a></li>
+<li><a href="#%D0%B4%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%D1%8B">Дополнительные вопросы</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-3-%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-once">Задача 3: Реализация Once</a>
+<ul>
+<li><a href="#%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-2">Формулировка</a></li>
+<li><a href="#%D1%87%D1%82%D0%BE-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D1%8F%D1%8E%D1%82-1">Что проверяют</a></li>
+<li><a href="#%D1%80%D0%B5%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-lazy-singleton">Реальное применение: lazy singleton</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-4-%D1%81%D0%B5%D0%BC%D0%B0%D1%84%D0%BE%D1%80">Задача 4: Семафор</a>
+<ul>
+<li><a href="#%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-3">Формулировка</a></li>
+<li><a href="#%D1%87%D1%82%D0%BE-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D1%8F%D1%8E%D1%82-2">Что проверяют</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-5-%D1%87%D1%82%D0%BE-%D0%B2%D1%8B%D0%B2%D0%B5%D0%B4%D0%B5%D1%82-%D0%BA%D0%BE%D0%B4--map-gotchas">Задача 5: Что выведет код — map gotchas</a>
+<ul>
+<li><a href="#gotcha-1-concurrent-map-write--panic">Gotcha 1: Concurrent map write — panic</a></li>
+<li><a href="#gotcha-2-%D0%B8%D1%82%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D0%BF%D0%BE-map--%D0%BF%D0%BE%D1%80%D1%8F%D0%B4%D0%BE%D0%BA">Gotcha 2: Итерация по map — порядок</a></li>
+<li><a href="#gotcha-3-zero-value-%D0%BF%D1%80%D0%B8-%D1%87%D1%82%D0%B5%D0%BD%D0%B8%D0%B8">Gotcha 3: Zero value при чтении</a></li>
+<li><a href="#gotcha-4-%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-map-%D0%B2%D0%BE-%D0%B2%D1%80%D0%B5%D0%BC%D1%8F-%D0%B8%D1%82%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D0%B8">Gotcha 4: Изменение map во время итерации</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-6-copyonwrite-map">Задача 6: CopyOnWrite Map</a>
+<ul>
+<li><a href="#%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-4">Формулировка</a></li>
+<li><a href="#%D1%87%D1%82%D0%BE-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D1%8F%D1%8E%D1%82-3">Что проверяют</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D1%8D%D1%82%D0%BE-%D0%BF%D0%BE%D0%BB%D0%B5%D0%B7%D0%BD%D0%BE">Когда это полезно</a></li>
+<li><a href="#trade-offs">Trade-offs</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B8%D1%82%D0%BE%D0%B3%D0%B8">Итоги</a></li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<hr>
+<h2 id="введение-что-проверяют"><a class="header" href="#введение-что-проверяют">Введение: что проверяют</a></h2>
+<p>Map и примитивы синхронизации — это проверка понимания <strong>модели памяти Go</strong> и умения выбирать правильный инструмент:</p>
+<ul>
+<li><code>sync.RWMutex</code> vs <code>sync.Mutex</code> — когда что использовать</li>
+<li><code>sync.Map</code> — для каких сценариев создан</li>
+<li>Почему concurrent write в обычный map — <strong>panic</strong>, а не race condition</li>
+<li><code>sync.Once</code> — гарантия единственной инициализации</li>
+</ul>
+<h3 id="модель-памяти-go-кратко"><a class="header" href="#модель-памяти-go-кратко">Модель памяти Go (кратко)</a></h3>
+<blockquote>
+<p>“Если два горутины обращаются к одной переменной без синхронизации, и хотя бы одна пишет — это гонка данных.”</p>
+</blockquote>
+<p>В Go нет <code>volatile</code>. Правильная синхронизация — через mutex, atomic, или канал.</p>
+<hr>
+<h2 id="задача-1-concurrent-cache"><a class="header" href="#задача-1-concurrent-cache">Задача 1: Concurrent Cache</a></h2>
+<p><strong>Компания</strong>: Авито, Яндекс, Тинькофф
+<strong>Уровень</strong>: Middle
+<strong>Время</strong>: 20 минут</p>
+<h3 id="формулировка"><a class="header" href="#формулировка">Формулировка</a></h3>
+<blockquote>
+<p>Реализуй потокобезопасный in-memory cache с методами <code>Get(key string) (int, bool)</code> и <code>Set(key string, value int)</code>. Оптимизируй для случая, когда чтений значительно больше, чем записей.</p>
+</blockquote>
+<h3 id="что-проверяют"><a class="header" href="#что-проверяют">Что проверяют</a></h3>
+<ul>
+<li>Выбор <code>RWMutex</code> вместо <code>Mutex</code> (read-heavy workload)</li>
+<li>Правильный lock/unlock (defer)</li>
+<li>Понимание критической секции</li>
+</ul>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">// C# — ConcurrentDictionary или ReaderWriterLockSlim
+var cache = new ConcurrentDictionary&lt;string, int&gt;();
+// или
+private readonly ReaderWriterLockSlim _lock = new();
+</code></pre>
+<p><strong>Go решение</strong>:</p>
+<pre><code class="language-go">package cache
+
+import "sync"
+
+// ✅ RWMutex — оптимален для read-heavy
+type Cache struct {
+    mu    sync.RWMutex
+    items map[string]int
+}
+
+func NewCache() *Cache {
+    return &amp;Cache{
+        items: make(map[string]int),
+    }
+}
+
+func (c *Cache) Get(key string) (int, bool) {
+    c.mu.RLock()         // множество горутин могут читать одновременно
+    defer c.mu.RUnlock()
+    v, ok := c.items[key]
+    return v, ok
+}
+
+func (c *Cache) Set(key string, value int) {
+    c.mu.Lock()          // эксклюзивный доступ для записи
+    defer c.mu.Unlock()
+    c.items[key] = value
+}
+
+func (c *Cache) Delete(key string) {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+    delete(c.items, key)
+}
+
+func (c *Cache) Len() int {
+    c.mu.RLock()
+    defer c.mu.RUnlock()
+    return len(c.items)
+}
+</code></pre>
+<h3 id="версия-с-ttl"><a class="header" href="#версия-с-ttl">Версия с TTL</a></h3>
+<pre><code class="language-go">// ✅ Cache с TTL — реальная задача на Senior интервью
+type entry struct {
+    value     int
+    expiresAt time.Time
+}
+
+type TTLCache struct {
+    mu    sync.RWMutex
+    items map[string]entry
+}
+
+func (c *TTLCache) Get(key string) (int, bool) {
+    c.mu.RLock()
+    e, ok := c.items[key]
+    c.mu.RUnlock()
+
+    if !ok || time.Now().After(e.expiresAt) {
+        return 0, false
+    }
+    return e.value, true
+}
+
+func (c *TTLCache) Set(key string, value int, ttl time.Duration) {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+    c.items[key] = entry{
+        value:     value,
+        expiresAt: time.Now().Add(ttl),
+    }
+}
+
+// Фоновая очистка просроченных ключей
+func (c *TTLCache) StartCleanup(ctx context.Context, interval time.Duration) {
+    go func() {
+        ticker := time.NewTicker(interval)
+        defer ticker.Stop()
+        for {
+            select {
+            case &lt;-ticker.C:
+                c.cleanup()
+            case &lt;-ctx.Done():
+                return
+            }
+        }
+    }()
+}
+
+func (c *TTLCache) cleanup() {
+    now := time.Now()
+    c.mu.Lock()
+    defer c.mu.Unlock()
+    for k, e := range c.items {
+        if now.After(e.expiresAt) {
+            delete(c.items, k)
+        }
+    }
+}
+</code></pre>
+<h3 id="когда-использовать-syncmap-вместо-rwmutex"><a class="header" href="#когда-использовать-syncmap-вместо-rwmutex">Когда использовать sync.Map вместо RWMutex?</a></h3>
+<pre><code class="language-go">// sync.Map создан для специфических сценариев:
+// 1. Ключи устанавливаются один раз, а затем только читаются
+// 2. Горутины работают с непересекающимися наборами ключей
+
+var m sync.Map
+
+// Set
+m.Store("key", 42)
+
+// Get
+v, ok := m.Load("key")
+if ok {
+    fmt.Println(v.(int)) // требует type assertion!
+}
+
+// GetOrSet (атомарно)
+actual, loaded := m.LoadOrStore("key", 100)
+
+// Delete
+m.Delete("key")
+
+// Iterate
+m.Range(func(k, v any) bool {
+    fmt.Println(k, v)
+    return true // false = остановить
+})
+</code></pre>
+<blockquote>
+<p>⚠️ <code>sync.Map</code> не типизирован — требует type assertion. Для большинства production задач <code>RWMutex + map</code> лучше читаем и быстрее при write-heavy нагрузке.</p>
+</blockquote>
+<h3 id="типичные-ошибки"><a class="header" href="#типичные-ошибки">Типичные ошибки</a></h3>
+<pre><code class="language-go">// ❌ Освобождение Lock между чтением и записью (TOCTOU)
+func (c *Cache) GetOrSet(key string, value int) int {
+    c.mu.RLock()
+    if v, ok := c.items[key]; ok {
+        c.mu.RUnlock()
+        return v
+    }
+    c.mu.RUnlock()     // освобождаем RLock...
+    // gap! другая горутина может записать сюда
+    c.mu.Lock()        // берём WLock
+    c.items[key] = value
+    c.mu.Unlock()
+    return value
+}
+
+// ✅ Правильно: Lock сразу для записи или double-check
+func (c *Cache) GetOrSet(key string, value int) int {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+    if v, ok := c.items[key]; ok {
+        return v
+    }
+    c.items[key] = value
+    return value
+}
+</code></pre>
+<hr>
+<h2 id="задача-2-частотный-анализ-слов-concurrent"><a class="header" href="#задача-2-частотный-анализ-слов-concurrent">Задача 2: Частотный анализ слов (concurrent)</a></h2>
+<p><strong>Компания</strong>: Яндекс, Авито (обработка данных)
+<strong>Уровень</strong>: Middle
+<strong>Время</strong>: 20 минут</p>
+<h3 id="формулировка-1"><a class="header" href="#формулировка-1">Формулировка</a></h3>
+<blockquote>
+<p>Дан большой массив строк (слов). Подсчитай частоту каждого слова, используя параллельную обработку. Раздели входные данные на части, обработай каждую часть в отдельной горутине, затем объедини результаты.</p>
+</blockquote>
+<h3 id="go-решение"><a class="header" href="#go-решение">Go решение</a></h3>
+<pre><code class="language-go">package main
+
+import (
+    "strings"
+    "sync"
+)
+
+// ✅ Parallel word count: map-reduce подход
+func wordCount(words []string, numWorkers int) map[string]int {
+    // Разбиваем на части
+    chunkSize := (len(words) + numWorkers - 1) / numWorkers
+
+    var mu sync.Mutex
+    result := make(map[string]int)
+    var wg sync.WaitGroup
+
+    for i := 0; i &lt; len(words); i += chunkSize {
+        end := i + chunkSize
+        if end &gt; len(words) {
+            end = len(words)
+        }
+        chunk := words[i:end]
+
+        wg.Add(1)
+        go func(chunk []string) {
+            defer wg.Done()
+
+            // Локальный подсчёт (без блокировки)
+            local := make(map[string]int, len(chunk))
+            for _, w := range chunk {
+                local[strings.ToLower(w)]++
+            }
+
+            // Merge в глобальный результат (с блокировкой)
+            mu.Lock()
+            for k, v := range local {
+                result[k] += v
+            }
+            mu.Unlock()
+        }(chunk)
+    }
+
+    wg.Wait()
+    return result
+}
+
+// ✅ Альтернатива: через канал (избегаем mutex совсем)
+func wordCountWithChannel(words []string, numWorkers int) map[string]int {
+    partials := make(chan map[string]int, numWorkers)
+    chunkSize := (len(words) + numWorkers - 1) / numWorkers
+
+    var wg sync.WaitGroup
+    for i := 0; i &lt; len(words); i += chunkSize {
+        end := i + chunkSize
+        if end &gt; len(words) {
+            end = len(words)
+        }
+        chunk := words[i:end]
+
+        wg.Add(1)
+        go func(chunk []string) {
+            defer wg.Done()
+            local := make(map[string]int)
+            for _, w := range chunk {
+                local[strings.ToLower(w)]++
+            }
+            partials &lt;- local
+        }(chunk)
+    }
+
+    go func() {
+        wg.Wait()
+        close(partials)
+    }()
+
+    // Merge в одной горутине — не нужен mutex
+    result := make(map[string]int)
+    for partial := range partials {
+        for k, v := range partial {
+            result[k] += v
+        }
+    }
+    return result
+}
+</code></pre>
+<h3 id="дополнительные-вопросы"><a class="header" href="#дополнительные-вопросы">Дополнительные вопросы</a></h3>
+<ul>
+<li>“Когда локальный map + merge лучше глобального map + mutex?” → при высокой конкуренции на запись локальный map снижает contention</li>
+<li>“Как протестировать на race condition?” → <code>go test -race</code></li>
+</ul>
+<hr>
+<h2 id="задача-3-реализация-once"><a class="header" href="#задача-3-реализация-once">Задача 3: Реализация Once</a></h2>
+<p><strong>Компания</strong>: Яндекс, ВКонтакте
+<strong>Уровень</strong>: Senior
+<strong>Время</strong>: 20 минут</p>
+<h3 id="формулировка-2"><a class="header" href="#формулировка-2">Формулировка</a></h3>
+<blockquote>
+<p>Реализуй аналог <code>sync.Once</code> без использования стандартной библиотеки. Метод <code>Do(f func())</code> должен вызвать <code>f</code> ровно один раз, даже при конкурентных вызовах.</p>
+</blockquote>
+<h3 id="что-проверяют-1"><a class="header" href="#что-проверяют-1">Что проверяют</a></h3>
+<ul>
+<li>Понимание memory visibility в Go</li>
+<li>Использование atomic для быстрого пути (fast path)</li>
+<li>Mutex для гарантии однократного выполнения</li>
+</ul>
+<pre><code class="language-go">// ✅ Собственная реализация Once
+
+type MyOnce struct {
+    done atomic.Uint32  // 0 = не выполнено, 1 = выполнено
+    mu   sync.Mutex
+}
+
+func (o *MyOnce) Do(f func()) {
+    // Fast path: уже выполнено → атомарная проверка без блокировки
+    if o.done.Load() == 1 {
+        return
+    }
+
+    // Slow path: первый вызов
+    o.mu.Lock()
+    defer o.mu.Unlock()
+
+    // Double-check: другая горутина могла выполнить f пока мы ждали Lock
+    if o.done.Load() == 0 {
+        defer o.done.Store(1) // устанавливаем ПОСЛЕ выполнения f
+        f()
+    }
+}
+
+// Сравнение со стандартным sync.Once:
+var once sync.Once
+once.Do(func() {
+    // инициализация singleton
+})
+</code></pre>
+<blockquote>
+<p>💡 Паттерн “fast path + slow path с double-check” — фундаментальный паттерн конкурентного программирования. Встречается в Java (Double-Checked Locking), C++ (call_once).</p>
+</blockquote>
+<h3 id="реальное-применение-lazy-singleton"><a class="header" href="#реальное-применение-lazy-singleton">Реальное применение: lazy singleton</a></h3>
+<pre><code class="language-go">// ✅ Паттерн singleton в Go — через Once
+type DBPool struct {
+    pool *sql.DB
+}
+
+var (
+    instance *DBPool
+    once     sync.Once
+)
+
+func GetDB() *DBPool {
+    once.Do(func() {
+        db, err := sql.Open("postgres", dsn)
+        if err != nil {
+            panic(err) // или log.Fatal
+        }
+        instance = &amp;DBPool{pool: db}
+    })
+    return instance
+}
+</code></pre>
+<hr>
+<h2 id="задача-4-семафор"><a class="header" href="#задача-4-семафор">Задача 4: Семафор</a></h2>
+<p><strong>Компания</strong>: Авито, Яндекс (ограничение параллельных запросов к БД)
+<strong>Уровень</strong>: Middle / Senior
+<strong>Время</strong>: 15 минут</p>
+<h3 id="формулировка-3"><a class="header" href="#формулировка-3">Формулировка</a></h3>
+<blockquote>
+<p>Реализуй семафор — примитив, который ограничивает количество одновременно выполняющихся горутин. Метод <code>Acquire()</code> блокируется если лимит достигнут, <code>Release()</code> освобождает слот.</p>
+</blockquote>
+<h3 id="что-проверяют-2"><a class="header" href="#что-проверяют-2">Что проверяют</a></h3>
+<ul>
+<li>Паттерн “buffered channel как семафор” — идиома Go</li>
+<li>Блокирующие vs неблокирующие операции</li>
+<li>Интеграция с context</li>
+</ul>
+<pre><code class="language-go">// ✅ Семафор через буферизованный канал
+type Semaphore struct {
+    ch chan struct{}
+}
+
+func NewSemaphore(n int) *Semaphore {
+    return &amp;Semaphore{ch: make(chan struct{}, n)}
+}
+
+// Acquire блокируется пока не освободится слот
+func (s *Semaphore) Acquire(ctx context.Context) error {
+    select {
+    case s.ch &lt;- struct{}{}:
+        return nil
+    case &lt;-ctx.Done():
+        return ctx.Err()
+    }
+}
+
+// Release освобождает слот
+func (s *Semaphore) Release() {
+    &lt;-s.ch
+}
+
+// TryAcquire: неблокирующий вариант
+func (s *Semaphore) TryAcquire() bool {
+    select {
+    case s.ch &lt;- struct{}{}:
+        return true
+    default:
+        return false
+    }
+}
+
+// Использование: ограничение параллельных запросов к БД
+func fetchUsers(ctx context.Context, ids []int64) ([]User, error) {
+    sem := NewSemaphore(10) // не более 10 параллельных запросов
+    var mu sync.Mutex
+    var users []User
+    g, ctx := errgroup.WithContext(ctx)
+
+    for _, id := range ids {
+        id := id
+        g.Go(func() error {
+            if err := sem.Acquire(ctx); err != nil {
+                return err
+            }
+            defer sem.Release()
+
+            user, err := db.GetUser(ctx, id)
+            if err != nil {
+                return err
+            }
+            mu.Lock()
+            users = append(users, user)
+            mu.Unlock()
+            return nil
+        })
+    }
+
+    return users, g.Wait()
+}
+</code></pre>
+<blockquote>
+<p>💡 <code>golang.org/x/sync/semaphore</code> — стандартная реализация для production. Но на интервью покажи собственную реализацию.</p>
+</blockquote>
+<hr>
+<h2 id="задача-5-что-выведет-код--map-gotchas"><a class="header" href="#задача-5-что-выведет-код--map-gotchas">Задача 5: Что выведет код — map gotchas</a></h2>
+<p><strong>Компания</strong>: Яндекс, ВКонтакте (проверка знания)
+<strong>Уровень</strong>: Middle</p>
+<h3 id="gotcha-1-concurrent-map-write--panic"><a class="header" href="#gotcha-1-concurrent-map-write--panic">Gotcha 1: Concurrent map write — panic</a></h3>
+<pre><code class="language-go">func main() {
+    m := make(map[string]int)
+    var wg sync.WaitGroup
+
+    for i := range 10 {
+        wg.Add(1)
+        go func(i int) {
+            defer wg.Done()
+            m[fmt.Sprintf("key%d", i)] = i // ?
+        }(i)
+    }
+    wg.Wait()
+}
+</code></pre>
+<details>
+<summary>Ответ</summary>
+<p><strong>Паника</strong> (в Go 1.6+): <code>concurrent map read and map write</code>. Go runtime обнаруживает конкурентный доступ к map и <strong>паникует</strong> (в отличие от C# где это просто undefined behavior).</p>
+<p>Это не race condition в классическом смысле — это специальная проверка в runtime.</p>
+<p><strong>Исправление</strong>:</p>
+<pre><code class="language-go">var mu sync.Mutex
+m := make(map[string]int)
+// ...
+mu.Lock()
+m[key] = value
+mu.Unlock()
+</code></pre>
+</details>
+<hr>
+<h3 id="gotcha-2-итерация-по-map--порядок"><a class="header" href="#gotcha-2-итерация-по-map--порядок">Gotcha 2: Итерация по map — порядок</a></h3>
+<pre><code class="language-go">m := map[string]int{"a": 1, "b": 2, "c": 3}
+
+for k, v := range m {
+    fmt.Printf("%s: %d\n", k, v)
+}
+</code></pre>
+<details>
+<summary>Ответ</summary>
+<p>Порядок итерации <strong>случаен</strong> и <strong>намеренно рандомизирован</strong> в Go (с версии 1.0). Каждый запуск может выдать разный порядок.</p>
+<p><strong>C# отличие</strong>: <code>Dictionary&lt;K,V&gt;</code> тоже не гарантирует порядок, но <code>SortedDictionary</code> — гарантирует.</p>
+<p>Для детерминированного вывода в Go:</p>
+<pre><code class="language-go">import "slices"
+
+keys := make([]string, 0, len(m))
+for k := range m {
+    keys = append(keys, k)
+}
+slices.Sort(keys)
+for _, k := range keys {
+    fmt.Printf("%s: %d\n", k, m[k])
+}
+</code></pre>
+</details>
+<hr>
+<h3 id="gotcha-3-zero-value-при-чтении"><a class="header" href="#gotcha-3-zero-value-при-чтении">Gotcha 3: Zero value при чтении</a></h3>
+<pre><code class="language-go">m := make(map[string]int)
+fmt.Println(m["nonexistent"]) // ?
+
+m["counter"]++  // работает?
+fmt.Println(m["counter"]) // ?
+</code></pre>
+<details>
+<summary>Ответ</summary>
+<pre><code>0            // zero value для int — не паника!
+1            // m["counter"] = 0 + 1 = 1
+</code></pre>
+<p>В Go чтение из map по несуществующему ключу возвращает zero value типа. Это позволяет писать идиому <code>m[key]++</code> без предварительной инициализации.</p>
+<p><strong>Опасная ловушка</strong> с указателями:</p>
+<pre><code class="language-go">m := make(map[string]*int)
+p := m["nonexistent"]
+*p = 42 // PANIC: nil pointer dereference!
+
+// Правильно:
+if p, ok := m["key"]; ok {
+    *p = 42
+}
+</code></pre>
+</details>
+<hr>
+<h3 id="gotcha-4-изменение-map-во-время-итерации"><a class="header" href="#gotcha-4-изменение-map-во-время-итерации">Gotcha 4: Изменение map во время итерации</a></h3>
+<pre><code class="language-go">m := map[string]int{"a": 1, "b": 2, "c": 3, "d": 4}
+
+for k, v := range m {
+    if v%2 == 0 {
+        delete(m, k) // безопасно?
+    }
+}
+fmt.Println(m) // ?
+</code></pre>
+<details>
+<summary>Ответ</summary>
+<p><strong>Безопасно</strong>: Go гарантирует, что удаление во время итерации <code>range</code> не вызывает panic. Но:</p>
+<ul>
+<li>Удалённые ключи не появятся снова в текущей итерации</li>
+<li>Добавленные ключи могут появиться или не появиться — гарантий нет</li>
+</ul>
+<pre><code>map[a:1 c:3]  // или другое подмножество нечётных
+</code></pre>
+</details>
+<hr>
+<h2 id="задача-6-copyonwrite-map"><a class="header" href="#задача-6-copyonwrite-map">Задача 6: CopyOnWrite Map</a></h2>
+<p><strong>Компания</strong>: Яндекс (конфигурация, feature flags)
+<strong>Уровень</strong>: Senior
+<strong>Время</strong>: 25 минут</p>
+<h3 id="формулировка-4"><a class="header" href="#формулировка-4">Формулировка</a></h3>
+<blockquote>
+<p>Реализуй thread-safe map с семантикой “copy-on-write”: чтения не блокируются совсем, запись создаёт новую копию map и атомарно подменяет указатель.</p>
+</blockquote>
+<h3 id="что-проверяют-3"><a class="header" href="#что-проверяют-3">Что проверяют</a></h3>
+<ul>
+<li>Паттерн immutable data + atomic pointer swap</li>
+<li><code>atomic.Pointer[T]</code> (Go 1.19+)</li>
+<li>Понимание trade-offs: читаем быстро, пишем медленно</li>
+</ul>
+<pre><code class="language-go">// ✅ Copy-on-Write Map через atomic.Pointer
+type COWMap struct {
+    mu      sync.Mutex // только для координации записей
+    current atomic.Pointer[map[string]int]
+}
+
+func NewCOWMap() *COWMap {
+    m := &amp;COWMap{}
+    initial := make(map[string]int)
+    m.current.Store(&amp;initial)
+    return m
+}
+
+// Get не требует блокировки — атомарная загрузка указателя
+func (m *COWMap) Get(key string) (int, bool) {
+    mp := m.current.Load()
+    v, ok := (*mp)[key]
+    return v, ok
+}
+
+// Set: copy → modify → swap
+func (m *COWMap) Set(key string, value int) {
+    m.mu.Lock()
+    defer m.mu.Unlock()
+
+    // Копируем текущий map
+    old := *m.current.Load()
+    newMap := make(map[string]int, len(old)+1)
+    for k, v := range old {
+        newMap[k] = v
+    }
+
+    // Модифицируем копию
+    newMap[key] = value
+
+    // Атомарно подменяем указатель
+    m.current.Store(&amp;newMap)
+}
+
+// Delete: аналогично
+func (m *COWMap) Delete(key string) {
+    m.mu.Lock()
+    defer m.mu.Unlock()
+
+    old := *m.current.Load()
+    newMap := make(map[string]int, len(old))
+    for k, v := range old {
+        if k != key {
+            newMap[k] = v
+        }
+    }
+    m.current.Store(&amp;newMap)
+}
+</code></pre>
+<h3 id="когда-это-полезно"><a class="header" href="#когда-это-полезно">Когда это полезно</a></h3>
+<pre><code class="language-go">// Реальный пример: конфигурация feature flags
+// - Читается на каждый HTTP запрос (очень часто)
+// - Обновляется редко (раз в минуту)
+type FeatureFlags struct {
+    flags COWMap
+}
+
+func (f *FeatureFlags) IsEnabled(feature string) bool {
+    v, _ := f.flags.Get(feature)
+    return v == 1
+}
+
+func (f *FeatureFlags) Reload(newFlags map[string]int) {
+    for k, v := range newFlags {
+        f.flags.Set(k, v) // можно оптимизировать одной atomic swap
+    }
+}
+</code></pre>
+<h3 id="trade-offs"><a class="header" href="#trade-offs">Trade-offs</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Подход</th><th>Чтение</th><th>Запись</th><th>Память</th></tr>
+</thead>
+<tbody>
+<tr><td><code>RWMutex + map</code></td><td>RLock (быстро)</td><td>Lock (блокирует читателей)</td><td>O(n)</td></tr>
+<tr><td><code>sync.Map</code></td><td>Без блокировки</td><td>Атомарно</td><td>Больше накладных</td></tr>
+<tr><td><code>COW Map</code></td><td><strong>Без блокировки</strong></td><td>Копирование O(n)</td><td>2x при записи</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="итоги"><a class="header" href="#итоги">Итоги</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Задача</th><th>Что показывает</th><th>Уровень</th></tr>
+</thead>
+<tbody>
+<tr><td>Concurrent Cache</td><td>Знание RWMutex, критической секции</td><td>Middle</td></tr>
+<tr><td>Word Count</td><td>Map-reduce, локальные аккумуляторы</td><td>Middle</td></tr>
+<tr><td>Once</td><td>Double-check locking, atomic</td><td>Senior</td></tr>
+<tr><td>Семафор</td><td>Buffered channel = counting semaphore</td><td>Middle</td></tr>
+<tr><td>Map Gotchas</td><td>Глубина знания runtime</td><td>Middle+</td></tr>
+<tr><td>COW Map</td><td>Immutable data + atomic pointer</td><td>Senior</td></tr>
+</tbody>
+</table>
+</div>
+<hr><!-- AUTO: NAV -->
+<p><strong>Вопросы?</strong> Открой issue на <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/issues">GitHub</a></p>
+<p><a href="./02_goroutines_channels.html">← Назад: Задачи на горутины и каналы</a> | <a href="./04_algorithms.html">Вперёд: Алгоритмические задачи →</a></p>
+<!-- /AUTO: NAV -->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part7-interview/02_goroutines_channels.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part7-interview/04_algorithms.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part7-interview/02_goroutines_channels.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part7-interview/04_algorithms.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,2525 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>6.2 Инструменты - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-e1a1ce5b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-c19b06e6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part6-best-practices/02_tools.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="62-инструменты"><a class="header" href="#62-инструменты">6.2 Инструменты</a></h1>
+<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<ul>
+<li><a href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5">Введение</a>
+<ul>
+<li><a href="#%D1%84%D0%B8%D0%BB%D0%BE%D1%81%D0%BE%D1%84%D0%B8%D1%8F-go-tooling">Философия Go tooling</a></li>
+<li><a href="#%D1%87%D1%82%D0%BE-%D0%BC%D1%8B-%D0%B8%D0%B7%D1%83%D1%87%D0%B8%D0%BC">Что мы изучим</a></li>
+</ul>
+</li>
+<li><a href="#%D1%8D%D0%BA%D0%BE%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0-%D0%B8%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%BE%D0%B2-c-vs-go">Экосистема инструментов: C# vs Go</a>
+<ul>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0">Сравнительная таблица</a></li>
+<li><a href="#%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5-%D0%BE%D1%82%D0%BB%D0%B8%D1%87%D0%B8%D1%8F">Ключевые отличия</a></li>
+<li><a href="#%D1%82%D0%B8%D0%BF%D0%B8%D1%87%D0%BD%D1%8B%D0%B9-workflow">Типичный workflow</a></li>
+</ul>
+</li>
+<li><a href="#golangci-lint--%D0%BC%D0%B5%D1%82%D0%B0-%D0%BB%D0%B8%D0%BD%D1%82%D0%B5%D1%80">golangci-lint — мета-линтер</a>
+<ul>
+<li><a href="#%D0%B7%D0%B0%D1%87%D0%B5%D0%BC-%D0%BD%D1%83%D0%B6%D0%B5%D0%BD-%D0%BC%D0%B5%D1%82%D0%B0-%D0%BB%D0%B8%D0%BD%D1%82%D0%B5%D1%80">Зачем нужен мета-линтер</a></li>
+<li><a href="#%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%B1%D0%B0%D0%B7%D0%BE%D0%B2%D0%BE%D0%B5-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5">Установка и базовое использование</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F-golangciyml">Конфигурация .golangci.yml</a></li>
+<li><a href="#%D0%BE%D0%B1%D1%8F%D0%B7%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BB%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D1%8B-%D0%B4%D0%BB%D1%8F-production">Обязательные линтеры для production</a></li>
+<li><a href="#%D0%B4%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D1%80%D0%B5%D0%BA%D0%BE%D0%BC%D0%B5%D0%BD%D0%B4%D1%83%D0%B5%D0%BC%D1%8B%D0%B5-%D0%BB%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D1%8B">Дополнительные рекомендуемые линтеры</a>
+<ul>
+<li><a href="#%D0%B4%D0%BB%D1%8F-%D0%BA%D0%B0%D1%87%D0%B5%D1%81%D1%82%D0%B2%D0%B0-%D0%BA%D0%BE%D0%B4%D0%B0">Для качества кода</a></li>
+<li><a href="#%D0%B4%D0%BB%D1%8F-%D0%B1%D0%B5%D0%B7%D0%BE%D0%BF%D0%B0%D1%81%D0%BD%D0%BE%D1%81%D1%82%D0%B8">Для безопасности</a></li>
+<li><a href="#%D0%B4%D0%BB%D1%8F-%D0%BF%D1%80%D0%BE%D0%B8%D0%B7%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D0%B8">Для производительности</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B8%D1%81%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D1%8F-%D0%B8-%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0-severity">Исключения и настройка severity</a></li>
+</ul>
+</li>
+<li><a href="#staticcheck--%D0%B3%D0%BB%D1%83%D0%B1%D0%BE%D0%BA%D0%B8%D0%B9-%D1%81%D1%82%D0%B0%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9-%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7">staticcheck — глубокий статический анализ</a>
+<ul>
+<li><a href="#%D0%BA%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D0%B8-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%BE%D0%BA">Категории проверок</a></li>
+<li><a href="#%D0%B2%D0%B0%D0%B6%D0%BD%D1%8B%D0%B5-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%BA%D0%B8">Важные проверки</a></li>
+<li><a href="#staticcheck-%D0%B2-golangci-lint-vs-standalone">staticcheck в golangci-lint vs standalone</a></li>
+</ul>
+</li>
+<li><a href="#govulncheck--%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%BA%D0%B0-%D1%83%D1%8F%D0%B7%D0%B2%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D0%B5%D0%B9">govulncheck — проверка уязвимостей</a>
+<ul>
+<li><a href="#%D0%BA%D0%B0%D0%BA-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82-govulncheck">Как работает govulncheck</a></li>
+<li><a href="#%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5">Использование</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-c-%D0%B8%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D0%BC%D0%B8">Сравнение с C# инструментами</a></li>
+</ul>
+</li>
+<li><a href="#go-mod--%D1%83%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B7%D0%B0%D0%B2%D0%B8%D1%81%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D1%8F%D0%BC%D0%B8">go mod — управление зависимостями</a>
+<ul>
+<li><a href="#%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%B0%D0%BD%D0%B4%D1%8B">Основные команды</a></li>
+<li><a href="#private-modules-%D0%B8-goproxy">Private modules и GOPROXY</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-nuget">Сравнение с NuGet</a></li>
+</ul>
+</li>
+<li><a href="#air--hot-reload-%D0%B4%D0%BB%D1%8F-%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B8">air — hot reload для разработки</a>
+<ul>
+<li><a href="#%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F">Конфигурация</a></li>
+<li><a href="#%D0%B8%D0%BD%D1%82%D0%B5%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D1%81-docker">Интеграция с Docker</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-dotnet-watch">Сравнение с dotnet watch</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B4%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%B8%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B">Дополнительные инструменты</a>
+<ul>
+<li><a href="#gofumpt--%D1%81%D1%82%D1%80%D0%BE%D0%B3%D0%BE%D0%B5-%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5">gofumpt — строгое форматирование</a></li>
+<li><a href="#goimports--%D0%B0%D0%B2%D1%82%D0%BE%D0%B8%D0%BC%D0%BF%D0%BE%D1%80%D1%82%D1%8B">goimports — автоимпорты</a></li>
+<li><a href="#go-generate">go generate</a></li>
+<li><a href="#wire--compile-time-di">wire — compile-time DI</a></li>
+<li><a href="#go-fix--%D0%B0%D0%B2%D1%82%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BC%D0%B8%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D0%B8-%D0%BA%D0%BE%D0%B4%D0%B0-go-126">go fix — автоматические миграции кода (Go 1.26)</a>
+<ul>
+<li><a href="#%D0%B2%D1%81%D1%82%D1%80%D0%BE%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5-%D0%BC%D0%BE%D0%B4%D0%B5%D1%80%D0%BD%D0%B8%D0%B7%D0%B0%D1%82%D0%BE%D1%80%D1%8B-go-126">Встроенные модернизаторы Go 1.26</a></li>
+<li><a href="#%D0%B4%D0%B8%D1%80%D0%B5%D0%BA%D1%82%D0%B8%D0%B2%D0%B0-gofix-inline-%D0%B4%D0%BB%D1%8F-%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA">Директива <code>//go:fix inline</code> для библиотек</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-c">Сравнение с C#</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%D0%B8%D0%BD%D1%82%D0%B5%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D0%B2-ide">Интеграция в IDE</a>
+<ul>
+<li><a href="#vs-code">VS Code</a></li>
+<li><a href="#goland">GoLand</a></li>
+<li><a href="#%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0-%D0%B4%D0%BB%D1%8F-%D0%BA%D0%BE%D0%BC%D0%B0%D0%BD%D0%B4%D1%8B">Настройка для команды</a></li>
+</ul>
+</li>
+<li><a href="#cicd-pipeline">CI/CD Pipeline</a>
+<ul>
+<li><a href="#github-actions">GitHub Actions</a></li>
+<li><a href="#gitlab-ci">GitLab CI</a></li>
+<li><a href="#pre-commit-hooks">Pre-commit hooks</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B">Практические примеры</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-production-ready-golangciyml">Пример 1: Production-ready .golangci.yml</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-cicd-pipeline">Пример 2: CI/CD Pipeline</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-makefile-%D0%B4%D0%BB%D1%8F-go-%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B0">Пример 3: Makefile для Go проекта</a></li>
+</ul>
+</li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<p>В Go качество кода обеспечивается не только компилятором, но и богатой экосистемой инструментов статического анализа. В отличие от C#, где большинство инструментов интегрировано в Visual Studio или Rider, в Go принят модульный подход — множество специализированных инструментов, объединённых в единый workflow.</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Если в C# вы привыкли к Roslyn Analyzers, встроенным в IDE, то в Go вы столкнётесь с отдельными CLI-инструментами. Но не пугайтесь — golangci-lint объединяет 100+ линтеров в один инструмент с единой конфигурацией.</p>
+</blockquote>
+<h3 id="философия-go-tooling"><a class="header" href="#философия-go-tooling">Философия Go tooling</a></h3>
+<p>Go известен своей философией “batteries included” для базовых инструментов:</p>
+<pre><code class="language-bash"># Форматирование — НЕ обсуждается, один стиль для всех
+go fmt ./...
+
+# Базовый статический анализ — встроен
+go vet ./...
+
+# Тестирование — встроено
+go test ./...
+
+# Управление зависимостями — встроено
+go mod tidy
+</code></pre>
+<p>Но для production-качества кода этого недостаточно. Здесь на помощь приходят сторонние инструменты, которые мы детально рассмотрим.</p>
+<h3 id="что-мы-изучим"><a class="header" href="#что-мы-изучим">Что мы изучим</a></h3>
+<ol>
+<li><strong>golangci-lint</strong> — мета-линтер, объединяющий 100+ проверок</li>
+<li><strong>staticcheck</strong> — глубокий статический анализ</li>
+<li><strong>govulncheck</strong> — официальный инструмент проверки уязвимостей</li>
+<li><strong>go mod</strong> — продвинутое управление зависимостями</li>
+<li><strong>air</strong> — hot reload для разработки</li>
+<li><strong>Дополнительные инструменты</strong> — gofumpt, goimports, wire</li>
+<li><strong>CI/CD интеграция</strong> — GitHub Actions, GitLab CI, pre-commit hooks</li>
+</ol>
+<hr>
+<h2 id="экосистема-инструментов-c-vs-go"><a class="header" href="#экосистема-инструментов-c-vs-go">Экосистема инструментов: C# vs Go</a></h2>
+<h3 id="сравнительная-таблица"><a class="header" href="#сравнительная-таблица">Сравнительная таблица</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Категория</th><th>C# (.NET)</th><th>Go</th><th>Комментарий</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Форматирование</strong></td><td><code>dotnet format</code>, EditorConfig</td><td><code>go fmt</code>, <code>gofumpt</code></td><td>Go: единый стиль, споры невозможны</td></tr>
+<tr><td><strong>Линтеры</strong></td><td>Roslyn Analyzers, StyleCop, ReSharper</td><td>golangci-lint (100+ линтеров)</td><td>Go: один мета-линтер для всего</td></tr>
+<tr><td><strong>Статический анализ</strong></td><td>SonarQube, NDepend, PVS-Studio</td><td>staticcheck, go vet</td><td>Go: бесплатные официальные инструменты</td></tr>
+<tr><td><strong>Уязвимости</strong></td><td><code>dotnet audit</code>, Dependabot, Snyk</td><td>govulncheck</td><td>Go: официальный инструмент от Go team</td></tr>
+<tr><td><strong>Hot reload</strong></td><td><code>dotnet watch run</code></td><td>air</td><td>C#: встроен, Go: сторонний</td></tr>
+<tr><td><strong>Зависимости</strong></td><td>NuGet, <code>dotnet restore</code></td><td>go mod</td><td>Go: встроен в toolchain</td></tr>
+<tr><td><strong>Code generation</strong></td><td>Source Generators, T4</td><td>go generate</td><td>Go: команды в комментариях</td></tr>
+<tr><td><strong>DI</strong></td><td>Microsoft.Extensions.DI</td><td>wire</td><td>C#: runtime, Go: compile-time</td></tr>
+<tr><td><strong>Coverage</strong></td><td>coverlet, dotCover</td><td>go test -cover</td><td>Go: встроен</td></tr>
+<tr><td><strong>Benchmarks</strong></td><td>BenchmarkDotNet</td><td>go test -bench</td><td>Go: встроен</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="ключевые-отличия"><a class="header" href="#ключевые-отличия">Ключевые отличия</a></h3>
+<p><strong>В C#:</strong></p>
+<ul>
+<li>Большинство инструментов интегрировано в IDE</li>
+<li>Roslyn Analyzers работают в реальном времени при написании кода</li>
+<li>Много коммерческих решений (ReSharper, NDepend, PVS-Studio)</li>
+<li>Каждый инструмент настраивается отдельно</li>
+</ul>
+<p><strong>В Go:</strong></p>
+<ul>
+<li>Инструменты — отдельные CLI-программы</li>
+<li>golangci-lint объединяет всё с единой конфигурацией</li>
+<li>Почти все инструменты бесплатные и open-source</li>
+<li>Официальные инструменты от Go team (govulncheck, go vet)</li>
+</ul>
+<h3 id="типичный-workflow"><a class="header" href="#типичный-workflow">Типичный workflow</a></h3>
+<p><strong>C# проект:</strong></p>
+<pre><code class="language-bash"># Сборка с анализаторами
+dotnet build /p:TreatWarningsAsErrors=true
+
+# Форматирование
+dotnet format
+
+# Тесты с покрытием
+dotnet test --collect:"XPlat Code Coverage"
+
+# Проверка уязвимостей
+dotnet list package --vulnerable
+</code></pre>
+<p><strong>Go проект:</strong></p>
+<pre><code class="language-bash"># Линтинг (100+ проверок)
+golangci-lint run
+
+# Форматирование
+gofumpt -l -w .
+
+# Тесты с покрытием
+go test -race -cover ./...
+
+# Проверка уязвимостей
+govulncheck ./...
+</code></pre>
+<hr>
+<h2 id="golangci-lint--мета-линтер"><a class="header" href="#golangci-lint--мета-линтер">golangci-lint — мета-линтер</a></h2>
+<p>golangci-lint — это агрегатор линтеров, объединяющий более 100 проверок в один инструмент с единой конфигурацией, кэшированием и параллельным выполнением.</p>
+<h3 id="зачем-нужен-мета-линтер"><a class="header" href="#зачем-нужен-мета-линтер">Зачем нужен мета-линтер</a></h3>
+<p><strong>Проблема до golangci-lint:</strong></p>
+<pre><code class="language-bash"># Раньше запускали каждый линтер отдельно
+golint ./...
+go vet ./...
+errcheck ./...
+staticcheck ./...
+ineffassign ./...
+misspell ./...
+# ... ещё 10-20 линтеров
+</code></pre>
+<p>Это было:</p>
+<ul>
+<li>Медленно (каждый парсит код заново)</li>
+<li>Неудобно (разные форматы конфигурации)</li>
+<li>Сложно поддерживать в CI/CD</li>
+</ul>
+<p><strong>Решение — golangci-lint:</strong></p>
+<pre><code class="language-bash"># Один инструмент для всего
+golangci-lint run
+</code></pre>
+<p>Преимущества:</p>
+<ul>
+<li><strong>Скорость</strong>: кэширование и параллельное выполнение</li>
+<li><strong>Единая конфигурация</strong>: один файл <code>.golangci.yml</code></li>
+<li><strong>Единый формат вывода</strong>: удобно для CI/CD</li>
+<li><strong>Автофикс</strong>: некоторые проблемы исправляются автоматически</li>
+</ul>
+<h3 id="установка-и-базовое-использование"><a class="header" href="#установка-и-базовое-использование">Установка и базовое использование</a></h3>
+<blockquote>
+<p>💡 Базовая установка описана в <a href="../part1-basics/01_setup_environment.html">разделе 1.1</a>. Здесь — продвинутое использование.</p>
+</blockquote>
+<pre><code class="language-bash"># Установка (рекомендуемый способ)
+go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+
+# Проверка версии
+golangci-lint --version
+
+# Базовый запуск
+golangci-lint run
+
+# С автоисправлением (где возможно)
+golangci-lint run --fix
+
+# Для конкретных директорий
+golangci-lint run ./internal/... ./pkg/...
+
+# С verbose output
+golangci-lint run -v
+
+# Показать, какие линтеры включены
+golangci-lint linters
+</code></pre>
+<h3 id="конфигурация-golangciyml"><a class="header" href="#конфигурация-golangciyml">Конфигурация .golangci.yml</a></h3>
+<p>Создайте файл <code>.golangci.yml</code> в корне проекта:</p>
+<pre><code class="language-yaml"># Версия конфигурации (для совместимости)
+version: "2"
+
+# Настройки запуска
+run:
+  # Таймаут (увеличьте для больших проектов)
+  timeout: 5m
+
+  # Код выхода при наличии issues
+  issues-exit-code: 1
+
+  # Проверять тесты
+  tests: true
+
+  # Build tags
+  build-tags: []
+
+  # Пропустить директории
+  skip-dirs:
+    - vendor
+    - third_party
+    - testdata
+    - examples
+    - .git
+
+  # Пропустить файлы по паттерну
+  skip-files:
+    - ".*_mock\\.go$"
+    - ".*_gen\\.go$"
+    - ".*\\.pb\\.go$"
+
+  # Режим загрузки модулей
+  modules-download-mode: readonly
+
+  # Разрешить параллельные запуски
+  allow-parallel-runners: true
+
+# Настройки вывода
+output:
+  # Формат: colored-line-number, tab, json, checkstyle, etc.
+  formats:
+    - format: colored-line-number
+
+  # Печатать строки с ошибками
+  print-issued-lines: true
+
+  # Печатать имя линтера
+  print-linter-name: true
+
+  # Уникальные issues по строке
+  uniq-by-line: true
+
+  # Сортировать результаты
+  sort-results: true
+
+# Включенные линтеры
+linters:
+  # Отключить все по умолчанию
+  disable-all: true
+
+  # Включить конкретные
+  enable:
+    # Обязательные для production
+    - errcheck      # Необработанные ошибки
+    - gosimple      # Упрощение кода
+    - govet         # Подозрительные конструкции
+    - ineffassign   # Неэффективные присваивания
+    - staticcheck   # Комплексный статический анализ
+    - unused        # Неиспользуемый код
+
+    # Рекомендуемые
+    - bodyclose     # Незакрытые http.Response.Body
+    - dupl          # Дублирование кода
+    - errorlint     # Проверка работы с ошибками (Go 1.13+)
+    - funlen        # Длина функций
+    - gocognit      # Когнитивная сложность
+    - goconst       # Повторяющиеся строки → константы
+    - gocritic      # Опытные советы
+    - gocyclo       # Цикломатическая сложность
+    - gofmt         # Форматирование
+    - goimports     # Импорты
+    - gosec         # Безопасность
+    - misspell      # Опечатки
+    - nakedret      # Naked returns в длинных функциях
+    - nilerr        # nil error возвращается с non-nil значением
+    - prealloc      # Pre-allocation slices
+    - revive        # Замена golint
+    - unconvert     # Ненужные преобразования типов
+    - unparam       # Неиспользуемые параметры
+    - whitespace    # Лишние пробелы
+
+# Настройки конкретных линтеров
+linters-settings:
+  errcheck:
+    # Проверять type assertions
+    check-type-assertions: true
+    # Проверять blank identifier
+    check-blank: true
+
+  govet:
+    # Включить shadow проверку
+    enable:
+      - shadow
+
+  gocyclo:
+    # Максимальная цикломатическая сложность
+    min-complexity: 15
+
+  gocognit:
+    # Максимальная когнитивная сложность
+    min-complexity: 20
+
+  dupl:
+    # Минимальное количество строк для дубликата
+    threshold: 100
+
+  funlen:
+    # Максимальная длина функции
+    lines: 100
+    # Максимальное количество statements
+    statements: 50
+
+  goconst:
+    # Минимальная длина строки
+    min-len: 3
+    # Минимальное количество вхождений
+    min-occurrences: 3
+
+  gocritic:
+    # Включить все проверки
+    enabled-tags:
+      - diagnostic
+      - style
+      - performance
+      - experimental
+      - opinionated
+
+  gosec:
+    # Исключить определённые правила
+    excludes:
+      - G104  # Audit errors not checked (errcheck делает это лучше)
+
+  revive:
+    # Правила revive
+    rules:
+      - name: blank-imports
+      - name: context-as-argument
+      - name: context-keys-type
+      - name: dot-imports
+      - name: error-return
+      - name: error-strings
+      - name: error-naming
+      - name: exported
+      - name: if-return
+      - name: increment-decrement
+      - name: var-naming
+      - name: var-declaration
+      - name: package-comments
+      - name: range
+      - name: receiver-naming
+      - name: time-naming
+      - name: unexported-return
+      - name: indent-error-flow
+      - name: errorf
+      - name: empty-block
+      - name: superfluous-else
+      - name: unreachable-code
+
+  misspell:
+    # Локаль (US или UK)
+    locale: US
+
+  nakedret:
+    # Максимальная длина функции с naked return
+    max-func-lines: 30
+
+  prealloc:
+    # Только simple loops
+    simple: true
+    # Проверять range loops
+    range-loops: true
+    # Проверять for loops
+    for-loops: false
+
+# Управление issues
+issues:
+  # Исключить по тексту
+  exclude:
+    # EXC0001 - errcheck: Almost all programs ignore errors on these functions
+    - "Error return value of .((os\\.)?std(out|err)\\..*|.*Close|.*Flush|os\\.Remove(All)?|.*print(f|ln)?|os\\.(Un)?Setenv). is not checked"
+
+  # Правила исключений
+  exclude-rules:
+    # Для тестов: разрешить больше
+    - path: _test\.go
+      linters:
+        - errcheck
+        - dupl
+        - funlen
+        - gocognit
+        - gosec
+
+    # Для main.go: разрешить длинные функции
+    - path: main\.go
+      linters:
+        - funlen
+
+    # Для generated кода: отключить всё
+    - path: ".*_gen\\.go"
+      linters:
+        - all
+
+    # Для proto: отключить всё
+    - path: ".*\\.pb\\.go"
+      linters:
+        - all
+
+    # Для wire: отключить
+    - path: wire_gen\.go
+      linters:
+        - all
+
+  # Показывать все issues (не группировать)
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+  # Новый код: показывать issues только в новых строках
+  # (полезно при внедрении в существующий проект)
+  # new: true
+  # new-from-rev: HEAD~1
+
+# Severity (для интеграции с IDE)
+severity:
+  default-severity: error
+  rules:
+    - linters:
+        - dupl
+      severity: warning
+    - linters:
+        - goconst
+      severity: warning
+</code></pre>
+<h3 id="обязательные-линтеры-для-production"><a class="header" href="#обязательные-линтеры-для-production">Обязательные линтеры для production</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Линтер</th><th>Что проверяет</th><th>C# аналог</th><th>Пример ошибки</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>errcheck</strong></td><td>Необработанные ошибки</td><td>CA2000, CA1031</td><td><code>f.Close()</code> без проверки error</td></tr>
+<tr><td><strong>staticcheck</strong></td><td>Комплексный анализ</td><td>Roslyn Analyzers</td><td>Deprecated API, dead code</td></tr>
+<tr><td><strong>unused</strong></td><td>Неиспользуемый код</td><td>IDE0051, IDE0052</td><td>Неиспользуемые функции/переменные</td></tr>
+<tr><td><strong>gosimple</strong></td><td>Упрощение кода</td><td>IDE0003, IDE0004</td><td><code>if err != nil { return err }</code> в конце функции</td></tr>
+<tr><td><strong>govet</strong></td><td>Подозрительные конструкции</td><td>Встроен в Roslyn</td><td>Printf с неправильными аргументами</td></tr>
+<tr><td><strong>ineffassign</strong></td><td>Неэффективные присваивания</td><td>IDE0059</td><td><code>x := 1; x = 2</code> (первое присваивание не нужно)</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Минимальная production конфигурация:</strong></p>
+<pre><code class="language-yaml">linters:
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+</code></pre>
+<h3 id="дополнительные-рекомендуемые-линтеры"><a class="header" href="#дополнительные-рекомендуемые-линтеры">Дополнительные рекомендуемые линтеры</a></h3>
+<h4 id="для-качества-кода"><a class="header" href="#для-качества-кода">Для качества кода</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Линтер</th><th>Назначение</th><th>Настройка</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>revive</strong></td><td>Замена golint, гибче</td><td>Много правил</td></tr>
+<tr><td><strong>gocyclo</strong></td><td>Цикломатическая сложность</td><td><code>min-complexity: 15</code></td></tr>
+<tr><td><strong>gocognit</strong></td><td>Когнитивная сложность</td><td><code>min-complexity: 20</code></td></tr>
+<tr><td><strong>dupl</strong></td><td>Дублирование кода</td><td><code>threshold: 100</code></td></tr>
+<tr><td><strong>funlen</strong></td><td>Длина функций</td><td><code>lines: 100</code></td></tr>
+<tr><td><strong>goconst</strong></td><td>Магические строки</td><td><code>min-len: 3, min-occurrences: 3</code></td></tr>
+<tr><td><strong>gocritic</strong></td><td>Опытные советы</td><td><code>enabled-tags: all</code></td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="для-безопасности"><a class="header" href="#для-безопасности">Для безопасности</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Линтер</th><th>Назначение</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>gosec</strong></td><td>Security issues (SQL injection, hardcoded credentials)</td></tr>
+<tr><td><strong>bodyclose</strong></td><td>Незакрытые <code>http.Response.Body</code></td></tr>
+<tr><td><strong>nilerr</strong></td><td><code>return nil, nil</code> когда должен быть error</td></tr>
+<tr><td><strong>sqlclosecheck</strong></td><td>Незакрытые <code>sql.Rows</code></td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="для-производительности"><a class="header" href="#для-производительности">Для производительности</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Линтер</th><th>Назначение</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>prealloc</strong></td><td>Pre-allocation slices в циклах</td></tr>
+<tr><td><strong>unconvert</strong></td><td>Ненужные преобразования типов</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="исключения-и-настройка-severity"><a class="header" href="#исключения-и-настройка-severity">Исключения и настройка severity</a></h3>
+<p><strong>Исключения для тестов:</strong></p>
+<pre><code class="language-yaml">issues:
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - errcheck    # В тестах часто игнорируют ошибки
+        - dupl        # Тесты могут повторяться
+        - funlen      # Тесты могут быть длинными
+        - gosec       # Security не критична в тестах
+</code></pre>
+<p><strong>Исключение конкретной ошибки:</strong></p>
+<pre><code class="language-yaml">issues:
+  exclude-rules:
+    - linters:
+        - staticcheck
+      text: "SA1019:"  # Игнорировать deprecated warnings
+</code></pre>
+<p><strong>Директивы в коде:</strong></p>
+<pre><code class="language-go">// Отключить для строки
+result, _ := SomeFunc() //nolint:errcheck
+
+// Отключить для строки с причиной
+result, _ := SomeFunc() //nolint:errcheck // error handled elsewhere
+
+// Отключить для блока
+//nolint:gocyclo
+func complexFunction() {
+    // ...
+}
+
+// Отключить несколько линтеров
+//nolint:errcheck,gosec
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: Используйте <code>//nolint</code> осторожно. Каждое использование должно быть обосновано.</p>
+</blockquote>
+<hr>
+<h2 id="staticcheck--глубокий-статический-анализ"><a class="header" href="#staticcheck--глубокий-статический-анализ">staticcheck — глубокий статический анализ</a></h2>
+<p>staticcheck — один из самых мощных статических анализаторов для Go, разработанный Dominik Honnef. Он включён в golangci-lint, но может использоваться и отдельно.</p>
+<h3 id="категории-проверок"><a class="header" href="#категории-проверок">Категории проверок</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Категория</th><th>Prefix</th><th>Описание</th><th>Количество</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>SA</strong></td><td>SA1xxx-SA9xxx</td><td>Статический анализ (основной)</td><td>~90 проверок</td></tr>
+<tr><td><strong>S</strong></td><td>S1xxx</td><td>Упрощения кода (simplifications)</td><td>~40 проверок</td></tr>
+<tr><td><strong>ST</strong></td><td>ST1xxx</td><td>Стилистические проверки</td><td>~20 проверок</td></tr>
+<tr><td><strong>QF</strong></td><td>QF1xxx</td><td>Quick fixes (автоисправления)</td><td>~15 проверок</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="важные-проверки"><a class="header" href="#важные-проверки">Важные проверки</a></h3>
+<p><strong>SA (Статический анализ) — критические:</strong></p>
+<pre><code class="language-go">// SA1019: Using deprecated API
+import "io/ioutil"  // Deprecated в Go 1.16
+data, _ := ioutil.ReadFile("file.txt")
+// Исправление: использовать os.ReadFile
+
+// SA4006: Value assigned but never used
+x := 1
+x = 2  // x = 1 никогда не используется
+fmt.Println(x)
+
+// SA5001: Inefficient use of time.After in select
+for {
+    select {
+    case &lt;-time.After(time.Second): // Создаёт новый timer каждую итерацию!
+        // ...
+    }
+}
+// Исправление: использовать time.NewTimer + Reset
+
+// SA9003: Empty branch
+if condition {
+    // Пустая ветка — подозрительно
+}
+
+// SA4017: Pure function with unused return
+strings.ToLower(s) // Результат не используется!
+</code></pre>
+<p><strong>S (Упрощения) — улучшают читаемость:</strong></p>
+<pre><code class="language-go">// S1000: Use plain channel send/receive
+select {
+case x := &lt;-ch:
+    return x
+}
+// Упрощение:
+return &lt;-ch
+
+// S1002: Omit comparison to bool
+if b == true {  // Лишнее сравнение
+    // ...
+}
+// Упрощение:
+if b {
+    // ...
+}
+
+// S1009: Omit redundant nil check
+if x != nil &amp;&amp; len(x) &gt; 0 {  // len(nil slice) = 0, проверка не нужна
+    // ...
+}
+// Упрощение:
+if len(x) &gt; 0 {
+    // ...
+}
+</code></pre>
+<p><strong>ST (Стиль) — соглашения Go:</strong></p>
+<pre><code class="language-go">// ST1003: Poorly chosen identifier
+const MAX_VALUE = 100  // В Go используют camelCase
+// Исправление:
+const maxValue = 100
+
+// ST1005: Error strings should not be capitalized
+return errors.New("User not found")  // Неправильно
+// Исправление:
+return errors.New("user not found")
+
+// ST1006: Poorly chosen receiver name
+func (this *User) GetName() string {  // "this" — не Go-way
+    return this.Name
+}
+// Исправление:
+func (u *User) GetName() string {
+    return u.Name
+}
+</code></pre>
+<h3 id="staticcheck-в-golangci-lint-vs-standalone"><a class="header" href="#staticcheck-в-golangci-lint-vs-standalone">staticcheck в golangci-lint vs standalone</a></h3>
+<p><strong>В golangci-lint (рекомендуется):</strong></p>
+<pre><code class="language-yaml"># .golangci.yml
+linters:
+  enable:
+    - staticcheck
+
+linters-settings:
+  staticcheck:
+    # Включить все категории
+    checks:
+      - all
+      # Исключить стилистические (опционально)
+      # - "-ST1000"
+</code></pre>
+<p><strong>Standalone:</strong></p>
+<pre><code class="language-bash"># Установка
+go install honnef.co/go/tools/cmd/staticcheck@latest
+
+# Запуск
+staticcheck ./...
+
+# С конфигурацией
+staticcheck -checks="all,-ST1000" ./...
+</code></pre>
+<p><strong>Конфигурация staticcheck.conf (для standalone):</strong></p>
+<pre><code class="language-toml">checks = ["all", "-ST1000", "-ST1003"]
+
+[[analyzers]]
+name = "SA1019"
+enabled = false  # Отключить deprecated warnings
+</code></pre>
+<p><strong>Когда использовать standalone:</strong></p>
+<ul>
+<li>Нужны все возможности staticcheck (некоторые не доступны через golangci-lint)</li>
+<li>Отладка конкретных проверок</li>
+<li>В остальных случаях — golangci-lint удобнее</li>
+</ul>
+<hr>
+<h2 id="govulncheck--проверка-уязвимостей"><a class="header" href="#govulncheck--проверка-уязвимостей">govulncheck — проверка уязвимостей</a></h2>
+<p>govulncheck — официальный инструмент от Go team для проверки уязвимостей в зависимостях. В отличие от большинства аналогов, он анализирует <strong>фактически используемый код</strong>, а не просто список зависимостей.</p>
+<h3 id="как-работает-govulncheck"><a class="header" href="#как-работает-govulncheck">Как работает govulncheck</a></h3>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                        govulncheck                               │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  1. Читает go.mod и go.sum                                      │
+│              ↓                                                   │
+│  2. Строит call graph вашего кода                               │
+│              ↓                                                   │
+│  3. Проверяет против vuln.go.dev database                       │
+│              ↓                                                   │
+│  4. Показывает ТОЛЬКО уязвимости, которые реально используются  │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Ключевое отличие от других инструментов:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Инструмент</th><th>Анализирует</th><th>False positives</th></tr>
+</thead>
+<tbody>
+<tr><td>Dependabot</td><td>Все зависимости</td><td>Много</td></tr>
+<tr><td><code>dotnet audit</code></td><td>Все зависимости</td><td>Много</td></tr>
+<tr><td><strong>govulncheck</strong></td><td>Только используемый код</td><td>Мало</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="использование"><a class="header" href="#использование">Использование</a></h3>
+<pre><code class="language-bash"># Установка
+go install golang.org/x/vuln/cmd/govulncheck@latest
+
+# Проверка исходного кода
+govulncheck ./...
+
+# JSON output (для CI/CD)
+govulncheck -json ./... &gt; vulns.json
+
+# Проверка скомпилированного бинарника
+govulncheck -mode=binary ./myapp
+
+# Проверка конкретного модуля
+govulncheck -C ./cmd/server ./...
+</code></pre>
+<p><strong>Пример вывода:</strong></p>
+<pre><code>Scanning your code and 47 packages across 12 dependent modules for known vulnerabilities...
+
+Vulnerability #1: GO-2024-2687
+    Incorrect forwarding of sensitive headers and cookies on HTTP redirect in net/http
+
+    More info: https://pkg.go.dev/vuln/GO-2024-2687
+
+    Module: stdlib
+    Found in: stdlib@go1.21.0
+    Fixed in: stdlib@go1.21.8
+
+    Example call found:
+      main.go:45:12: myapp.FetchData calls
+        net/http.(*Client).Do, which eventually calls
+        net/http.shouldCopyHeaderOnRedirect
+
+Vulnerability #2: GO-2024-1234
+    SQL injection in github.com/example/sqlutil
+
+    Module: github.com/example/sqlutil
+    Found in: github.com/example/sqlutil@v1.2.0
+    Fixed in: github.com/example/sqlutil@v1.2.5
+
+    Example call found:
+      internal/db/queries.go:23:8: db.GetUser calls
+        github.com/example/sqlutil.Query
+
+Your code is affected by 2 vulnerabilities.
+</code></pre>
+<h3 id="сравнение-с-c-инструментами"><a class="header" href="#сравнение-с-c-инструментами">Сравнение с C# инструментами</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>govulncheck</th><th>dotnet audit</th><th>Dependabot</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Анализ использования</strong></td><td>Да (call graph)</td><td>Нет</td><td>Нет</td></tr>
+<tr><td><strong>False positives</strong></td><td>Минимум</td><td>Много</td><td>Много</td></tr>
+<tr><td><strong>База уязвимостей</strong></td><td>vuln.go.dev</td><td>NuGet advisories</td><td>GitHub Advisory</td></tr>
+<tr><td><strong>Официальный</strong></td><td>Да (Go team)</td><td>Да (Microsoft)</td><td>Да (GitHub)</td></tr>
+<tr><td><strong>Автоматический fix</strong></td><td>Нет</td><td>Нет</td><td>Да (создаёт PR)</td></tr>
+<tr><td><strong>CI/CD интеграция</strong></td><td>CLI, JSON output</td><td>CLI</td><td>GitHub native</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Интеграция в CI/CD:</strong></p>
+<pre><code class="language-yaml"># GitHub Actions
+- name: Check vulnerabilities
+  run: |
+    go install golang.org/x/vuln/cmd/govulncheck@latest
+    govulncheck ./...
+</code></pre>
+<hr>
+<h2 id="go-mod--управление-зависимостями"><a class="header" href="#go-mod--управление-зависимостями">go mod — управление зависимостями</a></h2>
+<p>go mod — встроенная система управления зависимостями в Go. В отличие от NuGet, она минималистична, но предоставляет мощные возможности для безопасности и воспроизводимости сборок.</p>
+<h3 id="основные-команды"><a class="header" href="#основные-команды">Основные команды</a></h3>
+<pre><code class="language-bash"># Инициализация модуля
+go mod init github.com/user/project
+
+# Добавить/обновить зависимости, удалить неиспользуемые
+go mod tidy
+
+# Проверить целостность зависимостей
+go mod verify
+# all modules verified
+
+# Скачать зависимости в кэш
+go mod download
+
+# Создать vendor директорию
+go mod vendor
+
+# Показать граф зависимостей
+go mod graph
+
+# Почему нужна зависимость?
+go mod why -m github.com/some/module
+
+# Редактировать go.mod программно
+go mod edit -require github.com/some/module@v1.2.3
+go mod edit -go=1.23
+
+# Показать текущие зависимости
+go list -m all
+
+# Показать доступные версии модуля
+go list -m -versions github.com/some/module
+</code></pre>
+<p><strong>Проверка в CI (go mod tidy):</strong></p>
+<pre><code class="language-bash"># Если есть изменения — кто-то забыл go mod tidy
+go mod tidy
+git diff --exit-code go.mod go.sum
+</code></pre>
+<p><strong>Анализ зависимостей:</strong></p>
+<pre><code class="language-bash"># Найти, кто тянет проблемную зависимость
+go mod graph | grep "problematic-module"
+
+# Найти все версии модуля в дереве
+go mod graph | grep "github.com/some/module@"
+
+# Визуализация (требует graphviz)
+go mod graph | modgraphviz | dot -Tpng -o deps.png
+</code></pre>
+<h3 id="private-modules-и-goproxy"><a class="header" href="#private-modules-и-goproxy">Private modules и GOPROXY</a></h3>
+<pre><code class="language-bash"># Для приватных репозиториев — не использовать proxy
+export GOPRIVATE=github.com/mycompany/*,gitlab.mycompany.com/*
+
+# Не проверять checksum для приватных модулей
+export GONOSUMDB=github.com/mycompany/*
+
+# Приватный proxy (для enterprise)
+export GOPROXY=https://proxy.mycompany.com,https://proxy.golang.org,direct
+
+# Отключить proxy полностью (не рекомендуется)
+export GOPROXY=direct
+</code></pre>
+<p><strong>Git credentials для приватных репозиториев:</strong></p>
+<pre><code class="language-bash"># .gitconfig
+[url "git@github.com:"]
+    insteadOf = https://github.com/
+
+# Или через HTTPS с токеном
+git config --global url."https://${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+</code></pre>
+<h3 id="сравнение-с-nuget"><a class="header" href="#сравнение-с-nuget">Сравнение с NuGet</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>go mod</th><th>NuGet</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Lock file</strong></td><td>go.sum (checksums)</td><td>packages.lock.json</td></tr>
+<tr><td><strong>Manifest</strong></td><td>go.mod</td><td>.csproj / Directory.Packages.props</td></tr>
+<tr><td><strong>Версионирование</strong></td><td>MVS (Minimal Version Selection)</td><td>NuGet resolver (newest)</td></tr>
+<tr><td><strong>Private feed</strong></td><td>GOPRIVATE / GOPROXY</td><td>NuGet.config</td></tr>
+<tr><td><strong>Централизация</strong></td><td>go.work (workspaces)</td><td>Directory.Packages.props</td></tr>
+<tr><td><strong>Vendoring</strong></td><td><code>go mod vendor</code></td><td>Нет встроенного</td></tr>
+<tr><td><strong>Checksum DB</strong></td><td>sum.golang.org</td><td>Нет</td></tr>
+<tr><td><strong>Кэш</strong></td><td><code>$GOPATH/pkg/mod</code></td><td><code>~/.nuget/packages</code></td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>MVS vs NuGet resolver:</strong></p>
+<pre><code>Зависимости:
+  A → B v1.1
+  A → C
+  C → B v1.2
+
+NuGet (newest wins):
+  B v1.2 (берёт новейшую)
+
+Go MVS (minimal version):
+  B v1.2 (минимальная, удовлетворяющая всем требованиям)
+</code></pre>
+<p>MVS гарантирует воспроизводимость: одинаковые go.mod → одинаковые версии.</p>
+<hr>
+<h2 id="air--hot-reload-для-разработки"><a class="header" href="#air--hot-reload-для-разработки">air — hot reload для разработки</a></h2>
+<p>air — инструмент для автоматической перезагрузки Go-приложения при изменении файлов. Аналог <code>dotnet watch run</code> для C#.</p>
+<blockquote>
+<p>💡 Базовая настройка air описана в <a href="../part4-infrastructure/07_containerization.html">разделе 4.7</a>. Здесь — продвинутая конфигурация.</p>
+</blockquote>
+<h3 id="конфигурация"><a class="header" href="#конфигурация">Конфигурация</a></h3>
+<p><strong>Установка:</strong></p>
+<pre><code class="language-bash">go install github.com/air-verse/air@latest
+</code></pre>
+<p><strong>Полная конфигурация .air.toml:</strong></p>
+<pre><code class="language-toml"># Корневая директория проекта
+root = "."
+# Директория для временных файлов
+tmp_dir = "tmp"
+
+[build]
+  # Команда сборки с флагами отладки
+  cmd = "go build -gcflags='all=-N -l' -o ./tmp/main ./cmd/server"
+  # Путь к бинарнику
+  bin = "./tmp/main"
+  # Аргументы при запуске
+  args_bin = ["-config", "./config/local.yaml"]
+  # Перед сборкой
+  pre_cmd = []
+  # После сборки
+  post_cmd = []
+  # Задержка перед сборкой (мс)
+  delay = 500
+  # Остановить при ошибке сборки
+  stop_on_error = true
+  # Логировать ошибки сборки
+  log = "build-errors.log"
+  # Отправить interrupt сигнал (для graceful shutdown)
+  send_interrupt = true
+  # Задержка перед kill (мс)
+  kill_delay = 500
+  # Перезапускать при ошибке
+  rerun = false
+  # Задержка перезапуска при ошибке (мс)
+  rerun_delay = 500
+
+  # Исключить директории
+  exclude_dir = [
+    "assets",
+    "tmp",
+    "vendor",
+    "testdata",
+    "node_modules",
+    ".git",
+    ".idea",
+    ".vscode",
+  ]
+
+  # Исключить файлы по regex
+  exclude_regex = [
+    "_test\\.go$",
+    "_mock\\.go$",
+    "\\.pb\\.go$",
+  ]
+
+  # Включить только эти директории (пусто = все)
+  include_dir = []
+
+  # Расширения для отслеживания
+  include_ext = ["go", "yaml", "yml", "toml", "json", "html", "tmpl", "tpl"]
+
+  # Исключить файлы без изменений
+  exclude_unchanged = true
+
+  # Следить за символическими ссылками
+  follow_symlink = false
+
+[log]
+  # Показывать время
+  time = true
+  # Показывать только main output
+  main_only = false
+
+[color]
+  main = "magenta"
+  watcher = "cyan"
+  build = "yellow"
+  runner = "green"
+
+[misc]
+  # Очистить tmp при выходе
+  clean_on_exit = true
+
+[screen]
+  # Очищать экран при перезагрузке
+  clear_on_rebuild = true
+  # Оставить scroll history
+  keep_scroll = true
+</code></pre>
+<p><strong>Запуск:</strong></p>
+<pre><code class="language-bash"># С конфигурацией
+air -c .air.toml
+
+# Или просто (ищет .air.toml автоматически)
+air
+</code></pre>
+<h3 id="интеграция-с-docker"><a class="header" href="#интеграция-с-docker">Интеграция с Docker</a></h3>
+<p><strong>Dockerfile.dev:</strong></p>
+<pre><code class="language-dockerfile">FROM golang:1.23-alpine
+
+WORKDIR /app
+
+# Установить air
+RUN go install github.com/air-verse/air@latest
+
+# Копировать go.mod для кэширования зависимостей
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Не копируем код — он будет в volume
+
+CMD ["air", "-c", ".air.toml"]
+</code></pre>
+<p><strong>docker-compose.yml:</strong></p>
+<pre><code class="language-yaml">services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      # Код проекта
+      - .:/app
+      # Кэш Go modules (для скорости)
+      - go-mod-cache:/go/pkg/mod
+      # Кэш сборки
+      - go-build-cache:/root/.cache/go-build
+    ports:
+      - "8080:8080"
+    environment:
+      - ENV=development
+    # Graceful shutdown
+    stop_grace_period: 5s
+
+volumes:
+  go-mod-cache:
+  go-build-cache:
+</code></pre>
+<h3 id="сравнение-с-dotnet-watch"><a class="header" href="#сравнение-с-dotnet-watch">Сравнение с dotnet watch</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>air</th><th>dotnet watch</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Установка</strong></td><td><code>go install</code></td><td>Встроен в SDK</td></tr>
+<tr><td><strong>Конфигурация</strong></td><td><code>.air.toml</code></td><td><code>launchSettings.json</code></td></tr>
+<tr><td><strong>Механизм</strong></td><td>Перезапуск процесса</td><td>Hot reload (runtime patching)</td></tr>
+<tr><td><strong>Скорость</strong></td><td>1-5 секунд (компиляция)</td><td>Мгновенно (patching)</td></tr>
+<tr><td><strong>Отладка</strong></td><td>Delve attachment</td><td>Встроен</td></tr>
+<tr><td><strong>Docker</strong></td><td>Требует настройки</td><td>Работает из коробки</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Почему Go перекомпилирует?</strong> Go компилируется очень быстро (секунды), поэтому hot reload на уровне runtime не нужен. Перекомпиляция гарантирует, что код всегда актуален.</p>
+</blockquote>
+<hr>
+<h2 id="дополнительные-инструменты"><a class="header" href="#дополнительные-инструменты">Дополнительные инструменты</a></h2>
+<h3 id="gofumpt--строгое-форматирование"><a class="header" href="#gofumpt--строгое-форматирование">gofumpt — строгое форматирование</a></h3>
+<p>gofumpt — форк gofmt с более строгими правилами форматирования.</p>
+<pre><code class="language-bash"># Установка
+go install mvdan.cc/gofumpt@latest
+
+# Форматирование
+gofumpt -l -w .
+
+# Проверка без изменений
+gofumpt -d .
+</code></pre>
+<p><strong>Отличия от gofmt:</strong></p>
+<pre><code class="language-go">// gofmt (допустимо):
+func foo() {
+
+    x := 1
+
+}
+
+// gofumpt (убирает лишние пустые строки):
+func foo() {
+    x := 1
+}
+</code></pre>
+<p><strong>Интеграция с golangci-lint:</strong></p>
+<pre><code class="language-yaml">linters:
+  enable:
+    - gofumpt
+
+linters-settings:
+  gofumpt:
+    extra-rules: true
+</code></pre>
+<h3 id="goimports--автоимпорты"><a class="header" href="#goimports--автоимпорты">goimports — автоимпорты</a></h3>
+<p>goimports добавляет отсутствующие импорты и удаляет неиспользуемые.</p>
+<pre><code class="language-bash"># Установка
+go install golang.org/x/tools/cmd/goimports@latest
+
+# Форматирование + импорты
+goimports -w .
+
+# С группировкой локальных импортов
+goimports -local github.com/mycompany -w .
+</code></pre>
+<p><strong>Группировка импортов:</strong></p>
+<pre><code class="language-go">import (
+    // Стандартная библиотека
+    "context"
+    "fmt"
+    "net/http"
+
+    // Внешние зависимости
+    "github.com/gin-gonic/gin"
+    "go.uber.org/zap"
+
+    // Локальные пакеты (отделены blank line)
+    "github.com/mycompany/myproject/internal/config"
+    "github.com/mycompany/myproject/pkg/utils"
+)
+</code></pre>
+<h3 id="go-generate"><a class="header" href="#go-generate">go generate</a></h3>
+<p>go generate запускает команды, указанные в специальных комментариях.</p>
+<pre><code class="language-go">// В начале файла или перед типом
+//go:generate stringer -type=Status
+//go:generate mockgen -source=service.go -destination=mocks/service_mock.go
+//go:generate sqlc generate
+
+type Status int
+
+const (
+    StatusPending Status = iota
+    StatusActive
+    StatusCompleted
+)
+</code></pre>
+<p><strong>Запуск:</strong></p>
+<pre><code class="language-bash"># Все go:generate в проекте
+go generate ./...
+
+# В конкретной директории
+go generate ./internal/...
+
+# С verbose output
+go generate -v ./...
+</code></pre>
+<p><strong>Популярные генераторы:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Инструмент</th><th>Назначение</th></tr>
+</thead>
+<tbody>
+<tr><td><code>stringer</code></td><td>Метод <code>String()</code> для enum</td></tr>
+<tr><td><code>mockgen</code></td><td>Моки для тестирования</td></tr>
+<tr><td><code>sqlc</code></td><td>Типобезопасные SQL-запросы</td></tr>
+<tr><td><code>oapi-codegen</code></td><td>Код из OpenAPI spec</td></tr>
+<tr><td><code>protoc</code></td><td>Код из .proto файлов</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="wire--compile-time-di"><a class="header" href="#wire--compile-time-di">wire — compile-time DI</a></h3>
+<p>wire — инструмент для dependency injection на этапе компиляции от Google.</p>
+<pre><code class="language-bash"># Установка
+go install github.com/google/wire/cmd/wire@latest
+</code></pre>
+<p><strong>Определение провайдеров:</strong></p>
+<pre><code class="language-go">// providers.go
+package main
+
+func NewConfig() *Config {
+    return &amp;Config{...}
+}
+
+func NewDatabase(cfg *Config) (*Database, error) {
+    return sql.Open("postgres", cfg.DatabaseURL)
+}
+
+func NewUserRepository(db *Database) *UserRepository {
+    return &amp;UserRepository{db: db}
+}
+
+func NewUserService(repo *UserRepository) *UserService {
+    return &amp;UserService{repo: repo}
+}
+
+func NewApp(svc *UserService) *App {
+    return &amp;App{userService: svc}
+}
+</code></pre>
+<p><strong>wire.go (build tag wireinject):</strong></p>
+<pre><code class="language-go">//go:build wireinject
+// +build wireinject
+
+package main
+
+import "github.com/google/wire"
+
+func InitializeApp() (*App, error) {
+    wire.Build(
+        NewConfig,
+        NewDatabase,
+        NewUserRepository,
+        NewUserService,
+        NewApp,
+    )
+    return nil, nil
+}
+</code></pre>
+<p><strong>Генерация:</strong></p>
+<pre><code class="language-bash">wire ./...
+# Создаёт wire_gen.go
+</code></pre>
+<p><strong>Сгенерированный wire_gen.go:</strong></p>
+<pre><code class="language-go">// Code generated by Wire. DO NOT EDIT.
+
+package main
+
+func InitializeApp() (*App, error) {
+    config := NewConfig()
+    database, err := NewDatabase(config)
+    if err != nil {
+        return nil, err
+    }
+    userRepository := NewUserRepository(database)
+    userService := NewUserService(userRepository)
+    app := NewApp(userService)
+    return app, nil
+}
+</code></pre>
+<p><strong>Сравнение с Microsoft.Extensions.DI:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>wire</th><th>Microsoft.Extensions.DI</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Время</strong></td><td>Compile-time</td><td>Runtime</td></tr>
+<tr><td><strong>Ошибки</strong></td><td>При компиляции</td><td>При запуске</td></tr>
+<tr><td><strong>Performance</strong></td><td>Нет overhead</td><td>Reflection overhead</td></tr>
+<tr><td><strong>Сложность</strong></td><td>Простой</td><td>Feature-rich (scopes, lifetimes)</td></tr>
+<tr><td><strong>Debugging</strong></td><td>Сгенерированный код читаем</td><td>Stack trace через DI</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="go-fix--автоматические-миграции-кода-go-126"><a class="header" href="#go-fix--автоматические-миграции-кода-go-126">go fix — автоматические миграции кода (Go 1.26)</a></h3>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Аналог <code>dotnet-upgrade-assistant</code> или Roslyn code fixes, но встроенный в инструментарий Go.</p>
+</blockquote>
+<p><code>go fix</code> теперь поддерживает автоматические миграции кода на основе <code>go/analysis</code>. В Go 1.26 команда получила набор встроенных «модернизаторов» и директиву для библиотек.</p>
+<h4 id="встроенные-модернизаторы-go-126"><a class="header" href="#встроенные-модернизаторы-go-126">Встроенные модернизаторы Go 1.26</a></h4>
+<pre><code class="language-bash"># Применить все доступные fix-ы к пакету
+go fix ./...
+
+# Применить конкретный fix
+go fix -fix=stdversion ./...
+
+# Посмотреть доступные fix-ы
+go fix -list
+</code></pre>
+<p><strong>Что умеет <code>go fix</code> в 1.26:</strong></p>
+<ul>
+<li>Автоматически обновляет использование устаревших API на актуальные альтернативы</li>
+<li>Заменяет deprecated функции в стандартной библиотеке</li>
+<li>Адаптирует код к изменениям в языке (например, новые constraints в generics)</li>
+</ul>
+<h4 id="директива-gofix-inline-для-библиотек"><a class="header" href="#директива-gofix-inline-для-библиотек">Директива <code>//go:fix inline</code> для библиотек</a></h4>
+<p>Библиотеки теперь могут помечать устаревшие функции для автоматической замены:</p>
+<pre><code class="language-go">// Старый API (deprecated)
+//
+// Deprecated: используйте NewClientV2.
+//go:fix inline
+func NewClient(addr string) *Client {
+    return NewClientV2(addr, DefaultOptions())
+}
+
+// Новый API
+func NewClientV2(addr string, opts Options) *Client {
+    return &amp;Client{addr: addr, opts: opts}
+}
+</code></pre>
+<p>После <code>go fix ./...</code> все вызовы <code>NewClient("localhost")</code> автоматически заменятся на <code>NewClientV2("localhost", DefaultOptions())</code>.</p>
+<h4 id="сравнение-с-c"><a class="header" href="#сравнение-с-c">Сравнение с C#</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# (Roslyn / dotnet-upgrade-assistant)</th><th>Go (go fix)</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Механизм</strong></td><td>Roslyn analyzer + code fix</td><td>go/analysis + built-in fixes</td></tr>
+<tr><td><strong>Запуск</strong></td><td>IDE или CLI</td><td><code>go fix ./...</code></td></tr>
+<tr><td><strong>Для библиотек</strong></td><td><code>[Obsolete]</code> + diagnostic</td><td><code>//go:fix inline</code> directive</td></tr>
+<tr><td><strong>Проверка CI</strong></td><td><code>dotnet format --verify-no-changes</code></td><td><code>go fix -list</code> + diff</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-bash"># CI: проверить что fix-ы применены
+git diff --exit-code  # после go fix ./... не должно быть изменений
+</code></pre>
+<hr>
+<h2 id="интеграция-в-ide"><a class="header" href="#интеграция-в-ide">Интеграция в IDE</a></h2>
+<h3 id="vs-code"><a class="header" href="#vs-code">VS Code</a></h3>
+<p><strong>Установка Go extension:</strong></p>
+<ol>
+<li>Extensions → Go (golang.go)</li>
+<li>Cmd+Shift+P → Go: Install/Update Tools → выбрать все</li>
+</ol>
+<p><strong>settings.json для проекта (.vscode/settings.json):</strong></p>
+<pre><code class="language-json">{
+  // Использовать gopls
+  "go.useLanguageServer": true,
+
+  // Линтер
+  "go.lintTool": "golangci-lint",
+  "go.lintFlags": ["--fast", "--config", ".golangci.yml"],
+  "go.lintOnSave": "workspace",
+
+  // Форматирование
+  "go.formatTool": "gofumpt",
+
+  // Тесты
+  "go.testFlags": ["-v", "-race"],
+  "go.coverOnSave": true,
+  "go.coverageDecorator": {
+    "type": "gutter"
+  },
+
+  // gopls настройки
+  "gopls": {
+    "ui.semanticTokens": true,
+    "ui.completion.usePlaceholders": true,
+    "analyses": {
+      "unusedparams": true,
+      "shadow": true,
+      "fieldalignment": true,
+      "nilness": true,
+      "unusedwrite": true
+    },
+    "staticcheck": true,
+    "gofumpt": true
+  },
+
+  // Автоформатирование при сохранении
+  "[go]": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    },
+    "editor.suggest.snippetsPreventQuickSuggestions": false
+  },
+
+  "[go.mod]": {
+    "editor.formatOnSave": true
+  }
+}
+</code></pre>
+<p><strong>extensions.json (рекомендуемые расширения):</strong></p>
+<pre><code class="language-json">{
+  "recommendations": [
+    "golang.go",
+    "zxh404.vscode-proto3",
+    "redhat.vscode-yaml",
+    "tamasfe.even-better-toml"
+  ]
+}
+</code></pre>
+<h3 id="goland"><a class="header" href="#goland">GoLand</a></h3>
+<p>GoLand имеет встроенную поддержку Go инструментов:</p>
+<ol>
+<li><strong>Settings → Go → Go Modules</strong> — включить support</li>
+<li><strong>Settings → Tools → File Watchers</strong> — добавить gofumpt</li>
+<li><strong>Settings → Editor → Inspections</strong> — настроить проверки</li>
+<li><strong>Settings → Tools → golangci-lint</strong> — указать путь к конфигурации</li>
+</ol>
+<p><strong>File Watcher для gofumpt:</strong></p>
+<ul>
+<li>Name: gofumpt</li>
+<li>File type: Go files</li>
+<li>Program: <code>$GOPATH$/bin/gofumpt</code> (или путь к gofumpt)</li>
+<li>Arguments: <code>-w $FilePath$</code></li>
+<li>Output paths to refresh: <code>$FilePath$</code></li>
+</ul>
+<h3 id="настройка-для-команды"><a class="header" href="#настройка-для-команды">Настройка для команды</a></h3>
+<p><strong>Структура конфигурационных файлов:</strong></p>
+<pre><code>project/
+├── .vscode/
+│   ├── settings.json      # VS Code настройки
+│   └── extensions.json    # Рекомендуемые расширения
+├── .editorconfig          # Общие настройки редактора
+├── .golangci.yml          # Конфигурация линтера
+├── .air.toml              # Hot reload
+└── Makefile               # Команды сборки
+</code></pre>
+<p><strong>.editorconfig:</strong></p>
+<pre><code class="language-ini">root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = tab
+
+[*.go]
+indent_size = 4
+
+[*.{yaml,yml,json,toml}]
+indent_style = space
+indent_size = 2
+
+[Makefile]
+indent_style = tab
+</code></pre>
+<hr>
+<h2 id="cicd-pipeline"><a class="header" href="#cicd-pipeline">CI/CD Pipeline</a></h2>
+<h3 id="github-actions"><a class="header" href="#github-actions">GitHub Actions</a></h3>
+<p><strong>Полный workflow (.github/workflows/ci.yml):</strong></p>
+<pre><code class="language-yaml">name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  GO_VERSION: '1.23'
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: latest
+          args: --timeout=5m
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+
+      - name: Run tests
+        run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage.out
+          fail_ci_if_error: true
+
+  security:
+    name: Security
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+
+      - name: govulncheck
+        run: |
+          go install golang.org/x/vuln/cmd/govulncheck@latest
+          govulncheck ./...
+
+      - name: gosec
+        uses: securego/gosec@master
+        with:
+          args: -no-fail -fmt sarif -out results.sarif ./...
+
+      - name: Upload SARIF
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
+
+  build:
+    name: Build
+    needs: [lint, test, security]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Verify go.mod is tidy
+        run: |
+          go mod tidy
+          git diff --exit-code go.mod go.sum
+</code></pre>
+<h3 id="gitlab-ci"><a class="header" href="#gitlab-ci">GitLab CI</a></h3>
+<p><strong>.gitlab-ci.yml:</strong></p>
+<pre><code class="language-yaml">stages:
+  - lint
+  - test
+  - security
+  - build
+
+variables:
+  GO_VERSION: "1.23"
+
+.go-cache: &amp;go-cache
+  variables:
+    GOPATH: $CI_PROJECT_DIR/.go
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .go/pkg/mod/
+
+lint:
+  stage: lint
+  image: golangci/golangci-lint:latest
+  &lt;&lt;: *go-cache
+  script:
+    - golangci-lint run --timeout=5m
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "main"
+
+test:
+  stage: test
+  image: golang:${GO_VERSION}
+  &lt;&lt;: *go-cache
+  script:
+    - go test -race -coverprofile=coverage.out ./...
+    - go tool cover -func=coverage.out
+  coverage: '/total:\s+\(statements\)\s+(\d+.\d+)%/'
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "main"
+
+security:
+  stage: security
+  image: golang:${GO_VERSION}
+  &lt;&lt;: *go-cache
+  script:
+    - go install golang.org/x/vuln/cmd/govulncheck@latest
+    - govulncheck ./...
+  allow_failure: true
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "main"
+
+build:
+  stage: build
+  image: golang:${GO_VERSION}
+  &lt;&lt;: *go-cache
+  script:
+    - go build -v ./...
+    - go mod tidy
+    - git diff --exit-code go.mod go.sum
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "main"
+</code></pre>
+<h3 id="pre-commit-hooks"><a class="header" href="#pre-commit-hooks">Pre-commit hooks</a></h3>
+<p><strong>.pre-commit-config.yaml:</strong></p>
+<pre><code class="language-yaml">repos:
+  - repo: local
+    hooks:
+      - id: go-fmt
+        name: go fmt
+        entry: gofmt -l -w
+        language: system
+        types: [go]
+
+      - id: gofumpt
+        name: gofumpt
+        entry: gofumpt -l -w
+        language: system
+        types: [go]
+
+      - id: go-vet
+        name: go vet
+        entry: go vet
+        language: system
+        types: [go]
+        pass_filenames: false
+
+      - id: golangci-lint
+        name: golangci-lint
+        entry: golangci-lint run --fix
+        language: system
+        types: [go]
+        pass_filenames: false
+
+      - id: go-mod-tidy
+        name: go mod tidy
+        entry: go mod tidy
+        language: system
+        pass_filenames: false
+
+      - id: go-mod-verify
+        name: go mod verify
+        entry: go mod verify
+        language: system
+        pass_filenames: false
+</code></pre>
+<p><strong>Установка:</strong></p>
+<pre><code class="language-bash"># Установить pre-commit
+pip install pre-commit
+# или
+brew install pre-commit
+
+# Установить hooks
+pre-commit install
+
+# Запустить вручную
+pre-commit run --all-files
+</code></pre>
+<hr>
+<h2 id="практические-примеры"><a class="header" href="#практические-примеры">Практические примеры</a></h2>
+<h3 id="пример-1-production-ready-golangciyml"><a class="header" href="#пример-1-production-ready-golangciyml">Пример 1: Production-ready .golangci.yml</a></h3>
+<details>
+<summary>Полная конфигурация (раскрыть)</summary>
+<pre><code class="language-yaml"># .golangci.yml
+# Production-ready конфигурация для Go 1.23+
+# Версия: 2.0
+
+version: "2"
+
+run:
+  timeout: 5m
+  issues-exit-code: 1
+  tests: true
+
+  skip-dirs:
+    - vendor
+    - third_party
+    - testdata
+    - examples
+    - .git
+
+  skip-files:
+    - ".*_mock\\.go$"
+    - ".*_gen\\.go$"
+    - ".*\\.pb\\.go$"
+    - "wire_gen\\.go$"
+
+  modules-download-mode: readonly
+  allow-parallel-runners: true
+
+output:
+  formats:
+    - format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true
+  uniq-by-line: true
+  sort-results: true
+
+linters:
+  disable-all: true
+  enable:
+    # Tier 1: Обязательные (ошибки = блокер)
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+
+    # Tier 2: Безопасность
+    - bodyclose
+    - gosec
+    - nilerr
+    - sqlclosecheck
+
+    # Tier 3: Качество кода
+    - dupl
+    - errorlint
+    - funlen
+    - gocognit
+    - goconst
+    - gocritic
+    - gocyclo
+    - nakedret
+    - prealloc
+    - revive
+    - unconvert
+    - unparam
+
+    # Tier 4: Форматирование
+    - gofmt
+    - gofumpt
+    - goimports
+    - misspell
+    - whitespace
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+    exclude-functions:
+      - (io.Closer).Close
+      - (net/http.ResponseWriter).Write
+
+  govet:
+    enable:
+      - shadow
+      - fieldalignment
+
+  staticcheck:
+    checks:
+      - all
+
+  gocyclo:
+    min-complexity: 15
+
+  gocognit:
+    min-complexity: 20
+
+  dupl:
+    threshold: 100
+
+  funlen:
+    lines: 100
+    statements: 50
+
+  goconst:
+    min-len: 3
+    min-occurrences: 3
+    ignore-tests: true
+
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - style
+      - performance
+      - experimental
+      - opinionated
+    disabled-checks:
+      - whyNoLint
+      - hugeParam
+
+  gosec:
+    excludes:
+      - G104
+    config:
+      G301: "0750"
+      G302: "0600"
+      G306: "0600"
+
+  revive:
+    enable-all-rules: false
+    rules:
+      - name: blank-imports
+      - name: context-as-argument
+      - name: context-keys-type
+      - name: dot-imports
+      - name: error-return
+      - name: error-strings
+      - name: error-naming
+      - name: exported
+      - name: if-return
+      - name: increment-decrement
+      - name: var-naming
+      - name: var-declaration
+      - name: package-comments
+      - name: range
+      - name: receiver-naming
+      - name: time-naming
+      - name: unexported-return
+      - name: indent-error-flow
+      - name: errorf
+      - name: empty-block
+      - name: superfluous-else
+      - name: unreachable-code
+
+  misspell:
+    locale: US
+
+  nakedret:
+    max-func-lines: 30
+
+  prealloc:
+    simple: true
+    range-loops: true
+    for-loops: false
+
+  gofumpt:
+    extra-rules: true
+
+  goimports:
+    local-prefixes: github.com/mycompany
+
+issues:
+  exclude:
+    - "Error return value of .((os\\.)?std(out|err)\\..*|.*Close|.*Flush|os\\.Remove(All)?|.*print(f|ln)?|os\\.(Un)?Setenv). is not checked"
+
+  exclude-rules:
+    # Тесты: разрешить больше
+    - path: _test\.go
+      linters:
+        - errcheck
+        - dupl
+        - funlen
+        - gocognit
+        - gocyclo
+        - gosec
+        - goconst
+
+    # main.go: разрешить длинные функции
+    - path: main\.go
+      linters:
+        - funlen
+
+    # Generated код: отключить всё
+    - path: ".*_gen\\.go"
+      linters:
+        - all
+
+    # Proto: отключить всё
+    - path: ".*\\.pb\\.go"
+      linters:
+        - all
+
+    # Wire: отключить
+    - path: wire_gen\.go
+      linters:
+        - all
+
+    # Migrations: отключить
+    - path: "migrations/"
+      linters:
+        - all
+
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+severity:
+  default-severity: error
+  rules:
+    - linters:
+        - dupl
+        - goconst
+      severity: warning
+</code></pre>
+</details>
+<h3 id="пример-2-cicd-pipeline"><a class="header" href="#пример-2-cicd-pipeline">Пример 2: CI/CD Pipeline</a></h3>
+<details>
+<summary>GitHub Actions с matrix builds (раскрыть)</summary>
+<pre><code class="language-yaml"># .github/workflows/ci.yml
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  GO_VERSION_STABLE: '1.23'
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION_STABLE }}
+          cache: true
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: latest
+          args: --timeout=5m --config=.golangci.yml
+
+  test:
+    name: Test (Go ${{ matrix.go-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: ['1.22', '1.23']
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+        options: &gt;-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+          cache: true
+
+      - name: Run tests
+        run: |
+          go test -race -coverprofile=coverage.out -covermode=atomic ./...
+        env:
+          DATABASE_URL: postgres://test:test@localhost:5432/test?sslmode=disable
+
+      - name: Upload coverage
+        if: matrix.go-version == env.GO_VERSION_STABLE
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage.out
+          fail_ci_if_error: true
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION_STABLE }}
+          cache: true
+
+      - name: govulncheck
+        run: |
+          go install golang.org/x/vuln/cmd/govulncheck@latest
+          govulncheck ./...
+
+      - name: gosec
+        uses: securego/gosec@master
+        with:
+          args: -no-fail -fmt sarif -out results.sarif ./...
+
+      - name: Upload SARIF
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: results.sarif
+
+  build:
+    name: Build
+    needs: [lint, test, security]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION_STABLE }}
+          cache: true
+
+      - name: Verify dependencies
+        run: |
+          go mod tidy
+          go mod verify
+          git diff --exit-code go.mod go.sum
+
+      - name: Build
+        run: |
+          CGO_ENABLED=0 go build -ldflags="-s -w" -o bin/app ./cmd/server
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app
+          path: bin/app
+</code></pre>
+</details>
+<h3 id="пример-3-makefile-для-go-проекта"><a class="header" href="#пример-3-makefile-для-go-проекта">Пример 3: Makefile для Go проекта</a></h3>
+<details>
+<summary>Полный Makefile (раскрыть)</summary>
+<pre><code class="language-makefile"># Makefile для Go проекта
+# Использование: make [target]
+
+.PHONY: all build test lint fmt vet vuln clean run dev help install-tools
+
+# ============================================================================
+# VARIABLES
+# ============================================================================
+
+# Имя приложения
+BINARY_NAME := myapp
+# Путь к main пакету
+MAIN_PACKAGE := ./cmd/server
+# Go команда
+GO := go
+# golangci-lint
+GOLANGCI_LINT := golangci-lint
+
+# Build info
+VERSION ?= $(shell git describe --tags --always --dirty 2&gt;/dev/null || echo "dev")
+COMMIT := $(shell git rev-parse --short HEAD 2&gt;/dev/null || echo "unknown")
+BUILD_TIME := $(shell date -u '+%Y-%m-%d_%H:%M:%S')
+
+# Ldflags для injection версии
+LDFLAGS := -ldflags "-s -w \
+	-X main.Version=$(VERSION) \
+	-X main.Commit=$(COMMIT) \
+	-X main.BuildTime=$(BUILD_TIME)"
+
+# ============================================================================
+# TARGETS
+# ============================================================================
+
+## help: Показать эту справку
+help:
+	@echo "Использование: make [target]"
+	@echo ""
+	@echo "Targets:"
+	@sed -n 's/^##//p' $(MAKEFILE_LIST) | column -t -s ':' | sed -e 's/^/ /'
+
+## all: Запустить все проверки и собрать
+all: fmt vet lint test build
+
+# ----------------------------------------------------------------------------
+# BUILD
+# ----------------------------------------------------------------------------
+
+## build: Собрать бинарник
+build:
+	CGO_ENABLED=0 $(GO) build $(LDFLAGS) -o bin/$(BINARY_NAME) $(MAIN_PACKAGE)
+
+## build-linux: Собрать для Linux
+build-linux:
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 $(GO) build $(LDFLAGS) -o bin/$(BINARY_NAME)-linux-amd64 $(MAIN_PACKAGE)
+
+## build-darwin: Собрать для macOS
+build-darwin:
+	GOOS=darwin GOARCH=arm64 CGO_ENABLED=0 $(GO) build $(LDFLAGS) -o bin/$(BINARY_NAME)-darwin-arm64 $(MAIN_PACKAGE)
+
+## build-all: Собрать для всех платформ
+build-all: build-linux build-darwin
+
+# ----------------------------------------------------------------------------
+# RUN
+# ----------------------------------------------------------------------------
+
+## run: Запустить приложение
+run:
+	$(GO) run $(MAIN_PACKAGE)
+
+## dev: Запустить с hot reload (air)
+dev:
+	air -c .air.toml
+
+# ----------------------------------------------------------------------------
+# TEST
+# ----------------------------------------------------------------------------
+
+## test: Запустить тесты
+test:
+	$(GO) test -race -coverprofile=coverage.out ./...
+
+## test-v: Запустить тесты с verbose output
+test-v:
+	$(GO) test -race -v -coverprofile=coverage.out ./...
+
+## test-short: Запустить быстрые тесты
+test-short:
+	$(GO) test -short ./...
+
+## coverage: Показать отчёт о покрытии
+coverage: test
+	$(GO) tool cover -html=coverage.out -o coverage.html
+	@echo "Coverage report: coverage.html"
+
+## bench: Запустить бенчмарки
+bench:
+	$(GO) test -bench=. -benchmem ./...
+
+# ----------------------------------------------------------------------------
+# LINT
+# ----------------------------------------------------------------------------
+
+## lint: Запустить линтеры
+lint:
+	$(GOLANGCI_LINT) run --timeout=5m
+
+## lint-fix: Запустить линтеры с автоисправлением
+lint-fix:
+	$(GOLANGCI_LINT) run --fix
+
+## fmt: Отформатировать код
+fmt:
+	$(GO) fmt ./...
+	gofumpt -l -w .
+
+## vet: Запустить go vet
+vet:
+	$(GO) vet ./...
+
+# ----------------------------------------------------------------------------
+# SECURITY
+# ----------------------------------------------------------------------------
+
+## vuln: Проверить уязвимости
+vuln:
+	govulncheck ./...
+
+## gosec: Запустить gosec
+gosec:
+	gosec -quiet ./...
+
+# ----------------------------------------------------------------------------
+# DEPENDENCIES
+# ----------------------------------------------------------------------------
+
+## tidy: Очистить зависимости
+tidy:
+	$(GO) mod tidy
+	$(GO) mod verify
+
+## deps: Скачать зависимости
+deps:
+	$(GO) mod download
+
+## deps-update: Обновить зависимости
+deps-update:
+	$(GO) get -u ./...
+	$(GO) mod tidy
+
+# ----------------------------------------------------------------------------
+# CODE GENERATION
+# ----------------------------------------------------------------------------
+
+## generate: Запустить go generate
+generate:
+	$(GO) generate ./...
+
+## mocks: Сгенерировать моки
+mocks:
+	mockgen -source=internal/service/user.go -destination=internal/service/mocks/user_mock.go
+
+# ----------------------------------------------------------------------------
+# DOCKER
+# ----------------------------------------------------------------------------
+
+## docker-build: Собрать Docker образ
+docker-build:
+	docker build -t $(BINARY_NAME):$(VERSION) .
+
+## docker-run: Запустить в Docker
+docker-run:
+	docker run --rm -p 8080:8080 $(BINARY_NAME):$(VERSION)
+
+## docker-compose-up: Запустить docker-compose
+docker-compose-up:
+	docker-compose up -d
+
+## docker-compose-down: Остановить docker-compose
+docker-compose-down:
+	docker-compose down
+
+# ----------------------------------------------------------------------------
+# CLEAN
+# ----------------------------------------------------------------------------
+
+## clean: Удалить артефакты сборки
+clean:
+	rm -rf bin/
+	rm -rf tmp/
+	rm -f coverage.out coverage.html
+
+# ----------------------------------------------------------------------------
+# TOOLS
+# ----------------------------------------------------------------------------
+
+## install-tools: Установить инструменты разработки
+install-tools:
+	$(GO) install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+	$(GO) install golang.org/x/vuln/cmd/govulncheck@latest
+	$(GO) install mvdan.cc/gofumpt@latest
+	$(GO) install github.com/air-verse/air@latest
+	$(GO) install github.com/google/wire/cmd/wire@latest
+	$(GO) install github.com/securego/gosec/v2/cmd/gosec@latest
+	$(GO) install go.uber.org/mock/mockgen@latest
+
+## check-tools: Проверить установленные инструменты
+check-tools:
+	@which golangci-lint &gt; /dev/null || (echo "golangci-lint not found" &amp;&amp; exit 1)
+	@which govulncheck &gt; /dev/null || (echo "govulncheck not found" &amp;&amp; exit 1)
+	@which gofumpt &gt; /dev/null || (echo "gofumpt not found" &amp;&amp; exit 1)
+	@which air &gt; /dev/null || (echo "air not found" &amp;&amp; exit 1)
+	@echo "All tools installed"
+
+# ----------------------------------------------------------------------------
+# CI
+# ----------------------------------------------------------------------------
+
+## ci: Запустить все CI проверки
+ci: fmt vet lint test vuln build
+	@echo "CI checks passed"
+
+## ci-quick: Быстрые CI проверки (без vuln)
+ci-quick: fmt vet lint test-short build
+	@echo "Quick CI checks passed"
+</code></pre>
+</details>
+<p><strong>Использование:</strong></p>
+<pre><code class="language-bash"># Показать справку
+make help
+
+# Полный CI цикл
+make ci
+
+# Разработка с hot reload
+make dev
+
+# Установить все инструменты
+make install-tools
+</code></pre>
+<hr><!-- AUTO: NAV -->
+<p><strong>Вопросы?</strong> Открой issue на <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/issues">GitHub</a></p>
+<p><a href="./01_code_architecture.html">← Назад: Код и архитектура</a> | <a href="./03_performance.html">Вперёд: Производительность →</a></p>
+<!-- /AUTO: NAV -->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part6-best-practices/01_code_architecture.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part6-best-practices/03_performance.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part6-best-practices/01_code_architecture.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part6-best-practices/03_performance.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

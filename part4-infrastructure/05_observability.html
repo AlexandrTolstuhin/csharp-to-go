@@ -1,0 +1,4124 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>4.5 Observability - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-e1a1ce5b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-c19b06e6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part4-infrastructure/05_observability.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="45-observability-логирование-метрики-трейсинг"><a class="header" href="#45-observability-логирование-метрики-трейсинг">4.5 Observability: Логирование, Метрики, Трейсинг</a></h1>
+<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<ul>
+<li><a href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5">Введение</a></li>
+<li><a href="#%D1%8D%D0%BA%D0%BE%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0-c-vs-go">Экосистема: C# vs Go</a></li>
+<li><a href="#%D1%81%D1%82%D0%BE%D0%BB%D0%BF-1-structured-logging">Столп 1: Structured Logging</a>
+<ul>
+<li><a href="#logslog--%D1%81%D1%82%D0%B0%D0%BD%D0%B4%D0%B0%D1%80%D1%82%D0%BD%D0%B0%D1%8F-%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA%D0%B0-go-121">log/slog — стандартная библиотека (Go 1.21+)</a>
+<ul>
+<li><a href="#%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BD%D1%86%D0%B5%D0%BF%D1%86%D0%B8%D0%B8">Основные концепции</a></li>
+<li><a href="#texthandler-%D0%B8-jsonhandler">TextHandler и JSONHandler</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BA%D1%81%D1%82%D0%BD%D0%BE%D0%B5-%D0%BB%D0%BE%D0%B3%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-with-%D0%B8-withgroup">Контекстное логирование: With() и WithGroup()</a></li>
+<li><a href="#%D1%83%D1%80%D0%BE%D0%B2%D0%BD%D0%B8-%D0%BB%D0%BE%D0%B3%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F">Уровни логирования</a></li>
+<li><a href="#%D0%B8%D0%BD%D1%82%D0%B5%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D1%81-contextcontext">Интеграция с context.Context</a></li>
+<li><a href="#custom-handler">Custom Handler</a></li>
+<li><a href="#handleroptions-%D1%82%D0%BE%D0%BD%D0%BA%D0%B0%D1%8F-%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0">HandlerOptions: тонкая настройка</a></li>
+</ul>
+</li>
+<li><a href="#uber-gozap--%D0%B2%D1%8B%D1%81%D0%BE%D0%BA%D0%BE%D0%BF%D1%80%D0%BE%D0%B8%D0%B7%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5-%D0%BB%D0%BE%D0%B3%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5">uber-go/zap — высокопроизводительное логирование</a>
+<ul>
+<li><a href="#%D0%B4%D0%B2%D0%B0-api-logger-%D0%B8-sugaredlogger">Два API: Logger и SugaredLogger</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D0%B8-%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0">Конфигурация и настройка</a></li>
+<li><a href="#sampling">Sampling</a></li>
+<li><a href="#%D0%B8%D0%BD%D1%82%D0%B5%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D1%81-slog-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-zapslog">Интеграция с slog через zapslog</a></li>
+</ul>
+</li>
+<li><a href="#rszerolog--zero-allocation-json-logger">rs/zerolog — zero-allocation JSON logger</a>
+<ul>
+<li><a href="#api-%D0%B8-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5">API и использование</a></li>
+<li><a href="#%D0%B8%D0%BD%D1%82%D0%B5%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D1%81-context-%D0%B8-slog">Интеграция с context и slog</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BC%D0%B8%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D1%81-%D0%BF%D0%BE%D0%BF%D1%83%D0%BB%D1%8F%D1%80%D0%BD%D1%8B%D1%85-%D0%BB%D0%BE%D0%B3%D0%B3%D0%B5%D1%80%D0%BE%D0%B2-%D0%BD%D0%B0-slog">Миграция с популярных логгеров на slog</a>
+<ul>
+<li><a href="#%D1%81-logrus-%D0%BD%D0%B0-slog">С logrus на slog</a></li>
+<li><a href="#%D1%81-zerolog-%D0%BD%D0%B0-slog">С zerolog на slog</a></li>
+</ul>
+</li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-slog-vs-zap-vs-zerolog">Сравнительная таблица: slog vs zap vs zerolog</a></li>
+<li><a href="#production-logging-patterns">Production Logging Patterns</a>
+<ul>
+<li><a href="#log-rotation-%D1%81-lumberjack">Log rotation с lumberjack</a></li>
+<li><a href="#http-request-logging-middleware">HTTP Request Logging Middleware</a></li>
+<li><a href="#%D0%BC%D0%B0%D1%81%D0%BA%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D1%87%D1%83%D0%B2%D1%81%D1%82%D0%B2%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D1%85-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85">Маскирование чувствительных данных</a></li>
+<li><a href="#%D0%B4%D0%B8%D0%BD%D0%B0%D0%BC%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B5-%D1%83%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D1%83%D1%80%D0%BE%D0%B2%D0%BD%D0%B5%D0%BC-%D0%BB%D0%BE%D0%B3%D0%BE%D0%B2">Динамическое управление уровнем логов</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%D1%81%D1%82%D0%BE%D0%BB%D0%BF-2-%D0%BC%D0%B5%D1%82%D1%80%D0%B8%D0%BA%D0%B8-%D1%81-prometheus">Столп 2: Метрики с Prometheus</a>
+<ul>
+<li><a href="#%D0%B0%D1%80%D1%85%D0%B8%D1%82%D0%B5%D0%BA%D1%82%D1%83%D1%80%D0%B0-prometheus">Архитектура Prometheus</a></li>
+<li><a href="#prometheusclient_golang">prometheus/client_golang</a>
+<ul>
+<li><a href="#%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B8-metrics-endpoint">Подключение и /metrics endpoint</a></li>
+<li><a href="#%D1%82%D0%B8%D0%BF%D1%8B-%D0%BC%D0%B5%D1%82%D1%80%D0%B8%D0%BA">Типы метрик</a></li>
+<li><a href="#labels-%D0%B8-dimensions">Labels и dimensions</a></li>
+<li><a href="#%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D0%BC%D0%B5%D1%82%D1%80%D0%B8%D0%BA">Регистрация метрик</a></li>
+</ul>
+</li>
+<li><a href="#http-metrics-middleware">HTTP Metrics Middleware</a></li>
+<li><a href="#%D0%B1%D0%B8%D0%B7%D0%BD%D0%B5%D1%81-%D0%BC%D0%B5%D1%82%D1%80%D0%B8%D0%BA%D0%B8">Бизнес-метрики</a></li>
+<li><a href="#victoriametrics-%D0%BA%D0%B0%D0%BA-%D0%B0%D0%BB%D1%8C%D1%82%D0%B5%D1%80%D0%BD%D0%B0%D1%82%D0%B8%D0%B2%D0%B0">VictoriaMetrics как альтернатива</a></li>
+<li><a href="#promql-%D0%BF%D0%BE%D0%BB%D0%B5%D0%B7%D0%BD%D1%8B%D0%B5-%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D1%8B">PromQL: полезные запросы</a>
+<ul>
+<li><a href="#rate-%D0%B8-throughput">Rate и throughput</a></li>
+<li><a href="#error-rate">Error rate</a></li>
+<li><a href="#latency-percentiles">Latency (percentiles)</a></li>
+<li><a href="#go-runtime-%D0%BC%D0%B5%D1%82%D1%80%D0%B8%D0%BA%D0%B8">Go runtime метрики</a></li>
+<li><a href="#alerting-rules-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B">Alerting rules (примеры)</a></li>
+</ul>
+</li>
+<li><a href="#grafana-%D0%B4%D0%B0%D1%88%D0%B1%D0%BE%D1%80%D0%B4%D1%8B">Grafana дашборды</a>
+<ul>
+<li><a href="#red-method--%D0%B4%D0%BB%D1%8F-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%BE%D0%B2">RED Method — для сервисов</a></li>
+<li><a href="#use-method--%D0%B4%D0%BB%D1%8F-%D0%B8%D0%BD%D1%84%D1%80%D0%B0%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D1%8B">USE Method — для инфраструктуры</a></li>
+<li><a href="#go-runtime-dashboard">Go Runtime Dashboard</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%D1%81%D1%82%D0%BE%D0%BB%D0%BF-3-distributed-tracing-%D1%81-opentelemetry">Столп 3: Distributed Tracing с OpenTelemetry</a>
+<ul>
+<li><a href="#%D0%BA%D0%BE%D0%BD%D1%86%D0%B5%D0%BF%D1%86%D0%B8%D0%B8-%D1%82%D1%80%D0%B5%D0%B9%D1%81%D0%B8%D0%BD%D0%B3%D0%B0">Концепции трейсинга</a></li>
+<li><a href="#opentelemetry-go-sdk-setup">OpenTelemetry Go SDK Setup</a>
+<ul>
+<li><a href="#tracerprovider-%D0%B8-resource">TracerProvider и Resource</a></li>
+<li><a href="#exporters">Exporters</a></li>
+<li><a href="#sampler-%D0%B8-propagator">Sampler и Propagator</a></li>
+<li><a href="#production-ready-%D0%B8%D0%BD%D0%B8%D1%86%D0%B8%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F">Production-ready инициализация</a></li>
+</ul>
+</li>
+<li><a href="#manual-instrumentation">Manual Instrumentation</a>
+<ul>
+<li><a href="#%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-spans">Создание spans</a></li>
+<li><a href="#%D0%B0%D1%82%D1%80%D0%B8%D0%B1%D1%83%D1%82%D1%8B-%D1%81%D0%BE%D0%B1%D1%8B%D1%82%D0%B8%D1%8F-%D0%BE%D1%88%D0%B8%D0%B1%D0%BA%D0%B8">Атрибуты, события, ошибки</a></li>
+<li><a href="#%D0%B2%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5-spans">Вложенные spans</a></li>
+</ul>
+</li>
+<li><a href="#auto-instrumentation">Auto-Instrumentation</a>
+<ul>
+<li><a href="#otelhttp-http-%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80-%D0%B8-%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82">otelhttp: HTTP сервер и клиент</a></li>
+<li><a href="#otelgrpc-otelsql-redisotel">otelgrpc, otelsql, redisotel</a></li>
+</ul>
+</li>
+<li><a href="#jaeger-%D0%B8-zipkin">Jaeger и Zipkin</a>
+<ul>
+<li><a href="#docker-compose-%D0%B4%D0%BB%D1%8F-%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B9-%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B8">Docker Compose для локальной разработки</a></li>
+<li><a href="#jaeger-vs-zipkin">Jaeger vs Zipkin</a></li>
+</ul>
+</li>
+<li><a href="#opentelemetry-collector">OpenTelemetry Collector</a>
+<ul>
+<li><a href="#%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F">Конфигурация</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%D0%B8%D0%BD%D1%82%D0%B5%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D1%82%D1%80%D1%91%D1%85-%D1%81%D1%82%D0%BE%D0%BB%D0%BF%D0%BE%D0%B2">Интеграция трёх столпов</a>
+<ul>
+<li><a href="#%D0%BA%D0%BE%D1%80%D1%80%D0%B5%D0%BB%D1%8F%D1%86%D0%B8%D1%8F-%D0%BB%D0%BE%D0%B3%D0%BE%D0%B2-%D0%B8-%D1%82%D1%80%D0%B5%D0%B9%D1%81%D0%BE%D0%B2">Корреляция логов и трейсов</a></li>
+<li><a href="#exemplars-%D1%81%D0%B2%D1%8F%D0%B7%D1%8C-%D0%BC%D0%B5%D1%82%D1%80%D0%B8%D0%BA-%D1%81-%D1%82%D1%80%D0%B5%D0%B9%D1%81%D0%B0%D0%BC%D0%B8">Exemplars: связь метрик с трейсами</a></li>
+<li><a href="#context-propagation-%D0%BC%D0%B5%D0%B6%D0%B4%D1%83-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%B0%D0%BC%D0%B8">Context Propagation между сервисами</a></li>
+<li><a href="#%D0%B0%D0%B3%D1%80%D0%B5%D0%B3%D0%B0%D1%86%D0%B8%D1%8F-%D0%BB%D0%BE%D0%B3%D0%BE%D0%B2">Агрегация логов</a>
+<ul>
+<li><a href="#grafana-loki">Grafana Loki</a></li>
+<li><a href="#elk-stack-elasticsearch--logstash--kibana">ELK Stack (Elasticsearch + Logstash + Kibana)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#health-checks-%D0%B8-readiness-probes">Health Checks и Readiness Probes</a>
+<ul>
+<li><a href="#liveness-vs-readiness-vs-startup">Liveness vs Readiness vs Startup</a></li>
+<li><a href="#%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%B2-go">Реализация в Go</a></li>
+<li><a href="#kubernetes-%D0%B8%D0%BD%D1%82%D0%B5%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D1%8F">Kubernetes интеграция</a></li>
+</ul>
+</li>
+<li><a href="#slislo">SLI/SLO</a>
+<ul>
+<li><a href="#service-level-indicators">Service Level Indicators</a></li>
+<li><a href="#service-level-objectives-%D0%B8-error-budgets">Service Level Objectives и Error Budgets</a></li>
+<li><a href="#%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-sli-%D0%BC%D0%B5%D1%82%D1%80%D0%B8%D0%BA-%D0%B2-go">Реализация SLI метрик в Go</a></li>
+</ul>
+</li>
+<li><a href="#production-concerns">Production Concerns</a>
+<ul>
+<li><a href="#%D0%B2%D0%BB%D0%B8%D1%8F%D0%BD%D0%B8%D0%B5-%D0%BD%D0%B0-%D0%BF%D1%80%D0%BE%D0%B8%D0%B7%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D1%8C">Влияние на производительность</a></li>
+<li><a href="#graceful-shutdown">Graceful Shutdown</a></li>
+<li><a href="#%D1%82%D0%B5%D1%81%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-observability">Тестирование observability</a>
+<ul>
+<li><a href="#%D1%82%D0%B5%D1%81%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BC%D0%B5%D1%82%D1%80%D0%B8%D0%BA">Тестирование метрик</a></li>
+<li><a href="#%D1%82%D0%B5%D1%81%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-spans">Тестирование spans</a></li>
+<li><a href="#%D1%82%D0%B5%D1%81%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-slog-handlers">Тестирование slog handlers</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B1%D0%B5%D0%B7%D0%BE%D0%BF%D0%B0%D1%81%D0%BD%D0%BE%D1%81%D1%82%D1%8C">Безопасность</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B">Практические примеры</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-full-observability-setup-%D0%B4%D0%BB%D1%8F-http-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%B0">Пример 1: Full Observability Setup для HTTP сервиса</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-distributed-tracing-%D0%BC%D0%B5%D0%B6%D0%B4%D1%83-%D0%BC%D0%B8%D0%BA%D1%80%D0%BE%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%B0%D0%BC%D0%B8">Пример 2: Distributed Tracing между микросервисами</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-grafana-stack-%D1%81-docker-compose">Пример 3: Grafana Stack с Docker Compose</a></li>
+</ul>
+</li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<p>Observability — это способность понять внутреннее состояние системы по её внешним сигналам. В отличие от мониторинга, который отвечает на заранее известные вопросы (“работает ли сервис?”, “какая нагрузка на CPU?”), observability позволяет исследовать <strong>неизвестные проблемы</strong> — те, которые вы не предвидели при проектировании.</p>
+<p>В предыдущих разделах мы уже добавляли элементы observability фрагментарно: Prometheus метрики в <a href="./01_production_postgresql.html">4.1 PostgreSQL</a>, <a href="./02_caching.html">4.2 Кэширование</a>, <a href="./03_message_queues.html">4.3 Очереди сообщений</a> и OpenTelemetry tracing в <a href="./04_grpc.html">4.4 gRPC</a>. Теперь мы соберём полную картину и построим observability как единую систему.</p>
+<p><strong>Три столпа observability</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Столп</th><th>Что даёт</th><th>Пример</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Логирование</strong></td><td>Детальные события с контекстом</td><td><code>"заказ 12345 не прошёл валидацию: недостаточно средств"</code></td></tr>
+<tr><td><strong>Метрики</strong></td><td>Агрегированные числовые показатели</td><td><code>http_requests_total{status="500"} = 42</code></td></tr>
+<tr><td><strong>Трейсинг</strong></td><td>Путь запроса через все сервисы</td><td><code>API Gateway → User Service → Payment Service → DB</code></td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В .NET экосистеме observability часто строится вокруг единого решения — <strong>Application Insights</strong> или <strong>Datadog .NET</strong>. Они предоставляют логирование (<code>ILogger&lt;T&gt;</code>), метрики (<code>System.Diagnostics.Metrics</code>) и трейсинг (<code>Activity</code>/<code>DiagnosticSource</code>) “из коробки”. В Go нет all-in-one решения — вы <strong>явно собираете</strong> стек из отдельных библиотек: <code>log/slog</code> для логов, <code>prometheus/client_golang</code> для метрик, <code>go.opentelemetry.io/otel</code> для трейсинга. Больше кода, но полная прозрачность и vendor-нейтральность.</p>
+</blockquote>
+<p><strong>C#</strong> — всё через DI и middleware:</p>
+<pre><code class="language-csharp">// C#: одна строка подключает всё
+builder.Services.AddOpenTelemetry()
+    .WithTracing(b =&gt; b
+        .AddAspNetCoreInstrumentation()
+        .AddHttpClientInstrumentation()
+        .AddOtlpExporter())
+    .WithMetrics(b =&gt; b
+        .AddAspNetCoreInstrumentation()
+        .AddPrometheusExporter());
+
+builder.Host.UseSerilog((ctx, lc) =&gt; lc
+    .WriteTo.Console()
+    .WriteTo.OpenTelemetry());
+</code></pre>
+<p><strong>Go</strong> — явная инициализация каждого компонента:</p>
+<pre><code class="language-go">// Go: каждый компонент настраивается явно
+func main() {
+    // 1. Логирование
+    logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+    slog.SetDefault(logger)
+
+    // 2. Трейсинг
+    tp, err := initTracer()
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer tp.Shutdown(context.Background())
+
+    // 3. Метрики
+    reg := prometheus.NewRegistry()
+    reg.MustRegister(collectors.NewGoCollector())
+
+    // 4. HTTP сервер с middleware
+    mux := http.NewServeMux()
+    mux.Handle("/metrics", promhttp.HandlerFor(reg, promhttp.HandlerOpts{}))
+    // ... обработчики с otelhttp обёрткой
+}
+</code></pre>
+<hr>
+<h2 id="экосистема-c-vs-go"><a class="header" href="#экосистема-c-vs-go">Экосистема: C# vs Go</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Концепция</th><th>C# (.NET)</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>Стандартное логирование</td><td><code>Microsoft.Extensions.Logging</code> + <code>ILogger&lt;T&gt;</code></td><td><code>log/slog</code> (Go 1.21+)</td></tr>
+<tr><td>Популярные логгеры</td><td>Serilog, NLog</td><td>zap (Uber), zerolog</td></tr>
+<tr><td>Structured logging</td><td>Serilog message templates</td><td>slog, zap, zerolog — JSON нативно</td></tr>
+<tr><td>Log abstraction</td><td><code>ILoggerFactory</code>, DI injection</td><td><code>slog.Logger</code> передаётся явно</td></tr>
+<tr><td>Метрики (стандарт)</td><td><code>System.Diagnostics.Metrics</code> (.NET 8+)</td><td><code>prometheus/client_golang</code></td></tr>
+<tr><td>Метрики (Prometheus)</td><td><code>prometheus-net</code></td><td><code>prometheus/client_golang</code> (официальный)</td></tr>
+<tr><td>Метрики (OTel)</td><td><code>OpenTelemetry.Metrics</code></td><td><code>go.opentelemetry.io/otel/metric</code></td></tr>
+<tr><td>Трейсинг (стандарт)</td><td><code>System.Diagnostics.Activity</code></td><td><code>go.opentelemetry.io/otel/trace</code></td></tr>
+<tr><td>OTel SDK</td><td><code>OpenTelemetry .NET</code> (NuGet)</td><td><code>go.opentelemetry.io/otel</code></td></tr>
+<tr><td>Context propagation</td><td><code>Activity.Current</code> (ambient)</td><td><code>context.Context</code> (explicit)</td></tr>
+<tr><td>Health checks</td><td><code>Microsoft.Extensions.Diagnostics.HealthChecks</code></td><td>Ручная реализация / <code>alexliesenfeld/health</code></td></tr>
+<tr><td>Middleware</td><td><code>app.UseHttpLogging()</code></td><td>Явные middleware функции</td></tr>
+<tr><td>All-in-one платформа</td><td>Application Insights, Datadog</td><td>Нет аналога — собирается из компонентов</td></tr>
+<tr><td>Log aggregation</td><td>ELK, Application Insights</td><td>ELK, Grafana Loki</td></tr>
+<tr><td>Dashboards</td><td>Azure Monitor, Kibana</td><td>Grafana</td></tr>
+<tr><td>Correlation ID</td><td><code>Activity.TraceId</code> (автоматически)</td><td><code>trace.SpanFromContext(ctx)</code> (вручную)</td></tr>
+<tr><td>Auto-instrumentation</td><td><code>AddAspNetCoreInstrumentation()</code></td><td><code>otelhttp.NewHandler()</code> (явно)</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Ключевое отличие</strong>: В Go <strong>context propagation всегда явный</strong> через <code>context.Context</code>. Нет ambient <code>Activity.Current</code> как в .NET. Это значит: каждый метод в цепочке вызовов должен принимать <code>ctx context.Context</code> как первый параметр. Это выглядит как boilerplate, но даёт полный контроль и прозрачность.</p>
+</blockquote>
+<hr>
+<h2 id="столп-1-structured-logging"><a class="header" href="#столп-1-structured-logging">Столп 1: Structured Logging</a></h2>
+<h3 id="logslog--стандартная-библиотека-go-121"><a class="header" href="#logslog--стандартная-библиотека-go-121">log/slog — стандартная библиотека (Go 1.21+)</a></h3>
+<p>До Go 1.21 стандартный пакет <code>log</code> предоставлял только текстовое логирование без структуры. Каждый проект выбирал между <code>zap</code>, <code>zerolog</code>, <code>logrus</code> — что приводило к несовместимости между библиотеками. Пакет <code>log/slog</code>, добавленный в Go 1.21, решил эту проблему — он стал <strong>стандартным интерфейсом</strong> для structured logging в Go.</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: <code>slog</code> — это аналог <code>Microsoft.Extensions.Logging.ILogger&lt;T&gt;</code>. Как <code>ILogger&lt;T&gt;</code> абстрагирует конкретный провайдер (Console, Serilog, NLog), так <code>slog.Handler</code> абстрагирует backend логирования. Разница: в Go нет DI — логгер передаётся явно.</p>
+</blockquote>
+<h4 id="основные-концепции"><a class="header" href="#основные-концепции">Основные концепции</a></h4>
+<pre><code class="language-go">package main
+
+import (
+    "context"
+    "log/slog"
+    "os"
+)
+
+func main() {
+    // Создание логгера с JSON выводом (production)
+    logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+
+    // Установка как default (аналог ILoggerFactory в C#)
+    slog.SetDefault(logger)
+
+    // Логирование с structured данными
+    slog.Info("сервер запущен",
+        slog.String("addr", ":8080"),
+        slog.Int("workers", 4),
+    )
+    // Вывод: {"time":"2026-01-27T10:00:00Z","level":"INFO","msg":"сервер запущен","addr":":8080","workers":4}
+
+    // Логирование с контекстом (для интеграции с tracing)
+    ctx := context.Background()
+    slog.InfoContext(ctx, "обработка запроса",
+        slog.String("method", "GET"),
+        slog.String("path", "/api/users"),
+    )
+}
+</code></pre>
+<p><strong>Ключевые типы slog</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Тип</th><th>Описание</th><th>Аналог в C#</th></tr>
+</thead>
+<tbody>
+<tr><td><code>slog.Logger</code></td><td>Экземпляр логгера</td><td><code>ILogger&lt;T&gt;</code></td></tr>
+<tr><td><code>slog.Handler</code></td><td>Backend (куда и как писать)</td><td><code>ILoggerProvider</code></td></tr>
+<tr><td><code>slog.Record</code></td><td>Одна запись лога</td><td><code>LogEntry</code></td></tr>
+<tr><td><code>slog.Attr</code></td><td>Пара ключ-значение</td><td><code>KeyValuePair</code> в scope</td></tr>
+<tr><td><code>slog.Level</code></td><td>Уровень логирования</td><td><code>LogLevel</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>Два способа передачи атрибутов:</p>
+<pre><code class="language-go">// Способ 1: Alternating key-value (быстрый, но нет type-safety)
+slog.Info("запрос", "method", "GET", "path", "/api/users", "status", 200)
+
+// Способ 2: Typed attrs (предпочтительный — type-safe, нет ошибок с парностью)
+slog.Info("запрос",
+    slog.String("method", "GET"),
+    slog.String("path", "/api/users"),
+    slog.Int("status", 200),
+)
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Не используйте строковую конкатенацию</strong>: <code>slog.Info("user " + id)</code> — это медленнее (аллокация строки) и ломает structured logging. Всегда передавайте данные как атрибуты: <code>slog.Info("user", slog.String("id", id))</code>.</p>
+</blockquote>
+<h4 id="texthandler-и-jsonhandler"><a class="header" href="#texthandler-и-jsonhandler">TextHandler и JSONHandler</a></h4>
+<pre><code class="language-go">// TextHandler — для разработки (human-readable)
+textHandler := slog.NewTextHandler(os.Stdout, &amp;slog.HandlerOptions{
+    Level: slog.LevelDebug,
+})
+textLogger := slog.New(textHandler)
+textLogger.Info("запрос обработан", slog.String("path", "/api"), slog.Int("status", 200))
+// Вывод: time=2026-01-27T10:00:00.000Z level=INFO msg="запрос обработан" path=/api status=200
+
+// JSONHandler — для production (машиночитаемый)
+jsonHandler := slog.NewJSONHandler(os.Stdout, &amp;slog.HandlerOptions{
+    Level: slog.LevelInfo,
+})
+jsonLogger := slog.New(jsonHandler)
+jsonLogger.Info("запрос обработан", slog.String("path", "/api"), slog.Int("status", 200))
+// Вывод: {"time":"2026-01-27T10:00:00Z","level":"INFO","msg":"запрос обработан","path":"/api","status":200}
+</code></pre>
+<p><strong>Сравнение с C#</strong>:</p>
+<pre><code class="language-csharp">// C#: Serilog с разными форматами
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console() // text для разработки
+    // .WriteTo.Console(new JsonFormatter()) // JSON для production
+    .CreateLogger();
+
+Log.Information("Запрос обработан: {Path} {Status}", "/api", 200);
+// Serilog: message template с destructuring
+</code></pre>
+<pre><code class="language-go">// Go: slog — явный выбор handler
+// В Go нет message templates — всегда key-value пары
+slog.Info("запрос обработан",
+    slog.String("path", "/api"),
+    slog.Int("status", 200),
+)
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: В C# Serilog использует <strong>message templates</strong> (<code>"Processing {OrderId}"</code>), где имя свойства извлекается из шаблона. В Go slog — всегда явные <strong>key-value пары</strong>. Это обеспечивает type-safety без рефлексии и исключает ошибки несоответствия параметров шаблону.</p>
+</blockquote>
+<h4 id="контекстное-логирование-with-и-withgroup"><a class="header" href="#контекстное-логирование-with-и-withgroup">Контекстное логирование: With() и WithGroup()</a></h4>
+<pre><code class="language-go">// With() — добавление постоянных атрибутов (аналог Serilog.ForContext&lt;T&gt;())
+func NewOrderService(logger *slog.Logger) *OrderService {
+    return &amp;OrderService{
+        // Все логи этого сервиса будут содержать "component"
+        logger: logger.With(slog.String("component", "order_service")),
+    }
+}
+
+type OrderService struct {
+    logger *slog.Logger
+}
+
+func (s *OrderService) ProcessOrder(ctx context.Context, order Order) error {
+    // Добавляем контекст заказа
+    log := s.logger.With(
+        slog.String("order_id", order.ID),
+        slog.String("customer_id", order.CustomerID),
+    )
+
+    log.InfoContext(ctx, "начало обработки заказа")
+
+    if err := s.validateOrder(order); err != nil {
+        log.ErrorContext(ctx, "валидация заказа не пройдена",
+            slog.String("error", err.Error()),
+        )
+        return fmt.Errorf("валидация: %w", err)
+    }
+
+    log.InfoContext(ctx, "заказ успешно обработан",
+        slog.Float64("total", order.Total),
+    )
+    return nil
+}
+</code></pre>
+<pre><code class="language-go">// WithGroup() — группировка атрибутов (вложенный JSON)
+logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+
+requestLogger := logger.WithGroup("request").With(
+    slog.String("method", "POST"),
+    slog.String("path", "/api/orders"),
+)
+
+requestLogger.Info("получен запрос", slog.Int("body_size", 1024))
+// Вывод:
+// {
+//   "time": "2026-01-27T10:00:00Z",
+//   "level": "INFO",
+//   "msg": "получен запрос",
+//   "request": {
+//     "method": "POST",
+//     "path": "/api/orders",
+//     "body_size": 1024
+//   }
+// }
+</code></pre>
+<p><strong>Сравнение с C#</strong> (ILogger scope):</p>
+<pre><code class="language-csharp">// C#: ILogger с BeginScope
+using (_logger.BeginScope(new Dictionary&lt;string, object&gt;
+{
+    ["OrderId"] = order.Id,
+    ["CustomerId"] = order.CustomerId
+}))
+{
+    _logger.LogInformation("Начало обработки заказа");
+    // ... все логи в scope содержат OrderId и CustomerId
+}
+</code></pre>
+<pre><code class="language-go">// Go: slog.With() — без using/Dispose, просто новый логгер
+log := s.logger.With(
+    slog.String("order_id", order.ID),
+    slog.String("customer_id", order.CustomerID),
+)
+log.Info("начало обработки заказа")
+// log можно передавать дальше по цепочке вызовов
+</code></pre>
+<h4 id="уровни-логирования"><a class="header" href="#уровни-логирования">Уровни логирования</a></h4>
+<pre><code class="language-go">// Стандартные уровни slog
+const (
+    LevelDebug = slog.Level(-4)  // подробная отладка
+    LevelInfo  = slog.Level(0)   // информационные сообщения
+    LevelWarn  = slog.Level(4)   // предупреждения
+    LevelError = slog.Level(8)   // ошибки
+)
+
+// Использование
+slog.Debug("детали отладки", slog.Any("payload", data))
+slog.Info("операция выполнена")
+slog.Warn("высокая нагрузка", slog.Int("goroutines", runtime.NumGoroutine()))
+slog.Error("ошибка подключения к БД", slog.String("error", err.Error()))
+
+// Пользовательские уровни (между стандартными)
+const (
+    LevelTrace  = slog.Level(-8)  // ещё подробнее чем Debug
+    LevelNotice = slog.Level(2)   // между Info и Warn
+    LevelFatal  = slog.Level(12)  // критическая ошибка
+)
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>slog Level</th><th>C# LogLevel</th><th>Числовое значение</th></tr>
+</thead>
+<tbody>
+<tr><td><code>LevelDebug</code></td><td><code>Debug</code></td><td>-4</td></tr>
+<tr><td><code>LevelInfo</code></td><td><code>Information</code></td><td>0</td></tr>
+<tr><td><code>LevelWarn</code></td><td><code>Warning</code></td><td>4</td></tr>
+<tr><td><code>LevelError</code></td><td><code>Error</code></td><td>8</td></tr>
+<tr><td><em>(custom)</em></td><td><code>Critical</code></td><td><em>(12)</em></td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="интеграция-с-contextcontext"><a class="header" href="#интеграция-с-contextcontext">Интеграция с context.Context</a></h4>
+<pre><code class="language-go">// slog поддерживает context для интеграции с tracing
+func handleRequest(w http.ResponseWriter, r *http.Request) {
+    ctx := r.Context()
+
+    // InfoContext передаёт ctx в Handler — тот может извлечь trace_id
+    slog.InfoContext(ctx, "обработка запроса",
+        slog.String("method", r.Method),
+        slog.String("path", r.URL.Path),
+    )
+
+    user, err := getUserFromDB(ctx, r.URL.Query().Get("id"))
+    if err != nil {
+        slog.ErrorContext(ctx, "не удалось получить пользователя",
+            slog.String("error", err.Error()),
+        )
+        http.Error(w, "internal error", http.StatusInternalServerError)
+        return
+    }
+
+    slog.InfoContext(ctx, "пользователь найден",
+        slog.String("user_id", user.ID),
+        slog.String("email", user.Email),
+    )
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Всегда используйте <code>InfoContext</code>/<code>ErrorContext</code>/etc. вместо <code>Info</code>/<code>Error</code></strong> в production-коде. Это позволит custom handler извлечь trace_id и span_id из контекста и добавить их в каждую запись лога. Мы реализуем такой handler в разделе <a href="#корреляция-логов-и-трейсов">Корреляция логов и трейсов</a>.</p>
+</blockquote>
+<h4 id="custom-handler"><a class="header" href="#custom-handler">Custom Handler</a></h4>
+<p>Интерфейс <code>slog.Handler</code> позволяет создавать кастомные обработчики — аналогично <code>ILoggerProvider</code> в C#:</p>
+<pre><code class="language-go">// slog.Handler — интерфейс (4 метода)
+type Handler interface {
+    Enabled(context.Context, Level) bool
+    Handle(context.Context, Record) error
+    WithAttrs(attrs []Attr) Handler
+    WithGroup(name string) Handler
+}
+</code></pre>
+<p>Пример: handler, который добавляет trace_id из OpenTelemetry context в каждую запись:</p>
+<pre><code class="language-go">package logging
+
+import (
+    "context"
+    "log/slog"
+
+    "go.opentelemetry.io/otel/trace"
+)
+
+// OTelHandler оборачивает любой slog.Handler и добавляет trace_id/span_id
+type OTelHandler struct {
+    inner slog.Handler
+}
+
+func NewOTelHandler(inner slog.Handler) *OTelHandler {
+    return &amp;OTelHandler{inner: inner}
+}
+
+func (h *OTelHandler) Enabled(ctx context.Context, level slog.Level) bool {
+    return h.inner.Enabled(ctx, level)
+}
+
+func (h *OTelHandler) Handle(ctx context.Context, r slog.Record) error {
+    // Извлекаем span из context
+    span := trace.SpanFromContext(ctx)
+    if span.SpanContext().IsValid() {
+        r.AddAttrs(
+            slog.String("trace_id", span.SpanContext().TraceID().String()),
+            slog.String("span_id", span.SpanContext().SpanID().String()),
+        )
+    }
+    return h.inner.Handle(ctx, r)
+}
+
+func (h *OTelHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
+    return &amp;OTelHandler{inner: h.inner.WithAttrs(attrs)}
+}
+
+func (h *OTelHandler) WithGroup(name string) slog.Handler {
+    return &amp;OTelHandler{inner: h.inner.WithGroup(name)}
+}
+</code></pre>
+<p>Использование:</p>
+<pre><code class="language-go">func main() {
+    // Обычный JSON handler
+    jsonHandler := slog.NewJSONHandler(os.Stdout, &amp;slog.HandlerOptions{
+        Level: slog.LevelInfo,
+    })
+
+    // Оборачиваем в OTel handler
+    otelHandler := logging.NewOTelHandler(jsonHandler)
+    logger := slog.New(otelHandler)
+    slog.SetDefault(logger)
+
+    // Теперь каждый лог с контекстом будет содержать trace_id и span_id:
+    // {"time":"...","level":"INFO","msg":"запрос","trace_id":"abc123","span_id":"def456"}
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В .NET <code>Activity.Current.TraceId</code> <strong>автоматически</strong> попадает в логи через <code>Microsoft.Extensions.Logging</code>. В Go это нужно сделать <strong>вручную</strong> — но зато вы полностью контролируете формат и какие данные включать.</p>
+</blockquote>
+<h4 id="handleroptions-тонкая-настройка"><a class="header" href="#handleroptions-тонкая-настройка">HandlerOptions: тонкая настройка</a></h4>
+<pre><code class="language-go">opts := &amp;slog.HandlerOptions{
+    // Добавлять source code location (файл:строка)
+    AddSource: true,
+
+    // Минимальный уровень логирования
+    Level: slog.LevelInfo,
+
+    // Кастомизация атрибутов (аналог Serilog Enricher)
+    ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+        // Переименовать "time" → "timestamp" (для совместимости с ELK)
+        if a.Key == slog.TimeKey {
+            a.Key = "timestamp"
+        }
+
+        // Переименовать "level" → "severity" (для GCP Cloud Logging)
+        if a.Key == slog.LevelKey {
+            a.Key = "severity"
+        }
+
+        // Маскировать чувствительные данные
+        if a.Key == "password" || a.Key == "token" || a.Key == "card_number" {
+            a.Value = slog.StringValue("***REDACTED***")
+        }
+
+        return a
+    },
+}
+
+logger := slog.New(slog.NewJSONHandler(os.Stdout, opts))
+logger.Info("пользователь авторизован",
+    slog.String("user_id", "123"),
+    slog.String("password", "secret123"), // → "***REDACTED***"
+)
+// {"timestamp":"...","severity":"INFO","source":{"function":"main.main","file":"main.go","line":42},
+//  "msg":"пользователь авторизован","user_id":"123","password":"***REDACTED***"}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Никогда не логируйте пароли, токены, номера карт.</strong> Реализуйте redaction через <code>ReplaceAttr</code> или custom handler — заменяйте значения полей <code>"password"</code>, <code>"token"</code>, <code>"card_number"</code>, <code>"secret"</code> на <code>"***REDACTED***"</code>. Это должно быть настроено <strong>на уровне handler</strong>, а не в каждом вызове лога.</p>
+</blockquote>
+<hr>
+<h3 id="uber-gozap--высокопроизводительное-логирование"><a class="header" href="#uber-gozap--высокопроизводительное-логирование">uber-go/zap — высокопроизводительное логирование</a></h3>
+<p><a href="https://github.com/uber-go/zap">zap</a> — библиотека от Uber, созданная задолго до <code>slog</code> (2016 год). Главное преимущество — <strong>zero-allocation</strong> дизайн: в hot paths не происходит аллокаций в heap, что минимизирует нагрузку на GC. В эпоху до <code>slog</code> (Go &lt;1.21) <code>zap</code> был де-факто стандартом для production-логирования в Go.</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: <code>zap</code> — это ближайший аналог <strong>Serilog</strong> в Go-мире: высокопроизводительный structured logging с гибкой конфигурацией. Разница: Serilog использует message templates, zap — типизированные поля.</p>
+</blockquote>
+<h4 id="два-api-logger-и-sugaredlogger"><a class="header" href="#два-api-logger-и-sugaredlogger">Два API: Logger и SugaredLogger</a></h4>
+<pre><code class="language-go">package main
+
+import (
+    "go.uber.org/zap"
+)
+
+func main() {
+    // === Production Logger (typed, zero-alloc) ===
+    logger, _ := zap.NewProduction()
+    defer logger.Sync() // flushes buffer
+
+    // Typed fields — НУЛЕВЫЕ аллокации
+    logger.Info("запрос обработан",
+        zap.String("method", "GET"),
+        zap.String("path", "/api/users"),
+        zap.Int("status", 200),
+        zap.Duration("latency", 42*time.Millisecond),
+    )
+    // {"level":"info","ts":1706349600,"caller":"main.go:15",
+    //  "msg":"запрос обработан","method":"GET","path":"/api/users",
+    //  "status":200,"latency":0.042}
+
+    // === Sugared Logger (printf-like, удобнее но медленнее) ===
+    sugar := logger.Sugar()
+
+    // printf-style (аллокации из-за interface{})
+    sugar.Infof("запрос %s %s → %d", "GET", "/api/users", 200)
+
+    // Alternating key-value (похоже на slog)
+    sugar.Infow("запрос обработан",
+        "method", "GET",
+        "path", "/api/users",
+        "status", 200,
+    )
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Не используйте SugaredLogger в production hot paths</strong> — он в 4-10x медленнее обычного Logger из-за <code>interface{}</code> аллокаций. SugaredLogger удобен для прототипирования и low-frequency логирования (запуск, shutdown), а для hot paths всегда используйте typed Logger.</p>
+</blockquote>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>API</th><th>Аллокации</th><th>Скорость</th><th>Удобство</th><th>Использование</th></tr>
+</thead>
+<tbody>
+<tr><td><code>zap.Logger</code></td><td>0 (zero-alloc)</td><td>Максимальная</td><td>Typed fields</td><td>Production hot paths</td></tr>
+<tr><td><code>zap.SugaredLogger</code></td><td>Есть (interface{})</td><td>4-10x медленнее</td><td>printf/key-value</td><td>Startup/shutdown, dev</td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="конфигурация-и-настройка"><a class="header" href="#конфигурация-и-настройка">Конфигурация и настройка</a></h4>
+<pre><code class="language-go">// Production конфигурация с кастомизацией
+cfg := zap.Config{
+    Level:       zap.NewAtomicLevelAt(zap.InfoLevel),
+    Development: false,
+    Encoding:    "json", // "json" или "console"
+    EncoderConfig: zapcore.EncoderConfig{
+        TimeKey:        "timestamp",
+        LevelKey:       "severity",
+        NameKey:        "logger",
+        CallerKey:      "caller",
+        FunctionKey:    zapcore.OmitKey,
+        MessageKey:     "message",
+        StacktraceKey:  "stacktrace",
+        LineEnding:     zapcore.DefaultLineEnding,
+        EncodeLevel:    zapcore.CapitalLevelEncoder,    // INFO, WARN, ERROR
+        EncodeTime:     zapcore.ISO8601TimeEncoder,     // 2026-01-27T10:00:00Z
+        EncodeDuration: zapcore.MillisDurationEncoder,  // 42.5
+        EncodeCaller:   zapcore.ShortCallerEncoder,     // main.go:42
+    },
+    OutputPaths:      []string{"stdout"},
+    ErrorOutputPaths: []string{"stderr"},
+    InitialFields: map[string]interface{}{
+        "service": "order-service",
+        "version": "1.2.3",
+    },
+}
+
+logger, err := cfg.Build()
+if err != nil {
+    log.Fatalf("не удалось создать логгер: %v", err)
+}
+defer logger.Sync()
+</code></pre>
+<p>Запись с log rotation через <a href="https://github.com/natefinch/lumberjack">lumberjack</a>:</p>
+<pre><code class="language-go">import (
+    "go.uber.org/zap"
+    "go.uber.org/zap/zapcore"
+    "gopkg.in/natefinch/lumberjack.v2"
+)
+
+func newProductionLogger() *zap.Logger {
+    // Log rotation
+    writer := &amp;lumberjack.Logger{
+        Filename:   "/var/log/app/service.log",
+        MaxSize:    100, // MB
+        MaxBackups: 5,
+        MaxAge:     30, // дней
+        Compress:   true,
+    }
+
+    // Encoder для JSON
+    encoderCfg := zap.NewProductionEncoderConfig()
+    encoderCfg.TimeKey = "timestamp"
+    encoderCfg.EncodeTime = zapcore.ISO8601TimeEncoder
+
+    core := zapcore.NewCore(
+        zapcore.NewJSONEncoder(encoderCfg),
+        zapcore.AddSync(writer),
+        zap.InfoLevel,
+    )
+
+    return zap.New(core,
+        zap.AddCaller(),
+        zap.AddStacktrace(zap.ErrorLevel), // stacktrace для Error+
+    )
+}
+</code></pre>
+<h4 id="sampling"><a class="header" href="#sampling">Sampling</a></h4>
+<p>zap поддерживает sampling — пропуск повторяющихся сообщений для снижения нагрузки:</p>
+<pre><code class="language-go">// Sampling: после первых 100 одинаковых сообщений, логировать каждое 100-е
+logger, _ := zap.NewProduction(zap.WrapCore(func(core zapcore.Core) zapcore.Core {
+    return zapcore.NewSamplerWithOptions(core,
+        time.Second,  // интервал
+        100,          // первых N сообщений логировать все
+        100,          // потом — каждое N-е
+    )
+}))
+
+// Или через Config
+cfg := zap.NewProductionConfig()
+cfg.Sampling = &amp;zap.SamplingConfig{
+    Initial:    100,
+    Thereafter: 100,
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Sampling</strong> полезен для high-throughput сервисов, где один и тот же лог может генерироваться тысячи раз в секунду (например, “получен запрос”). Без sampling такие логи забивают диск и Loki/ELK. В <code>slog</code> встроенного sampling нет — нужно реализовать через custom handler.</p>
+</blockquote>
+<h4 id="интеграция-с-slog-через-zapslog"><a class="header" href="#интеграция-с-slog-через-zapslog">Интеграция с slog через zapslog</a></h4>
+<p>Начиная с Go 1.21, можно использовать <code>zap</code> как backend для <code>slog</code>:</p>
+<pre><code class="language-go">import (
+    "log/slog"
+
+    "go.uber.org/zap"
+    "go.uber.org/zap/exp/zapslog"
+)
+
+func main() {
+    // Создаём zap logger
+    zapLogger, _ := zap.NewProduction()
+    defer zapLogger.Sync()
+
+    // Используем zap как backend для slog
+    slogHandler := zapslog.NewHandler(zapLogger.Core(), &amp;zapslog.HandlerOptions{
+        AddSource: true,
+    })
+    slogLogger := slog.New(slogHandler)
+    slog.SetDefault(slogLogger)
+
+    // Теперь slog.Info() использует zap под капотом
+    slog.Info("сервер запущен", slog.String("addr", ":8080"))
+
+    // А zap logger можно использовать напрямую для hot paths
+    zapLogger.Info("hot path операция",
+        zap.String("key", "value"),
+    )
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Рекомендация</strong>: В новых проектах используйте <code>slog</code> как <strong>публичный интерфейс</strong> (API сервиса), а <code>zap</code> — как <strong>backend</strong> через <code>zapslog</code>. Это даёт стандартный интерфейс + производительность zap. Внешние библиотеки видят <code>slog.Logger</code>, внутри работает <code>zap</code>.</p>
+</blockquote>
+<hr>
+<h3 id="rszerolog--zero-allocation-json-logger"><a class="header" href="#rszerolog--zero-allocation-json-logger">rs/zerolog — zero-allocation JSON logger</a></h3>
+<p><a href="https://github.com/rs/zerolog">zerolog</a> — ещё более минималистичный zero-allocation логгер. Его философия: <strong>JSON-first, minimum overhead</strong>. zerolog изначально генерирует только JSON, что делает его самым быстрым логгером в бенчмарках.</p>
+<h4 id="api-и-использование"><a class="header" href="#api-и-использование">API и использование</a></h4>
+<pre><code class="language-go">package main
+
+import (
+    "os"
+    "time"
+
+    "github.com/rs/zerolog"
+    "github.com/rs/zerolog/log"
+)
+
+func main() {
+    // === Development: human-readable вывод ===
+    log.Logger = zerolog.New(zerolog.ConsoleWriter{
+        Out:        os.Stderr,
+        TimeFormat: time.Kitchen,
+    }).With().Timestamp().Caller().Logger()
+
+    log.Info().
+        Str("method", "GET").
+        Str("path", "/api/users").
+        Int("status", 200).
+        Dur("latency", 42*time.Millisecond).
+        Msg("запрос обработан")
+    // 10:00AM INF main.go:20 &gt; запрос обработан method=GET path=/api/users status=200 latency=42ms
+
+    // === Production: JSON вывод ===
+    logger := zerolog.New(os.Stdout).With().
+        Timestamp().
+        Str("service", "order-service").
+        Logger()
+
+    logger.Info().
+        Str("order_id", "12345").
+        Float64("total", 99.99).
+        Msg("заказ создан")
+    // {"level":"info","service":"order-service","order_id":"12345","total":99.99,
+    //  "time":"2026-01-27T10:00:00Z","message":"заказ создан"}
+}
+</code></pre>
+<p><strong>Отличие от zap</strong>: zerolog использует <strong>method chaining</strong> (builder pattern), что даёт более fluent API:</p>
+<pre><code class="language-go">// zerolog: chaining
+logger.Info().
+    Str("key", "value").
+    Int("count", 42).
+    Msg("сообщение")
+
+// zap: typed fields в конструкторе
+logger.Info("сообщение",
+    zap.String("key", "value"),
+    zap.Int("count", 42),
+)
+
+// slog: key-value пары
+slog.Info("сообщение",
+    slog.String("key", "value"),
+    slog.Int("count", 42),
+)
+</code></pre>
+<p><strong>Контекстное логирование</strong>:</p>
+<pre><code class="language-go">// zerolog хранит логгер в context.Context
+func middleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        // Добавляем логгер с request_id в контекст
+        logger := log.With().
+            Str("request_id", r.Header.Get("X-Request-ID")).
+            Str("method", r.Method).
+            Str("path", r.URL.Path).
+            Logger()
+
+        ctx := logger.WithContext(r.Context())
+        next.ServeHTTP(w, r.WithContext(ctx))
+    })
+}
+
+func handler(w http.ResponseWriter, r *http.Request) {
+    // Извлекаем логгер из контекста
+    logger := zerolog.Ctx(r.Context())
+    logger.Info().Msg("обработка запроса")
+    // Автоматически содержит request_id, method, path
+}
+</code></pre>
+<h4 id="интеграция-с-context-и-slog"><a class="header" href="#интеграция-с-context-и-slog">Интеграция с context и slog</a></h4>
+<pre><code class="language-go">import (
+    "log/slog"
+
+    "github.com/rs/zerolog"
+    slogzerolog "github.com/samber/slog-zerolog/v2"
+)
+
+func main() {
+    // zerolog как backend для slog
+    zerologLogger := zerolog.New(os.Stdout).With().Timestamp().Logger()
+
+    slogHandler := slogzerolog.Option{
+        Logger: &amp;zerologLogger,
+    }.NewZerologHandler()
+
+    slog.SetDefault(slog.New(slogHandler))
+
+    // slog API → zerolog backend
+    slog.Info("сервер запущен", slog.String("addr", ":8080"))
+}
+</code></pre>
+<hr>
+<h3 id="миграция-с-популярных-логгеров-на-slog"><a class="header" href="#миграция-с-популярных-логгеров-на-slog">Миграция с популярных логгеров на slog</a></h3>
+<h4 id="с-logrus-на-slog"><a class="header" href="#с-logrus-на-slog">С logrus на slog</a></h4>
+<pre><code class="language-go">// logrus (до)
+import "github.com/sirupsen/logrus"
+
+logrus.WithFields(logrus.Fields{
+    "user_id": 123,
+    "action":  "login",
+}).Info("user logged in")
+
+// slog (после)
+import "log/slog"
+
+slog.Info("user logged in",
+    slog.Int("user_id", 123),
+    slog.String("action", "login"),
+)
+
+// Scoped logger (аналог logrus.WithFields)
+// logrus
+entry := logrus.WithField("component", "UserService")
+entry.Info("профиль обновлён")
+
+// slog
+userLogger := logger.With(slog.String("component", "UserService"))
+userLogger.Info("профиль обновлён")
+</code></pre>
+<h4 id="с-zerolog-на-slog"><a class="header" href="#с-zerolog-на-slog">С zerolog на slog</a></h4>
+<pre><code class="language-go">// zerolog (до)
+import "github.com/rs/zerolog/log"
+
+log.Info().
+    Int("user_id", 123).
+    Str("action", "login").
+    Msg("user logged in")
+
+// slog (после)
+slog.Info("user logged in",
+    slog.Int("user_id", 123),
+    slog.String("action", "login"),
+)
+</code></pre>
+<blockquote>
+<p>💡 <strong>Рекомендация</strong>: Для новых проектов используйте чистый <code>slog</code>. Миграция существующих проектов на slog — хорошая идея для унификации интерфейса. Если нужна производительность zerolog или zap — используйте их через zapslog-адаптер, сохраняя единый <code>slog</code> API.</p>
+</blockquote>
+<hr>
+<h3 id="сравнительная-таблица-slog-vs-zap-vs-zerolog"><a class="header" href="#сравнительная-таблица-slog-vs-zap-vs-zerolog">Сравнительная таблица: slog vs zap vs zerolog</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>log/slog</th><th>zap</th><th>zerolog</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Тип</strong></td><td>Стандартная библиотека</td><td>Сторонняя (Uber)</td><td>Сторонняя</td></tr>
+<tr><td><strong>Появился</strong></td><td>Go 1.21 (2023)</td><td>2016</td><td>2017</td></tr>
+<tr><td><strong>Аллокации</strong></td><td>Минимальные</td><td>Zero-allocation</td><td>Zero-allocation</td></tr>
+<tr><td><strong>API стиль</strong></td><td>Key-value пары</td><td>Typed fields</td><td>Method chaining</td></tr>
+<tr><td><strong>JSON output</strong></td><td>JSONHandler</td><td>Встроено</td><td>Нативно (только JSON)</td></tr>
+<tr><td><strong>Text output</strong></td><td>TextHandler</td><td>Console encoder</td><td>ConsoleWriter</td></tr>
+<tr><td><strong>Sampling</strong></td><td>Нет (custom handler)</td><td>Встроено</td><td>Нет</td></tr>
+<tr><td><strong>Log rotation</strong></td><td>Нет (через io.Writer)</td><td>lumberjack</td><td>lumberjack</td></tr>
+<tr><td><strong>slog совместимость</strong></td><td>Нативно</td><td>zapslog adapter</td><td>slog-zerolog adapter</td></tr>
+<tr><td><strong>Context support</strong></td><td>InfoContext(ctx, …)</td><td>Нет (через middleware)</td><td>zerolog.Ctx(ctx)</td></tr>
+<tr><td><strong>Caller info</strong></td><td>AddSource: true</td><td>AddCaller()</td><td>Caller()</td></tr>
+<tr><td><strong>Stack traces</strong></td><td>Нет</td><td>AddStacktrace()</td><td>Stack()</td></tr>
+<tr><td><strong>DI/injection</strong></td><td>Передаётся явно</td><td>Передаётся явно + Global</td><td>Передаётся явно + Global</td></tr>
+<tr><td><strong>Экосистема</strong></td><td>Растёт (новый стандарт)</td><td>Большая</td><td>Средняя</td></tr>
+<tr><td><strong>Рекомендация</strong></td><td>Новые проекты</td><td>Enterprise, существующие</td><td>Макс. производительность</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Бенчмарки</strong> (типичные значения, сообщение с 10 полями):</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Логгер</th><th>ns/op</th><th>B/op</th><th>allocs/op</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>zerolog</strong></td><td>~180</td><td>0</td><td>0</td></tr>
+<tr><td><strong>zap</strong></td><td>~200</td><td>0</td><td>0</td></tr>
+<tr><td><strong>slog (JSONHandler)</strong></td><td>~350</td><td>~120</td><td>~3</td></tr>
+<tr><td><strong>slog (zap backend)</strong></td><td>~250</td><td>~40</td><td>~1</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Когда что выбирать</strong>:</p>
+<ul>
+<li><strong>Новый проект</strong> → <code>slog</code> (стандарт, все библиотеки будут его поддерживать)</li>
+<li><strong>Новый проект + нужна макс. производительность</strong> → <code>slog</code> + <code>zap</code> backend (через <code>zapslog</code>)</li>
+<li><strong>Существующий проект с zap</strong> → оставить <code>zap</code>, при необходимости добавить <code>slog</code> интерфейс</li>
+<li><strong>Микросервис с минимальным overhead</strong> → <code>zerolog</code> (самый быстрый)</li>
+<li><strong>Нужен sampling</strong> → <code>zap</code> (встроенный) или <code>slog</code> + custom handler</li>
+</ul>
+</blockquote>
+<hr>
+<h3 id="production-logging-patterns"><a class="header" href="#production-logging-patterns">Production Logging Patterns</a></h3>
+<h4 id="log-rotation-с-lumberjack"><a class="header" href="#log-rotation-с-lumberjack">Log rotation с lumberjack</a></h4>
+<p>В production-среде с контейнерами (Docker, Kubernetes) <strong>лучше логировать в stdout</strong> и позволить платформе управлять логами. Но если вы деплоите на bare metal / VM — нужна ротация файлов:</p>
+<pre><code class="language-go">import (
+    "io"
+    "log/slog"
+    "os"
+
+    "gopkg.in/natefinch/lumberjack.v2"
+)
+
+func newProductionLogger() *slog.Logger {
+    // Ротация файлов
+    fileWriter := &amp;lumberjack.Logger{
+        Filename:   "/var/log/app/service.log",
+        MaxSize:    100, // максимальный размер файла (MB)
+        MaxBackups: 5,   // сколько старых файлов хранить
+        MaxAge:     30,  // сколько дней хранить
+        Compress:   true, // gzip для старых файлов
+    }
+
+    // Пишем и в файл, и в stdout (для Docker logs)
+    multiWriter := io.MultiWriter(os.Stdout, fileWriter)
+
+    opts := &amp;slog.HandlerOptions{
+        Level:     slog.LevelInfo,
+        AddSource: true,
+    }
+
+    return slog.New(slog.NewJSONHandler(multiWriter, opts))
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Логируйте в <strong>stdout в JSON-формате</strong>. Не пишите в файлы напрямую в контейнерной среде — пусть Docker/Kubernetes управляет сбором логов через Fluentd, Promtail или Vector. <code>lumberjack</code> нужен только для bare metal / VM деплоя.</p>
+</blockquote>
+<h4 id="http-request-logging-middleware"><a class="header" href="#http-request-logging-middleware">HTTP Request Logging Middleware</a></h4>
+<pre><code class="language-go">// Middleware для логирования HTTP запросов (аналог ASP.NET Core UseHttpLogging)
+func LoggingMiddleware(logger *slog.Logger) func(http.Handler) http.Handler {
+    return func(next http.Handler) http.Handler {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            start := time.Now()
+
+            // Обёртка для захвата status code и размера ответа
+            wrapped := &amp;responseWriter{ResponseWriter: w, statusCode: http.StatusOK}
+
+            // Логируем начало запроса
+            requestID := r.Header.Get("X-Request-ID")
+            if requestID == "" {
+                requestID = uuid.NewString()
+            }
+
+            log := logger.With(
+                slog.String("request_id", requestID),
+                slog.String("method", r.Method),
+                slog.String("path", r.URL.Path),
+                slog.String("remote_addr", r.RemoteAddr),
+                slog.String("user_agent", r.UserAgent()),
+            )
+
+            // Добавляем логгер в контекст
+            ctx := context.WithValue(r.Context(), loggerKey{}, log)
+            r = r.WithContext(ctx)
+
+            // Выполняем запрос
+            next.ServeHTTP(wrapped, r)
+
+            // Логируем результат
+            duration := time.Since(start)
+            level := slog.LevelInfo
+            if wrapped.statusCode &gt;= 500 {
+                level = slog.LevelError
+            } else if wrapped.statusCode &gt;= 400 {
+                level = slog.LevelWarn
+            }
+
+            log.Log(r.Context(), level, "запрос обработан",
+                slog.Int("status", wrapped.statusCode),
+                slog.Int64("bytes", wrapped.bytesWritten),
+                slog.Duration("duration", duration),
+            )
+        })
+    }
+}
+
+type responseWriter struct {
+    http.ResponseWriter
+    statusCode   int
+    bytesWritten int64
+}
+
+func (rw *responseWriter) WriteHeader(code int) {
+    rw.statusCode = code
+    rw.ResponseWriter.WriteHeader(code)
+}
+
+func (rw *responseWriter) Write(b []byte) (int, error) {
+    n, err := rw.ResponseWriter.Write(b)
+    rw.bytesWritten += int64(n)
+    return n, err
+}
+</code></pre>
+<p><strong>Сравнение с C#</strong>:</p>
+<pre><code class="language-csharp">// C#: одна строка
+app.UseHttpLogging();
+
+// Или с Serilog
+app.UseSerilogRequestLogging();
+</code></pre>
+<pre><code class="language-go">// Go: явный middleware (больше кода, но полный контроль)
+mux.Handle("/api/", LoggingMiddleware(logger)(apiHandler))
+</code></pre>
+<h4 id="маскирование-чувствительных-данных"><a class="header" href="#маскирование-чувствительных-данных">Маскирование чувствительных данных</a></h4>
+<pre><code class="language-go">// PII Redaction Handler — оборачивает любой slog.Handler
+type RedactHandler struct {
+    inner      slog.Handler
+    redactKeys map[string]bool
+}
+
+func NewRedactHandler(inner slog.Handler, keys ...string) *RedactHandler {
+    redactKeys := make(map[string]bool, len(keys))
+    for _, k := range keys {
+        redactKeys[k] = true
+    }
+    return &amp;RedactHandler{inner: inner, redactKeys: redactKeys}
+}
+
+func (h *RedactHandler) Enabled(ctx context.Context, level slog.Level) bool {
+    return h.inner.Enabled(ctx, level)
+}
+
+func (h *RedactHandler) Handle(ctx context.Context, r slog.Record) error {
+    // Фильтруем атрибуты
+    var filtered []slog.Attr
+    r.Attrs(func(a slog.Attr) bool {
+        if h.redactKeys[a.Key] {
+            filtered = append(filtered, slog.String(a.Key, "***REDACTED***"))
+        } else {
+            filtered = append(filtered, a)
+        }
+        return true
+    })
+
+    // Создаём новую запись с отфильтрованными атрибутами
+    newRecord := slog.NewRecord(r.Time, r.Level, r.Message, r.PC)
+    newRecord.AddAttrs(filtered...)
+    return h.inner.Handle(ctx, newRecord)
+}
+
+func (h *RedactHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
+    return &amp;RedactHandler{inner: h.inner.WithAttrs(attrs), redactKeys: h.redactKeys}
+}
+
+func (h *RedactHandler) WithGroup(name string) slog.Handler {
+    return &amp;RedactHandler{inner: h.inner.WithGroup(name), redactKeys: h.redactKeys}
+}
+
+// Использование
+func main() {
+    jsonHandler := slog.NewJSONHandler(os.Stdout, nil)
+    redactHandler := NewRedactHandler(jsonHandler,
+        "password", "token", "card_number", "secret", "ssn",
+    )
+    slog.SetDefault(slog.New(redactHandler))
+
+    slog.Info("авторизация",
+        slog.String("user", "john"),
+        slog.String("password", "s3cret!"),   // → "***REDACTED***"
+        slog.String("token", "eyJhbGci..."),  // → "***REDACTED***"
+    )
+}
+</code></pre>
+<h4 id="динамическое-управление-уровнем-логов"><a class="header" href="#динамическое-управление-уровнем-логов">Динамическое управление уровнем логов</a></h4>
+<pre><code class="language-go">// slog: через slog.LevelVar (потокобезопасный)
+var logLevel = new(slog.LevelVar)
+
+func main() {
+    logLevel.Set(slog.LevelInfo) // начальный уровень
+
+    handler := slog.NewJSONHandler(os.Stdout, &amp;slog.HandlerOptions{
+        Level: logLevel, // динамический уровень
+    })
+    slog.SetDefault(slog.New(handler))
+
+    // HTTP endpoint для изменения уровня в runtime
+    http.HandleFunc("PUT /admin/log-level", func(w http.ResponseWriter, r *http.Request) {
+        level := r.URL.Query().Get("level")
+        switch level {
+        case "debug":
+            logLevel.Set(slog.LevelDebug)
+        case "info":
+            logLevel.Set(slog.LevelInfo)
+        case "warn":
+            logLevel.Set(slog.LevelWarn)
+        case "error":
+            logLevel.Set(slog.LevelError)
+        default:
+            http.Error(w, "unknown level", http.StatusBadRequest)
+            return
+        }
+        slog.Info("уровень логирования изменён", slog.String("level", level))
+        w.WriteHeader(http.StatusOK)
+    })
+}
+
+// zap: через zap.AtomicLevel
+atomicLevel := zap.NewAtomicLevel()
+atomicLevel.SetLevel(zap.InfoLevel)
+
+// zap предоставляет готовый HTTP handler
+http.Handle("PUT /admin/log-level", atomicLevel) // принимает JSON: {"level":"debug"}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Динамическое изменение уровня логов</strong> — критическая возможность для production. Когда возникает проблема, вы включаете <code>DEBUG</code> через API, собираете данные, и возвращаете <code>INFO</code>. В C# это делается через <code>IOptionsMonitor&lt;LoggerFilterOptions&gt;</code> или reloadable Serilog config. В Go — через <code>slog.LevelVar</code> или <code>zap.AtomicLevel</code>.</p>
+</blockquote>
+<hr>
+<h2 id="столп-2-метрики-с-prometheus"><a class="header" href="#столп-2-метрики-с-prometheus">Столп 2: Метрики с Prometheus</a></h2>
+<h3 id="архитектура-prometheus"><a class="header" href="#архитектура-prometheus">Архитектура Prometheus</a></h3>
+<p>Prometheus — система мониторинга с <strong>pull-моделью</strong>: Prometheus-сервер периодически опрашивает (scrape) HTTP endpoint <code>/metrics</code> каждого сервиса. Данные хранятся как <strong>time series</strong> — имя метрики + набор labels + значение + timestamp.</p>
+<pre><code>┌──────────┐    scrape /metrics    ┌──────────────┐
+│Prometheus │───────────────────────│  Go Service   │
+│  Server   │   каждые 15s          │  :8080/metrics│
+└──────┬───┘                       └──────────────┘
+       │
+       │  PromQL queries
+       ▼
+┌──────────┐
+│  Grafana  │
+│ Dashboard │
+└──────────┘
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Prometheus pull-модель работает так же, как <code>prometheus-net</code> в .NET: вы регистрируете метрики, экспонируете <code>/metrics</code> endpoint, и Prometheus забирает данные. Альтернатива — push-модель (StatsD, Datadog Agent), где приложение отправляет метрики на сервер. В Kubernetes pull-модель предпочтительна — Prometheus автоматически находит сервисы через Service Discovery.</p>
+</blockquote>
+<p><strong>Модель данных Prometheus</strong>:</p>
+<pre><code># Метрика с labels
+http_requests_total{method="GET", path="/api/users", status="200"} 1542
+
+# Структура: &lt;metric_name&gt;{&lt;label_name&gt;=&lt;label_value&gt;, ...} &lt;value&gt; [&lt;timestamp&gt;]
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Компонент</th><th>Описание</th><th>Пример</th></tr>
+</thead>
+<tbody>
+<tr><td>metric_name</td><td>Имя метрики (snake_case)</td><td><code>http_requests_total</code></td></tr>
+<tr><td>labels</td><td>Dimensions (ключ-значение)</td><td><code>method="GET"</code></td></tr>
+<tr><td>value</td><td>Числовое значение (float64)</td><td><code>1542</code></td></tr>
+<tr><td>timestamp</td><td>Время (опционально)</td><td><code>1706349600000</code></td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Naming conventions</strong>:</p>
+<ul>
+<li><code>_total</code> — суффикс для counters (<code>http_requests_total</code>)</li>
+<li><code>_seconds</code> — суффикс для duration (<code>request_duration_seconds</code>)</li>
+<li><code>_bytes</code> — суффикс для размеров (<code>response_size_bytes</code>)</li>
+<li><code>_info</code> — суффикс для информационных метрик (<code>build_info</code>)</li>
+</ul>
+<hr>
+<h3 id="prometheusclient_golang"><a class="header" href="#prometheusclient_golang">prometheus/client_golang</a></h3>
+<p><a href="https://github.com/prometheus/client_golang">prometheus/client_golang</a> — <strong>официальная</strong> Go-библиотека для работы с Prometheus. В отличие от .NET, где <code>prometheus-net</code> — сторонняя библиотека, в Go клиент от самих разработчиков Prometheus.</p>
+<h4 id="подключение-и-metrics-endpoint"><a class="header" href="#подключение-и-metrics-endpoint">Подключение и /metrics endpoint</a></h4>
+<pre><code class="language-go">package main
+
+import (
+    "log"
+    "net/http"
+
+    "github.com/prometheus/client_golang/prometheus"
+    "github.com/prometheus/client_golang/prometheus/collectors"
+    "github.com/prometheus/client_golang/prometheus/promhttp"
+)
+
+func main() {
+    // Создаём registry (вместо default, для изоляции в тестах)
+    reg := prometheus.NewRegistry()
+
+    // Регистрируем стандартные Go метрики
+    reg.MustRegister(collectors.NewGoCollector())       // go_goroutines, go_gc_*, go_memstats_*
+    reg.MustRegister(collectors.NewProcessCollector(     // process_cpu_seconds, process_open_fds
+        collectors.ProcessCollectorOpts{},
+    ))
+
+    // Экспонируем /metrics
+    mux := http.NewServeMux()
+    mux.Handle("GET /metrics", promhttp.HandlerFor(reg, promhttp.HandlerOpts{
+        Registry:          reg,
+        EnableOpenMetrics: true, // OpenMetrics формат (поддерживает exemplars)
+    }))
+
+    log.Println("метрики доступны на :9090/metrics")
+    log.Fatal(http.ListenAndServe(":9090", mux))
+}
+</code></pre>
+<p><strong>Сравнение с C#</strong>:</p>
+<pre><code class="language-csharp">// C#: prometheus-net
+var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
+
+// Одна строка — и /metrics доступен
+app.UseMetricServer(); // prometheus-net.AspNetCore
+app.MapMetrics();      // или через mapping
+
+// Метрики регистрируются глобально
+var counter = Metrics.CreateCounter("my_counter", "Description");
+</code></pre>
+<pre><code class="language-go">// Go: явная настройка registry и handler
+reg := prometheus.NewRegistry()
+reg.MustRegister(collectors.NewGoCollector())
+mux.Handle("GET /metrics", promhttp.HandlerFor(reg, promhttp.HandlerOpts{}))
+</code></pre>
+<h4 id="типы-метрик"><a class="header" href="#типы-метрик">Типы метрик</a></h4>
+<p>Prometheus определяет 4 типа метрик:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Тип</th><th>Описание</th><th>Когда использовать</th><th>Пример</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Counter</strong></td><td>Монотонно растущее значение</td><td>Подсчёт событий</td><td><code>http_requests_total</code></td></tr>
+<tr><td><strong>Gauge</strong></td><td>Значение, которое растёт и падает</td><td>Текущее состояние</td><td><code>active_connections</code></td></tr>
+<tr><td><strong>Histogram</strong></td><td>Распределение значений по bucket’ам</td><td>Latency, размеры</td><td><code>request_duration_seconds</code></td></tr>
+<tr><td><strong>Summary</strong></td><td>Квантили (percentiles)</td><td>Latency (редко)</td><td><code>request_duration_quantile</code></td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-go">import (
+    "github.com/prometheus/client_golang/prometheus"
+    "github.com/prometheus/client_golang/prometheus/promauto"
+)
+
+// === Counter: монотонно растёт (нельзя уменьшать!) ===
+var httpRequestsTotal = promauto.NewCounterVec(
+    prometheus.CounterOpts{
+        Namespace: "myapp",
+        Subsystem: "http",
+        Name:      "requests_total",
+        Help:      "Общее количество HTTP запросов",
+    },
+    []string{"method", "path", "status"}, // labels
+)
+
+// Использование: httpRequestsTotal.WithLabelValues("GET", "/api/users", "200").Inc()
+
+// === Gauge: текущее значение (может расти и падать) ===
+var activeConnections = promauto.NewGauge(
+    prometheus.GaugeOpts{
+        Namespace: "myapp",
+        Name:      "active_connections",
+        Help:      "Количество активных соединений",
+    },
+)
+
+// Использование:
+// activeConnections.Inc()  // +1
+// activeConnections.Dec()  // -1
+// activeConnections.Set(42) // установить конкретное значение
+
+// === Histogram: распределение значений ===
+var requestDuration = promauto.NewHistogramVec(
+    prometheus.HistogramOpts{
+        Namespace: "myapp",
+        Subsystem: "http",
+        Name:      "request_duration_seconds",
+        Help:      "Длительность HTTP запросов в секундах",
+        // Кастомные buckets для вашего SLA
+        Buckets: []float64{0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5},
+    },
+    []string{"method", "path"},
+)
+
+// Использование: requestDuration.WithLabelValues("GET", "/api/users").Observe(0.042)
+
+// === Summary: квантили (используйте Histogram вместо Summary!) ===
+var requestDurationSummary = promauto.NewSummary(
+    prometheus.SummaryOpts{
+        Name:       "request_duration_summary",
+        Help:       "Квантили длительности запросов",
+        Objectives: map[float64]float64{0.5: 0.05, 0.9: 0.01, 0.99: 0.001},
+    },
+)
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Используйте Histogram вместо Summary</strong> в большинстве случаев. Histogram позволяет вычислять произвольные percentiles через PromQL (<code>histogram_quantile()</code>), агрегировать по нескольким инстансам и настраивать alerting. Summary вычисляет квантили на стороне клиента и <strong>не может агрегироваться</strong> между инстансами.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Настройте Histogram buckets под ваш SLA!</strong> Дефолтные buckets <code>DefBuckets</code> (0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10) могут не подходить. Если ваш SLA — “99% запросов &lt; 100ms”, вам нужны гранулярные buckets в диапазоне 1-100ms.</p>
+</blockquote>
+<h4 id="labels-и-dimensions"><a class="header" href="#labels-и-dimensions">Labels и dimensions</a></h4>
+<pre><code class="language-go">// Labels добавляют dimensions к метрике
+var dbQueryDuration = promauto.NewHistogramVec(
+    prometheus.HistogramOpts{
+        Name:    "db_query_duration_seconds",
+        Help:    "Длительность запросов к БД",
+        Buckets: prometheus.ExponentialBuckets(0.001, 2, 15), // от 1ms, x2, 15 buckets
+    },
+    []string{"query_name", "table", "status"}, // label names
+)
+
+// Использование с labels
+func queryUsers(ctx context.Context) ([]User, error) {
+    timer := prometheus.NewTimer(
+        dbQueryDuration.WithLabelValues("get_users", "users", "success"),
+    )
+    defer timer.ObserveDuration()
+
+    // ... выполнение запроса
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Не создавайте метрики с высокой кардинальностью (high cardinality)!</strong> Каждая уникальная комбинация labels — это отдельная time series в Prometheus. Не используйте <code>user_id</code>, <code>order_id</code>, <code>request_id</code>, IP-адрес как labels. Это быстро исчерпает память Prometheus и замедлит запросы.</p>
+</blockquote>
+<p><strong>Хорошие labels</strong>:</p>
+<ul>
+<li><code>method</code> (GET, POST, PUT, DELETE — ~5 значений)</li>
+<li><code>status</code> (200, 400, 500 — ~10 значений)</li>
+<li><code>endpoint</code> (/api/users, /api/orders — ~20 значений)</li>
+</ul>
+<p><strong>Плохие labels</strong>:</p>
+<ul>
+<li><code>user_id</code> (миллионы значений!)</li>
+<li><code>request_id</code> (уникальный для каждого запроса!)</li>
+<li><code>timestamp</code> (бесконечное количество!)</li>
+</ul>
+<h4 id="регистрация-метрик"><a class="header" href="#регистрация-метрик">Регистрация метрик</a></h4>
+<pre><code class="language-go">// Способ 1: promauto — автоматическая регистрация в default registry
+// Удобно, но плохо для тестов (глобальное состояние)
+var counter = promauto.NewCounter(prometheus.CounterOpts{
+    Name: "my_counter",
+    Help: "Описание",
+})
+
+// Способ 2: Явная регистрация в custom registry (рекомендуется)
+func NewMetrics(reg prometheus.Registerer) *Metrics {
+    m := &amp;Metrics{
+        RequestsTotal: prometheus.NewCounterVec(
+            prometheus.CounterOpts{
+                Name: "http_requests_total",
+                Help: "Общее количество HTTP запросов",
+            },
+            []string{"method", "path", "status"},
+        ),
+        RequestDuration: prometheus.NewHistogramVec(
+            prometheus.HistogramOpts{
+                Name:    "http_request_duration_seconds",
+                Help:    "Длительность HTTP запросов",
+                Buckets: []float64{0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1, 5},
+            },
+            []string{"method", "path"},
+        ),
+    }
+
+    reg.MustRegister(m.RequestsTotal, m.RequestDuration)
+    return m
+}
+
+type Metrics struct {
+    RequestsTotal   *prometheus.CounterVec
+    RequestDuration *prometheus.HistogramVec
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для тестов используйте custom registry</strong>: <code>prometheus.NewRegistry()</code>. Это изолирует метрики теста от глобального состояния и позволяет проверять конкретные значения.</p>
+</blockquote>
+<hr>
+<h3 id="http-metrics-middleware"><a class="header" href="#http-metrics-middleware">HTTP Metrics Middleware</a></h3>
+<p>Полноценный middleware для сбора RED-метрик (Rate, Errors, Duration):</p>
+<pre><code class="language-go">// metricsMiddleware собирает RED-метрики для HTTP сервера
+type metricsMiddleware struct {
+    requestsTotal   *prometheus.CounterVec
+    requestDuration *prometheus.HistogramVec
+    requestSize     *prometheus.HistogramVec
+    responseSize    *prometheus.HistogramVec
+    requestsInFlight prometheus.Gauge
+}
+
+func NewMetricsMiddleware(reg prometheus.Registerer) *metricsMiddleware {
+    m := &amp;metricsMiddleware{
+        requestsTotal: prometheus.NewCounterVec(
+            prometheus.CounterOpts{
+                Name: "http_requests_total",
+                Help: "Общее количество HTTP запросов",
+            },
+            []string{"method", "path", "status"},
+        ),
+        requestDuration: prometheus.NewHistogramVec(
+            prometheus.HistogramOpts{
+                Name:    "http_request_duration_seconds",
+                Help:    "Длительность HTTP запросов",
+                Buckets: []float64{0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5},
+            },
+            []string{"method", "path"},
+        ),
+        requestSize: prometheus.NewHistogramVec(
+            prometheus.HistogramOpts{
+                Name:    "http_request_size_bytes",
+                Help:    "Размер HTTP запросов в байтах",
+                Buckets: prometheus.ExponentialBuckets(100, 10, 7), // 100B, 1KB, 10KB, ...
+            },
+            []string{"method", "path"},
+        ),
+        responseSize: prometheus.NewHistogramVec(
+            prometheus.HistogramOpts{
+                Name:    "http_response_size_bytes",
+                Help:    "Размер HTTP ответов в байтах",
+                Buckets: prometheus.ExponentialBuckets(100, 10, 7),
+            },
+            []string{"method", "path"},
+        ),
+        requestsInFlight: prometheus.NewGauge(
+            prometheus.GaugeOpts{
+                Name: "http_requests_in_flight",
+                Help: "Количество запросов в обработке",
+            },
+        ),
+    }
+
+    reg.MustRegister(
+        m.requestsTotal, m.requestDuration,
+        m.requestSize, m.responseSize,
+        m.requestsInFlight,
+    )
+    return m
+}
+
+func (m *metricsMiddleware) Handler(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        start := time.Now()
+
+        m.requestsInFlight.Inc()
+        defer m.requestsInFlight.Dec()
+
+        // Нормализация пути (чтобы /api/users/123 → /api/users/:id)
+        path := normalizePath(r.URL.Path)
+
+        // Размер запроса
+        m.requestSize.WithLabelValues(r.Method, path).
+            Observe(float64(r.ContentLength))
+
+        // Обёртка для захвата status и размера ответа
+        wrapped := &amp;responseWriter{ResponseWriter: w, statusCode: http.StatusOK}
+        next.ServeHTTP(wrapped, r)
+
+        // Записываем метрики
+        status := strconv.Itoa(wrapped.statusCode)
+        duration := time.Since(start).Seconds()
+
+        m.requestsTotal.WithLabelValues(r.Method, path, status).Inc()
+        m.requestDuration.WithLabelValues(r.Method, path).Observe(duration)
+        m.responseSize.WithLabelValues(r.Method, path).
+            Observe(float64(wrapped.bytesWritten))
+    })
+}
+
+// normalizePath заменяет динамические сегменты на :param
+// чтобы избежать high cardinality labels
+func normalizePath(path string) string {
+    // /api/users/550e8400-e29b-41d4-a716-446655440000 → /api/users/:id
+    // /api/orders/12345 → /api/orders/:id
+    // Реализация зависит от вашего роутера
+    // Для chi: chi.RouteContext(ctx).RoutePattern()
+    return path
+}
+</code></pre>
+<p><strong>Сравнение с C#</strong>:</p>
+<pre><code class="language-csharp">// C#: prometheus-net одна строка
+app.UseHttpMetrics(); // собирает все RED метрики автоматически
+</code></pre>
+<pre><code class="language-go">// Go: явный middleware (полный контроль над метриками и labels)
+metrics := NewMetricsMiddleware(reg)
+mux.Handle("/api/", metrics.Handler(apiHandler))
+</code></pre>
+<blockquote>
+<p>💡 <strong>Нормализация путей</strong> — критически важна. Без неё каждый уникальный URL (<code>/api/users/1</code>, <code>/api/users/2</code>, …) создаёт отдельную time series, что приводит к cardinality explosion. Используйте шаблон маршрута (route pattern) вместо фактического URL.</p>
+</blockquote>
+<hr>
+<h3 id="бизнес-метрики"><a class="header" href="#бизнес-метрики">Бизнес-метрики</a></h3>
+<p>Помимо инфраструктурных метрик (HTTP, DB), важно отслеживать <strong>бизнес-показатели</strong>:</p>
+<pre><code class="language-go">type BusinessMetrics struct {
+    OrdersCreated    *prometheus.CounterVec
+    OrdersCompleted  *prometheus.CounterVec
+    OrdersFailed     *prometheus.CounterVec
+    OrderAmount      prometheus.Histogram
+    ActiveUsers      prometheus.Gauge
+    PaymentsTotal    *prometheus.CounterVec
+    PaymentsAmount   *prometheus.CounterVec
+    InventoryLevel   *prometheus.GaugeVec
+}
+
+func NewBusinessMetrics(reg prometheus.Registerer) *BusinessMetrics {
+    m := &amp;BusinessMetrics{
+        OrdersCreated: prometheus.NewCounterVec(
+            prometheus.CounterOpts{
+                Namespace: "business",
+                Name:      "orders_created_total",
+                Help:      "Количество созданных заказов",
+            },
+            []string{"type"}, // "standard", "express", "subscription"
+        ),
+        OrdersCompleted: prometheus.NewCounterVec(
+            prometheus.CounterOpts{
+                Namespace: "business",
+                Name:      "orders_completed_total",
+                Help:      "Количество выполненных заказов",
+            },
+            []string{"type"},
+        ),
+        OrdersFailed: prometheus.NewCounterVec(
+            prometheus.CounterOpts{
+                Namespace: "business",
+                Name:      "orders_failed_total",
+                Help:      "Количество неудачных заказов",
+            },
+            []string{"type", "reason"}, // reason: "payment_declined", "out_of_stock"
+        ),
+        OrderAmount: prometheus.NewHistogram(
+            prometheus.HistogramOpts{
+                Namespace: "business",
+                Name:      "order_amount_rub",
+                Help:      "Сумма заказа в рублях",
+                Buckets:   []float64{100, 500, 1000, 5000, 10000, 50000, 100000},
+            },
+        ),
+        ActiveUsers: prometheus.NewGauge(
+            prometheus.GaugeOpts{
+                Namespace: "business",
+                Name:      "active_users",
+                Help:      "Количество активных пользователей (за последние 5 минут)",
+            },
+        ),
+    }
+
+    reg.MustRegister(
+        m.OrdersCreated, m.OrdersCompleted, m.OrdersFailed,
+        m.OrderAmount, m.ActiveUsers,
+    )
+    return m
+}
+
+// Использование в бизнес-логике
+func (s *OrderService) CreateOrder(ctx context.Context, order Order) error {
+    // ... создание заказа
+
+    s.metrics.OrdersCreated.WithLabelValues(order.Type).Inc()
+    s.metrics.OrderAmount.Observe(order.Total)
+
+    return nil
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Бизнес-метрики</strong> — самые ценные для product-команды. Они показывают, как система работает <strong>с точки зрения бизнеса</strong>: сколько заказов, какая конверсия, сколько денег обрабатывается. Техническим метрикам (CPU, memory) не хватает этого контекста.</p>
+</blockquote>
+<hr>
+<h3 id="victoriametrics-как-альтернатива"><a class="header" href="#victoriametrics-как-альтернатива">VictoriaMetrics как альтернатива</a></h3>
+<p><a href="https://github.com/VictoriaMetrics/metrics">VictoriaMetrics</a> предлагает более простой Go-клиент для метрик, совместимый с Prometheus format:</p>
+<pre><code class="language-go">import "github.com/VictoriaMetrics/metrics"
+
+// Counter
+var requestsTotal = metrics.NewCounter("http_requests_total")
+requestsTotal.Inc()
+
+// Counter с labels (формируются через строку)
+metrics.GetOrCreateCounter(`http_requests_total{method="GET",status="200"}`).Inc()
+
+// Histogram
+var duration = metrics.NewHistogram("http_request_duration_seconds")
+duration.Update(0.042)
+
+// Gauge
+var goroutines = metrics.NewGauge("go_goroutines", func() float64 {
+    return float64(runtime.NumGoroutine())
+})
+
+// Экспонирование метрик
+http.HandleFunc("/metrics", func(w http.ResponseWriter, r *http.Request) {
+    metrics.WritePrometheus(w, true) // true = с go runtime метриками
+})
+</code></pre>
+<p><strong>Когда использовать VictoriaMetrics клиент</strong>:</p>
+<ul>
+<li>Минимальный overhead и размер бинарника</li>
+<li>Простой API без registry/collector абстракций</li>
+<li>Совместимость с Prometheus format</li>
+<li>Не нужна полная мощь <code>prometheus/client_golang</code></li>
+</ul>
+<p><strong>Когда оставаться на <code>prometheus/client_golang</code></strong>:</p>
+<ul>
+<li>Нужны Exemplars (для связи с трейсами)</li>
+<li>Нужен custom registry для тестов</li>
+<li>Используете OpenMetrics формат</li>
+<li>Нужны collectors (GoCollector, ProcessCollector)</li>
+</ul>
+<hr>
+<h3 id="promql-полезные-запросы"><a class="header" href="#promql-полезные-запросы">PromQL: полезные запросы</a></h3>
+<p>PromQL (Prometheus Query Language) — язык запросов для анализа time series данных. Основные паттерны для Go-сервисов:</p>
+<h4 id="rate-и-throughput"><a class="header" href="#rate-и-throughput">Rate и throughput</a></h4>
+<pre><code class="language-promql"># Запросов в секунду (RPS) за последние 5 минут
+rate(http_requests_total[5m])
+
+# RPS по методу и пути
+sum(rate(http_requests_total[5m])) by (method, path)
+
+# Общий RPS сервиса
+sum(rate(http_requests_total[5m]))
+</code></pre>
+<h4 id="error-rate"><a class="header" href="#error-rate">Error rate</a></h4>
+<pre><code class="language-promql"># Процент ошибок (5xx)
+sum(rate(http_requests_total{status=~"5.."}[5m]))
+/
+sum(rate(http_requests_total[5m]))
+* 100
+
+# Error rate по endpoint
+sum(rate(http_requests_total{status=~"5.."}[5m])) by (path)
+/
+sum(rate(http_requests_total[5m])) by (path)
+</code></pre>
+<h4 id="latency-percentiles"><a class="header" href="#latency-percentiles">Latency (percentiles)</a></h4>
+<pre><code class="language-promql"># p50 (медиана) latency
+histogram_quantile(0.5, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))
+
+# p95 latency
+histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))
+
+# p99 latency
+histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))
+
+# p99 latency по endpoint
+histogram_quantile(0.99,
+    sum(rate(http_request_duration_seconds_bucket[5m])) by (le, path)
+)
+</code></pre>
+<h4 id="go-runtime-метрики"><a class="header" href="#go-runtime-метрики">Go runtime метрики</a></h4>
+<pre><code class="language-promql"># Количество горутин
+go_goroutines
+
+# Использование памяти (heap alloc)
+go_memstats_heap_alloc_bytes
+
+# GC pause duration (p99)
+histogram_quantile(0.99, rate(go_gc_duration_seconds_bucket[5m]))
+
+# Количество GC циклов в секунду
+rate(go_gc_duration_seconds_count[5m])
+</code></pre>
+<h4 id="alerting-rules-примеры"><a class="header" href="#alerting-rules-примеры">Alerting rules (примеры)</a></h4>
+<pre><code class="language-yaml"># prometheus-alerts.yml
+groups:
+  - name: go-service
+    rules:
+      # Высокий error rate
+      - alert: HighErrorRate
+        expr: |
+          sum(rate(http_requests_total{status=~"5.."}[5m]))
+          / sum(rate(http_requests_total[5m]))
+          &gt; 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Error rate &gt; 5%"
+
+      # Высокая latency
+      - alert: HighLatency
+        expr: |
+          histogram_quantile(0.99,
+            sum(rate(http_request_duration_seconds_bucket[5m])) by (le)
+          ) &gt; 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "p99 latency &gt; 1s"
+
+      # Слишком много горутин
+      - alert: TooManyGoroutines
+        expr: go_goroutines &gt; 10000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Goroutine count &gt; 10000 (possible leak)"
+</code></pre>
+<p><strong>Полезные PromQL паттерны</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Паттерн</th><th>PromQL</th><th>Применение</th></tr>
+</thead>
+<tbody>
+<tr><td>RPS</td><td><code>rate(counter[5m])</code></td><td>Throughput</td></tr>
+<tr><td>Error rate</td><td><code>rate(errors[5m]) / rate(total[5m])</code></td><td>Reliability</td></tr>
+<tr><td>p95 latency</td><td><code>histogram_quantile(0.95, rate(bucket[5m]))</code></td><td>Performance</td></tr>
+<tr><td>Saturation</td><td><code>gauge / max_capacity</code></td><td>Capacity</td></tr>
+<tr><td>Increase</td><td><code>increase(counter[1h])</code></td><td>Абсолютные числа за период</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h3 id="grafana-дашборды"><a class="header" href="#grafana-дашборды">Grafana дашборды</a></h3>
+<h4 id="red-method--для-сервисов"><a class="header" href="#red-method--для-сервисов">RED Method — для сервисов</a></h4>
+<p><strong>R</strong>ate (запросов в секунду), <strong>E</strong>rrors (процент ошибок), <strong>D</strong>uration (latency) — три ключевые метрики для любого сервиса:</p>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                    Order Service Dashboard                       │
+├──────────────────┬──────────────────┬───────────────────────────┤
+│  Request Rate    │  Error Rate (%)  │  p95 Latency              │
+│  ████████ 250/s  │  ░░░░░█ 1.2%    │  ████░░ 45ms              │
+├──────────────────┴──────────────────┴───────────────────────────┤
+│  Request Rate by Endpoint                                        │
+│  /api/orders  ████████████ 150/s                                │
+│  /api/users   ██████ 80/s                                       │
+│  /api/health  ██ 20/s                                           │
+├─────────────────────────────────────────────────────────────────┤
+│  Latency Distribution (Heatmap)                                  │
+│  99%  ░░░░░░░░░░░░░░░░░░░█                                     │
+│  95%  ░░░░░░░░░░░░████████                                      │
+│  50%  ████████████                                               │
+├─────────────────────────────────────────────────────────────────┤
+│  Go Runtime                                                      │
+│  Goroutines: 142  │  Heap: 45MB  │  GC Pause p99: 0.8ms        │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre>
+<h4 id="use-method--для-инфраструктуры"><a class="header" href="#use-method--для-инфраструктуры">USE Method — для инфраструктуры</a></h4>
+<p><strong>U</strong>tilization, <strong>S</strong>aturation, <strong>E</strong>rrors — для ресурсов (CPU, Memory, Disk, Network, Connection Pool):</p>
+<pre><code class="language-promql"># Utilization: % использования пула соединений БД
+pgx_pool_acquired_connections / pgx_pool_max_connections * 100
+
+# Saturation: очередь ожидания пула
+pgx_pool_pending_acquires
+
+# Errors: ошибки при получении соединения
+rate(pgx_pool_acquire_errors_total[5m])
+</code></pre>
+<h4 id="go-runtime-dashboard"><a class="header" href="#go-runtime-dashboard">Go Runtime Dashboard</a></h4>
+<p>Стандартные Go метрики, которые автоматически экспортируются <code>collectors.NewGoCollector()</code>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Метрика</th><th>Описание</th><th>Полезный PromQL</th></tr>
+</thead>
+<tbody>
+<tr><td><code>go_goroutines</code></td><td>Кол-во горутин</td><td><code>go_goroutines</code> — goroutine leak detection</td></tr>
+<tr><td><code>go_memstats_heap_alloc_bytes</code></td><td>Heap memory</td><td>Trend analysis</td></tr>
+<tr><td><code>go_gc_duration_seconds</code></td><td>GC pause time</td><td><code>histogram_quantile(0.99, ...)</code></td></tr>
+<tr><td><code>go_memstats_alloc_bytes_total</code></td><td>Total allocations</td><td><code>rate(...)</code> — alloc rate</td></tr>
+<tr><td><code>go_threads</code></td><td>OS threads</td><td>Thread leak detection</td></tr>
+<tr><td><code>process_open_fds</code></td><td>Open file descriptors</td><td>Approaching ulimit</td></tr>
+<tr><td><code>process_resident_memory_bytes</code></td><td>RSS memory</td><td>OOM risk</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Grafana Dashboard ID 14061</strong> — популярный готовый дашборд для Go-сервисов. Импортируйте его через Grafana UI → Import Dashboard → ID 14061. Он включает горутины, GC, memory, HTTP метрики.</p>
+</blockquote>
+<hr>
+<h2 id="столп-3-distributed-tracing-с-opentelemetry"><a class="header" href="#столп-3-distributed-tracing-с-opentelemetry">Столп 3: Distributed Tracing с OpenTelemetry</a></h2>
+<h3 id="концепции-трейсинга"><a class="header" href="#концепции-трейсинга">Концепции трейсинга</a></h3>
+<p>Distributed tracing позволяет проследить путь запроса через все микросервисы — от входящего HTTP-запроса до последнего SQL-запроса к базе данных. Каждый “шаг” в пути — это <strong>span</strong>.</p>
+<pre><code>Trace: abc-123
+├── [HTTP Server] GET /api/orders/42        (span 1, 150ms)
+│   ├── [DB] SELECT * FROM orders WHERE id=42  (span 2, 5ms)
+│   ├── [gRPC Client] GetUser(user_id=7)       (span 3, 30ms)
+│   │   └── [gRPC Server] GetUser              (span 4, 25ms)
+│   │       └── [DB] SELECT * FROM users       (span 5, 3ms)
+│   └── [HTTP Client] GET payment-service/...  (span 6, 80ms)
+│       └── [HTTP Server] GET /payments/42     (span 7, 75ms)
+│           └── [DB] SELECT * FROM payments    (span 8, 2ms)
+</code></pre>
+<p><strong>Ключевые концепции</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Концепция</th><th>Описание</th><th>Аналог в C#</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Trace</strong></td><td>Весь путь запроса (дерево spans)</td><td>Trace (Activity tree)</td></tr>
+<tr><td><strong>Span</strong></td><td>Одна операция (с временем начала/конца)</td><td><code>Activity</code></td></tr>
+<tr><td><strong>SpanContext</strong></td><td>TraceID + SpanID + Flags</td><td><code>ActivityContext</code></td></tr>
+<tr><td><strong>Tracer</strong></td><td>Фабрика для создания spans</td><td><code>ActivitySource</code></td></tr>
+<tr><td><strong>TracerProvider</strong></td><td>Фабрика для Tracer’ов + настройка export</td><td><code>TracerProvider</code></td></tr>
+<tr><td><strong>Attributes</strong></td><td>Key-value пары на span</td><td><code>Activity.Tags</code></td></tr>
+<tr><td><strong>Events</strong></td><td>Временные метки внутри span</td><td><code>Activity.Events</code></td></tr>
+<tr><td><strong>Status</strong></td><td>OK / Error / Unset</td><td><code>Activity.Status</code></td></tr>
+<tr><td><strong>SpanKind</strong></td><td>Client / Server / Producer / Consumer / Internal</td><td><code>ActivityKind</code></td></tr>
+<tr><td><strong>Baggage</strong></td><td>Данные, пропагируемые через все сервисы</td><td><code>Baggage</code></td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В .NET трейсинг основан на <code>System.Diagnostics.Activity</code>. Ключевое отличие: <code>Activity.Current</code> — это <strong>ambient context</strong> (хранится в <code>AsyncLocal&lt;T&gt;</code>), который автоматически доступен в любом месте кода без передачи. В Go аналога нет — <code>context.Context</code> нужно <strong>явно передавать</strong> в каждый вызов. Это означает, что каждая функция в цепочке должна принимать <code>ctx context.Context</code>.</p>
+</blockquote>
+<p><strong>Стратегии сэмплирования (sampling)</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Стратегия</th><th>Описание</th><th>Когда использовать</th></tr>
+</thead>
+<tbody>
+<tr><td><code>AlwaysOn</code></td><td>Записывать 100% трейсов</td><td>Development, staging</td></tr>
+<tr><td><code>AlwaysOff</code></td><td>Не записывать</td><td>Отключение трейсинга</td></tr>
+<tr><td><code>TraceIDRatioBased(0.1)</code></td><td>10% трейсов</td><td>Production (low traffic)</td></tr>
+<tr><td><code>ParentBased(root)</code></td><td>Наследовать от родителя</td><td>Production (рекомендуется)</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>⚠️ <strong>В production всегда настраивайте sampling!</strong> <code>AlwaysOn</code> (100% трейсов) приводит к огромному потреблению памяти и нагрузке на Jaeger/Zipkin backend. Типичный production sampling: 1-10% (<code>TraceIDRatioBased(0.01)</code> - <code>TraceIDRatioBased(0.1)</code>).</p>
+</blockquote>
+<hr>
+<h3 id="opentelemetry-go-sdk-setup"><a class="header" href="#opentelemetry-go-sdk-setup">OpenTelemetry Go SDK Setup</a></h3>
+<h4 id="tracerprovider-и-resource"><a class="header" href="#tracerprovider-и-resource">TracerProvider и Resource</a></h4>
+<pre><code class="language-go">package telemetry
+
+import (
+    "context"
+    "fmt"
+
+    "go.opentelemetry.io/otel"
+    "go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
+    "go.opentelemetry.io/otel/propagation"
+    "go.opentelemetry.io/otel/sdk/resource"
+    sdktrace "go.opentelemetry.io/otel/sdk/trace"
+    semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
+)
+
+// InitTracer создаёт и настраивает TracerProvider
+func InitTracer(ctx context.Context, serviceName, serviceVersion, env string) (*sdktrace.TracerProvider, error) {
+    // 1. Resource — описание сервиса
+    res, err := resource.Merge(
+        resource.Default(),
+        resource.NewWithAttributes(
+            semconv.SchemaURL,
+            semconv.ServiceName(serviceName),
+            semconv.ServiceVersion(serviceVersion),
+            semconv.DeploymentEnvironmentName(env),
+        ),
+    )
+    if err != nil {
+        return nil, fmt.Errorf("создание resource: %w", err)
+    }
+
+    // 2. Exporter — куда отправлять трейсы (OTLP gRPC)
+    exporter, err := otlptracegrpc.New(ctx,
+        otlptracegrpc.WithEndpoint("otel-collector:4317"),
+        otlptracegrpc.WithInsecure(), // для dev; в production — TLS
+    )
+    if err != nil {
+        return nil, fmt.Errorf("создание exporter: %w", err)
+    }
+
+    // 3. TracerProvider — собираем всё вместе
+    tp := sdktrace.NewTracerProvider(
+        sdktrace.WithResource(res),
+        sdktrace.WithBatcher(exporter), // BatchSpanProcessor для production
+        sdktrace.WithSampler(
+            sdktrace.ParentBased(
+                sdktrace.TraceIDRatioBased(0.1), // 10% в production
+            ),
+        ),
+    )
+
+    // 4. Глобальная регистрация
+    otel.SetTracerProvider(tp)
+    otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(
+        propagation.TraceContext{}, // W3C Trace Context
+        propagation.Baggage{},     // W3C Baggage
+    ))
+
+    return tp, nil
+}
+</code></pre>
+<p><strong>Сравнение с C#</strong>:</p>
+<pre><code class="language-csharp">// C#: через builder pattern и DI
+builder.Services.AddOpenTelemetry()
+    .ConfigureResource(r =&gt; r
+        .AddService("order-service", serviceVersion: "1.0.0"))
+    .WithTracing(b =&gt; b
+        .AddAspNetCoreInstrumentation()
+        .AddHttpClientInstrumentation()
+        .AddOtlpExporter(opts =&gt; opts.Endpoint = new Uri("http://otel-collector:4317")));
+</code></pre>
+<pre><code class="language-go">// Go: явная инициализация в main()
+tp, err := telemetry.InitTracer(ctx, "order-service", "1.0.0", "production")
+if err != nil {
+    log.Fatalf("не удалось инициализировать трейсинг: %v", err)
+}
+defer tp.Shutdown(ctx) // ОБЯЗАТЕЛЬНО: flush оставшихся spans
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Всегда вызывайте <code>tp.Shutdown(ctx)</code> при остановке сервиса!</strong> Без этого последние spans из BatchSpanProcessor не будут отправлены и потеряются. Используйте <code>defer</code> в <code>main()</code>.</p>
+</blockquote>
+<h4 id="exporters"><a class="header" href="#exporters">Exporters</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Exporter</th><th>Пакет</th><th>Назначение</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>OTLP gRPC</strong></td><td><code>otlptracegrpc</code></td><td>OTel Collector (рекомендуется)</td></tr>
+<tr><td><strong>OTLP HTTP</strong></td><td><code>otlptracehttp</code></td><td>OTel Collector через HTTP</td></tr>
+<tr><td><strong>stdout</strong></td><td><code>stdouttrace</code></td><td>Development (вывод в консоль)</td></tr>
+<tr><td><strong>Zipkin</strong></td><td><code>otlptrace/zipkin</code></td><td>Напрямую в Zipkin</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-go">// Development: вывод в stdout
+import "go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
+
+exporter, _ := stdouttrace.New(stdouttrace.WithPrettyPrint())
+
+// Production: OTLP через HTTP (если gRPC недоступен)
+import "go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
+
+exporter, _ := otlptracehttp.New(ctx,
+    otlptracehttp.WithEndpoint("otel-collector:4318"),
+    otlptracehttp.WithInsecure(),
+)
+</code></pre>
+<blockquote>
+<p>💡 <strong>OTLP (OpenTelemetry Protocol)</strong> — рекомендуемый способ экспорта. Прямые Jaeger/Zipkin exporters устарели (deprecated). Вместо этого отправляйте через OTLP в OTel Collector, который маршрутизирует данные в Jaeger, Zipkin, Grafana Tempo и т.д.</p>
+</blockquote>
+<h4 id="sampler-и-propagator"><a class="header" href="#sampler-и-propagator">Sampler и Propagator</a></h4>
+<pre><code class="language-go">// Sampler: контролирует, какие трейсы записывать
+sdktrace.NewTracerProvider(
+    // Вариант 1: Фиксированный процент
+    sdktrace.WithSampler(sdktrace.TraceIDRatioBased(0.1)), // 10%
+
+    // Вариант 2: ParentBased (рекомендуется)
+    // - Если родительский span sampled → sample
+    // - Если нет родителя → используй root sampler
+    sdktrace.WithSampler(
+        sdktrace.ParentBased(sdktrace.TraceIDRatioBased(0.1)),
+    ),
+
+    // Вариант 3: Всегда (для dev/staging)
+    sdktrace.WithSampler(sdktrace.AlwaysSample()),
+)
+
+// Propagator: как передавать trace context между сервисами
+otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(
+    propagation.TraceContext{}, // W3C: traceparent, tracestate headers
+    propagation.Baggage{},     // W3C: baggage header
+))
+</code></pre>
+<h4 id="production-ready-инициализация"><a class="header" href="#production-ready-инициализация">Production-ready инициализация</a></h4>
+<p>Полная функция инициализации с поддержкой разных окружений:</p>
+<pre><code class="language-go">func InitTelemetry(ctx context.Context, cfg Config) (*sdktrace.TracerProvider, error) {
+    res, err := resource.Merge(
+        resource.Default(),
+        resource.NewWithAttributes(
+            semconv.SchemaURL,
+            semconv.ServiceName(cfg.ServiceName),
+            semconv.ServiceVersion(cfg.ServiceVersion),
+            semconv.DeploymentEnvironmentName(cfg.Environment),
+        ),
+    )
+    if err != nil {
+        return nil, fmt.Errorf("resource: %w", err)
+    }
+
+    // Выбор exporter по окружению
+    var exporter sdktrace.SpanExporter
+    switch cfg.Environment {
+    case "development":
+        exporter, err = stdouttrace.New(stdouttrace.WithPrettyPrint())
+    default:
+        opts := []otlptracegrpc.Option{
+            otlptracegrpc.WithEndpoint(cfg.OTLPEndpoint),
+        }
+        if cfg.OTLPInsecure {
+            opts = append(opts, otlptracegrpc.WithInsecure())
+        }
+        exporter, err = otlptracegrpc.New(ctx, opts...)
+    }
+    if err != nil {
+        return nil, fmt.Errorf("exporter: %w", err)
+    }
+
+    // Выбор sampler
+    var sampler sdktrace.Sampler
+    switch cfg.Environment {
+    case "development", "staging":
+        sampler = sdktrace.AlwaysSample()
+    default:
+        sampler = sdktrace.ParentBased(
+            sdktrace.TraceIDRatioBased(cfg.SampleRate), // обычно 0.01-0.1
+        )
+    }
+
+    // Выбор processor
+    var processor sdktrace.SpanProcessor
+    switch cfg.Environment {
+    case "development":
+        processor = sdktrace.NewSimpleSpanProcessor(exporter) // синхронный (для dev)
+    default:
+        processor = sdktrace.NewBatchSpanProcessor(exporter) // батчинг (для production)
+    }
+
+    tp := sdktrace.NewTracerProvider(
+        sdktrace.WithResource(res),
+        sdktrace.WithSpanProcessor(processor),
+        sdktrace.WithSampler(sampler),
+    )
+
+    otel.SetTracerProvider(tp)
+    otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(
+        propagation.TraceContext{},
+        propagation.Baggage{},
+    ))
+
+    return tp, nil
+}
+
+type Config struct {
+    ServiceName    string
+    ServiceVersion string
+    Environment    string  // "development", "staging", "production"
+    OTLPEndpoint   string  // "otel-collector:4317"
+    OTLPInsecure   bool
+    SampleRate     float64 // 0.0-1.0
+}
+</code></pre>
+<hr>
+<h3 id="manual-instrumentation"><a class="header" href="#manual-instrumentation">Manual Instrumentation</a></h3>
+<h4 id="создание-spans"><a class="header" href="#создание-spans">Создание spans</a></h4>
+<pre><code class="language-go">import (
+    "context"
+
+    "go.opentelemetry.io/otel"
+    "go.opentelemetry.io/otel/attribute"
+    "go.opentelemetry.io/otel/codes"
+    "go.opentelemetry.io/otel/trace"
+)
+
+// Tracer — обычно создаётся один на пакет
+var tracer = otel.Tracer("myapp/order-service")
+
+func (s *OrderService) CreateOrder(ctx context.Context, req CreateOrderRequest) (*Order, error) {
+    // Создаём span — ВСЕГДА используйте defer span.End()!
+    ctx, span := tracer.Start(ctx, "OrderService.CreateOrder",
+        trace.WithSpanKind(trace.SpanKindInternal), // внутренняя операция
+    )
+    defer span.End()
+
+    // Добавляем атрибуты
+    span.SetAttributes(
+        attribute.String("order.customer_id", req.CustomerID),
+        attribute.Int("order.items_count", len(req.Items)),
+        attribute.Float64("order.total", req.Total),
+    )
+
+    // Валидация (вложенный span)
+    if err := s.validateOrder(ctx, req); err != nil {
+        span.RecordError(err) // записываем ошибку как event
+        span.SetStatus(codes.Error, "валидация не пройдена")
+        return nil, fmt.Errorf("валидация: %w", err)
+    }
+
+    // Создание заказа в БД
+    order, err := s.repo.Create(ctx, req)
+    if err != nil {
+        span.RecordError(err)
+        span.SetStatus(codes.Error, "ошибка создания в БД")
+        return nil, fmt.Errorf("создание: %w", err)
+    }
+
+    span.SetAttributes(attribute.String("order.id", order.ID))
+    span.SetStatus(codes.Ok, "")
+
+    return order, nil
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Всегда вызывайте <code>defer span.End()</code></strong> сразу после <code>tracer.Start()</code>. Без <code>End()</code> span не будет отправлен и “зависнет” в памяти. Паттерн <code>ctx, span := tracer.Start(ctx, "name"); defer span.End()</code> — идиома Go для трейсинга.</p>
+</blockquote>
+<h4 id="атрибуты-события-ошибки"><a class="header" href="#атрибуты-события-ошибки">Атрибуты, события, ошибки</a></h4>
+<pre><code class="language-go">func (s *OrderService) processPayment(ctx context.Context, order *Order) error {
+    ctx, span := tracer.Start(ctx, "OrderService.processPayment",
+        trace.WithSpanKind(trace.SpanKindClient), // вызываем внешний сервис
+    )
+    defer span.End()
+
+    // Атрибуты — статическая информация о span
+    span.SetAttributes(
+        attribute.String("payment.method", order.PaymentMethod),
+        attribute.String("payment.currency", "RUB"),
+        attribute.Float64("payment.amount", order.Total),
+    )
+
+    // Событие — временная метка внутри span
+    span.AddEvent("начало обращения к платёжному шлюзу")
+
+    result, err := s.paymentClient.Charge(ctx, order)
+    if err != nil {
+        // RecordError добавляет event с exception details
+        span.RecordError(err, trace.WithAttributes(
+            attribute.String("payment.gateway", "stripe"),
+        ))
+        span.SetStatus(codes.Error, err.Error())
+        return fmt.Errorf("платёж: %w", err)
+    }
+
+    // Событие об успешном завершении
+    span.AddEvent("платёж подтверждён", trace.WithAttributes(
+        attribute.String("payment.transaction_id", result.TransactionID),
+    ))
+
+    span.SetStatus(codes.Ok, "")
+    return nil
+}
+</code></pre>
+<p><strong>SpanKind</strong> — указывает роль span в trace:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>SpanKind</th><th>Описание</th><th>Пример</th></tr>
+</thead>
+<tbody>
+<tr><td><code>SpanKindClient</code></td><td>Исходящий вызов</td><td>HTTP client, gRPC client</td></tr>
+<tr><td><code>SpanKindServer</code></td><td>Входящий вызов</td><td>HTTP server, gRPC server</td></tr>
+<tr><td><code>SpanKindProducer</code></td><td>Отправка сообщения</td><td>Kafka producer</td></tr>
+<tr><td><code>SpanKindConsumer</code></td><td>Получение сообщения</td><td>Kafka consumer</td></tr>
+<tr><td><code>SpanKindInternal</code></td><td>Внутренняя операция (default)</td><td>Бизнес-логика</td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="вложенные-spans"><a class="header" href="#вложенные-spans">Вложенные spans</a></h4>
+<pre><code class="language-go">func (s *OrderService) CreateOrder(ctx context.Context, req CreateOrderRequest) (*Order, error) {
+    ctx, span := tracer.Start(ctx, "OrderService.CreateOrder")
+    defer span.End()
+
+    // Каждый вызов с ctx создаёт дочерний span
+    if err := s.validateOrder(ctx, req); err != nil { // ← child span
+        return nil, err
+    }
+
+    order, err := s.repo.Create(ctx, req) // ← child span
+    if err != nil {
+        return nil, err
+    }
+
+    if err := s.processPayment(ctx, order); err != nil { // ← child span
+        return nil, err
+    }
+
+    s.notifyUser(ctx, order) // ← child span
+    return order, nil
+}
+
+func (s *OrderService) validateOrder(ctx context.Context, req CreateOrderRequest) error {
+    // Этот span будет дочерним для CreateOrder
+    ctx, span := tracer.Start(ctx, "OrderService.validateOrder")
+    defer span.End()
+
+    // ... валидация
+    return nil
+}
+</code></pre>
+<p>Результат в Jaeger:</p>
+<pre><code>CreateOrder (150ms)
+├── validateOrder (2ms)
+├── repo.Create (15ms)
+│   └── pgx.Query (10ms)  — auto-instrumented
+├── processPayment (100ms)
+│   └── HTTP POST /payments (95ms)  — auto-instrumented
+└── notifyUser (5ms)
+    └── NATS Publish (2ms)  — auto-instrumented
+</code></pre>
+<hr>
+<h3 id="auto-instrumentation"><a class="header" href="#auto-instrumentation">Auto-Instrumentation</a></h3>
+<p>В Go нет “магической” auto-instrumentation как в .NET (где <code>.AddAspNetCoreInstrumentation()</code> подключается к DiagnosticSource). Вместо этого вы <strong>явно оборачиваете</strong> handlers и транспорты библиотеками-обёртками.</p>
+<h4 id="otelhttp-http-сервер-и-клиент"><a class="header" href="#otelhttp-http-сервер-и-клиент">otelhttp: HTTP сервер и клиент</a></h4>
+<pre><code class="language-go">import (
+    "net/http"
+
+    "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+)
+
+// === HTTP Server: оборачиваем handler ===
+func main() {
+    mux := http.NewServeMux()
+    mux.HandleFunc("GET /api/users", getUsers)
+    mux.HandleFunc("GET /api/orders/{id}", getOrder)
+
+    // otelhttp.NewHandler создаёт span для каждого входящего запроса
+    handler := otelhttp.NewHandler(mux, "http-server",
+        otelhttp.WithMessageEvents(otelhttp.ReadEvents, otelhttp.WriteEvents),
+    )
+
+    http.ListenAndServe(":8080", handler)
+}
+
+// === HTTP Client: оборачиваем Transport ===
+func newHTTPClient() *http.Client {
+    return &amp;http.Client{
+        Transport: otelhttp.NewTransport(http.DefaultTransport),
+        Timeout:   10 * time.Second,
+    }
+}
+
+// Каждый исходящий запрос автоматически:
+// 1. Создаёт span с kind=Client
+// 2. Пропагирует trace context через W3C headers (traceparent)
+// 3. Записывает status code, размер тела
+func callPaymentService(ctx context.Context, orderID string) error {
+    client := newHTTPClient()
+
+    req, _ := http.NewRequestWithContext(ctx, "GET",
+        "http://payment-service:8081/payments/"+orderID, nil)
+
+    // trace context автоматически добавится в headers
+    resp, err := client.Do(req)
+    if err != nil {
+        return err
+    }
+    defer resp.Body.Close()
+    return nil
+}
+</code></pre>
+<p><strong>Сравнение с C#</strong>:</p>
+<pre><code class="language-csharp">// C#: одна строка для всех HTTP
+builder.Services.AddOpenTelemetry()
+    .WithTracing(b =&gt; b
+        .AddAspNetCoreInstrumentation()      // входящие
+        .AddHttpClientInstrumentation());     // исходящие
+</code></pre>
+<pre><code class="language-go">// Go: явная обёртка каждого handler и client
+handler := otelhttp.NewHandler(mux, "server")               // входящие
+transport := otelhttp.NewTransport(http.DefaultTransport)    // исходящие
+</code></pre>
+<h4 id="otelgrpc-otelsql-redisotel"><a class="header" href="#otelgrpc-otelsql-redisotel">otelgrpc, otelsql, redisotel</a></h4>
+<p>Для других протоколов и библиотек существуют аналогичные обёртки:</p>
+<pre><code class="language-go">// gRPC Server (подробнее в разделе 4.4)
+import "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+
+grpcServer := grpc.NewServer(
+    grpc.StatsHandler(otelgrpc.NewServerHandler()),
+)
+
+// gRPC Client
+conn, _ := grpc.NewClient("localhost:50051",
+    grpc.WithStatsHandler(otelgrpc.NewClientHandler()),
+)
+
+// database/sql
+import "github.com/XSAM/otelsql"
+
+db, _ := otelsql.Open("postgres", dsn,
+    otelsql.WithAttributes(semconv.DBSystemPostgreSQL),
+)
+
+// pgx (подробнее в разделе 4.1)
+// pgx поддерживает QueryTracer — трейсинг встроен
+poolCfg, _ := pgxpool.ParseConfig(dsn)
+poolCfg.ConnConfig.Tracer = otelpgx.NewTracer()
+
+// Redis (подробнее в разделе 4.2)
+import "github.com/redis/go-redis/extra/redisotel/v9"
+
+rdb := redis.NewClient(&amp;redis.Options{Addr: "localhost:6379"})
+redisotel.InstrumentTracing(rdb)
+redisotel.InstrumentMetrics(rdb)
+</code></pre>
+<p><strong>Таблица доступных instrumentation библиотек</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Библиотека</th><th>OTel пакет</th><th>Что инструментирует</th></tr>
+</thead>
+<tbody>
+<tr><td><code>net/http</code></td><td><code>otelhttp</code></td><td>HTTP server/client</td></tr>
+<tr><td><code>google.golang.org/grpc</code></td><td><code>otelgrpc</code></td><td>gRPC server/client</td></tr>
+<tr><td><code>database/sql</code></td><td><code>otelsql</code></td><td>SQL queries</td></tr>
+<tr><td><code>pgx</code></td><td><code>otelpgx</code> / QueryTracer</td><td>PostgreSQL</td></tr>
+<tr><td><code>go-redis</code></td><td><code>redisotel</code></td><td>Redis operations</td></tr>
+<tr><td><code>segmentio/kafka-go</code></td><td>Manual propagation</td><td>Kafka produce/consume</td></tr>
+<tr><td><code>nats.go</code></td><td>Manual propagation</td><td>NATS publish/subscribe</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Для Kafka и NATS</strong> нет готовых OTel-обёрток — trace context нужно пропагировать вручную через message headers. Примеры этого показаны в разделе <a href="./03_message_queues.html">4.3 Очереди сообщений</a>.</p>
+</blockquote>
+<hr>
+<h3 id="jaeger-и-zipkin"><a class="header" href="#jaeger-и-zipkin">Jaeger и Zipkin</a></h3>
+<p><strong>Jaeger</strong> (от Uber) и <strong>Zipkin</strong> (от Twitter) — два наиболее популярных backend’а для хранения и визуализации трейсов.</p>
+<h4 id="docker-compose-для-локальной-разработки"><a class="header" href="#docker-compose-для-локальной-разработки">Docker Compose для локальной разработки</a></h4>
+<pre><code class="language-yaml"># docker-compose.yml — минимальный стек для трейсинга
+services:
+  # Jaeger all-in-one (UI + Collector + Storage)
+  jaeger:
+    image: jaegertracing/all-in-one:1.55
+    ports:
+      - "16686:16686"  # Jaeger UI
+      - "4317:4317"    # OTLP gRPC receiver
+      - "4318:4318"    # OTLP HTTP receiver
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+
+  # Альтернатива: Zipkin
+  # zipkin:
+  #   image: openzipkin/zipkin:3
+  #   ports:
+  #     - "9411:9411"  # Zipkin UI + API
+</code></pre>
+<p>С Jaeger all-in-one ваш Go-сервис может отправлять трейсы напрямую через OTLP:</p>
+<pre><code class="language-go">exporter, _ := otlptracegrpc.New(ctx,
+    otlptracegrpc.WithEndpoint("localhost:4317"),
+    otlptracegrpc.WithInsecure(),
+)
+</code></pre>
+<p>Трейсы доступны в UI: <code>http://localhost:16686</code></p>
+<h4 id="jaeger-vs-zipkin"><a class="header" href="#jaeger-vs-zipkin">Jaeger vs Zipkin</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>Jaeger</th><th>Zipkin</th></tr>
+</thead>
+<tbody>
+<tr><td>Разработчик</td><td>Uber → CNCF</td><td>Twitter</td></tr>
+<tr><td>UI</td><td>Богатый (service map, comparison)</td><td>Простой</td></tr>
+<tr><td>Storage</td><td>Cassandra, Elasticsearch, Kafka, Memory</td><td>MySQL, Cassandra, Elasticsearch, Memory</td></tr>
+<tr><td>OTLP поддержка</td><td>Встроена</td><td>Через OTel Collector</td></tr>
+<tr><td>Production-ready</td><td>Да (graduated CNCF)</td><td>Да</td></tr>
+<tr><td>Deployment</td><td>Сложнее (несколько компонентов)</td><td>Проще (single binary)</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Рекомендация</strong>: Для production используйте <strong>Grafana Tempo</strong> — он интегрируется с Grafana, Loki и Prometheus, обеспечивая единую платформу для всех трёх столпов. Jaeger отлично подходит для локальной разработки (all-in-one Docker image).</p>
+</blockquote>
+<hr>
+<h3 id="opentelemetry-collector"><a class="header" href="#opentelemetry-collector">OpenTelemetry Collector</a></h3>
+<p>OTel Collector — промежуточный компонент между вашими сервисами и backend’ами (Jaeger, Prometheus, Loki). Он <strong>декаплит</strong> сервисы от конкретных backend’ов.</p>
+<pre><code>┌──────────┐   OTLP   ┌───────────────┐   Jaeger    ┌──────────┐
+│ Service A │─────────→│               │────────────→│  Jaeger  │
+└──────────┘          │  OTel         │             └──────────┘
+                      │  Collector    │   Prometheus  ┌──────────┐
+┌──────────┐   OTLP   │               │────────────→│Prometheus│
+│ Service B │─────────→│               │             └──────────┘
+└──────────┘          │               │   Loki       ┌──────────┐
+                      │               │────────────→│  Loki    │
+                      └───────────────┘             └──────────┘
+</code></pre>
+<p><strong>Зачем нужен Collector</strong>:</p>
+<ul>
+<li>Сервисы знают только про OTLP — не зависят от Jaeger/Zipkin/Datadog</li>
+<li>Centralised processing: batching, retry, sampling</li>
+<li>Легко сменить backend без изменения кода сервисов</li>
+<li>Может обогащать данные (добавлять labels, фильтровать)</li>
+</ul>
+<h4 id="конфигурация"><a class="header" href="#конфигурация">Конфигурация</a></h4>
+<pre><code class="language-yaml"># otel-collector-config.yaml
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+    timeout: 5s
+    send_batch_size: 1024
+
+  # Фильтрация: убрать health check трейсы
+  filter:
+    traces:
+      span:
+        - 'attributes["http.target"] == "/healthz"'
+        - 'attributes["http.target"] == "/readyz"'
+
+  # Добавление атрибутов
+  attributes:
+    actions:
+      - key: environment
+        value: production
+        action: upsert
+
+exporters:
+  # Трейсы → Jaeger
+  otlp/jaeger:
+    endpoint: jaeger:4317
+    tls:
+      insecure: true
+
+  # Метрики → Prometheus (Collector экспонирует /metrics)
+  prometheus:
+    endpoint: 0.0.0.0:8889
+
+  # Логи → Loki (через OTLP)
+  otlphttp/loki:
+    endpoint: http://loki:3100/otlp
+
+  # Debug: вывод в консоль
+  debug:
+    verbosity: detailed
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [filter, attributes, batch]
+      exporters: [otlp/jaeger]
+
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheus]
+
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlphttp/loki]
+</code></pre>
+<p><strong>Паттерны деплоя</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Паттерн</th><th>Описание</th><th>Когда использовать</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Agent</strong> (sidecar)</td><td>Collector рядом с каждым сервисом</td><td>Kubernetes (DaemonSet/Sidecar)</td></tr>
+<tr><td><strong>Gateway</strong></td><td>Централизованный Collector</td><td>Небольшие деплои, dev/staging</td></tr>
+<tr><td><strong>Agent + Gateway</strong></td><td>Два уровня</td><td>Крупные production системы</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-yaml"># Kubernetes: Collector как DaemonSet
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: otel-collector-agent
+spec:
+  template:
+    spec:
+      containers:
+        - name: otel-collector
+          image: otel/opentelemetry-collector-contrib:0.96.0
+          args: ["--config=/conf/otel-collector-config.yaml"]
+          ports:
+            - containerPort: 4317  # OTLP gRPC
+            - containerPort: 4318  # OTLP HTTP
+</code></pre>
+<hr>
+<h2 id="интеграция-трёх-столпов"><a class="header" href="#интеграция-трёх-столпов">Интеграция трёх столпов</a></h2>
+<p>Настоящая сила observability проявляется, когда логи, метрики и трейсы <strong>связаны между собой</strong>. Увидели аномалию на графике метрик → перешли к трейсу → нашли конкретные логи с ошибкой.</p>
+<h3 id="корреляция-логов-и-трейсов"><a class="header" href="#корреляция-логов-и-трейсов">Корреляция логов и трейсов</a></h3>
+<p>Добавление <code>trace_id</code> и <code>span_id</code> в каждую запись лога позволяет искать все логи конкретного запроса:</p>
+<pre><code class="language-go">// OTelHandler — уже был показан в разделе slog, здесь полная версия
+package logging
+
+import (
+    "context"
+    "log/slog"
+
+    "go.opentelemetry.io/otel/trace"
+)
+
+// NewCorrelatedLogger создаёт slog.Logger с автоматической корреляцией
+func NewCorrelatedLogger(baseHandler slog.Handler) *slog.Logger {
+    return slog.New(&amp;correlationHandler{inner: baseHandler})
+}
+
+type correlationHandler struct {
+    inner slog.Handler
+}
+
+func (h *correlationHandler) Enabled(ctx context.Context, level slog.Level) bool {
+    return h.inner.Enabled(ctx, level)
+}
+
+func (h *correlationHandler) Handle(ctx context.Context, r slog.Record) error {
+    span := trace.SpanFromContext(ctx)
+    if span.SpanContext().IsValid() {
+        r.AddAttrs(
+            slog.String("trace_id", span.SpanContext().TraceID().String()),
+            slog.String("span_id", span.SpanContext().SpanID().String()),
+            slog.Bool("trace_sampled", span.SpanContext().IsSampled()),
+        )
+    }
+    return h.inner.Handle(ctx, r)
+}
+
+func (h *correlationHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
+    return &amp;correlationHandler{inner: h.inner.WithAttrs(attrs)}
+}
+
+func (h *correlationHandler) WithGroup(name string) slog.Handler {
+    return &amp;correlationHandler{inner: h.inner.WithGroup(name)}
+}
+</code></pre>
+<p>Использование:</p>
+<pre><code class="language-go">func main() {
+    // JSON handler + корреляция с трейсами
+    baseHandler := slog.NewJSONHandler(os.Stdout, &amp;slog.HandlerOptions{
+        Level: slog.LevelInfo,
+    })
+    logger := logging.NewCorrelatedLogger(baseHandler)
+    slog.SetDefault(logger)
+}
+
+// Теперь все логи содержат trace_id:
+// {"time":"...","level":"INFO","msg":"заказ создан","order_id":"123",
+//  "trace_id":"abc123def456","span_id":"789ghi","trace_sampled":true}
+</code></pre>
+<p><strong>Workflow поиска проблемы</strong>:</p>
+<ol>
+<li>В Grafana видим spike error rate на графике метрик</li>
+<li>Кликаем на exemplar → открывается трейс в Jaeger</li>
+<li>В трейсе видим span с ошибкой</li>
+<li>Копируем <code>trace_id</code> из span</li>
+<li>В Loki/Kibana ищем: <code>{trace_id="abc123def456"}</code></li>
+<li>Находим все логи этого запроса — с полным контекстом</li>
+</ol>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В .NET <code>Activity.Current.TraceId</code> автоматически попадает в логи через scope <code>Microsoft.Extensions.Logging</code>. В Go нужно создать custom handler (как выше), но результат тот же — <code>trace_id</code> в каждом логе.</p>
+</blockquote>
+<hr>
+<h3 id="exemplars-связь-метрик-с-трейсами"><a class="header" href="#exemplars-связь-метрик-с-трейсами">Exemplars: связь метрик с трейсами</a></h3>
+<p><strong>Exemplars</strong> — механизм Prometheus, позволяющий прикрепить <code>trace_id</code> к конкретной точке данных метрики. В Grafana при наведении на график вы видите ссылку на конкретный трейс.</p>
+<pre><code class="language-go">import (
+    "github.com/prometheus/client_golang/prometheus"
+    "go.opentelemetry.io/otel/trace"
+)
+
+// Middleware с exemplars
+func (m *metricsMiddleware) HandlerWithExemplars(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        start := time.Now()
+
+        wrapped := &amp;responseWriter{ResponseWriter: w, statusCode: http.StatusOK}
+        next.ServeHTTP(wrapped, r)
+
+        duration := time.Since(start).Seconds()
+        path := normalizePath(r.URL.Path)
+
+        // Извлекаем trace_id для exemplar
+        span := trace.SpanFromContext(r.Context())
+        if span.SpanContext().IsValid() {
+            traceID := span.SpanContext().TraceID().String()
+
+            // Histogram с exemplar
+            m.requestDuration.WithLabelValues(r.Method, path).(prometheus.ExemplarObserver).
+                ObserveWithExemplar(duration, prometheus.Labels{
+                    "trace_id": traceID,
+                })
+
+            // Counter с exemplar
+            status := strconv.Itoa(wrapped.statusCode)
+            m.requestsTotal.WithLabelValues(r.Method, path, status).(prometheus.ExemplarAdder).
+                AddWithExemplar(1, prometheus.Labels{
+                    "trace_id": traceID,
+                })
+        } else {
+            m.requestDuration.WithLabelValues(r.Method, path).Observe(duration)
+            status := strconv.Itoa(wrapped.statusCode)
+            m.requestsTotal.WithLabelValues(r.Method, path, status).Inc()
+        }
+    })
+}
+</code></pre>
+<blockquote>
+<p>💡 Для работы exemplars в Grafana нужно: (1) Prometheus с <code>--enable-feature=exemplar-storage</code>, (2) endpoint <code>/metrics</code> с <code>EnableOpenMetrics: true</code>, (3) Grafana data source с включенной опцией Exemplars и ссылкой на Jaeger/Tempo.</p>
+</blockquote>
+<hr>
+<h3 id="context-propagation-между-сервисами"><a class="header" href="#context-propagation-между-сервисами">Context Propagation между сервисами</a></h3>
+<p>Trace context пропагируется между сервисами через стандартные механизмы:</p>
+<pre><code>┌──────────────┐  traceparent header  ┌──────────────┐  metadata   ┌──────────────┐
+│  API Gateway │────────────────────→│ Order Service │───────────→│ User Service │
+│  (HTTP)      │                      │  (HTTP→gRPC)  │  (gRPC)    │  (gRPC)      │
+└──────────────┘                      └──────┬───────┘            └──────────────┘
+                                             │
+                                    kafka headers
+                                             │
+                                      ┌──────▼───────┐
+                                      │Notification  │
+                                      │Service (Kafka)│
+                                      └──────────────┘
+</code></pre>
+<p><strong>HTTP</strong>: W3C <code>traceparent</code> header (автоматически через <code>otelhttp</code>)</p>
+<pre><code>traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
+</code></pre>
+<p><strong>gRPC</strong>: <code>traceparent</code> в metadata (автоматически через <code>otelgrpc</code>)</p>
+<p><strong>Kafka</strong>: Через message headers (вручную):</p>
+<pre><code class="language-go">// Producer: инжектим trace context в kafka headers
+import "go.opentelemetry.io/otel/propagation"
+
+type kafkaHeaderCarrier []kafka.Header
+
+func (c *kafkaHeaderCarrier) Get(key string) string {
+    for _, h := range *c {
+        if h.Key == key {
+            return string(h.Value)
+        }
+    }
+    return ""
+}
+
+func (c *kafkaHeaderCarrier) Set(key, value string) {
+    *c = append(*c, kafka.Header{Key: key, Value: []byte(value)})
+}
+
+func (c *kafkaHeaderCarrier) Keys() []string {
+    keys := make([]string, len(*c))
+    for i, h := range *c {
+        keys[i] = h.Key
+    }
+    return keys
+}
+
+// При отправке сообщения
+func publishEvent(ctx context.Context, writer *kafka.Writer, event Event) error {
+    headers := kafkaHeaderCarrier{}
+    otel.GetTextMapPropagator().Inject(ctx, &amp;headers)
+
+    return writer.WriteMessages(ctx, kafka.Message{
+        Key:     []byte(event.Key),
+        Value:   event.Payload,
+        Headers: headers,
+    })
+}
+
+// Consumer: извлекаем trace context из kafka headers
+func processMessage(msg kafka.Message) {
+    headers := kafkaHeaderCarrier(msg.Headers)
+    ctx := otel.GetTextMapPropagator().Extract(context.Background(), &amp;headers)
+
+    // ctx теперь содержит parent span → новые spans будут дочерними
+    ctx, span := tracer.Start(ctx, "process-order-event",
+        trace.WithSpanKind(trace.SpanKindConsumer),
+    )
+    defer span.End()
+
+    // ... обработка сообщения
+}
+</code></pre>
+<hr>
+<h3 id="агрегация-логов"><a class="header" href="#агрегация-логов">Агрегация логов</a></h3>
+<p>В production логи должны собираться централизованно для поиска и анализа.</p>
+<h4 id="grafana-loki"><a class="header" href="#grafana-loki">Grafana Loki</a></h4>
+<p><strong>Loki</strong> — система агрегации логов от Grafana Labs. В отличие от ELK, Loki <strong>не индексирует содержимое логов</strong> — только labels. Это делает его значительно легче и дешевле.</p>
+<pre><code>┌──────────┐  stdout   ┌───────────┐  push    ┌──────────┐
+│ Go App   │──────────→│ Promtail  │────────→│  Loki    │
+│ (JSON)   │           │ (agent)   │          │          │
+└──────────┘           └───────────┘          └────┬─────┘
+                                                   │ LogQL
+                                              ┌────▼─────┐
+                                              │ Grafana  │
+                                              └──────────┘
+</code></pre>
+<pre><code class="language-yaml"># promtail-config.yaml
+server:
+  http_listen_port: 9080
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: docker
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+    relabel_configs:
+      - source_labels: ['__meta_docker_container_name']
+        target_label: 'container'
+    pipeline_stages:
+      - json:
+          expressions:
+            level: level
+            trace_id: trace_id
+      - labels:
+          level:
+          trace_id:
+</code></pre>
+<p><strong>LogQL запросы</strong>:</p>
+<pre><code class="language-logql"># Все ошибки сервиса
+{container="order-service"} |= "ERROR"
+
+# JSON парсинг + фильтрация
+{container="order-service"} | json | level="ERROR" | line_format "{{.msg}}"
+
+# Поиск по trace_id
+{container=~".*service.*"} | json | trace_id="abc123def456"
+
+# Rate ошибок (metric from logs)
+sum(rate({container="order-service"} | json | level="ERROR" [5m]))
+</code></pre>
+<h4 id="elk-stack-elasticsearch--logstash--kibana"><a class="header" href="#elk-stack-elasticsearch--logstash--kibana">ELK Stack (Elasticsearch + Logstash + Kibana)</a></h4>
+<p>Более тяжёлое решение, но с полнотекстовым поиском по содержимому логов:</p>
+<pre><code>Go App (stdout JSON) → Filebeat/Fluentd → Logstash → Elasticsearch → Kibana
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Всегда логируйте в <strong>stdout в JSON-формате</strong>. Не пишите в файлы — контейнерная платформа (Docker, K8s) управляет логами. Promtail/Filebeat/Fluentd собирают логи из stdout контейнера и отправляют в Loki/ELK. Это стандартный подход <a href="https://12factor.net/logs">12-Factor App</a>.</p>
+</blockquote>
+<p><strong>Сравнение Loki vs ELK</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>Grafana Loki</th><th>ELK Stack</th></tr>
+</thead>
+<tbody>
+<tr><td>Индексация</td><td>Только labels</td><td>Полнотекстовая</td></tr>
+<tr><td>Ресурсы</td><td>Лёгкий</td><td>Тяжёлый (Elasticsearch)</td></tr>
+<tr><td>Стоимость</td><td>Дешевле</td><td>Дороже</td></tr>
+<tr><td>Поиск</td><td>LogQL (по labels)</td><td>KQL (полнотекстовый)</td></tr>
+<tr><td>Интеграция</td><td>Grafana (native)</td><td>Kibana</td></tr>
+<tr><td>Масштабирование</td><td>Простое</td><td>Сложное</td></tr>
+<tr><td>Рекомендация</td><td>Новые проекты с Grafana</td><td>Enterprise с существующим ELK</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="health-checks-и-readiness-probes"><a class="header" href="#health-checks-и-readiness-probes">Health Checks и Readiness Probes</a></h2>
+<h3 id="liveness-vs-readiness-vs-startup"><a class="header" href="#liveness-vs-readiness-vs-startup">Liveness vs Readiness vs Startup</a></h3>
+<p>В Kubernetes (и не только) сервисы должны отвечать на вопросы о своём состоянии через HTTP endpoints:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Проба</th><th>Endpoint</th><th>Вопрос</th><th>При неудаче</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Liveness</strong></td><td><code>/healthz</code></td><td>“Жив ли процесс?”</td><td>K8s перезапускает контейнер</td></tr>
+<tr><td><strong>Readiness</strong></td><td><code>/readyz</code></td><td>“Готов принимать трафик?”</td><td>K8s убирает из Service endpoints</td></tr>
+<tr><td><strong>Startup</strong></td><td><code>/healthz</code></td><td>“Запустился ли?”</td><td>K8s ждёт (не убивает)</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В .NET это <code>builder.Services.AddHealthChecks().AddNpgsql().AddRedis()</code> + <code>app.MapHealthChecks("/healthz")</code>. В Go нет встроенного фреймворка — реализуем вручную или используем библиотеку.</p>
+</blockquote>
+<h3 id="реализация-в-go"><a class="header" href="#реализация-в-go">Реализация в Go</a></h3>
+<pre><code class="language-go">package health
+
+import (
+    "context"
+    "encoding/json"
+    "net/http"
+    "sync"
+    "time"
+)
+
+// Checker проверяет здоровье зависимости
+type Checker interface {
+    Check(ctx context.Context) error
+}
+
+// CheckerFunc — адаптер для функций
+type CheckerFunc func(ctx context.Context) error
+
+func (f CheckerFunc) Check(ctx context.Context) error { return f(ctx) }
+
+// Health — агрегатор health checks
+type Health struct {
+    mu       sync.RWMutex
+    checkers map[string]Checker
+    timeout  time.Duration
+}
+
+func New(timeout time.Duration) *Health {
+    return &amp;Health{
+        checkers: make(map[string]Checker),
+        timeout:  timeout,
+    }
+}
+
+func (h *Health) Register(name string, checker Checker) {
+    h.mu.Lock()
+    defer h.mu.Unlock()
+    h.checkers[name] = checker
+}
+
+type Status struct {
+    Status  string            `json:"status"` // "healthy" или "unhealthy"
+    Details map[string]Detail `json:"details,omitempty"`
+}
+
+type Detail struct {
+    Status string `json:"status"`
+    Error  string `json:"error,omitempty"`
+}
+
+func (h *Health) Check(ctx context.Context) Status {
+    h.mu.RLock()
+    defer h.mu.RUnlock()
+
+    ctx, cancel := context.WithTimeout(ctx, h.timeout)
+    defer cancel()
+
+    status := Status{
+        Status:  "healthy",
+        Details: make(map[string]Detail, len(h.checkers)),
+    }
+
+    var wg sync.WaitGroup
+    var mu sync.Mutex
+
+    for name, checker := range h.checkers {
+        wg.Add(1)
+        go func(name string, checker Checker) {
+            defer wg.Done()
+
+            err := checker.Check(ctx)
+
+            mu.Lock()
+            defer mu.Unlock()
+
+            if err != nil {
+                status.Status = "unhealthy"
+                status.Details[name] = Detail{Status: "unhealthy", Error: err.Error()}
+            } else {
+                status.Details[name] = Detail{Status: "healthy"}
+            }
+        }(name, checker)
+    }
+
+    wg.Wait()
+    return status
+}
+
+// LivenessHandler — жив ли процесс (минимальная проверка)
+func (h *Health) LivenessHandler() http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        w.Header().Set("Content-Type", "application/json")
+        w.WriteHeader(http.StatusOK)
+        json.NewEncoder(w).Encode(map[string]string{"status": "alive"})
+    })
+}
+
+// ReadinessHandler — готов ли принимать трафик
+func (h *Health) ReadinessHandler() http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        status := h.Check(r.Context())
+
+        w.Header().Set("Content-Type", "application/json")
+        if status.Status == "healthy" {
+            w.WriteHeader(http.StatusOK)
+        } else {
+            w.WriteHeader(http.StatusServiceUnavailable)
+        }
+        json.NewEncoder(w).Encode(status)
+    })
+}
+</code></pre>
+<p>Регистрация проверок:</p>
+<pre><code class="language-go">func main() {
+    h := health.New(5 * time.Second)
+
+    // PostgreSQL
+    h.Register("postgresql", health.CheckerFunc(func(ctx context.Context) error {
+        return db.PingContext(ctx)
+    }))
+
+    // Redis
+    h.Register("redis", health.CheckerFunc(func(ctx context.Context) error {
+        return rdb.Ping(ctx).Err()
+    }))
+
+    // Kafka
+    h.Register("kafka", health.CheckerFunc(func(ctx context.Context) error {
+        conn, err := kafka.DialContext(ctx, "tcp", "kafka:9092")
+        if err != nil {
+            return err
+        }
+        return conn.Close()
+    }))
+
+    mux := http.NewServeMux()
+    mux.Handle("GET /healthz", h.LivenessHandler())
+    mux.Handle("GET /readyz", h.ReadinessHandler())
+
+    http.ListenAndServe(":8080", mux)
+}
+</code></pre>
+<p>Ответ <code>/readyz</code>:</p>
+<pre><code class="language-json">{
+    "status": "healthy",
+    "details": {
+        "postgresql": { "status": "healthy" },
+        "redis": { "status": "healthy" },
+        "kafka": { "status": "unhealthy", "error": "dial tcp: connection refused" }
+    }
+}
+</code></pre>
+<h3 id="kubernetes-интеграция"><a class="header" href="#kubernetes-интеграция">Kubernetes интеграция</a></h3>
+<pre><code class="language-yaml"># deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+spec:
+  template:
+    spec:
+      containers:
+        - name: order-service
+          image: order-service:latest
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 0
+            periodSeconds: 5
+            failureThreshold: 30  # 30 * 5s = 2.5 минуты на запуск
+</code></pre>
+<blockquote>
+<p>💡 <strong>Liveness vs Readiness</strong>: Liveness проверяет “не завис ли процесс” (минимальная проверка). Readiness проверяет “готов ли принимать трафик” (все зависимости доступны). Если PostgreSQL недоступен — readiness = false (перестаём получать трафик), но liveness = true (не нужно перезапускать).</p>
+</blockquote>
+<hr>
+<h2 id="slislo"><a class="header" href="#slislo">SLI/SLO</a></h2>
+<h3 id="service-level-indicators"><a class="header" href="#service-level-indicators">Service Level Indicators</a></h3>
+<p><strong>SLI</strong> (Service Level Indicator) — количественная метрика, описывающая аспект качества сервиса.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>SLI</th><th>Формула</th><th>Пример</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Availability</strong></td><td>Успешные запросы / Все запросы</td><td>99.95%</td></tr>
+<tr><td><strong>Latency</strong></td><td>% запросов &lt; порога</td><td>95% запросов &lt; 200ms</td></tr>
+<tr><td><strong>Throughput</strong></td><td>Запросов в секунду</td><td>&gt; 1000 RPS</td></tr>
+<tr><td><strong>Error rate</strong></td><td>Ошибочные запросы / Все запросы</td><td>&lt; 0.1%</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="service-level-objectives-и-error-budgets"><a class="header" href="#service-level-objectives-и-error-budgets">Service Level Objectives и Error Budgets</a></h3>
+<p><strong>SLO</strong> (Service Level Objective) — целевое значение SLI.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>SLO</th><th>Допустимый downtime/month</th><th>Error budget</th></tr>
+</thead>
+<tbody>
+<tr><td>99%</td><td>7.3 часа</td><td>1%</td></tr>
+<tr><td>99.9%</td><td>43.8 минуты</td><td>0.1%</td></tr>
+<tr><td>99.95%</td><td>21.9 минуты</td><td>0.05%</td></tr>
+<tr><td>99.99%</td><td>4.38 минуты</td><td>0.01%</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Error budget</strong> — “бюджет ошибок”. Если SLO = 99.9%, то 0.1% запросов могут быть неуспешными. Когда error budget исчерпан — приоритет на reliability, а не на новые фичи.</p>
+<h3 id="реализация-sli-метрик-в-go"><a class="header" href="#реализация-sli-метрик-в-go">Реализация SLI метрик в Go</a></h3>
+<pre><code class="language-go">// SLI метрики для HTTP сервиса
+var (
+    sliRequestsTotal = promauto.NewCounterVec(
+        prometheus.CounterOpts{
+            Namespace: "sli",
+            Name:      "requests_total",
+            Help:      "Все запросы (для расчёта availability SLI)",
+        },
+        []string{"status_class"}, // "2xx", "3xx", "4xx", "5xx"
+    )
+
+    sliRequestDuration = promauto.NewHistogram(
+        prometheus.HistogramOpts{
+            Namespace: "sli",
+            Name:      "request_duration_seconds",
+            Help:      "Длительность запросов (для расчёта latency SLI)",
+            Buckets:   []float64{0.01, 0.025, 0.05, 0.1, 0.2, 0.5, 1},
+        },
+    )
+)
+
+// SLI middleware
+func SLIMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        start := time.Now()
+        wrapped := &amp;responseWriter{ResponseWriter: w, statusCode: http.StatusOK}
+
+        next.ServeHTTP(wrapped, r)
+
+        duration := time.Since(start).Seconds()
+        statusClass := fmt.Sprintf("%dxx", wrapped.statusCode/100)
+
+        sliRequestsTotal.WithLabelValues(statusClass).Inc()
+        sliRequestDuration.Observe(duration)
+    })
+}
+</code></pre>
+<p><strong>PromQL запросы для SLO дашборда</strong>:</p>
+<pre><code class="language-promql"># Availability SLI (% успешных запросов за 30 дней)
+1 - (
+  sum(increase(sli_requests_total{status_class=~"5xx"}[30d]))
+  /
+  sum(increase(sli_requests_total[30d]))
+)
+
+# Latency SLI (% запросов &lt; 200ms за 30 дней)
+sum(increase(sli_request_duration_seconds_bucket{le="0.2"}[30d]))
+/
+sum(increase(sli_request_duration_seconds_count[30d]))
+
+# Error budget remaining (SLO = 99.9%)
+1 - (
+  sum(increase(sli_requests_total{status_class="5xx"}[30d]))
+  / sum(increase(sli_requests_total[30d]))
+  / (1 - 0.999)
+)
+# 1.0 = бюджет полный, 0.0 = бюджет исчерпан, &lt; 0 = SLO нарушен
+
+# Burn rate (скорость расходования бюджета)
+sum(rate(sli_requests_total{status_class="5xx"}[1h]))
+/ sum(rate(sli_requests_total[1h]))
+/ (1 - 0.999)
+# &gt; 1 = расходуем бюджет быстрее, чем восполняем
+</code></pre>
+<hr>
+<h2 id="production-concerns"><a class="header" href="#production-concerns">Production Concerns</a></h2>
+<h3 id="влияние-на-производительность"><a class="header" href="#влияние-на-производительность">Влияние на производительность</a></h3>
+<p>Observability добавляет overhead. Важно понимать его масштаб:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Компонент</th><th>Overhead</th><th>Память</th><th>Примечание</th></tr>
+</thead>
+<tbody>
+<tr><td>slog (JSONHandler)</td><td>~350 ns/op, ~3 allocs</td><td>Минимально</td><td>Основной overhead — I/O (запись в stdout)</td></tr>
+<tr><td>zap (Logger)</td><td>~200 ns/op, 0 allocs</td><td>Минимально</td><td>Zero-allocation design</td></tr>
+<tr><td>Prometheus Counter/Gauge</td><td>~20 ns/op</td><td>~200 bytes/metric</td><td>Пренебрежимо мало</td></tr>
+<tr><td>Prometheus Histogram</td><td>~200 ns/op</td><td>~1 KB/metric</td><td>Зависит от количества buckets</td></tr>
+<tr><td>OTel span (sampled)</td><td>~500 ns</td><td>~2-5 KB/span</td><td>BatchProcessor буферизирует</td></tr>
+<tr><td>OTel span (not sampled)</td><td>~50 ns</td><td>~0</td><td>Только проверка sampling decision</td></tr>
+<tr><td>otelhttp middleware</td><td>~1-2 μs</td><td>~5 KB/request</td><td>Создание span + attributes</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-go">// Benchmark: overhead observability middleware
+func BenchmarkHandler(b *testing.B) {
+    // Без observability
+    b.Run("plain", func(b *testing.B) {
+        handler := http.HandlerFunc(plainHandler)
+        // ...
+    })
+
+    // С логированием + метриками + трейсингом
+    b.Run("full-observability", func(b *testing.B) {
+        handler := otelhttp.NewHandler(
+            metricsMiddleware(
+                loggingMiddleware(
+                    http.HandlerFunc(plainHandler),
+                ),
+            ),
+            "server",
+        )
+        // ...
+    })
+}
+
+// Типичные результаты:
+// BenchmarkHandler/plain-8              500000    2400 ns/op    512 B/op    4 allocs/op
+// BenchmarkHandler/full-observability-8  300000    5100 ns/op   2048 B/op   18 allocs/op
+// Overhead: ~2.7 μs/request (~0.003ms) — пренебрежимо для network-bound сервисов
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для сетевых сервисов</strong> (HTTP, gRPC) overhead observability ничтожен по сравнению с latency сети (1-100ms). Но для CPU-intensive hot paths (обработка миллионов событий в секунду) — стоит профилировать и оптимизировать.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Трейсинг без sampling в production</strong> может потреблять 50-200 MB RAM на сервис и генерировать терабайты данных в день. Всегда настраивайте sampling: <code>TraceIDRatioBased(0.01)</code> (1%) для high-traffic сервисов, <code>TraceIDRatioBased(0.1)</code> (10%) для low-traffic.</p>
+</blockquote>
+<h3 id="graceful-shutdown"><a class="header" href="#graceful-shutdown">Graceful Shutdown</a></h3>
+<p>При остановке сервиса необходимо <strong>flush</strong> все буферизированные данные:</p>
+<pre><code class="language-go">func main() {
+    ctx, cancel := context.WithCancel(context.Background())
+
+    // Инициализация
+    tp, err := telemetry.InitTracer(ctx, "order-service", "1.0.0", "production")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    logger := logging.NewCorrelatedLogger(
+        slog.NewJSONHandler(os.Stdout, &amp;slog.HandlerOptions{Level: slog.LevelInfo}),
+    )
+    slog.SetDefault(logger)
+
+    // HTTP server
+    srv := &amp;http.Server{Addr: ":8080", Handler: mux}
+
+    // Graceful shutdown
+    go func() {
+        sigCh := make(chan os.Signal, 1)
+        signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
+        &lt;-sigCh
+
+        slog.Info("получен сигнал завершения, начинаем graceful shutdown")
+
+        // 1. Прекращаем принимать новые запросы
+        shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 30*time.Second)
+        defer shutdownCancel()
+
+        if err := srv.Shutdown(shutdownCtx); err != nil {
+            slog.Error("ошибка shutdown HTTP сервера", slog.String("error", err.Error()))
+        }
+
+        // 2. Flush оставшихся spans
+        if err := tp.Shutdown(shutdownCtx); err != nil {
+            slog.Error("ошибка shutdown TracerProvider", slog.String("error", err.Error()))
+        }
+
+        // 3. Финальный лог
+        slog.Info("сервис остановлен")
+
+        cancel()
+    }()
+
+    slog.Info("сервис запущен", slog.String("addr", ":8080"))
+    if err := srv.ListenAndServe(); err != http.ErrServerClosed {
+        log.Fatal(err)
+    }
+
+    &lt;-ctx.Done()
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Порядок shutdown важен</strong>: сначала HTTP сервер (прекратить принимать запросы), затем TracerProvider (flush spans), затем остальные ресурсы (DB, Redis). Без <code>tp.Shutdown()</code> последние spans потеряются.</p>
+</blockquote>
+<h3 id="тестирование-observability"><a class="header" href="#тестирование-observability">Тестирование observability</a></h3>
+<h4 id="тестирование-метрик"><a class="header" href="#тестирование-метрик">Тестирование метрик</a></h4>
+<pre><code class="language-go">func TestMetricsMiddleware(t *testing.T) {
+    // Custom registry для изоляции теста
+    reg := prometheus.NewRegistry()
+    middleware := NewMetricsMiddleware(reg)
+
+    handler := middleware.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        w.WriteHeader(http.StatusOK)
+        w.Write([]byte("ok"))
+    }))
+
+    // Выполняем запрос
+    req := httptest.NewRequest("GET", "/api/users", nil)
+    rec := httptest.NewRecorder()
+    handler.ServeHTTP(rec, req)
+
+    // Проверяем метрики
+    metrics, err := reg.Gather()
+    require.NoError(t, err)
+
+    // Ищем http_requests_total
+    var found bool
+    for _, mf := range metrics {
+        if mf.GetName() == "http_requests_total" {
+            found = true
+            require.Len(t, mf.GetMetric(), 1)
+            require.Equal(t, float64(1), mf.GetMetric()[0].GetCounter().GetValue())
+        }
+    }
+    require.True(t, found, "метрика http_requests_total не найдена")
+}
+</code></pre>
+<h4 id="тестирование-spans"><a class="header" href="#тестирование-spans">Тестирование spans</a></h4>
+<pre><code class="language-go">import (
+    "go.opentelemetry.io/otel/sdk/trace/tracetest"
+    sdktrace "go.opentelemetry.io/otel/sdk/trace"
+)
+
+func TestCreateOrder_TracesSpans(t *testing.T) {
+    // In-memory exporter
+    exporter := tracetest.NewInMemoryExporter()
+
+    tp := sdktrace.NewTracerProvider(
+        sdktrace.WithSyncer(exporter), // синхронный для тестов
+        sdktrace.WithSampler(sdktrace.AlwaysSample()),
+    )
+    defer tp.Shutdown(context.Background())
+
+    otel.SetTracerProvider(tp)
+
+    // Выполняем операцию
+    svc := NewOrderService(/* ... */)
+    _, err := svc.CreateOrder(context.Background(), CreateOrderRequest{
+        CustomerID: "user-1",
+        Items:      []Item{{Name: "Widget", Qty: 1}},
+    })
+    require.NoError(t, err)
+
+    // Проверяем spans
+    spans := exporter.GetSpans()
+    require.GreaterOrEqual(t, len(spans), 1)
+
+    // Ищем root span
+    var rootSpan tracetest.SpanStub
+    for _, s := range spans {
+        if s.Name == "OrderService.CreateOrder" {
+            rootSpan = s
+            break
+        }
+    }
+
+    require.Equal(t, "OrderService.CreateOrder", rootSpan.Name)
+    require.Equal(t, codes.Ok, rootSpan.Status.Code)
+
+    // Проверяем атрибуты
+    attrs := rootSpan.Attributes
+    require.Contains(t, attrs, attribute.String("order.customer_id", "user-1"))
+}
+</code></pre>
+<h4 id="тестирование-slog-handlers"><a class="header" href="#тестирование-slog-handlers">Тестирование slog handlers</a></h4>
+<pre><code class="language-go">func TestOTelHandler_AddsTraceID(t *testing.T) {
+    // Создаём буфер для захвата логов
+    var buf bytes.Buffer
+    baseHandler := slog.NewJSONHandler(&amp;buf, nil)
+    handler := logging.NewOTelHandler(baseHandler)
+    logger := slog.New(handler)
+
+    // Создаём span для получения trace context
+    tp := sdktrace.NewTracerProvider()
+    tracer := tp.Tracer("test")
+    ctx, span := tracer.Start(context.Background(), "test-span")
+    defer span.End()
+
+    expectedTraceID := span.SpanContext().TraceID().String()
+
+    // Логируем с контекстом
+    logger.InfoContext(ctx, "тестовое сообщение")
+
+    // Парсим JSON
+    var logEntry map[string]interface{}
+    err := json.Unmarshal(buf.Bytes(), &amp;logEntry)
+    require.NoError(t, err)
+
+    // Проверяем trace_id
+    assert.Equal(t, expectedTraceID, logEntry["trace_id"])
+    assert.NotEmpty(t, logEntry["span_id"])
+}
+</code></pre>
+<h3 id="безопасность"><a class="header" href="#безопасность">Безопасность</a></h3>
+<pre><code class="language-go">// 1. Не выставляйте /metrics публично
+func main() {
+    // Public API
+    publicMux := http.NewServeMux()
+    publicMux.Handle("/api/", apiHandler)
+
+    // Internal endpoints (метрики, health, pprof)
+    internalMux := http.NewServeMux()
+    internalMux.Handle("GET /metrics", promhttp.Handler())
+    internalMux.Handle("GET /healthz", healthHandler)
+    internalMux.Handle("GET /debug/pprof/", http.DefaultServeMux)
+
+    // Запускаем на разных портах
+    go http.ListenAndServe(":8080", publicMux)    // public
+    go http.ListenAndServe(":9090", internalMux)  // internal only
+}
+</code></pre>
+<p><strong>Чек-лист безопасности observability</strong>:</p>
+<ul>
+<li>❌ Не логируйте пароли, токены, API keys, номера карт</li>
+<li>❌ Не добавляйте PII (email, телефон, адрес) в span attributes</li>
+<li>❌ Не выставляйте <code>/metrics</code> и <code>/debug/pprof/</code> публично</li>
+<li>❌ Не используйте user ID как Prometheus label (high cardinality)</li>
+<li>✅ Используйте redaction handler для чувствительных данных</li>
+<li>✅ Разделяйте public и internal порты</li>
+<li>✅ Используйте TLS для OTLP exporter в production</li>
+<li>✅ Настройте аутентификацию для Grafana, Jaeger, Prometheus</li>
+</ul>
+<hr>
+<h2 id="практические-примеры"><a class="header" href="#практические-примеры">Практические примеры</a></h2>
+<h3 id="пример-1-full-observability-setup-для-http-сервиса"><a class="header" href="#пример-1-full-observability-setup-для-http-сервиса">Пример 1: Full Observability Setup для HTTP сервиса</a></h3>
+<p>Полная инициализация всех трёх столпов observability для production HTTP-сервиса:</p>
+<pre><code class="language-go">package main
+
+import (
+    "context"
+    "fmt"
+    "log"
+    "log/slog"
+    "net/http"
+    "os"
+    "os/signal"
+    "syscall"
+    "time"
+
+    "github.com/prometheus/client_golang/prometheus"
+    "github.com/prometheus/client_golang/prometheus/collectors"
+    "github.com/prometheus/client_golang/prometheus/promhttp"
+    "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+    "go.opentelemetry.io/otel"
+    "go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
+    "go.opentelemetry.io/otel/propagation"
+    "go.opentelemetry.io/otel/sdk/resource"
+    sdktrace "go.opentelemetry.io/otel/sdk/trace"
+    semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
+    "go.opentelemetry.io/otel/trace"
+)
+
+func main() {
+    ctx, cancel := context.WithCancel(context.Background())
+    defer cancel()
+
+    // === 1. Логирование с корреляцией трейсов ===
+    logger := initLogger()
+    slog.SetDefault(logger)
+    slog.Info("инициализация сервиса")
+
+    // === 2. Трейсинг (OpenTelemetry) ===
+    tp, err := initTracer(ctx)
+    if err != nil {
+        log.Fatalf("не удалось инициализировать трейсинг: %v", err)
+    }
+
+    // === 3. Метрики (Prometheus) ===
+    reg := prometheus.NewRegistry()
+    reg.MustRegister(collectors.NewGoCollector())
+    reg.MustRegister(collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))
+    metrics := initMetrics(reg)
+
+    // === 4. Health checks ===
+    health := initHealthChecks()
+
+    // === 5. HTTP роутер ===
+    mux := http.NewServeMux()
+
+    // API endpoints (с трейсингом через otelhttp)
+    mux.Handle("GET /api/orders", otelhttp.WithRouteTag("/api/orders",
+        http.HandlerFunc(listOrders)))
+    mux.Handle("GET /api/orders/{id}", otelhttp.WithRouteTag("/api/orders/{id}",
+        http.HandlerFunc(getOrder)))
+    mux.Handle("POST /api/orders", otelhttp.WithRouteTag("/api/orders",
+        http.HandlerFunc(createOrder)))
+
+    // Observability middleware stack
+    handler := otelhttp.NewHandler(           // трейсинг
+        metrics.Handler(                       // метрики
+            LoggingMiddleware(logger)(mux),     // логирование
+        ),
+        "order-service",
+    )
+
+    // === 6. Internal endpoints (на отдельном порту) ===
+    internalMux := http.NewServeMux()
+    internalMux.Handle("GET /metrics", promhttp.HandlerFor(reg, promhttp.HandlerOpts{
+        EnableOpenMetrics: true,
+    }))
+    internalMux.Handle("GET /healthz", health.LivenessHandler())
+    internalMux.Handle("GET /readyz", health.ReadinessHandler())
+
+    // === 7. Запуск серверов ===
+    publicSrv := &amp;http.Server{Addr: ":8080", Handler: handler}
+    internalSrv := &amp;http.Server{Addr: ":9090", Handler: internalMux}
+
+    go func() {
+        slog.Info("internal endpoints запущены", slog.String("addr", ":9090"))
+        if err := internalSrv.ListenAndServe(); err != http.ErrServerClosed {
+            log.Fatal(err)
+        }
+    }()
+
+    go func() {
+        slog.Info("API сервер запущен", slog.String("addr", ":8080"))
+        if err := publicSrv.ListenAndServe(); err != http.ErrServerClosed {
+            log.Fatal(err)
+        }
+    }()
+
+    // === 8. Graceful shutdown ===
+    sigCh := make(chan os.Signal, 1)
+    signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
+    &lt;-sigCh
+
+    slog.Info("получен сигнал завершения")
+
+    shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 30*time.Second)
+    defer shutdownCancel()
+
+    // Порядок shutdown:
+    // 1. HTTP серверы (прекратить принимать запросы)
+    publicSrv.Shutdown(shutdownCtx)
+    internalSrv.Shutdown(shutdownCtx)
+
+    // 2. TracerProvider (flush оставшихся spans)
+    if err := tp.Shutdown(shutdownCtx); err != nil {
+        slog.Error("ошибка shutdown TracerProvider", slog.String("error", err.Error()))
+    }
+
+    slog.Info("сервис остановлен")
+}
+
+// initLogger создаёт slog.Logger с JSON output и корреляцией трейсов
+func initLogger() *slog.Logger {
+    jsonHandler := slog.NewJSONHandler(os.Stdout, &amp;slog.HandlerOptions{
+        Level:     slog.LevelInfo,
+        AddSource: true,
+        ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+            if a.Key == slog.TimeKey {
+                a.Key = "timestamp"
+            }
+            if a.Key == "password" || a.Key == "token" || a.Key == "secret" {
+                a.Value = slog.StringValue("***REDACTED***")
+            }
+            return a
+        },
+    })
+
+    // Обёртка для корреляции с trace_id/span_id
+    return slog.New(&amp;correlationHandler{inner: jsonHandler})
+}
+
+type correlationHandler struct{ inner slog.Handler }
+
+func (h *correlationHandler) Enabled(ctx context.Context, l slog.Level) bool {
+    return h.inner.Enabled(ctx, l)
+}
+func (h *correlationHandler) Handle(ctx context.Context, r slog.Record) error {
+    span := trace.SpanFromContext(ctx)
+    if span.SpanContext().IsValid() {
+        r.AddAttrs(
+            slog.String("trace_id", span.SpanContext().TraceID().String()),
+            slog.String("span_id", span.SpanContext().SpanID().String()),
+        )
+    }
+    return h.inner.Handle(ctx, r)
+}
+func (h *correlationHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
+    return &amp;correlationHandler{inner: h.inner.WithAttrs(attrs)}
+}
+func (h *correlationHandler) WithGroup(name string) slog.Handler {
+    return &amp;correlationHandler{inner: h.inner.WithGroup(name)}
+}
+
+// initTracer создаёт OpenTelemetry TracerProvider
+func initTracer(ctx context.Context) (*sdktrace.TracerProvider, error) {
+    res, err := resource.Merge(resource.Default(), resource.NewWithAttributes(
+        semconv.SchemaURL,
+        semconv.ServiceName("order-service"),
+        semconv.ServiceVersion("1.0.0"),
+        semconv.DeploymentEnvironmentName(os.Getenv("ENV")),
+    ))
+    if err != nil {
+        return nil, fmt.Errorf("resource: %w", err)
+    }
+
+    exporter, err := otlptracegrpc.New(ctx,
+        otlptracegrpc.WithEndpoint(getEnv("OTEL_ENDPOINT", "localhost:4317")),
+        otlptracegrpc.WithInsecure(),
+    )
+    if err != nil {
+        return nil, fmt.Errorf("exporter: %w", err)
+    }
+
+    tp := sdktrace.NewTracerProvider(
+        sdktrace.WithResource(res),
+        sdktrace.WithBatcher(exporter),
+        sdktrace.WithSampler(sdktrace.ParentBased(sdktrace.TraceIDRatioBased(0.1))),
+    )
+
+    otel.SetTracerProvider(tp)
+    otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(
+        propagation.TraceContext{},
+        propagation.Baggage{},
+    ))
+
+    return tp, nil
+}
+
+func getEnv(key, fallback string) string {
+    if v := os.Getenv(key); v != "" {
+        return v
+    }
+    return fallback
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Это аналог <code>Program.cs</code> с <code>builder.Services.AddOpenTelemetry()</code> + <code>builder.Services.AddHealthChecks()</code> + <code>builder.Host.UseSerilog()</code>. В Go больше кода, но каждый шаг явный и прозрачный.</p>
+</blockquote>
+<hr>
+<h3 id="пример-2-distributed-tracing-между-микросервисами"><a class="header" href="#пример-2-distributed-tracing-между-микросервисами">Пример 2: Distributed Tracing между микросервисами</a></h3>
+<p>Два сервиса с пропагацией trace context через gRPC:</p>
+<pre><code class="language-go">// === Service A: API Gateway (HTTP → gRPC) ===
+package main
+
+import (
+    "context"
+    "log/slog"
+
+    "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+    "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+    "go.opentelemetry.io/otel"
+    "go.opentelemetry.io/otel/attribute"
+    "go.opentelemetry.io/otel/codes"
+    "google.golang.org/grpc"
+
+    userpb "example.com/proto/user"
+)
+
+var tracer = otel.Tracer("api-gateway")
+
+func getOrderHandler(w http.ResponseWriter, r *http.Request) {
+    ctx := r.Context()
+
+    // Span создан автоматически otelhttp (parent)
+    orderID := r.PathValue("id")
+
+    // 1. Бизнес-логика span
+    ctx, span := tracer.Start(ctx, "getOrder.business-logic")
+    span.SetAttributes(attribute.String("order.id", orderID))
+
+    // 2. gRPC вызов к User Service (trace context пропагируется автоматически)
+    userConn, _ := grpc.NewClient("user-service:50051",
+        grpc.WithStatsHandler(otelgrpc.NewClientHandler()), // auto-instrumentation
+        grpc.WithInsecure(),
+    )
+    defer userConn.Close()
+
+    userClient := userpb.NewUserServiceClient(userConn)
+    user, err := userClient.GetUser(ctx, &amp;userpb.GetUserRequest{Id: "user-123"})
+    if err != nil {
+        span.RecordError(err)
+        span.SetStatus(codes.Error, "ошибка получения пользователя")
+        slog.ErrorContext(ctx, "не удалось получить пользователя",
+            slog.String("error", err.Error()))
+        http.Error(w, "internal error", 500)
+        span.End()
+        return
+    }
+
+    slog.InfoContext(ctx, "заказ получен",
+        slog.String("order_id", orderID),
+        slog.String("user_name", user.GetName()),
+    )
+    // Лог будет содержать: trace_id, span_id, order_id, user_name
+
+    span.SetStatus(codes.Ok, "")
+    span.End()
+
+    // ... формирование ответа
+}
+</code></pre>
+<pre><code class="language-go">// === Service B: User Service (gRPC Server) ===
+package main
+
+import (
+    "context"
+    "log/slog"
+
+    "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+    "go.opentelemetry.io/otel"
+    "go.opentelemetry.io/otel/attribute"
+    "google.golang.org/grpc"
+
+    userpb "example.com/proto/user"
+)
+
+var tracer = otel.Tracer("user-service")
+
+type userServer struct {
+    userpb.UnimplementedUserServiceServer
+    db     *pgxpool.Pool
+    logger *slog.Logger
+}
+
+func (s *userServer) GetUser(ctx context.Context, req *userpb.GetUserRequest) (*userpb.GetUserResponse, error) {
+    // Span создан автоматически otelgrpc (parent span от API Gateway)
+    s.logger.InfoContext(ctx, "получение пользователя",
+        slog.String("user_id", req.GetId()),
+    )
+    // Лог содержит тот же trace_id, что и в API Gateway!
+
+    // Вложенный span для DB запроса
+    ctx, span := tracer.Start(ctx, "db.GetUser")
+    defer span.End()
+
+    span.SetAttributes(attribute.String("db.statement", "SELECT * FROM users WHERE id = $1"))
+
+    var user User
+    err := s.db.QueryRow(ctx,
+        "SELECT id, name, email FROM users WHERE id = $1", req.GetId(),
+    ).Scan(&amp;user.ID, &amp;user.Name, &amp;user.Email)
+    if err != nil {
+        span.RecordError(err)
+        return nil, status.Errorf(codes.NotFound, "пользователь не найден")
+    }
+
+    return &amp;userpb.GetUserResponse{
+        Id:    user.ID,
+        Name:  user.Name,
+        Email: user.Email,
+    }, nil
+}
+
+func main() {
+    // ... init tracer, logger
+
+    grpcServer := grpc.NewServer(
+        grpc.StatsHandler(otelgrpc.NewServerHandler()), // auto-instrumentation
+    )
+    userpb.RegisterUserServiceServer(grpcServer, &amp;userServer{db: pool, logger: logger})
+
+    // ...
+}
+</code></pre>
+<p>Результат в Jaeger UI:</p>
+<pre><code>Trace: abc-123-def-456
+├── [api-gateway] GET /api/orders/42              (120ms)
+│   ├── [api-gateway] getOrder.business-logic      (115ms)
+│   │   └── [user-service] /user.UserService/GetUser (30ms)  ← gRPC propagation
+│   │       └── [user-service] db.GetUser              (5ms)
+</code></pre>
+<p>Все логи обоих сервисов содержат <code>trace_id: "abc-123-def-456"</code> → можно найти в Loki одним запросом.</p>
+<hr>
+<h3 id="пример-3-grafana-stack-с-docker-compose"><a class="header" href="#пример-3-grafana-stack-с-docker-compose">Пример 3: Grafana Stack с Docker Compose</a></h3>
+<p>Полная observability инфраструктура для локальной разработки:</p>
+<pre><code class="language-yaml"># docker-compose.yml
+services:
+  # === Ваш Go сервис ===
+  app:
+    build: .
+    ports:
+      - "8080:8080"   # API
+      - "9090:9090"   # metrics + health
+    environment:
+      - ENV=development
+      - OTEL_ENDPOINT=otel-collector:4317
+      - DB_URL=postgres://user:pass@postgres:5432/app?sslmode=disable
+      - REDIS_URL=redis:6379
+    depends_on:
+      - postgres
+      - redis
+      - otel-collector
+
+  # === OpenTelemetry Collector ===
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.96.0
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./configs/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "4317:4317"   # OTLP gRPC
+      - "4318:4318"   # OTLP HTTP
+      - "8889:8889"   # Prometheus exporter
+
+  # === Jaeger (трейсы) ===
+  jaeger:
+    image: jaegertracing/all-in-one:1.55
+    ports:
+      - "16686:16686" # UI
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+
+  # === Prometheus (метрики) ===
+  prometheus:
+    image: prom/prometheus:v2.50.0
+    volumes:
+      - ./configs/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9091:9090"   # UI (9091 чтобы не конфликтовать с app)
+
+  # === Loki (логи) ===
+  loki:
+    image: grafana/loki:2.9.4
+    ports:
+      - "3100:3100"
+
+  # === Promtail (сбор логов из Docker) ===
+  promtail:
+    image: grafana/promtail:2.9.4
+    volumes:
+      - ./configs/promtail.yaml:/etc/promtail/config.yaml
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command: -config.file=/etc/promtail/config.yaml
+
+  # === Grafana (дашборды) ===
+  grafana:
+    image: grafana/grafana:10.3.1
+    ports:
+      - "3000:3000"   # UI
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor
+    volumes:
+      - ./configs/grafana/provisioning:/etc/grafana/provisioning
+
+  # === Инфраструктура ===
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=app
+
+  redis:
+    image: redis:7-alpine
+</code></pre>
+<pre><code class="language-yaml"># configs/otel-collector-config.yaml
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+    timeout: 5s
+    send_batch_size: 1024
+
+exporters:
+  otlp/jaeger:
+    endpoint: jaeger:4317
+    tls:
+      insecure: true
+  prometheus:
+    endpoint: 0.0.0.0:8889
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp/jaeger]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheus]
+</code></pre>
+<pre><code class="language-yaml"># configs/prometheus.yml
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  # Метрики Go-сервиса
+  - job_name: 'app'
+    static_configs:
+      - targets: ['app:9090']
+
+  # Метрики из OTel Collector
+  - job_name: 'otel-collector'
+    static_configs:
+      - targets: ['otel-collector:8889']
+</code></pre>
+<pre><code class="language-yaml"># configs/grafana/provisioning/datasources/datasources.yaml
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    url: http://prometheus:9090
+    isDefault: true
+
+  - name: Jaeger
+    type: jaeger
+    url: http://jaeger:16686
+
+  - name: Loki
+    type: loki
+    url: http://loki:3100
+    jsonData:
+      derivedFields:
+        - datasourceUid: jaeger
+          matcherRegex: '"trace_id":"(\w+)"'
+          name: TraceID
+          url: '$${__value.raw}'
+</code></pre>
+<p>После <code>docker compose up</code>:</p>
+<ul>
+<li><strong>API</strong>: http://localhost:8080</li>
+<li><strong>Grafana</strong>: http://localhost:3000 (admin/admin)</li>
+<li><strong>Jaeger UI</strong>: http://localhost:16686</li>
+<li><strong>Prometheus</strong>: http://localhost:9091</li>
+</ul>
+<p>В Grafana настроен автоматический переход из логов (Loki) в трейсы (Jaeger) по <code>trace_id</code>.</p>
+<hr><!-- AUTO: NAV -->
+<p><strong>Вопросы?</strong> Открой issue на <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/issues">GitHub</a></p>
+<p><a href="./04_grpc.html">← Назад: gRPC</a> | <a href="./06_config.html">Вперёд: Конфигурация: Управление настройками в Go →</a></p>
+<!-- /AUTO: NAV -->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part4-infrastructure/04_grpc.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part4-infrastructure/06_config.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part4-infrastructure/04_grpc.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part4-infrastructure/06_config.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

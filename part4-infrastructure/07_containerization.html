@@ -1,0 +1,4072 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>4.7 Контейнеризация - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-e1a1ce5b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-c19b06e6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part4-infrastructure/07_containerization.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="47-контейнеризация-docker-compose-и-kubernetes-для-go"><a class="header" href="#47-контейнеризация-docker-compose-и-kubernetes-для-go">4.7 Контейнеризация: Docker, Compose и Kubernetes для Go</a></h1>
+<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<ul>
+<li><a href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5">Введение</a></li>
+<li><a href="#%D1%8D%D0%BA%D0%BE%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0-c-vs-go">Экосистема: C# vs Go</a></li>
+<li><a href="#docker-%D0%B4%D0%BB%D1%8F-go-%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B9">Docker для Go приложений</a>
+<ul>
+<li><a href="#%D0%B1%D0%B0%D0%B7%D0%BE%D0%B2%D1%8B%D0%B9-dockerfile-%D0%BA%D0%B0%D0%BA-%D0%BD%D0%B5-%D0%BD%D0%B0%D0%B4%D0%BE">Базовый Dockerfile: как НЕ надо</a></li>
+<li><a href="#multi-stage-builds">Multi-stage builds</a>
+<ul>
+<li><a href="#%D0%BF%D0%BE%D1%87%D0%B5%D0%BC%D1%83-multi-stage-%D0%BA%D1%80%D0%B8%D1%82%D0%B8%D1%87%D0%B5%D0%BD-%D0%B4%D0%BB%D1%8F-go">Почему multi-stage критичен для Go</a></li>
+<li><a href="#%D0%B1%D0%B0%D0%B7%D0%BE%D0%B2%D1%8B%D0%B9-%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD-builder--runtime">Базовый паттерн: builder + runtime</a></li>
+<li><a href="#%D0%BA%D1%8D%D1%88%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D0%B7%D0%B0%D0%B2%D0%B8%D1%81%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D0%B5%D0%B9">Кэширование зависимостей</a></li>
+<li><a href="#cgo-%D0%B8-alpine">CGO и Alpine</a></li>
+</ul>
+</li>
+<li><a href="#scratch-vs-alpine-vs-distroless">Scratch vs Alpine vs Distroless</a>
+<ul>
+<li><a href="#from-scratch-%D0%BC%D0%B8%D0%BD%D0%B8%D0%BC%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9-%D0%BE%D0%B1%D1%80%D0%B0%D0%B7">FROM scratch: минимальный образ</a></li>
+<li><a href="#alpine-%D0%B1%D0%B0%D0%BB%D0%B0%D0%BD%D1%81-%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%80%D0%B0-%D0%B8-%D1%83%D1%82%D0%B8%D0%BB%D0%B8%D1%82">Alpine: баланс размера и утилит</a></li>
+<li><a href="#distroless-%D0%B1%D0%B5%D0%B7%D0%BE%D0%BF%D0%B0%D1%81%D0%BD%D0%BE%D1%81%D1%82%D1%8C-google">Distroless: безопасность Google</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-%D0%B1%D0%B0%D0%B7%D0%BE%D0%B2%D1%8B%D1%85-%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%BE%D0%B2">Сравнительная таблица базовых образов</a></li>
+<li><a href="#%D0%B1%D0%BB%D0%BE%D0%BA-%D1%81%D1%85%D0%B5%D0%BC%D0%B0-%D0%B2%D1%8B%D0%B1%D0%BE%D1%80%D0%B0-%D0%B1%D0%B0%D0%B7%D0%BE%D0%B2%D0%BE%D0%B3%D0%BE-%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%B0">Блок-схема выбора базового образа</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B1%D0%B5%D0%B7%D0%BE%D0%BF%D0%B0%D1%81%D0%BD%D0%BE%D1%81%D1%82%D1%8C-docker-%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%BE%D0%B2">Безопасность Docker-образов</a>
+<ul>
+<li><a href="#non-root-%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8C">Non-root пользователь</a></li>
+<li><a href="#%D1%81%D0%BA%D0%B0%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D1%83%D1%8F%D0%B7%D0%B2%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D0%B5%D0%B9-trivy">Сканирование уязвимостей (Trivy)</a></li>
+<li><a href="#dockerignore">.dockerignore</a></li>
+<li><a href="#secrets-%D0%B2-build-time">Secrets в build-time</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BE%D0%BF%D1%82%D0%B8%D0%BC%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%80%D0%B0-%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%B0">Оптимизация размера образа</a>
+<ul>
+<li><a href="#%D1%84%D0%BB%D0%B0%D0%B3%D0%B8-%D0%BA%D0%BE%D0%BC%D0%BF%D0%B8%D0%BB%D1%8F%D1%86%D0%B8%D0%B8-ldflags">Флаги компиляции: ldflags</a></li>
+<li><a href="#upx-%D0%BA%D0%BE%D0%BC%D0%BF%D1%80%D0%B5%D1%81%D1%81%D0%B8%D1%8F">UPX компрессия</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#production-docker-patterns">Production Docker Patterns</a>
+<ul>
+<li><a href="#health-checks-%D0%B2-dockerfile">Health Checks в Dockerfile</a></li>
+<li><a href="#graceful-shutdown">Graceful Shutdown</a></li>
+<li><a href="#%D0%BB%D0%BE%D0%B3%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D0%B2-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80%D0%B5">Логирование в контейнере</a></li>
+<li><a href="#%D1%81%D0%B8%D0%B3%D0%BD%D0%B0%D0%BB%D1%8B-%D0%B8-pid-1">Сигналы и PID 1</a></li>
+</ul>
+</li>
+<li><a href="#docker-compose">Docker Compose</a>
+<ul>
+<li><a href="#%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%B0-composeyaml">Структура compose.yaml</a></li>
+<li><a href="#%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81-go-%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F">Сервис Go приложения</a></li>
+<li><a href="#%D0%B7%D0%B0%D0%B2%D0%B8%D1%81%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D0%B8-postgresql-redis">Зависимости: PostgreSQL, Redis</a></li>
+<li><a href="#networking-%D0%B8-service-discovery">Networking и service discovery</a></li>
+<li><a href="#volumes-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5-%D0%B8-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F">Volumes: данные и конфигурация</a></li>
+<li><a href="#health-checks-%D0%B8-depends_on">Health checks и depends_on</a></li>
+<li><a href="#profiles-%D0%B4%D0%BB%D1%8F-%D1%80%D0%B0%D0%B7%D0%BD%D1%8B%D1%85-%D0%BE%D0%BA%D1%80%D1%83%D0%B6%D0%B5%D0%BD%D0%B8%D0%B9">Profiles для разных окружений</a></li>
+<li><a href="#%D0%B3%D0%BE%D1%80%D1%8F%D1%87%D0%B0%D1%8F-%D0%BF%D0%B5%D1%80%D0%B5%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BA%D0%B0-%D0%B2-development-air">Горячая перезагрузка в development (air)</a></li>
+</ul>
+</li>
+<li><a href="#kubernetes-basics">Kubernetes Basics</a>
+<ul>
+<li><a href="#%D0%B7%D0%B0%D1%87%D0%B5%D0%BC-kubernetes-%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-docker-compose-%D0%BD%D0%B5%D0%B4%D0%BE%D1%81%D1%82%D0%B0%D1%82%D0%BE%D1%87%D0%BD%D0%BE">Зачем Kubernetes: когда Docker Compose недостаточно</a></li>
+<li><a href="#%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BD%D1%86%D0%B5%D0%BF%D1%86%D0%B8%D0%B8-pod-deployment-service">Основные концепции: Pod, Deployment, Service</a></li>
+<li><a href="#deployment-%D0%BC%D0%B0%D0%BD%D0%B8%D1%84%D0%B5%D1%81%D1%82-%D0%B4%D0%BB%D1%8F-go-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%B0">Deployment манифест для Go сервиса</a></li>
+<li><a href="#service-%D0%B8-ingress">Service и Ingress</a></li>
+<li><a href="#configmaps-%D0%B8-secrets">ConfigMaps и Secrets</a></li>
+<li><a href="#health-probes-liveness-readiness-startup">Health Probes: liveness, readiness, startup</a></li>
+<li><a href="#resource-limits-%D0%B8-requests">Resource Limits и Requests</a>
+<ul>
+<li><a href="#go-125-container-aware-gomaxprocs-%D0%B2%D1%81%D1%82%D1%80%D0%BE%D0%B5%D0%BD-%D0%B2-runtime">Go 1.25+: container-aware GOMAXPROCS встроен в runtime</a></li>
+</ul>
+</li>
+<li><a href="#hpa-%D0%B0%D0%B2%D1%82%D0%BE%D1%81%D0%BA%D0%B5%D0%B9%D0%BB%D0%B8%D0%BD%D0%B3">HPA: автоскейлинг</a></li>
+</ul>
+</li>
+<li><a href="#cicd-%D0%B8%D0%BD%D1%82%D0%B5%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D1%8F">CI/CD интеграция</a>
+<ul>
+<li><a href="#github-actions-%D0%B4%D0%BB%D1%8F-go--docker">GitHub Actions для Go + Docker</a></li>
+<li><a href="#multi-platform-builds">Multi-platform builds</a></li>
+<li><a href="#container-registry">Container Registry</a></li>
+<li><a href="#%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D0%BE%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%BE%D0%B2">Версионирование образов</a></li>
+</ul>
+</li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-net">Сравнение с .NET</a>
+<ul>
+<li><a href="#aspnet-core-docker-vs-go-docker">ASP.NET Core Docker vs Go Docker</a></li>
+<li><a href="#net-aspire-vs-go--compose">.NET Aspire vs Go + Compose</a></li>
+<li><a href="#%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%80%D1%8B-%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%BE%D0%B2">Размеры образов</a></li>
+</ul>
+</li>
+<li><a href="#%D1%82%D0%B8%D0%BF%D0%B8%D1%87%D0%BD%D1%8B%D0%B5-%D0%BE%D1%88%D0%B8%D0%B1%D0%BA%D0%B8-c-%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%87%D0%B8%D0%BA%D0%BE%D0%B2">Типичные ошибки C# разработчиков</a>
+<ul>
+<li><a href="#1-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-runtime-%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%BE%D0%B2-%D0%BA%D0%B0%D0%BA-%D0%B1%D0%B0%D0%B7%D0%BE%D0%B2%D1%8B%D1%85">1. Использование runtime-образов как базовых</a></li>
+<li><a href="#2-%D0%BD%D0%B5-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D1%83%D1%8E%D1%82-multi-stage-builds">2. Не используют multi-stage builds</a></li>
+<li><a href="#3-cgo_enabled1-%D0%BF%D0%BE-%D1%83%D0%BC%D0%BE%D0%BB%D1%87%D0%B0%D0%BD%D0%B8%D1%8E">3. CGO_ENABLED=1 по умолчанию</a></li>
+<li><a href="#4-%D1%84%D0%B0%D0%B9%D0%BB%D0%BE%D0%B2%D0%BE%D0%B5-%D0%BB%D0%BE%D0%B3%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D0%B2-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80%D0%B5">4. Файловое логирование в контейнере</a></li>
+<li><a href="#5-%D0%B8%D0%B3%D0%BD%D0%BE%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-graceful-shutdown">5. Игнорирование graceful shutdown</a></li>
+<li><a href="#6-%D0%B7%D0%B0%D0%BF%D1%83%D1%81%D0%BA-%D0%BE%D1%82-root">6. Запуск от root</a></li>
+<li><a href="#7-%D1%85%D1%80%D0%B0%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81%D0%BE%D1%81%D1%82%D0%BE%D1%8F%D0%BD%D0%B8%D1%8F-%D0%B2-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80%D0%B5">7. Хранение состояния в контейнере</a></li>
+<li><a href="#8-depends_on-%D0%B1%D0%B5%D0%B7-healthcheck">8. depends_on без healthcheck</a></li>
+<li><a href="#9-%D0%BE%D1%82%D1%81%D1%83%D1%82%D1%81%D1%82%D0%B2%D0%B8%D0%B5-dockerignore">9. Отсутствие .dockerignore</a></li>
+<li><a href="#10-shell-%D1%84%D0%BE%D1%80%D0%BC%D0%B0-%D0%B2%D0%BC%D0%B5%D1%81%D1%82%D0%BE-exec">10. Shell форма вместо exec</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B">Практические примеры</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-production-dockerfile-%D1%81-multi-stage-%D0%B8-distroless">Пример 1: Production Dockerfile с multi-stage и distroless</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-docker-compose-%D0%B4%D0%BB%D1%8F-%D0%BC%D0%B8%D0%BA%D1%80%D0%BE%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%BE%D0%B2">Пример 2: Docker Compose для микросервисов</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-kubernetes-deployment-%D1%81-health-checks-%D0%B8-hpa">Пример 3: Kubernetes Deployment с health checks и HPA</a></li>
+</ul>
+</li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<p>В предыдущих разделах Части 4 мы создали полноценную инфраструктуру:</p>
+<ul>
+<li><strong>4.1</strong>: PostgreSQL с connection pooling и миграциями</li>
+<li><strong>4.2</strong>: Redis для кэширования</li>
+<li><strong>4.3</strong>: Kafka/RabbitMQ для асинхронной обработки</li>
+<li><strong>4.4</strong>: gRPC для межсервисного взаимодействия</li>
+<li><strong>4.5</strong>: Observability — логирование, метрики, трейсинг</li>
+<li><strong>4.6</strong>: Конфигурация через ENV и config-файлы</li>
+</ul>
+<p>Теперь нужно упаковать всё это в контейнеры и развернуть. Go идеально подходит для контейнеризации: статическая компиляция позволяет создавать образы размером 5-15 MB без runtime-зависимостей.</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В .NET вам нужен <code>aspnet</code> runtime образ (~220 MB минимум). В Go финальный образ может быть <strong>пустым</strong> (<code>scratch</code>) — только ваш бинарник. Это радикально меняет подход к Docker.</p>
+</blockquote>
+<p><strong>Что изучим:</strong></p>
+<ul>
+<li>Multi-stage Docker builds для минимальных образов</li>
+<li>Выбор базового образа: scratch, Alpine, Distroless</li>
+<li>Docker Compose для локальной разработки</li>
+<li>Kubernetes basics для production деплоя</li>
+<li>CI/CD пайплайны для автоматизации</li>
+</ul>
+<hr>
+<h2 id="экосистема-c-vs-go"><a class="header" href="#экосистема-c-vs-go">Экосистема: C# vs Go</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Концепция</th><th>C# (.NET)</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>Базовый образ для сборки</td><td><code>mcr.microsoft.com/dotnet/sdk:8.0</code> (~900 MB)</td><td><code>golang:1.23</code> (~850 MB)</td></tr>
+<tr><td>Базовый образ для runtime</td><td><code>mcr.microsoft.com/dotnet/aspnet:8.0</code> (~220 MB)</td><td><code>scratch</code> / <code>distroless</code> (~2-20 MB)</td></tr>
+<tr><td>Multi-stage паттерн</td><td><code>sdk</code> → <code>aspnet</code></td><td><code>golang</code> → <code>scratch</code></td></tr>
+<tr><td>Runtime зависимости</td><td>CLR обязателен</td><td>Не нужны (статический бинарник)</td></tr>
+<tr><td>Cold start</td><td>~500ms - 2s</td><td>~10-50ms</td></tr>
+<tr><td>Memory footprint</td><td>~100-300 MB</td><td>~10-50 MB</td></tr>
+<tr><td>Orchestration</td><td>.NET Aspire, Docker Compose</td><td>Docker Compose, Kubernetes</td></tr>
+<tr><td>Health checks</td><td><code>IHealthCheck</code> интерфейс</td><td>Ручная реализация HTTP endpoint</td></tr>
+<tr><td>Конфигурация в контейнере</td><td><code>appsettings.json</code> + ENV</td><td>ENV (12-Factor)</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>⚠️ <strong>Ключевое отличие</strong>: В .NET runtime обязателен — CLR должен быть в образе. Go компилируется в нативный бинарник, который запускается напрямую на ядре Linux. Это позволяет использовать пустой базовый образ (<code>scratch</code>).</p>
+</blockquote>
+<p><strong>Размеры типичных production образов:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Приложение</th><th>.NET 8</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>Hello World API</td><td>~220 MB</td><td>~5 MB</td></tr>
+<tr><td>REST API с PostgreSQL</td><td>~250 MB</td><td>~15 MB</td></tr>
+<tr><td>Микросервис с gRPC</td><td>~280 MB</td><td>~20 MB</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="docker-для-go-приложений"><a class="header" href="#docker-для-go-приложений">Docker для Go приложений</a></h2>
+<h3 id="базовый-dockerfile-как-не-надо"><a class="header" href="#базовый-dockerfile-как-не-надо">Базовый Dockerfile: как НЕ надо</a></h3>
+<p>Начнём с примера, который <strong>не следует</strong> использовать в production:</p>
+<pre><code class="language-dockerfile"># ❌ Плохой пример — НЕ используйте в production
+FROM golang:1.23
+
+WORKDIR /app
+
+# Копируем весь исходный код
+COPY . .
+
+# Скачиваем зависимости и собираем
+RUN go mod download
+RUN go build -o server ./cmd/server
+
+# Запускаем
+CMD ["./server"]
+</code></pre>
+<p><strong>Проблемы этого подхода:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Проблема</th><th>Последствие</th></tr>
+</thead>
+<tbody>
+<tr><td>Финальный образ ~850 MB</td><td>Go SDK не нужен для запуска</td></tr>
+<tr><td>Исходный код в образе</td><td>Утечка интеллектуальной собственности</td></tr>
+<tr><td>Секреты в слоях</td><td><code>.env</code>, конфиги могут попасть в образ</td></tr>
+<tr><td>Нет кэширования слоёв</td><td>Каждое изменение кода перекачивает зависимости</td></tr>
+<tr><td>Запуск от root</td><td>Уязвимость безопасности</td></tr>
+<tr><td>CGO включен</td><td>Зависимость от libc в runtime</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>C# аналог той же ошибки:</strong></p>
+<pre><code class="language-dockerfile"># ❌ Плохой пример для .NET — НЕ используйте
+FROM mcr.microsoft.com/dotnet/sdk:8.0
+WORKDIR /app
+COPY . .
+RUN dotnet publish -c Release -o /app/publish
+CMD ["dotnet", "/app/publish/MyApp.dll"]
+# Размер: ~900 MB (SDK в финальном образе)
+</code></pre>
+<hr>
+<h3 id="multi-stage-builds"><a class="header" href="#multi-stage-builds">Multi-stage builds</a></h3>
+<h4 id="почему-multi-stage-критичен-для-go"><a class="header" href="#почему-multi-stage-критичен-для-go">Почему multi-stage критичен для Go</a></h4>
+<p>Multi-stage build позволяет использовать несколько <code>FROM</code> инструкций в одном Dockerfile. Первый stage — для сборки (нужен компилятор), второй — для запуска (только бинарник).</p>
+<p><strong>Преимущества:</strong></p>
+<ol>
+<li><strong>Размер</strong>: 850 MB → 5-15 MB</li>
+<li><strong>Безопасность</strong>: исходный код не попадает в финальный образ</li>
+<li><strong>Кэширование</strong>: зависимости и код в разных слоях</li>
+<li><strong>Простота</strong>: один Dockerfile для dev и prod</li>
+</ol>
+<h4 id="базовый-паттерн-builder--runtime"><a class="header" href="#базовый-паттерн-builder--runtime">Базовый паттерн: builder + runtime</a></h4>
+<pre><code class="language-dockerfile"># =============================================================================
+# Stage 1: Builder — компиляция Go приложения
+# =============================================================================
+FROM golang:1.23-alpine AS builder
+
+# Метаданные
+LABEL maintainer="team@example.com"
+LABEL stage="builder"
+
+WORKDIR /build
+
+# Копируем только файлы зависимостей (для кэширования)
+COPY go.mod go.sum ./
+
+# Скачиваем зависимости (кэшируется, если go.mod/go.sum не изменились)
+RUN go mod download
+
+# Копируем исходный код
+COPY . .
+
+# Собираем статический бинарник
+# CGO_ENABLED=0 — отключаем CGO для статической линковки
+# GOOS=linux — целевая ОС
+# -ldflags="-s -w" — убираем debug info, уменьшаем размер
+RUN CGO_ENABLED=0 GOOS=linux go build \
+    -ldflags="-s -w" \
+    -o /build/server \
+    ./cmd/server
+
+# =============================================================================
+# Stage 2: Runtime — минимальный образ для запуска
+# =============================================================================
+FROM scratch
+
+# Копируем CA сертификаты для HTTPS запросов
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
+# Копируем бинарник из builder stage
+COPY --from=builder /build/server /server
+
+# Запускаем от непривилегированного пользователя
+USER 65534:65534
+
+# Точка входа
+ENTRYPOINT ["/server"]
+</code></pre>
+<p><strong>Результат:</strong></p>
+<ul>
+<li>Builder stage: ~850 MB (не попадает в финальный образ)</li>
+<li>Runtime stage: ~5-10 MB (только бинарник + CA сертификаты)</li>
+</ul>
+<p><strong>Сравнение с .NET multi-stage:</strong></p>
+<pre><code class="language-dockerfile"># .NET multi-stage build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY *.csproj .
+RUN dotnet restore
+COPY . .
+RUN dotnet publish -c Release -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build /app/publish .
+ENTRYPOINT ["dotnet", "MyApp.dll"]
+# Финальный размер: ~220 MB (aspnet runtime обязателен)
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В .NET финальный образ минимум ~220 MB из-за CLR. В Go можно достичь ~5 MB, потому что runtime не нужен.</p>
+</blockquote>
+<h4 id="кэширование-зависимостей"><a class="header" href="#кэширование-зависимостей">Кэширование зависимостей</a></h4>
+<p>Docker кэширует слои. Если слой не изменился, он берётся из кэша. Правильный порядок <code>COPY</code> критичен:</p>
+<pre><code class="language-dockerfile"># ✅ Правильный порядок — максимальное кэширование
+FROM golang:1.23-alpine AS builder
+WORKDIR /build
+
+# 1. Сначала копируем только go.mod и go.sum
+COPY go.mod go.sum ./
+
+# 2. Скачиваем зависимости (кэшируется!)
+RUN go mod download
+
+# 3. Потом копируем исходный код
+COPY . .
+
+# 4. Собираем
+RUN CGO_ENABLED=0 go build -o /app/server ./cmd/server
+</code></pre>
+<p><strong>Как это работает:</strong></p>
+<ol>
+<li><code>COPY go.mod go.sum</code> — редко меняется → слой кэшируется</li>
+<li><code>go mod download</code> — выполняется только если go.mod изменился</li>
+<li><code>COPY . .</code> — меняется часто (ваш код)</li>
+<li><code>go build</code> — выполняется при каждом изменении кода</li>
+</ol>
+<p><strong>Без кэширования</strong> (go.mod и код в одном слое):</p>
+<ul>
+<li>Каждое изменение кода → перекачивание всех зависимостей</li>
+<li>Время сборки: 2-5 минут</li>
+</ul>
+<p><strong>С кэшированием</strong>:</p>
+<ul>
+<li>Изменение кода → только компиляция</li>
+<li>Время сборки: 10-30 секунд</li>
+</ul>
+<p><strong>BuildKit mount cache (ещё быстрее):</strong></p>
+<pre><code class="language-dockerfile"># syntax=docker/dockerfile:1
+
+FROM golang:1.23-alpine AS builder
+WORKDIR /build
+
+COPY go.mod go.sum ./
+
+# Mount cache для go modules и build cache
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    go mod download
+
+COPY . .
+
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    CGO_ENABLED=0 go build -o /app/server ./cmd/server
+</code></pre>
+<blockquote>
+<p>💡 <strong>BuildKit cache mount</strong>: Сохраняет кэш между сборками даже если слои инвалидируются. Требует <code>DOCKER_BUILDKIT=1</code> или Docker 23.0+.</p>
+</blockquote>
+<h4 id="cgo-и-alpine"><a class="header" href="#cgo-и-alpine">CGO и Alpine</a></h4>
+<p><strong>CGO</strong> (C Go) — механизм вызова C-кода из Go. По умолчанию включен.</p>
+<p><strong>Когда нужен CGO:</strong></p>
+<ul>
+<li>SQLite (<code>mattn/go-sqlite3</code>)</li>
+<li>Некоторые криптографические библиотеки</li>
+<li>Биндинги к C-библиотекам</li>
+</ul>
+<p><strong>Проблема CGO:</strong></p>
+<ul>
+<li>Бинарник зависит от libc</li>
+<li>Нужен совместимый runtime (glibc или musl)</li>
+<li>Нельзя использовать <code>scratch</code></li>
+</ul>
+<pre><code class="language-dockerfile"># CGO_ENABLED=1 (по умолчанию) — динамическая линковка
+# Бинарник зависит от libc
+
+# CGO_ENABLED=0 — статическая линковка
+# Бинарник автономный, работает в scratch
+</code></pre>
+<p><strong>Alpine использует musl, не glibc:</strong></p>
+<pre><code class="language-dockerfile"># ❌ Проблема: собрали с glibc, запускаем в musl
+FROM golang:1.23 AS builder  # glibc
+RUN go build -o /app/server
+
+FROM alpine:3.20  # musl
+COPY --from=builder /app/server /server
+# Ошибка: "not found" (несовместимость libc)
+</code></pre>
+<p><strong>Решения:</strong></p>
+<pre><code class="language-dockerfile"># Вариант 1: CGO_ENABLED=0 (рекомендуется)
+FROM golang:1.23-alpine AS builder
+RUN CGO_ENABLED=0 go build -o /app/server
+
+FROM scratch
+COPY --from=builder /app/server /server
+
+# Вариант 2: Собираем в alpine (musl)
+FROM golang:1.23-alpine AS builder
+RUN apk add --no-cache gcc musl-dev
+RUN go build -o /app/server  # CGO с musl
+
+FROM alpine:3.20
+COPY --from=builder /app/server /server
+
+# Вариант 3: Собираем в debian, запускаем в debian
+FROM golang:1.23 AS builder  # glibc
+RUN go build -o /app/server
+
+FROM debian:bookworm-slim  # glibc
+COPY --from=builder /app/server /server
+</code></pre>
+<blockquote>
+<p>💡 <strong>Рекомендация</strong>: Используйте <code>CGO_ENABLED=0</code> везде, где возможно. Это позволяет использовать <code>scratch</code> или <code>distroless</code> и избежать проблем с совместимостью libc.</p>
+</blockquote>
+<hr>
+<h3 id="scratch-vs-alpine-vs-distroless"><a class="header" href="#scratch-vs-alpine-vs-distroless">Scratch vs Alpine vs Distroless</a></h3>
+<h4 id="from-scratch-минимальный-образ"><a class="header" href="#from-scratch-минимальный-образ">FROM scratch: минимальный образ</a></h4>
+<p><code>scratch</code> — это пустой образ. Буквально ничего: ни shell, ни libc, ни утилит.</p>
+<pre><code class="language-dockerfile">FROM golang:1.23-alpine AS builder
+WORKDIR /build
+
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+
+# Статический бинарник
+RUN CGO_ENABLED=0 GOOS=linux go build \
+    -ldflags="-s -w" \
+    -o /app/server \
+    ./cmd/server
+
+FROM scratch
+
+# CA сертификаты для HTTPS
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
+# Timezone data (если нужны time.LoadLocation)
+COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
+
+# Наш бинарник
+COPY --from=builder /app/server /server
+
+# Non-root user (только UID, т.к. нет /etc/passwd)
+USER 65534:65534
+
+ENTRYPOINT ["/server"]
+</code></pre>
+<p><strong>Преимущества scratch:</strong></p>
+<ul>
+<li>Минимальный размер (~2-10 MB)</li>
+<li>Минимальная attack surface (нечего эксплуатировать)</li>
+<li>Нет CVE от ОС (нет ОС)</li>
+</ul>
+<p><strong>Недостатки scratch:</strong></p>
+<ul>
+<li>Нет shell — нельзя <code>docker exec -it container sh</code></li>
+<li>Нет утилит — нет <code>curl</code>, <code>wget</code>, <code>ls</code></li>
+<li>Сложнее отлаживать</li>
+<li>Нужно явно копировать CA сертификаты и tzdata</li>
+</ul>
+<p><strong>Когда использовать:</strong></p>
+<ul>
+<li>Production образы без необходимости отладки внутри контейнера</li>
+<li>Security-critical приложения</li>
+</ul>
+<h4 id="alpine-баланс-размера-и-утилит"><a class="header" href="#alpine-баланс-размера-и-утилит">Alpine: баланс размера и утилит</a></h4>
+<p>Alpine Linux — минималистичный дистрибутив (~7 MB).</p>
+<pre><code class="language-dockerfile">FROM golang:1.23-alpine AS builder
+WORKDIR /build
+
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+
+RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o /app/server ./cmd/server
+
+FROM alpine:3.20
+
+# Установка необходимых пакетов
+RUN apk add --no-cache \
+    ca-certificates \
+    tzdata
+
+# Создание non-root пользователя
+RUN adduser -D -H -u 10001 appuser
+
+# Копирование бинарника
+COPY --from=builder /app/server /server
+
+# Переключение на non-root
+USER appuser
+
+ENTRYPOINT ["/server"]
+</code></pre>
+<p><strong>Преимущества Alpine:</strong></p>
+<ul>
+<li>Есть shell (<code>/bin/sh</code>)</li>
+<li>Есть package manager (<code>apk</code>)</li>
+<li>Можно установить утилиты для отладки</li>
+<li>Маленький размер (~7-15 MB финальный образ)</li>
+</ul>
+<p><strong>Недостатки Alpine:</strong></p>
+<ul>
+<li>Использует musl вместо glibc (редко проблема для Go)</li>
+<li>Чуть больше attack surface чем scratch</li>
+</ul>
+<p><strong>Когда использовать:</strong></p>
+<ul>
+<li>Нужна возможность отладки внутри контейнера</li>
+<li>Нужны дополнительные утилиты (curl, wget)</li>
+<li>Development и staging окружения</li>
+</ul>
+<h4 id="distroless-безопасность-google"><a class="header" href="#distroless-безопасность-google">Distroless: безопасность Google</a></h4>
+<p>Distroless — образы от Google без shell и package manager, но с необходимыми runtime файлами.</p>
+<pre><code class="language-dockerfile">FROM golang:1.23-alpine AS builder
+WORKDIR /build
+
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+
+RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o /app/server ./cmd/server
+
+# Distroless static — для Go приложений без CGO
+FROM gcr.io/distroless/static-debian12:nonroot
+
+# Копирование бинарника
+COPY --from=builder /app/server /server
+
+# nonroot tag уже запускает от непривилегированного пользователя
+USER nonroot:nonroot
+
+ENTRYPOINT ["/server"]
+</code></pre>
+<p><strong>Варианты distroless образов:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Образ</th><th>Размер</th><th>Содержит</th><th>Использование</th></tr>
+</thead>
+<tbody>
+<tr><td><code>gcr.io/distroless/static</code></td><td>~2 MB</td><td>CA certs, tzdata</td><td>Go без CGO</td></tr>
+<tr><td><code>gcr.io/distroless/base</code></td><td>~20 MB</td><td>+ glibc</td><td>Go с CGO</td></tr>
+<tr><td><code>gcr.io/distroless/cc</code></td><td>~25 MB</td><td>+ libgcc</td><td>C++ приложения</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Теги для отладки:</strong></p>
+<pre><code class="language-dockerfile"># Production
+FROM gcr.io/distroless/static-debian12:nonroot
+
+# Debug (есть busybox shell)
+FROM gcr.io/distroless/static-debian12:debug-nonroot
+</code></pre>
+<pre><code class="language-bash"># Отладка с debug-образом
+docker run -it --entrypoint=sh myapp:debug
+</code></pre>
+<p><strong>Преимущества Distroless:</strong></p>
+<ul>
+<li>Нет shell в production (безопасность)</li>
+<li>Есть debug-версия для отладки</li>
+<li>CA сертификаты и tzdata включены</li>
+<li>Non-root по умолчанию (тег <code>:nonroot</code>)</li>
+</ul>
+<p><strong>Недостатки Distroless:</strong></p>
+<ul>
+<li>Зависимость от Google Container Registry</li>
+<li>Чуть больше scratch</li>
+</ul>
+<p><strong>Когда использовать:</strong></p>
+<ul>
+<li>Production образы</li>
+<li>Security-critical приложения</li>
+<li>Когда scratch слишком минималистичен</li>
+</ul>
+<h4 id="сравнительная-таблица-базовых-образов"><a class="header" href="#сравнительная-таблица-базовых-образов">Сравнительная таблица базовых образов</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Характеристика</th><th>scratch</th><th>distroless/static</th><th>alpine</th><th>debian-slim</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Размер</strong></td><td>~2 MB</td><td>~2 MB</td><td>~7 MB</td><td>~80 MB</td></tr>
+<tr><td><strong>Shell</strong></td><td>❌</td><td>❌ (✅ в :debug)</td><td>✅</td><td>✅</td></tr>
+<tr><td><strong>Package manager</strong></td><td>❌</td><td>❌</td><td>✅ apk</td><td>✅ apt</td></tr>
+<tr><td><strong>CA certs</strong></td><td>❌ (копировать)</td><td>✅</td><td>✅ (apk add)</td><td>✅</td></tr>
+<tr><td><strong>tzdata</strong></td><td>❌ (копировать)</td><td>✅</td><td>✅ (apk add)</td><td>✅</td></tr>
+<tr><td><strong>glibc</strong></td><td>❌</td><td>❌ (base: ✅)</td><td>❌ (musl)</td><td>✅</td></tr>
+<tr><td><strong>Security</strong></td><td>Максимум</td><td>Высокий</td><td>Средний</td><td>Низкий</td></tr>
+<tr><td><strong>Debug</strong></td><td>Сложно</td><td>:debug tag</td><td>Легко</td><td>Легко</td></tr>
+<tr><td><strong>CVE</strong></td><td>0 (нет ОС)</td><td>Минимум</td><td>Редко</td><td>Часто</td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="блок-схема-выбора-базового-образа"><a class="header" href="#блок-схема-выбора-базового-образа">Блок-схема выбора базового образа</a></h4>
+<pre><code>Нужен CGO?
+│
+├─ ДА ──┬─► Какой libc?
+│       │
+│       ├─ glibc ──► distroless/base или debian-slim
+│       │
+│       └─ musl ───► alpine
+│
+└─ НЕТ ─┬─► Нужен shell в production?
+        │
+        ├─ ДА ──► alpine
+        │
+        └─ НЕТ ─┬─► Нужна максимальная безопасность?
+                │
+                ├─ ДА ──► scratch
+                │
+                └─ НЕТ ──► distroless/static (рекомендуется)
+</code></pre>
+<blockquote>
+<p>💡 <strong>Рекомендация</strong>: Для большинства Go приложений используйте <code>distroless/static:nonroot</code>. Это оптимальный баланс безопасности, размера и удобства.</p>
+</blockquote>
+<hr>
+<h3 id="безопасность-docker-образов"><a class="header" href="#безопасность-docker-образов">Безопасность Docker-образов</a></h3>
+<h4 id="non-root-пользователь"><a class="header" href="#non-root-пользователь">Non-root пользователь</a></h4>
+<p>По умолчанию контейнер запускается от root. Это опасно: если атакующий получит доступ к контейнеру, он будет root.</p>
+<p><strong>scratch (нет /etc/passwd):</strong></p>
+<pre><code class="language-dockerfile">FROM scratch
+COPY --from=builder /app/server /server
+
+# Используем числовой UID/GID
+# 65534 — стандартный "nobody" в Linux
+USER 65534:65534
+
+ENTRYPOINT ["/server"]
+</code></pre>
+<p><strong>Alpine (создаём пользователя):</strong></p>
+<pre><code class="language-dockerfile">FROM alpine:3.20
+
+# Создаём пользователя без домашней директории
+RUN adduser -D -H -u 10001 appuser
+
+COPY --from=builder /app/server /server
+
+# Переключаемся на созданного пользователя
+USER appuser
+
+ENTRYPOINT ["/server"]
+</code></pre>
+<p><strong>Distroless (уже есть nonroot):</strong></p>
+<pre><code class="language-dockerfile">FROM gcr.io/distroless/static-debian12:nonroot
+
+COPY --from=builder /app/server /server
+
+# Тег :nonroot уже настроен на user nonroot:nonroot
+USER nonroot:nonroot
+
+ENTRYPOINT ["/server"]
+</code></pre>
+<p><strong>Проверка:</strong></p>
+<pre><code class="language-bash">docker run myapp whoami
+# Должен вернуть НЕ root
+
+docker run myapp id
+# uid=65534(nobody) gid=65534(nogroup) groups=65534(nogroup)
+</code></pre>
+<h4 id="сканирование-уязвимостей-trivy"><a class="header" href="#сканирование-уязвимостей-trivy">Сканирование уязвимостей (Trivy)</a></h4>
+<p><strong>Trivy</strong> — сканер уязвимостей от Aqua Security.</p>
+<pre><code class="language-bash"># Установка (macOS)
+brew install trivy
+
+# Установка (Linux)
+curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+
+# Сканирование образа
+trivy image myapp:latest
+
+# Только критические и высокие уязвимости
+trivy image --severity CRITICAL,HIGH myapp:latest
+
+# JSON вывод для CI/CD
+trivy image --format json --output results.json myapp:latest
+
+# Fail если есть критические уязвимости
+trivy image --exit-code 1 --severity CRITICAL myapp:latest
+</code></pre>
+<p><strong>Docker Scout (встроенный в Docker Desktop):</strong></p>
+<pre><code class="language-bash"># Анализ образа
+docker scout cves myapp:latest
+
+# Рекомендации по обновлению
+docker scout recommendations myapp:latest
+</code></pre>
+<p><strong>Пример вывода Trivy:</strong></p>
+<pre><code>myapp:latest (alpine 3.20)
+==========================
+Total: 2 (UNKNOWN: 0, LOW: 1, MEDIUM: 1, HIGH: 0, CRITICAL: 0)
+
+┌───────────────┬────────────────┬──────────┬─────────────────────────────────┐
+│    Library    │ Vulnerability  │ Severity │          Fixed Version          │
+├───────────────┼────────────────┼──────────┼─────────────────────────────────┤
+│ libcrypto3    │ CVE-2024-XXXX  │ MEDIUM   │ 3.1.4-r6                        │
+│ musl          │ CVE-2024-YYYY  │ LOW      │                                 │
+└───────────────┴────────────────┴──────────┴─────────────────────────────────┘
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для scratch/distroless</strong>: CVE от ОС будет 0, т.к. нет ОС. Сканер проверит только ваш Go бинарник на известные уязвимости в зависимостях.</p>
+</blockquote>
+<h4 id="dockerignore"><a class="header" href="#dockerignore">.dockerignore</a></h4>
+<p><code>.dockerignore</code> исключает файлы из контекста сборки:</p>
+<pre><code class="language-dockerignore"># Git
+.git
+.gitignore
+
+# IDE
+.idea
+.vscode
+*.swp
+
+# Тесты и документация
+*_test.go
+**/*_test.go
+docs/
+*.md
+!README.md
+
+# Конфигурация разработки
+.env
+.env.*
+*.local
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Build артефакты
+bin/
+dist/
+coverage.out
+*.exe
+
+# Секреты (КРИТИЧНО!)
+*.pem
+*.key
+secrets/
+credentials/
+</code></pre>
+<p><strong>Почему это важно:</strong></p>
+<ol>
+<li><strong>Безопасность</strong>: секреты не попадут в образ</li>
+<li><strong>Размер контекста</strong>: быстрее передаётся в Docker daemon</li>
+<li><strong>Кэширование</strong>: меньше инвалидаций слоёв</li>
+</ol>
+<pre><code class="language-bash"># Проверить, что попадает в контекст
+docker build --no-cache -t test . 2&gt;&amp;1 | head -5
+# "Sending build context to Docker daemon  X.XXX MB"
+</code></pre>
+<h4 id="secrets-в-build-time"><a class="header" href="#secrets-в-build-time">Secrets в build-time</a></h4>
+<p>Иногда при сборке нужен доступ к секретам (private git repos, npm tokens).</p>
+<p><strong>❌ Плохо — секрет в слое:</strong></p>
+<pre><code class="language-dockerfile"># НИКОГДА так не делайте!
+ARG GITHUB_TOKEN
+ENV GITHUB_TOKEN=$GITHUB_TOKEN
+RUN git clone https://$GITHUB_TOKEN@github.com/private/repo.git
+# Токен остаётся в истории слоёв!
+</code></pre>
+<p><strong>✅ Хорошо — BuildKit secrets:</strong></p>
+<pre><code class="language-dockerfile"># syntax=docker/dockerfile:1
+
+FROM golang:1.23-alpine AS builder
+
+# Секрет монтируется только на время выполнения команды
+# Не сохраняется в слоях!
+RUN --mount=type=secret,id=github_token \
+    GITHUB_TOKEN=$(cat /run/secrets/github_token) &amp;&amp; \
+    git config --global url."https://${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+
+COPY go.mod go.sum ./
+RUN --mount=type=secret,id=github_token \
+    GITHUB_TOKEN=$(cat /run/secrets/github_token) &amp;&amp; \
+    GOPRIVATE=github.com/myorg/* go mod download
+</code></pre>
+<p><strong>Использование:</strong></p>
+<pre><code class="language-bash"># Передача секрета при сборке
+echo "ghp_xxxxxxxxxxxx" &gt; github_token.txt
+docker build --secret id=github_token,src=github_token.txt -t myapp .
+
+# Или через stdin
+docker build --secret id=github_token,env=GITHUB_TOKEN -t myapp .
+</code></pre>
+<hr>
+<h3 id="оптимизация-размера-образа"><a class="header" href="#оптимизация-размера-образа">Оптимизация размера образа</a></h3>
+<h4 id="флаги-компиляции-ldflags"><a class="header" href="#флаги-компиляции-ldflags">Флаги компиляции: ldflags</a></h4>
+<pre><code class="language-dockerfile">RUN CGO_ENABLED=0 GOOS=linux go build \
+    -ldflags="-s -w" \
+    -o /app/server \
+    ./cmd/server
+</code></pre>
+<p><strong>Флаги:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Флаг</th><th>Действие</th><th>Экономия</th></tr>
+</thead>
+<tbody>
+<tr><td><code>-s</code></td><td>Удалить symbol table</td><td>~20%</td></tr>
+<tr><td><code>-w</code></td><td>Удалить DWARF debug info</td><td>~10%</td></tr>
+<tr><td><code>-X main.Version=1.0.0</code></td><td>Внедрить версию при компиляции</td><td>0</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Пример с версионированием:</strong></p>
+<pre><code class="language-dockerfile">ARG VERSION=dev
+ARG COMMIT=unknown
+ARG BUILD_TIME=unknown
+
+RUN CGO_ENABLED=0 go build \
+    -ldflags="-s -w \
+        -X main.Version=${VERSION} \
+        -X main.Commit=${COMMIT} \
+        -X main.BuildTime=${BUILD_TIME}" \
+    -o /app/server \
+    ./cmd/server
+</code></pre>
+<pre><code class="language-go">// main.go
+package main
+
+var (
+    Version   = "dev"
+    Commit    = "unknown"
+    BuildTime = "unknown"
+)
+
+func main() {
+    log.Printf("Version: %s, Commit: %s, Built: %s", Version, Commit, BuildTime)
+    // ...
+}
+</code></pre>
+<p><strong>Сборка:</strong></p>
+<pre><code class="language-bash">docker build \
+    --build-arg VERSION=$(git describe --tags) \
+    --build-arg COMMIT=$(git rev-parse --short HEAD) \
+    --build-arg BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
+    -t myapp:$(git describe --tags) .
+</code></pre>
+<h4 id="upx-компрессия"><a class="header" href="#upx-компрессия">UPX компрессия</a></h4>
+<p><strong>UPX</strong> (Ultimate Packer for eXecutables) — сжимает бинарники.</p>
+<pre><code class="language-dockerfile">FROM golang:1.23-alpine AS builder
+
+RUN apk add --no-cache upx
+
+WORKDIR /build
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+
+# Собираем
+RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o /app/server ./cmd/server
+
+# Сжимаем (--best — максимальное сжатие)
+RUN upx --best --lzma /app/server
+
+FROM scratch
+COPY --from=builder /app/server /server
+ENTRYPOINT ["/server"]
+</code></pre>
+<p><strong>Результат:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Этап</th><th>Размер</th></tr>
+</thead>
+<tbody>
+<tr><td>После go build</td><td>~15 MB</td></tr>
+<tr><td>После -ldflags=“-s -w”</td><td>~10 MB</td></tr>
+<tr><td>После UPX</td><td>~3-4 MB</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Предостережения:</strong></p>
+<ul>
+<li><strong>Время запуска</strong>: UPX распаковывает при старте (+50-100ms)</li>
+<li><strong>Memory</strong>: Нужна память для распаковки</li>
+<li><strong>Отладка</strong>: Сложнее дебажить (нет символов + сжатие)</li>
+<li><strong>Security</strong>: Некоторые сканеры считают UPX подозрительным</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Рекомендация</strong>: Используйте UPX только если размер критичен (edge computing, serverless). Для обычных серверов <code>-ldflags="-s -w"</code> достаточно.</p>
+</blockquote>
+<hr>
+<h2 id="production-docker-patterns"><a class="header" href="#production-docker-patterns">Production Docker Patterns</a></h2>
+<h3 id="health-checks-в-dockerfile"><a class="header" href="#health-checks-в-dockerfile">Health Checks в Dockerfile</a></h3>
+<p>Docker поддерживает <code>HEALTHCHECK</code> инструкцию для проверки здоровья контейнера.</p>
+<p><strong>Для scratch (бинарник с флагом –health):</strong></p>
+<pre><code class="language-go">// cmd/server/main.go
+package main
+
+import (
+    "flag"
+    "fmt"
+    "net/http"
+    "os"
+    "time"
+)
+
+func main() {
+    healthCheck := flag.Bool("health", false, "выполнить health check и выйти")
+    flag.Parse()
+
+    if *healthCheck {
+        // Health check режим — проверяем сервис и выходим
+        client := &amp;http.Client{Timeout: 3 * time.Second}
+        resp, err := client.Get("http://localhost:8080/health")
+        if err != nil || resp.StatusCode != http.StatusOK {
+            os.Exit(1)
+        }
+        os.Exit(0)
+    }
+
+    // Обычный режим — запускаем сервер
+    http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+        w.WriteHeader(http.StatusOK)
+        fmt.Fprintln(w, "OK")
+    })
+
+    http.ListenAndServe(":8080", nil)
+}
+</code></pre>
+<pre><code class="language-dockerfile">FROM scratch
+
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /app/server /server
+
+USER 65534:65534
+
+# Health check использует сам бинарник
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD ["/server", "-health"]
+
+ENTRYPOINT ["/server"]
+</code></pre>
+<p><strong>Для Alpine (с wget):</strong></p>
+<pre><code class="language-dockerfile">FROM alpine:3.20
+
+RUN apk add --no-cache ca-certificates
+
+COPY --from=builder /app/server /server
+
+RUN adduser -D -H -u 10001 appuser
+USER appuser
+
+# Используем wget для health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD wget -qO- http://localhost:8080/health || exit 1
+
+ENTRYPOINT ["/server"]
+</code></pre>
+<p><strong>Параметры HEALTHCHECK:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Параметр</th><th>Описание</th><th>Рекомендация</th></tr>
+</thead>
+<tbody>
+<tr><td><code>--interval</code></td><td>Интервал между проверками</td><td>30s для production</td></tr>
+<tr><td><code>--timeout</code></td><td>Таймаут одной проверки</td><td>3-5s</td></tr>
+<tr><td><code>--start-period</code></td><td>Время на инициализацию (игнорирует failures)</td><td>5-30s</td></tr>
+<tr><td><code>--retries</code></td><td>Количество неудач до unhealthy</td><td>3</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Состояния контейнера:</strong></p>
+<pre><code class="language-bash">docker ps
+# CONTAINER ID   IMAGE    STATUS
+# abc123         myapp    Up 5 minutes (healthy)
+# def456         myapp    Up 2 minutes (health: starting)
+# ghi789         myapp    Up 10 minutes (unhealthy)
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В ASP.NET Core вы используете <code>IHealthCheck</code> интерфейс и middleware. В Go нужно реализовать HTTP endpoint самостоятельно. См. раздел <a href="./05_observability.html#health-checks">4.5 Observability</a> для детальной реализации.</p>
+</blockquote>
+<h3 id="graceful-shutdown"><a class="header" href="#graceful-shutdown">Graceful Shutdown</a></h3>
+<p>Когда Docker останавливает контейнер, он отправляет <code>SIGTERM</code>, ждёт (по умолчанию 10 секунд), затем <code>SIGKILL</code>.</p>
+<pre><code class="language-go">// cmd/server/main.go
+package main
+
+import (
+    "context"
+    "log/slog"
+    "net/http"
+    "os"
+    "os/signal"
+    "syscall"
+    "time"
+)
+
+func main() {
+    logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+
+    // Создаём сервер
+    srv := &amp;http.Server{
+        Addr:         ":8080",
+        Handler:      routes(),
+        ReadTimeout:  5 * time.Second,
+        WriteTimeout: 10 * time.Second,
+        IdleTimeout:  120 * time.Second,
+    }
+
+    // Канал для получения сигналов
+    quit := make(chan os.Signal, 1)
+    signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+
+    // Запускаем сервер в горутине
+    go func() {
+        logger.Info("сервер запущен", "addr", srv.Addr)
+        if err := srv.ListenAndServe(); err != nil &amp;&amp; err != http.ErrServerClosed {
+            logger.Error("ошибка сервера", "error", err)
+            os.Exit(1)
+        }
+    }()
+
+    // Ждём сигнал завершения
+    sig := &lt;-quit
+    logger.Info("получен сигнал завершения", "signal", sig)
+
+    // Контекст с таймаутом для graceful shutdown
+    // Должен быть меньше, чем docker stop timeout (10s по умолчанию)
+    ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
+    defer cancel()
+
+    // Graceful shutdown — ждём завершения активных запросов
+    if err := srv.Shutdown(ctx); err != nil {
+        logger.Error("ошибка graceful shutdown", "error", err)
+        os.Exit(1)
+    }
+
+    logger.Info("сервер остановлен корректно")
+}
+</code></pre>
+<p><strong>Таймауты:</strong></p>
+<pre><code>Docker SIGTERM ─────────────────────────────────────────► Docker SIGKILL
+                    |◄────── 10s по умолчанию ──────►|
+
+Приложение:         |◄── Shutdown ctx 8s ──►|
+                    └─ Завершение запросов ─┘
+</code></pre>
+<p><strong>Dockerfile с увеличенным stop timeout:</strong></p>
+<pre><code class="language-dockerfile"># Увеличиваем таймаут для приложений с долгими операциями
+STOPSIGNAL SIGTERM
+# docker stop --time=30 или docker-compose stop_grace_period: 30s
+</code></pre>
+<p><strong>C# аналог:</strong></p>
+<pre><code class="language-csharp">// Program.cs в ASP.NET Core
+var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
+
+// IHostApplicationLifetime — встроенный механизм
+var lifetime = app.Services.GetRequiredService&lt;IHostApplicationLifetime&gt;();
+
+lifetime.ApplicationStopping.Register(() =&gt;
+{
+    Console.WriteLine("Получен сигнал завершения...");
+    // Cleanup logic
+});
+
+app.Run();
+</code></pre>
+<h3 id="логирование-в-контейнере"><a class="header" href="#логирование-в-контейнере">Логирование в контейнере</a></h3>
+<p><strong>12-Factor App</strong>: Логи в stdout/stderr, агрегация внешними средствами.</p>
+<pre><code class="language-go">// ✅ Правильно — логи в stdout
+logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+logger.Info("запрос обработан", "method", "GET", "path", "/users")
+
+// ❌ Неправильно — логи в файл
+file, _ := os.OpenFile("/var/log/app.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+logger := slog.New(slog.NewJSONHandler(file, nil))
+</code></pre>
+<p><strong>JSON формат для агрегаторов:</strong></p>
+<pre><code class="language-go">// slog с JSON handler
+logger := slog.New(slog.NewJSONHandler(os.Stdout, &amp;slog.HandlerOptions{
+    Level: slog.LevelInfo,
+}))
+
+logger.Info("запрос обработан",
+    "method", "GET",
+    "path", "/api/users",
+    "status", 200,
+    "duration_ms", 45,
+    "trace_id", "abc123",
+)
+</code></pre>
+<p><strong>Вывод:</strong></p>
+<pre><code class="language-json">{"time":"2024-01-15T10:30:00Z","level":"INFO","msg":"запрос обработан","method":"GET","path":"/api/users","status":200,"duration_ms":45,"trace_id":"abc123"}
+</code></pre>
+<p><strong>Docker logging drivers:</strong></p>
+<pre><code class="language-bash"># Просмотр логов контейнера
+docker logs -f myapp
+
+# С timestamp
+docker logs -f --timestamps myapp
+
+# Последние 100 строк
+docker logs --tail 100 myapp
+</code></pre>
+<p><strong>Compose с logging:</strong></p>
+<pre><code class="language-yaml">services:
+  app:
+    image: myapp:latest
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"    # Ротация по размеру
+        max-file: "3"      # Максимум 3 файла
+</code></pre>
+<h3 id="сигналы-и-pid-1"><a class="header" href="#сигналы-и-pid-1">Сигналы и PID 1</a></h3>
+<p>В контейнере ваш процесс запускается как PID 1. Это особый процесс в Linux с особым поведением сигналов.</p>
+<p><strong>Проблема с shell формой:</strong></p>
+<pre><code class="language-dockerfile"># ❌ Shell форма — запускает через /bin/sh
+CMD ./server
+# PID 1: /bin/sh -c "./server"
+# PID 2: ./server
+# SIGTERM идёт к shell, не к приложению!
+</code></pre>
+<pre><code class="language-dockerfile"># ✅ Exec форма — запускает напрямую
+CMD ["./server"]
+# PID 1: ./server
+# SIGTERM идёт напрямую к приложению
+</code></pre>
+<p><strong>ENTRYPOINT vs CMD:</strong></p>
+<pre><code class="language-dockerfile"># ENTRYPOINT — основная команда (не переопределяется без --entrypoint)
+# CMD — аргументы по умолчанию (переопределяются)
+
+ENTRYPOINT ["/server"]
+CMD ["--port=8080"]
+
+# docker run myapp → /server --port=8080
+# docker run myapp --port=9090 → /server --port=9090
+</code></pre>
+<p><strong>Zombie processes:</strong></p>
+<p>Если ваше приложение создаёт дочерние процессы, они могут стать “зомби” после завершения (PID 1 не делает reaping автоматически).</p>
+<p><strong>Решение с tini (для Alpine с shell скриптами):</strong></p>
+<pre><code class="language-dockerfile">FROM alpine:3.20
+
+RUN apk add --no-cache tini
+
+COPY --from=builder /app/server /server
+
+# tini как init system — корректно обрабатывает сигналы и reaping
+ENTRYPOINT ["/sbin/tini", "--"]
+CMD ["/server"]
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для Go приложений</strong>: Если не создаёте дочерние процессы — tini не нужен. Go корректно обрабатывает сигналы, когда используете exec форму.</p>
+</blockquote>
+<hr>
+<h2 id="docker-compose"><a class="header" href="#docker-compose">Docker Compose</a></h2>
+<p>Docker Compose — инструмент для определения и запуска multi-container приложений.</p>
+<h3 id="структура-composeyaml"><a class="header" href="#структура-composeyaml">Структура compose.yaml</a></h3>
+<pre><code class="language-yaml"># compose.yaml (или docker-compose.yml)
+name: myapp  # Имя проекта (опционально)
+
+services:
+  # Определение сервисов
+  app:
+    # ...
+
+  postgres:
+    # ...
+
+  redis:
+    # ...
+
+networks:
+  # Определение сетей
+  backend:
+    driver: bridge
+
+volumes:
+  # Определение volumes
+  postgres-data:
+</code></pre>
+<h3 id="сервис-go-приложения"><a class="header" href="#сервис-go-приложения">Сервис Go приложения</a></h3>
+<pre><code class="language-yaml">services:
+  app:
+    # Сборка из Dockerfile
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production  # Multi-stage target
+      args:
+        - VERSION=${VERSION:-dev}
+        - COMMIT=${COMMIT:-unknown}
+
+    # Или готовый образ
+    # image: ghcr.io/myorg/myapp:latest
+
+    # Имя контейнера (опционально)
+    container_name: myapp
+
+    # Порты: хост:контейнер
+    ports:
+      - "8080:8080"
+      - "9090:9090"  # gRPC
+
+    # Переменные окружения
+    environment:
+      - ENV=production
+      - LOG_LEVEL=info
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=myapp
+      - DB_PASSWORD=${DB_PASSWORD}  # Из .env файла
+      - DB_NAME=myapp
+      - REDIS_ADDR=redis:6379
+
+    # Или из файла
+    env_file:
+      - .env
+      - .env.local
+
+    # Зависимости
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "/app/server", "-health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+    # Перезапуск
+    restart: unless-stopped
+
+    # Ресурсы (опционально)
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+    # Сети
+    networks:
+      - backend
+</code></pre>
+<h3 id="зависимости-postgresql-redis"><a class="header" href="#зависимости-postgresql-redis">Зависимости: PostgreSQL, Redis</a></h3>
+<pre><code class="language-yaml">services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: myapp-postgres
+
+    environment:
+      POSTGRES_USER: myapp
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: myapp
+
+    # Инициализация базы
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+    # Health check для PostgreSQL
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myapp -d myapp"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+    ports:
+      - "5432:5432"  # Для локальной разработки
+
+    networks:
+      - backend
+
+  redis:
+    image: redis:7-alpine
+    container_name: myapp-redis
+
+    # Команда с настройками
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+
+    volumes:
+      - redis-data:/data
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+    ports:
+      - "6379:6379"
+
+    networks:
+      - backend
+
+volumes:
+  postgres-data:
+  redis-data:
+
+networks:
+  backend:
+    driver: bridge
+</code></pre>
+<h3 id="networking-и-service-discovery"><a class="header" href="#networking-и-service-discovery">Networking и service discovery</a></h3>
+<p>В Docker Compose сервисы автоматически доступны по имени в одной сети.</p>
+<pre><code class="language-yaml">services:
+  app:
+    environment:
+      # Имя сервиса = hostname в сети
+      - DB_HOST=postgres    # НЕ localhost!
+      - REDIS_ADDR=redis:6379
+    networks:
+      - backend
+
+  postgres:
+    networks:
+      - backend
+
+  redis:
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+</code></pre>
+<pre><code class="language-go">// В коде Go
+cfg := &amp;Config{
+    DBHost:    os.Getenv("DB_HOST"),    // "postgres"
+    RedisAddr: os.Getenv("REDIS_ADDR"), // "redis:6379"
+}
+
+// Подключение к PostgreSQL
+dsn := fmt.Sprintf("host=%s port=5432 user=myapp password=secret dbname=myapp",
+    cfg.DBHost) // host=postgres
+
+// Подключение к Redis
+rdb := redis.NewClient(&amp;redis.Options{
+    Addr: cfg.RedisAddr, // redis:6379
+})
+</code></pre>
+<p><strong>DNS resolution внутри сети:</strong></p>
+<pre><code class="language-bash"># Из контейнера app
+docker exec myapp nslookup postgres
+# Server:    127.0.0.11
+# Address:   127.0.0.11:53
+# Name:      postgres
+# Address:   172.20.0.2
+</code></pre>
+<h3 id="volumes-данные-и-конфигурация"><a class="header" href="#volumes-данные-и-конфигурация">Volumes: данные и конфигурация</a></h3>
+<pre><code class="language-yaml">services:
+  app:
+    volumes:
+      # Named volume для персистентных данных
+      - app-data:/app/data
+
+      # Bind mount для конфигурации (только чтение)
+      - ./config:/app/config:ro
+
+      # Bind mount для разработки (hot reload)
+      - .:/app:cached
+
+  postgres:
+    volumes:
+      # Named volume — данные переживают перезапуск
+      - postgres-data:/var/lib/postgresql/data
+
+      # Init скрипты
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+volumes:
+  app-data:
+  postgres-data:
+    # Внешний volume (создан отдельно)
+    # external: true
+</code></pre>
+<p><strong>Типы volumes:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Тип</th><th>Синтаксис</th><th>Использование</th></tr>
+</thead>
+<tbody>
+<tr><td>Named</td><td><code>volume-name:/path</code></td><td>Персистентные данные</td></tr>
+<tr><td>Bind</td><td><code>./host/path:/container/path</code></td><td>Разработка, конфиги</td></tr>
+<tr><td>tmpfs</td><td><code>tmpfs:/path</code></td><td>Временные данные (в памяти)</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="health-checks-и-depends_on"><a class="header" href="#health-checks-и-depends_on">Health checks и depends_on</a></h3>
+<pre><code class="language-yaml">services:
+  app:
+    depends_on:
+      postgres:
+        condition: service_healthy  # Ждём healthcheck
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_started  # Просто запуск (нет healthcheck)
+
+    healthcheck:
+      test: ["CMD", "/app/server", "-health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  postgres:
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myapp"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+</code></pre>
+<p><strong>Условия depends_on:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Условие</th><th>Описание</th></tr>
+</thead>
+<tbody>
+<tr><td><code>service_started</code></td><td>Контейнер запущен (по умолчанию)</td></tr>
+<tr><td><code>service_healthy</code></td><td>Healthcheck прошёл</td></tr>
+<tr><td><code>service_completed_successfully</code></td><td>Контейнер завершился с кодом 0</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: <code>depends_on</code> гарантирует порядок запуска, но не готовность сервиса. Используйте <code>condition: service_healthy</code> для зависимостей.</p>
+</blockquote>
+<h3 id="profiles-для-разных-окружений"><a class="header" href="#profiles-для-разных-окружений">Profiles для разных окружений</a></h3>
+<pre><code class="language-yaml">services:
+  app:
+    profiles: ["dev", "prod"]
+    # ...
+
+  postgres:
+    profiles: ["dev", "prod"]
+    # ...
+
+  # Только для development
+  adminer:
+    image: adminer
+    ports:
+      - "8081:8080"
+    profiles: ["dev"]
+    depends_on:
+      - postgres
+
+  # Только для monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    profiles: ["monitoring", "prod"]
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9091:9090"
+
+  grafana:
+    image: grafana/grafana:latest
+    profiles: ["monitoring", "prod"]
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+
+  # Только для production
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    profiles: ["monitoring", "prod"]
+    ports:
+      - "16686:16686"
+      - "4317:4317"
+</code></pre>
+<p><strong>Использование profiles:</strong></p>
+<pre><code class="language-bash"># Development (app + postgres + adminer)
+docker compose --profile dev up
+
+# Production (app + postgres + monitoring)
+docker compose --profile prod up
+
+# Development + monitoring
+docker compose --profile dev --profile monitoring up
+
+# Конкретные сервисы
+docker compose up app postgres
+</code></pre>
+<h3 id="горячая-перезагрузка-в-development-air"><a class="header" href="#горячая-перезагрузка-в-development-air">Горячая перезагрузка в development (air)</a></h3>
+<p><a href="https://github.com/air-verse/air">air</a> — hot reload для Go.</p>
+<p><strong>Установка:</strong></p>
+<pre><code class="language-bash">go install github.com/air-verse/air@latest
+</code></pre>
+<p><strong>.air.toml:</strong></p>
+<pre><code class="language-toml">root = "."
+tmp_dir = "tmp"
+
+[build]
+  # Команда сборки
+  cmd = "go build -o ./tmp/main ./cmd/server"
+  # Бинарник
+  bin = "./tmp/main"
+  # Задержка перед перезапуском
+  delay = 500
+  # Исключения
+  exclude_dir = ["assets", "tmp", "vendor", "testdata", "node_modules"]
+  exclude_file = []
+  exclude_regex = ["_test.go"]
+  exclude_unchanged = false
+  follow_symlink = false
+  # Расширения для отслеживания
+  include_ext = ["go", "tpl", "tmpl", "html", "yaml", "yml", "toml"]
+  # Аргументы
+  args_bin = []
+  # Kill delay
+  kill_delay = 500
+
+[log]
+  time = true
+  main_only = false
+
+[color]
+  main = "magenta"
+  watcher = "cyan"
+  build = "yellow"
+  runner = "green"
+
+[misc]
+  clean_on_exit = true
+</code></pre>
+<p><strong>compose.yaml для development:</strong></p>
+<pre><code class="language-yaml">services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      # Mount исходного кода для hot reload
+      - .:/app:cached
+      # Кэш Go modules
+      - go-mod-cache:/go/pkg/mod
+      # Кэш сборки
+      - go-build-cache:/root/.cache/go-build
+    command: ["air", "-c", ".air.toml"]
+    ports:
+      - "8080:8080"
+    environment:
+      - ENV=development
+      - DB_HOST=postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  go-mod-cache:
+  go-build-cache:
+</code></pre>
+<p><strong>Dockerfile.dev:</strong></p>
+<pre><code class="language-dockerfile">FROM golang:1.23-alpine
+
+# Установка air
+RUN go install github.com/air-verse/air@latest
+
+WORKDIR /app
+
+# Копируем go.mod для начальной загрузки зависимостей
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Исходный код будет mount'иться через volume
+# COPY . .
+
+# Air следит за изменениями и перезапускает
+CMD ["air", "-c", ".air.toml"]
+</code></pre>
+<p><strong>Запуск:</strong></p>
+<pre><code class="language-bash"># Development с hot reload
+docker compose -f compose.yaml -f compose.dev.yaml up
+
+# Или с profile
+docker compose --profile dev up
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Это аналог <code>dotnet watch run</code> в ASP.NET Core. Air отслеживает изменения .go файлов и автоматически пересобирает/перезапускает приложение.</p>
+</blockquote>
+<hr>
+<h2 id="kubernetes-basics"><a class="header" href="#kubernetes-basics">Kubernetes Basics</a></h2>
+<h3 id="зачем-kubernetes-когда-docker-compose-недостаточно"><a class="header" href="#зачем-kubernetes-когда-docker-compose-недостаточно">Зачем Kubernetes: когда Docker Compose недостаточно</a></h3>
+<p>Docker Compose подходит для:</p>
+<ul>
+<li>Локальной разработки</li>
+<li>Простых production-сценариев (один сервер)</li>
+<li>CI/CD тестирования</li>
+</ul>
+<p><strong>Kubernetes нужен когда:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Требование</th><th>Docker Compose</th><th>Kubernetes</th></tr>
+</thead>
+<tbody>
+<tr><td>Автоскейлинг</td><td>❌ Ручной</td><td>✅ HPA, VPA</td></tr>
+<tr><td>High Availability</td><td>❌ Один хост</td><td>✅ Multi-node</td></tr>
+<tr><td>Zero-downtime deploy</td><td>⚠️ Сложно</td><td>✅ Rolling update</td></tr>
+<tr><td>Service mesh</td><td>❌</td><td>✅ Istio, Linkerd</td></tr>
+<tr><td>Self-healing</td><td>❌</td><td>✅ Liveness probes</td></tr>
+<tr><td>Secrets management</td><td>⚠️ .env файлы</td><td>✅ K8s Secrets, Vault</td></tr>
+<tr><td>Multi-cluster</td><td>❌</td><td>✅ Federation</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Kubernetes — это как Azure App Service на стероидах. Вы описываете желаемое состояние, K8s его поддерживает. Похоже на IaC (Infrastructure as Code).</p>
+</blockquote>
+<h3 id="основные-концепции-pod-deployment-service"><a class="header" href="#основные-концепции-pod-deployment-service">Основные концепции: Pod, Deployment, Service</a></h3>
+<p><strong>Pod</strong> — минимальная единица деплоя. Один или несколько контейнеров с общим network namespace.</p>
+<pre><code class="language-yaml"># Пример Pod (обычно не создаётся напрямую)
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp
+  labels:
+    app: myapp
+spec:
+  containers:
+    - name: myapp
+      image: myapp:v1.0.0
+      ports:
+        - containerPort: 8080
+</code></pre>
+<p><strong>Deployment</strong> — управляет ReplicaSets и обеспечивает декларативные обновления.</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+  labels:
+    app: myapp
+spec:
+  replicas: 3  # Количество Pod'ов
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+        - name: myapp
+          image: myapp:v1.0.0
+          ports:
+            - containerPort: 8080
+</code></pre>
+<p><strong>Service</strong> — стабильный endpoint для доступа к Pod’ам.</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: myapp
+spec:
+  selector:
+    app: myapp  # Выбирает Pod'ы с этим label
+  ports:
+    - port: 80        # Порт Service
+      targetPort: 8080 # Порт контейнера
+  type: ClusterIP  # Внутренний IP в кластере
+</code></pre>
+<p><strong>Взаимосвязь:</strong></p>
+<pre><code>                    ┌─────────────────────────────────────────────┐
+                    │              Deployment                      │
+                    │  ┌─────────────────────────────────────┐    │
+                    │  │           ReplicaSet                 │    │
+                    │  │  ┌─────────┐ ┌─────────┐ ┌─────────┐│    │
+User → Service ────►│  │  │  Pod 1  │ │  Pod 2  │ │  Pod 3  ││    │
+       (myapp)      │  │  │ :8080   │ │ :8080   │ │ :8080   ││    │
+                    │  │  └─────────┘ └─────────┘ └─────────┘│    │
+                    │  └─────────────────────────────────────┘    │
+                    └─────────────────────────────────────────────┘
+</code></pre>
+<h3 id="deployment-манифест-для-go-сервиса"><a class="header" href="#deployment-манифест-для-go-сервиса">Deployment манифест для Go сервиса</a></h3>
+<pre><code class="language-yaml"># deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+  namespace: production
+  labels:
+    app: myapp
+    version: v1.0.0
+spec:
+  replicas: 3
+
+  # Стратегия обновления
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1        # Макс. дополнительных Pod'ов при обновлении
+      maxUnavailable: 0  # Мин. доступных Pod'ов (zero-downtime)
+
+  selector:
+    matchLabels:
+      app: myapp
+
+  template:
+    metadata:
+      labels:
+        app: myapp
+        version: v1.0.0
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9090"
+        prometheus.io/path: "/metrics"
+
+    spec:
+      # Security context для Pod
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+
+      containers:
+        - name: myapp
+          image: ghcr.io/myorg/myapp:v1.0.0
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: metrics
+              containerPort: 9090
+              protocol: TCP
+
+          # Переменные из ConfigMap и Secret
+          env:
+            - name: ENV
+              value: "production"
+            - name: LOG_LEVEL
+              value: "info"
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: myapp-config
+                  key: db-host
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: myapp-secrets
+                  key: db-password
+
+          # Или из envFrom
+          envFrom:
+            - configMapRef:
+                name: myapp-config
+            - secretRef:
+                name: myapp-secrets
+
+          # Health checks (подробнее ниже)
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+          startupProbe:
+            httpGet:
+              path: /health/live
+              port: http
+            initialDelaySeconds: 0
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 30  # 30 * 5s = 2.5 минуты на старт
+
+          # Ресурсы (подробнее ниже)
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+
+          # Security context для контейнера
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+
+      # Распределение по нодам
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: myapp
+                topologyKey: kubernetes.io/hostname
+
+      # Graceful shutdown
+      terminationGracePeriodSeconds: 30
+</code></pre>
+<h3 id="service-и-ingress"><a class="header" href="#service-и-ingress">Service и Ingress</a></h3>
+<p><strong>ClusterIP Service (внутренний):</strong></p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: myapp
+  namespace: production
+spec:
+  type: ClusterIP  # Доступен только внутри кластера
+  selector:
+    app: myapp
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+    - name: grpc
+      port: 9090
+      targetPort: 9090
+</code></pre>
+<p><strong>NodePort Service (внешний через порт ноды):</strong></p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-nodeport
+spec:
+  type: NodePort
+  selector:
+    app: myapp
+  ports:
+    - port: 80
+      targetPort: 8080
+      nodePort: 30080  # 30000-32767
+</code></pre>
+<p><strong>LoadBalancer Service (облачный LB):</strong></p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-lb
+spec:
+  type: LoadBalancer  # AWS ELB, GCP GLB, Azure LB
+  selector:
+    app: myapp
+  ports:
+    - port: 80
+      targetPort: 8080
+</code></pre>
+<p><strong>Ingress (HTTP маршрутизация):</strong></p>
+<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: myapp-ingress
+  namespace: production
+  annotations:
+    # Для nginx ingress controller
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # Rate limiting
+    nginx.ingress.kubernetes.io/limit-rps: "100"
+
+spec:
+  ingressClassName: nginx
+
+  # TLS
+  tls:
+    - hosts:
+        - api.example.com
+      secretName: api-tls-secret
+
+  rules:
+    - host: api.example.com
+      http:
+        paths:
+          - path: /api/v1
+            pathType: Prefix
+            backend:
+              service:
+                name: myapp
+                port:
+                  number: 80
+
+          - path: /health
+            pathType: Exact
+            backend:
+              service:
+                name: myapp
+                port:
+                  number: 80
+</code></pre>
+<h3 id="configmaps-и-secrets"><a class="header" href="#configmaps-и-secrets">ConfigMaps и Secrets</a></h3>
+<p><strong>ConfigMap:</strong></p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: myapp-config
+  namespace: production
+data:
+  # Простые значения
+  db-host: "postgres.production.svc.cluster.local"
+  db-port: "5432"
+  db-name: "myapp"
+  log-level: "info"
+
+  # Файл конфигурации
+  config.yaml: |
+    server:
+      port: 8080
+      read_timeout: 5s
+      write_timeout: 10s
+    database:
+      max_connections: 25
+      max_idle: 5
+</code></pre>
+<p><strong>Secret:</strong></p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Secret
+metadata:
+  name: myapp-secrets
+  namespace: production
+type: Opaque
+data:
+  # Значения в base64
+  db-password: cGFzc3dvcmQxMjM=  # echo -n 'password123' | base64
+  api-key: c2VjcmV0LWFwaS1rZXk=
+stringData:
+  # Или plain text (K8s закодирует)
+  jwt-secret: "my-super-secret-jwt-key"
+</code></pre>
+<p><strong>Использование в Pod:</strong></p>
+<pre><code class="language-yaml">spec:
+  containers:
+    - name: myapp
+      # Как переменные окружения
+      env:
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: myapp-config
+              key: db-host
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: myapp-secrets
+              key: db-password
+
+      # Или все значения из ConfigMap/Secret
+      envFrom:
+        - configMapRef:
+            name: myapp-config
+        - secretRef:
+            name: myapp-secrets
+
+      # Как файлы (volume mount)
+      volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+          readOnly: true
+
+  volumes:
+    - name: config-volume
+      configMap:
+        name: myapp-config
+        items:
+          - key: config.yaml
+            path: config.yaml
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Безопасность Secrets</strong>: K8s Secrets хранятся в etcd в base64 (не шифрование!). Для production используйте:</p>
+<ul>
+<li>Sealed Secrets (Bitnami)</li>
+<li>External Secrets Operator + Vault/AWS SM</li>
+<li>SOPS + GitOps</li>
+</ul>
+</blockquote>
+<h3 id="health-probes-liveness-readiness-startup"><a class="header" href="#health-probes-liveness-readiness-startup">Health Probes: liveness, readiness, startup</a></h3>
+<p><strong>Три типа проверок:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Probe</th><th>Назначение</th><th>При неудаче</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Liveness</strong></td><td>Приложение живо?</td><td>Перезапуск контейнера</td></tr>
+<tr><td><strong>Readiness</strong></td><td>Готов принимать трафик?</td><td>Исключение из Service</td></tr>
+<tr><td><strong>Startup</strong></td><td>Завершена инициализация?</td><td>Блокирует liveness/readiness</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Go endpoints:</strong></p>
+<pre><code class="language-go">// internal/health/health.go
+package health
+
+import (
+    "context"
+    "database/sql"
+    "encoding/json"
+    "net/http"
+    "sync"
+    "time"
+
+    "github.com/redis/go-redis/v9"
+)
+
+type Checker struct {
+    db    *sql.DB
+    redis *redis.Client
+}
+
+type Status struct {
+    Status    string            `json:"status"`
+    Checks    map[string]string `json:"checks,omitempty"`
+    Timestamp time.Time         `json:"timestamp"`
+}
+
+// Liveness — приложение работает?
+// Не проверяет внешние зависимости
+func (c *Checker) LivenessHandler(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(Status{
+        Status:    "ok",
+        Timestamp: time.Now(),
+    })
+}
+
+// Readiness — готов принимать трафик?
+// Проверяет все зависимости
+func (c *Checker) ReadinessHandler(w http.ResponseWriter, r *http.Request) {
+    ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
+    defer cancel()
+
+    checks := make(map[string]string)
+    var mu sync.Mutex
+    var wg sync.WaitGroup
+    allHealthy := true
+
+    // Параллельная проверка зависимостей
+    wg.Add(2)
+
+    // Проверка PostgreSQL
+    go func() {
+        defer wg.Done()
+        status := "ok"
+        if err := c.db.PingContext(ctx); err != nil {
+            status = "error: " + err.Error()
+            allHealthy = false
+        }
+        mu.Lock()
+        checks["postgres"] = status
+        mu.Unlock()
+    }()
+
+    // Проверка Redis
+    go func() {
+        defer wg.Done()
+        status := "ok"
+        if err := c.redis.Ping(ctx).Err(); err != nil {
+            status = "error: " + err.Error()
+            allHealthy = false
+        }
+        mu.Lock()
+        checks["redis"] = status
+        mu.Unlock()
+    }()
+
+    wg.Wait()
+
+    w.Header().Set("Content-Type", "application/json")
+    status := Status{
+        Status:    "ok",
+        Checks:    checks,
+        Timestamp: time.Now(),
+    }
+
+    if !allHealthy {
+        status.Status = "degraded"
+        w.WriteHeader(http.StatusServiceUnavailable)
+    }
+
+    json.NewEncoder(w).Encode(status)
+}
+</code></pre>
+<p><strong>Kubernetes манифест:</strong></p>
+<pre><code class="language-yaml">spec:
+  containers:
+    - name: myapp
+      # Liveness — перезапуск при зависании
+      livenessProbe:
+        httpGet:
+          path: /health/live
+          port: 8080
+        initialDelaySeconds: 5    # Ждём перед первой проверкой
+        periodSeconds: 10         # Интервал проверок
+        timeoutSeconds: 3         # Таймаут одной проверки
+        failureThreshold: 3       # Сколько неудач до перезапуска
+
+      # Readiness — исключение из балансировки
+      readinessProbe:
+        httpGet:
+          path: /health/ready
+          port: 8080
+        initialDelaySeconds: 5
+        periodSeconds: 5
+        timeoutSeconds: 3
+        failureThreshold: 3
+        successThreshold: 1       # Сколько успехов до ready
+
+      # Startup — для медленного старта
+      startupProbe:
+        httpGet:
+          path: /health/live
+          port: 8080
+        periodSeconds: 5
+        failureThreshold: 30      # 30 * 5s = 2.5 мин на старт
+        # После успеха startup, включаются liveness/readiness
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В ASP.NET Core вы используете <code>services.AddHealthChecks()</code> и <code>.AddCheck&lt;T&gt;()</code>. В Go реализуете HTTP endpoints вручную, но логика та же: liveness для “жив ли процесс”, readiness для “готов ли к трафику”.</p>
+</blockquote>
+<h3 id="resource-limits-и-requests"><a class="header" href="#resource-limits-и-requests">Resource Limits и Requests</a></h3>
+<p><strong>Go-специфичные настройки:</strong></p>
+<pre><code class="language-yaml">spec:
+  containers:
+    - name: myapp
+      resources:
+        # Requests — гарантированные ресурсы (scheduling)
+        requests:
+          memory: "64Mi"   # Go приложение стартует с ~10-20 MB
+          cpu: "100m"      # 0.1 CPU core
+
+        # Limits — максимум (throttling/OOM kill)
+        limits:
+          memory: "256Mi"  # Go GC учитывает лимит (GOMEMLIMIT)
+          cpu: "500m"      # 0.5 CPU core
+
+      env:
+        # GOMEMLIMIT (Go 1.19+) — мягкий лимит для GC
+        # Должен быть ~80-90% от memory limit
+        - name: GOMEMLIMIT
+          value: "200MiB"
+
+        # GOMAXPROCS — количество потоков (P в GMP)
+        # По умолчанию = все CPU, но в K8s видит все CPU ноды!
+        - name: GOMAXPROCS
+          value: "2"  # Или используйте automaxprocs
+</code></pre>
+<h4 id="go-125-container-aware-gomaxprocs-встроен-в-runtime"><a class="header" href="#go-125-container-aware-gomaxprocs-встроен-в-runtime">Go 1.25+: container-aware GOMAXPROCS встроен в runtime</a></h4>
+<blockquote>
+<p>🚀 <strong>Go 1.25</strong> (август 2025): Go runtime <strong>автоматически</strong> читает cgroup CPU limits. <code>uber-go/automaxprocs</code> больше <strong>не нужен</strong> для Go 1.25+.</p>
+</blockquote>
+<pre><code class="language-go">// Go 1.25+ — GOMAXPROCS устанавливается автоматически
+// из cgroup CPU limits при запуске в контейнере.
+// Ничего дополнительно не нужно!
+func main() {
+    // runtime сам прочитает /sys/fs/cgroup/cpu.max
+    // и установит GOMAXPROCS = ceil(quota / period)
+    startServer()
+}
+</code></pre>
+<p><strong>Для Go &lt; 1.25 используйте <code>automaxprocs</code> (рекомендуется):</strong></p>
+<pre><code class="language-go">import _ "go.uber.org/automaxprocs"
+
+func main() {
+    // automaxprocs автоматически устанавливает GOMAXPROCS
+    // на основе CPU limits в Kubernetes
+}
+</code></pre>
+<pre><code class="language-bash">go get go.uber.org/automaxprocs
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Версия Go</th><th>Решение</th></tr>
+</thead>
+<tbody>
+<tr><td>Go 1.25+</td><td>Встроено в runtime автоматически</td></tr>
+<tr><td>Go &lt; 1.25</td><td><code>go.uber.org/automaxprocs</code></td></tr>
+<tr><td>Все версии</td><td><code>GOMAXPROCS=N</code> env var (явно)</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Почему это важно:</strong></p>
+<pre><code>Без GOMAXPROCS/automaxprocs:
+┌─────────────────────────────────────────────────────────────┐
+│ Node с 32 CPU                                                │
+│ ┌─────────────────────────────────────────────────────────┐ │
+│ │ Pod с limits.cpu: 500m                                  │ │
+│ │ GOMAXPROCS = 32 (видит все CPU ноды!)                   │ │
+│ │ → Создаёт 32 P, но получает только 0.5 CPU              │ │
+│ │ → Постоянное переключение контекста                     │ │
+│ │ → Деградация производительности                         │ │
+│ └─────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+
+С automaxprocs:
+┌─────────────────────────────────────────────────────────────┐
+│ Node с 32 CPU                                                │
+│ ┌─────────────────────────────────────────────────────────┐ │
+│ │ Pod с limits.cpu: 500m                                  │ │
+│ │ GOMAXPROCS = 1 (автоматически из cgroup)                │ │
+│ │ → Оптимальная работа с выделенными ресурсами            │ │
+│ └─────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+</code></pre>
+<h3 id="hpa-автоскейлинг"><a class="header" href="#hpa-автоскейлинг">HPA: автоскейлинг</a></h3>
+<p><strong>Horizontal Pod Autoscaler</strong> автоматически масштабирует количество Pod’ов.</p>
+<pre><code class="language-yaml">apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: myapp-hpa
+  namespace: production
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: myapp
+
+  minReplicas: 2   # Минимум для HA
+  maxReplicas: 10  # Максимум
+
+  metrics:
+    # По CPU
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70  # 70% от requests.cpu
+
+    # По памяти
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+
+    # По custom метрике (требует Prometheus Adapter)
+    - type: Pods
+      pods:
+        metric:
+          name: http_requests_per_second
+        target:
+          type: AverageValue
+          averageValue: "1000"
+
+  # Поведение масштабирования
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300  # Ждём 5 мин перед scale down
+      policies:
+        - type: Percent
+          value: 50
+          periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 0  # Scale up сразу
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 15
+        - type: Pods
+          value: 4
+          periodSeconds: 15
+      selectPolicy: Max
+</code></pre>
+<p><strong>Проверка:</strong></p>
+<pre><code class="language-bash"># Статус HPA
+kubectl get hpa myapp-hpa
+
+# Детали
+kubectl describe hpa myapp-hpa
+
+# Нагрузочное тестирование
+kubectl run -it --rm load-generator --image=busybox -- sh
+# while true; do wget -qO- http://myapp/api/users; done
+</code></pre>
+<hr>
+<h2 id="cicd-интеграция"><a class="header" href="#cicd-интеграция">CI/CD интеграция</a></h2>
+<h3 id="github-actions-для-go--docker"><a class="header" href="#github-actions-для-go--docker">GitHub Actions для Go + Docker</a></h3>
+<pre><code class="language-yaml"># .github/workflows/build.yml
+name: Build and Push
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+          cache: true
+
+      - name: Run tests
+        run: go test -race -coverprofile=coverage.out ./...
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage.out
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            VERSION=${{ github.ref_name }}
+            COMMIT=${{ github.sha }}
+            BUILD_TIME=${{ github.event.head_commit.timestamp }}
+
+      - name: Scan for vulnerabilities
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload scan results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
+</code></pre>
+<h3 id="multi-platform-builds"><a class="header" href="#multi-platform-builds">Multi-platform builds</a></h3>
+<pre><code class="language-dockerfile"># syntax=docker/dockerfile:1
+
+# Поддержка multi-platform через BUILDPLATFORM/TARGETPLATFORM
+FROM --platform=$BUILDPLATFORM golang:1.23-alpine AS builder
+
+# Целевая платформа
+ARG TARGETOS
+ARG TARGETARCH
+
+WORKDIR /build
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+
+# Кросс-компиляция для целевой платформы
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH \
+    go build -ldflags="-s -w" -o /app/server ./cmd/server
+
+FROM gcr.io/distroless/static-debian12:nonroot
+COPY --from=builder /app/server /server
+USER nonroot:nonroot
+ENTRYPOINT ["/server"]
+</code></pre>
+<p><strong>Сборка:</strong></p>
+<pre><code class="language-bash"># Сборка для нескольких платформ
+docker buildx build \
+    --platform linux/amd64,linux/arm64 \
+    --tag myapp:latest \
+    --push \
+    .
+
+# Локальная сборка для текущей платформы
+docker buildx build \
+    --load \
+    --tag myapp:local \
+    .
+</code></pre>
+<h3 id="container-registry"><a class="header" href="#container-registry">Container Registry</a></h3>
+<p><strong>GitHub Container Registry (GHCR):</strong></p>
+<pre><code class="language-bash"># Логин
+echo $GITHUB_TOKEN | docker login ghcr.io -u USERNAME --password-stdin
+
+# Push
+docker push ghcr.io/myorg/myapp:v1.0.0
+</code></pre>
+<p><strong>Docker Hub:</strong></p>
+<pre><code class="language-bash">docker login
+docker push myorg/myapp:v1.0.0
+</code></pre>
+<p><strong>AWS ECR:</strong></p>
+<pre><code class="language-bash"># Получение токена
+aws ecr get-login-password --region us-east-1 | \
+    docker login --username AWS --password-stdin 123456789.dkr.ecr.us-east-1.amazonaws.com
+
+# Push
+docker push 123456789.dkr.ecr.us-east-1.amazonaws.com/myapp:v1.0.0
+</code></pre>
+<h3 id="версионирование-образов"><a class="header" href="#версионирование-образов">Версионирование образов</a></h3>
+<p><strong>Рекомендуемая стратегия:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Тег</th><th>Использование</th><th>Пример</th></tr>
+</thead>
+<tbody>
+<tr><td><code>v1.0.0</code></td><td>Релизы (SemVer)</td><td>Immutable, production</td></tr>
+<tr><td><code>v1.0</code></td><td>Major.Minor</td><td>Patch updates</td></tr>
+<tr><td><code>v1</code></td><td>Major only</td><td>Minor updates</td></tr>
+<tr><td><code>sha-abc123</code></td><td>Конкретный коммит</td><td>CI/CD, debugging</td></tr>
+<tr><td><code>main</code></td><td>Ветка</td><td>Development</td></tr>
+<tr><td><code>latest</code></td><td>Последний релиз</td><td>Не рекомендуется в prod</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-bash"># Теги из Git
+VERSION=$(git describe --tags --always)
+COMMIT=$(git rev-parse --short HEAD)
+
+docker build \
+    --tag myapp:$VERSION \
+    --tag myapp:$COMMIT \
+    --tag myapp:latest \
+    .
+</code></pre>
+<hr>
+<h2 id="сравнение-с-net"><a class="header" href="#сравнение-с-net">Сравнение с .NET</a></h2>
+<h3 id="aspnet-core-docker-vs-go-docker"><a class="header" href="#aspnet-core-docker-vs-go-docker">ASP.NET Core Docker vs Go Docker</a></h3>
+<p><strong>ASP.NET Core:</strong></p>
+<pre><code class="language-dockerfile"># ASP.NET Core multi-stage
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY *.csproj .
+RUN dotnet restore
+COPY . .
+RUN dotnet publish -c Release -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build /app/publish .
+ENTRYPOINT ["dotnet", "MyApp.dll"]
+</code></pre>
+<p><strong>Go:</strong></p>
+<pre><code class="language-dockerfile"># Go multi-stage
+FROM golang:1.23-alpine AS builder
+WORKDIR /build
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o /app/server ./cmd/server
+
+FROM scratch
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /app/server /server
+USER 65534:65534
+ENTRYPOINT ["/server"]
+</code></pre>
+<p><strong>Сравнение:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>ASP.NET Core 8</th><th>Go 1.23</th></tr>
+</thead>
+<tbody>
+<tr><td>SDK образ</td><td>~900 MB</td><td>~850 MB</td></tr>
+<tr><td>Runtime образ</td><td>~220 MB (aspnet)</td><td>~2 MB (scratch)</td></tr>
+<tr><td>Финальный образ</td><td>~250-300 MB</td><td>~5-15 MB</td></tr>
+<tr><td>Runtime в образе</td><td>CLR обязателен</td><td>Не нужен</td></tr>
+<tr><td>Cold start</td><td>~500ms - 2s</td><td>~10-50ms</td></tr>
+<tr><td>Memory footprint</td><td>~100-300 MB</td><td>~10-50 MB</td></tr>
+<tr><td>Self-contained</td><td>❌ (нужен aspnet)</td><td>✅ (статический бинарник)</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="net-aspire-vs-go--compose"><a class="header" href="#net-aspire-vs-go--compose">.NET Aspire vs Go + Compose</a></h3>
+<p><strong>.NET Aspire</strong> (появился в .NET 8):</p>
+<pre><code class="language-csharp">// Program.cs
+var builder = DistributedApplication.CreateBuilder(args);
+
+var cache = builder.AddRedis("cache");
+var postgres = builder.AddPostgres("postgres")
+    .AddDatabase("mydb");
+
+builder.AddProject&lt;Projects.MyApp&gt;("myapp")
+    .WithReference(cache)
+    .WithReference(postgres);
+
+builder.Build().Run();
+</code></pre>
+<p><strong>Преимущества Aspire:</strong></p>
+<ul>
+<li>Интегрирован в Visual Studio</li>
+<li>Типизированные ресурсы</li>
+<li>Автоматический service discovery</li>
+<li>Dashboard из коробки</li>
+<li>Dev/Prod конфигурация</li>
+</ul>
+<p><strong>Go + Docker Compose:</strong></p>
+<pre><code class="language-yaml"># compose.yaml
+services:
+  app:
+    build: .
+    environment:
+      - REDIS_ADDR=redis:6379
+      - DB_HOST=postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  postgres:
+    image: postgres:16-alpine
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+
+  redis:
+    image: redis:7-alpine
+</code></pre>
+<p><strong>Преимущества Go + Compose:</strong></p>
+<ul>
+<li>Полный контроль</li>
+<li>Работает везде (не только Visual Studio)</li>
+<li>Прозрачность конфигурации</li>
+<li>Легко расширять</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: .NET Aspire — это higher-level абстракция над Docker Compose. В Go нет аналога — вы работаете напрямую с Compose/K8s манифестами. Это требует больше работы, но даёт полный контроль.</p>
+</blockquote>
+<h3 id="размеры-образов"><a class="header" href="#размеры-образов">Размеры образов</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Приложение</th><th>.NET 8</th><th>Go</th><th>Разница</th></tr>
+</thead>
+<tbody>
+<tr><td>Hello World</td><td>~220 MB</td><td>~2 MB</td><td>110x</td></tr>
+<tr><td>REST API</td><td>~250 MB</td><td>~8 MB</td><td>31x</td></tr>
+<tr><td>API + DB driver</td><td>~270 MB</td><td>~12 MB</td><td>22x</td></tr>
+<tr><td>Микросервис</td><td>~300 MB</td><td>~15 MB</td><td>20x</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Влияние на:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>Большой образ</th><th>Маленький образ</th></tr>
+</thead>
+<tbody>
+<tr><td>Pull time</td><td>Минуты</td><td>Секунды</td></tr>
+<tr><td>Registry storage</td><td>$$$$</td><td>$</td></tr>
+<tr><td>Cold start (serverless)</td><td>Медленный</td><td>Быстрый</td></tr>
+<tr><td>Network transfer</td><td>Много</td><td>Мало</td></tr>
+<tr><td>Attack surface</td><td>Большая</td><td>Минимальная</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="типичные-ошибки-c-разработчиков"><a class="header" href="#типичные-ошибки-c-разработчиков">Типичные ошибки C# разработчиков</a></h2>
+<h3 id="1-использование-runtime-образов-как-базовых"><a class="header" href="#1-использование-runtime-образов-как-базовых">1. Использование runtime-образов как базовых</a></h3>
+<pre><code class="language-dockerfile"># ❌ Ошибка: думают, что Go нужен runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0  # Зачем??
+COPY myapp /myapp
+# Лишние 220 MB
+
+# ✅ Правильно: Go — статический бинарник
+FROM scratch
+COPY myapp /myapp
+# 0 MB базового образа
+</code></pre>
+<h3 id="2-не-используют-multi-stage-builds"><a class="header" href="#2-не-используют-multi-stage-builds">2. Не используют multi-stage builds</a></h3>
+<pre><code class="language-dockerfile"># ❌ Ошибка: Go SDK в финальном образе
+FROM golang:1.23
+COPY . .
+RUN go build -o /app/server
+CMD ["/app/server"]
+# Размер: ~850 MB
+
+# ✅ Правильно: multi-stage
+FROM golang:1.23 AS builder
+# ...build...
+
+FROM scratch
+COPY --from=builder /app/server /server
+# Размер: ~5 MB
+</code></pre>
+<h3 id="3-cgo_enabled1-по-умолчанию"><a class="header" href="#3-cgo_enabled1-по-умолчанию">3. CGO_ENABLED=1 по умолчанию</a></h3>
+<pre><code class="language-dockerfile"># ❌ Ошибка: динамическая линковка
+FROM golang:1.23-alpine AS builder
+RUN go build -o /app/server
+
+FROM scratch
+COPY --from=builder /app/server /server
+# Ошибка: "not found" — бинарник зависит от libc
+
+# ✅ Правильно: статическая линковка
+RUN CGO_ENABLED=0 go build -o /app/server
+</code></pre>
+<h3 id="4-файловое-логирование-в-контейнере"><a class="header" href="#4-файловое-логирование-в-контейнере">4. Файловое логирование в контейнере</a></h3>
+<pre><code class="language-go">// ❌ Ошибка: логи в файл
+file, _ := os.OpenFile("/var/log/app.log", os.O_CREATE|os.O_WRONLY, 0666)
+logger := slog.New(slog.NewJSONHandler(file, nil))
+
+// ✅ Правильно: stdout/stderr (12-Factor)
+logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+</code></pre>
+<h3 id="5-игнорирование-graceful-shutdown"><a class="header" href="#5-игнорирование-graceful-shutdown">5. Игнорирование graceful shutdown</a></h3>
+<pre><code class="language-go">// ❌ Ошибка: нет обработки SIGTERM
+func main() {
+    http.ListenAndServe(":8080", nil) // Docker kill через 10s
+}
+
+// ✅ Правильно: graceful shutdown
+quit := make(chan os.Signal, 1)
+signal.Notify(quit, syscall.SIGTERM)
+go func() {
+    &lt;-quit
+    srv.Shutdown(ctx)
+}()
+</code></pre>
+<h3 id="6-запуск-от-root"><a class="header" href="#6-запуск-от-root">6. Запуск от root</a></h3>
+<pre><code class="language-dockerfile"># ❌ Ошибка: по умолчанию root
+FROM alpine
+COPY server /server
+ENTRYPOINT ["/server"]
+
+# ✅ Правильно: non-root
+FROM alpine
+RUN adduser -D -H -u 10001 appuser
+USER appuser
+COPY server /server
+ENTRYPOINT ["/server"]
+</code></pre>
+<h3 id="7-хранение-состояния-в-контейнере"><a class="header" href="#7-хранение-состояния-в-контейнере">7. Хранение состояния в контейнере</a></h3>
+<pre><code class="language-go">// ❌ Ошибка: данные в локальном файле
+os.WriteFile("/app/data/users.json", data, 0644)
+// При перезапуске контейнера данные потеряются!
+
+// ✅ Правильно: внешнее хранилище
+db.Exec("INSERT INTO users ...")
+redis.Set(ctx, "user:1", data, 0)
+</code></pre>
+<h3 id="8-depends_on-без-healthcheck"><a class="header" href="#8-depends_on-без-healthcheck">8. depends_on без healthcheck</a></h3>
+<pre><code class="language-yaml"># ❌ Ошибка: depends_on без condition
+services:
+  app:
+    depends_on:
+      - postgres  # Postgres может быть не готов!
+
+# ✅ Правильно: ждём healthcheck
+services:
+  app:
+    depends_on:
+      postgres:
+        condition: service_healthy
+  postgres:
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+</code></pre>
+<h3 id="9-отсутствие-dockerignore"><a class="header" href="#9-отсутствие-dockerignore">9. Отсутствие .dockerignore</a></h3>
+<pre><code># ❌ Без .dockerignore:
+# - .git попадает в контекст (~100 MB)
+# - .env с секретами в образе
+# - node_modules, vendor
+
+# ✅ Создайте .dockerignore:
+.git
+.env
+*.md
+Dockerfile
+</code></pre>
+<h3 id="10-shell-форма-вместо-exec"><a class="header" href="#10-shell-форма-вместо-exec">10. Shell форма вместо exec</a></h3>
+<pre><code class="language-dockerfile"># ❌ Ошибка: shell форма
+CMD ./server
+# SIGTERM не доходит до приложения!
+
+# ✅ Правильно: exec форма
+CMD ["./server"]
+# SIGTERM напрямую к приложению
+</code></pre>
+<hr>
+<h2 id="практические-примеры"><a class="header" href="#практические-примеры">Практические примеры</a></h2>
+<h3 id="пример-1-production-dockerfile-с-multi-stage-и-distroless"><a class="header" href="#пример-1-production-dockerfile-с-multi-stage-и-distroless">Пример 1: Production Dockerfile с multi-stage и distroless</a></h3>
+<p><strong>Задача</strong>: Создать production-ready Dockerfile для Go микросервиса с:</p>
+<ul>
+<li>Multi-stage build</li>
+<li>Distroless runtime</li>
+<li>Версионирование через build args</li>
+<li>Health check</li>
+<li>Безопасность (non-root, minimal image)</li>
+</ul>
+<p><strong>Структура проекта:</strong></p>
+<pre><code>myapp/
+├── cmd/
+│   └── server/
+│       └── main.go
+├── internal/
+│   ├── config/
+│   │   └── config.go
+│   ├── health/
+│   │   └── health.go
+│   └── handler/
+│       └── handler.go
+├── go.mod
+├── go.sum
+├── Dockerfile
+└── .dockerignore
+</code></pre>
+<p><strong>cmd/server/main.go:</strong></p>
+<pre><code class="language-go">package main
+
+import (
+    "context"
+    "flag"
+    "fmt"
+    "log/slog"
+    "net/http"
+    "os"
+    "os/signal"
+    "syscall"
+    "time"
+
+    "myapp/internal/config"
+    "myapp/internal/handler"
+    "myapp/internal/health"
+)
+
+// Версия, внедряется при компиляции через ldflags
+var (
+    Version   = "dev"
+    Commit    = "unknown"
+    BuildTime = "unknown"
+)
+
+func main() {
+    // Health check режим для Docker HEALTHCHECK
+    healthCheck := flag.Bool("health", false, "выполнить health check")
+    flag.Parse()
+
+    if *healthCheck {
+        if err := health.Check("http://localhost:8080/health/live"); err != nil {
+            os.Exit(1)
+        }
+        os.Exit(0)
+    }
+
+    // Настройка логгера
+    logger := slog.New(slog.NewJSONHandler(os.Stdout, &amp;slog.HandlerOptions{
+        Level: slog.LevelInfo,
+    }))
+    slog.SetDefault(logger)
+
+    logger.Info("запуск приложения",
+        "version", Version,
+        "commit", Commit,
+        "build_time", BuildTime,
+    )
+
+    // Загрузка конфигурации
+    cfg, err := config.Load()
+    if err != nil {
+        logger.Error("ошибка загрузки конфигурации", "error", err)
+        os.Exit(1)
+    }
+
+    // Создание обработчиков
+    h := handler.New(logger)
+    healthHandler := health.NewHandler()
+
+    // Настройка роутера
+    mux := http.NewServeMux()
+    mux.HandleFunc("/api/v1/users", h.Users)
+    mux.HandleFunc("/health/live", healthHandler.Live)
+    mux.HandleFunc("/health/ready", healthHandler.Ready)
+    mux.HandleFunc("/version", func(w http.ResponseWriter, r *http.Request) {
+        fmt.Fprintf(w, `{"version":"%s","commit":"%s","build_time":"%s"}`,
+            Version, Commit, BuildTime)
+    })
+
+    // Настройка сервера
+    srv := &amp;http.Server{
+        Addr:         fmt.Sprintf(":%d", cfg.Port),
+        Handler:      mux,
+        ReadTimeout:  cfg.ReadTimeout,
+        WriteTimeout: cfg.WriteTimeout,
+        IdleTimeout:  120 * time.Second,
+    }
+
+    // Graceful shutdown
+    quit := make(chan os.Signal, 1)
+    signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+
+    go func() {
+        logger.Info("сервер запущен", "port", cfg.Port)
+        if err := srv.ListenAndServe(); err != nil &amp;&amp; err != http.ErrServerClosed {
+            logger.Error("ошибка сервера", "error", err)
+            os.Exit(1)
+        }
+    }()
+
+    &lt;-quit
+    logger.Info("получен сигнал завершения, начинаем graceful shutdown")
+
+    ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+    defer cancel()
+
+    if err := srv.Shutdown(ctx); err != nil {
+        logger.Error("ошибка shutdown", "error", err)
+        os.Exit(1)
+    }
+
+    logger.Info("сервер остановлен корректно")
+}
+</code></pre>
+<p><strong>internal/health/health.go:</strong></p>
+<pre><code class="language-go">package health
+
+import (
+    "encoding/json"
+    "net/http"
+    "time"
+)
+
+type Handler struct{}
+
+func NewHandler() *Handler {
+    return &amp;Handler{}
+}
+
+type response struct {
+    Status    string `json:"status"`
+    Timestamp string `json:"timestamp"`
+}
+
+// Live — проверка жизнеспособности (для liveness probe)
+func (h *Handler) Live(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(response{
+        Status:    "ok",
+        Timestamp: time.Now().UTC().Format(time.RFC3339),
+    })
+}
+
+// Ready — проверка готовности (для readiness probe)
+func (h *Handler) Ready(w http.ResponseWriter, r *http.Request) {
+    // TODO: добавить проверку зависимостей (DB, Redis)
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(response{
+        Status:    "ok",
+        Timestamp: time.Now().UTC().Format(time.RFC3339),
+    })
+}
+
+// Check — клиент для health check (используется в Docker HEALTHCHECK)
+func Check(url string) error {
+    client := &amp;http.Client{Timeout: 3 * time.Second}
+    resp, err := client.Get(url)
+    if err != nil {
+        return err
+    }
+    defer resp.Body.Close()
+
+    if resp.StatusCode != http.StatusOK {
+        return http.ErrAbortHandler
+    }
+    return nil
+}
+</code></pre>
+<p><strong>Dockerfile:</strong></p>
+<pre><code class="language-dockerfile"># syntax=docker/dockerfile:1
+
+# =============================================================================
+# Stage 1: Builder
+# =============================================================================
+FROM --platform=$BUILDPLATFORM golang:1.23-alpine AS builder
+
+# Аргументы для версионирования
+ARG VERSION=dev
+ARG COMMIT=unknown
+ARG BUILD_TIME=unknown
+
+# Аргументы для кросс-компиляции
+ARG TARGETOS
+ARG TARGETARCH
+
+# Метаданные
+LABEL maintainer="team@example.com"
+LABEL stage="builder"
+
+WORKDIR /build
+
+# Копируем зависимости (для кэширования)
+COPY go.mod go.sum ./
+
+# Скачиваем зависимости с кэшированием
+RUN --mount=type=cache,target=/go/pkg/mod \
+    go mod download
+
+# Копируем исходный код
+COPY . .
+
+# Собираем статический бинарник для целевой платформы
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
+    go build \
+        -ldflags="-s -w \
+            -X main.Version=${VERSION} \
+            -X main.Commit=${COMMIT} \
+            -X main.BuildTime=${BUILD_TIME}" \
+        -o /build/server \
+        ./cmd/server
+
+# =============================================================================
+# Stage 2: Runtime (Distroless)
+# =============================================================================
+FROM gcr.io/distroless/static-debian12:nonroot
+
+# Метаданные
+LABEL maintainer="team@example.com"
+LABEL org.opencontainers.image.title="MyApp"
+LABEL org.opencontainers.image.description="Production Go microservice"
+LABEL org.opencontainers.image.source="https://github.com/myorg/myapp"
+
+# Копируем бинарник из builder
+COPY --from=builder /build/server /server
+
+# Используем non-root пользователя (уже настроен в :nonroot)
+USER nonroot:nonroot
+
+# Порт приложения
+EXPOSE 8080
+
+# Health check (использует сам бинарник)
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD ["/server", "-health"]
+
+# Точка входа
+ENTRYPOINT ["/server"]
+</code></pre>
+<p><strong>.dockerignore:</strong></p>
+<pre><code class="language-dockerignore"># Git
+.git
+.gitignore
+.github
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Документация
+*.md
+!README.md
+docs/
+
+# Тесты
+*_test.go
+**/*_test.go
+testdata/
+coverage.out
+
+# Конфигурация разработки
+.env
+.env.*
+*.local
+.air.toml
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Build артефакты
+bin/
+dist/
+tmp/
+*.exe
+
+# Секреты
+*.pem
+*.key
+secrets/
+credentials/
+</code></pre>
+<p><strong>Сборка и запуск:</strong></p>
+<pre><code class="language-bash"># Сборка с версионированием
+docker build \
+    --build-arg VERSION=$(git describe --tags --always) \
+    --build-arg COMMIT=$(git rev-parse --short HEAD) \
+    --build-arg BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
+    -t myapp:$(git describe --tags --always) \
+    .
+
+# Запуск
+docker run -d \
+    --name myapp \
+    -p 8080:8080 \
+    -e LOG_LEVEL=info \
+    myapp:latest
+
+# Проверка
+curl http://localhost:8080/version
+curl http://localhost:8080/health/live
+docker inspect --format='{{.State.Health.Status}}' myapp
+
+# Размер образа
+docker images myapp
+# REPOSITORY   TAG       SIZE
+# myapp        v1.0.0    12.3MB
+</code></pre>
+<hr>
+<h3 id="пример-2-docker-compose-для-микросервисов"><a class="header" href="#пример-2-docker-compose-для-микросервисов">Пример 2: Docker Compose для микросервисов</a></h3>
+<p><strong>Задача</strong>: Создать полное локальное окружение для разработки с:</p>
+<ul>
+<li>Go API сервис</li>
+<li>PostgreSQL с инициализацией</li>
+<li>Redis для кэширования</li>
+<li>Prometheus + Grafana для мониторинга</li>
+<li>Hot reload для разработки</li>
+</ul>
+<p><strong>Структура проекта:</strong></p>
+<pre><code>myapp/
+├── cmd/server/main.go
+├── internal/...
+├── scripts/
+│   └── init.sql
+├── config/
+│   └── prometheus.yml
+├── Dockerfile
+├── Dockerfile.dev
+├── compose.yaml
+├── compose.override.yaml
+├── .air.toml
+└── .env.example
+</code></pre>
+<p><strong>compose.yaml (база):</strong></p>
+<pre><code class="language-yaml"># compose.yaml — базовая конфигурация
+name: myapp
+
+services:
+  # ==========================================================================
+  # Go API сервис
+  # ==========================================================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - VERSION=${VERSION:-dev}
+    image: myapp:${VERSION:-dev}
+    container_name: myapp-api
+    ports:
+      - "8080:8080"
+      - "9090:9090"  # Metrics
+    environment:
+      - ENV=production
+      - LOG_LEVEL=info
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=myapp
+      - DB_PASSWORD=${DB_PASSWORD:-secret}
+      - DB_NAME=myapp
+      - DB_SSLMODE=disable
+      - REDIS_ADDR=redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["/server", "-health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - backend
+
+  # ==========================================================================
+  # PostgreSQL
+  # ==========================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: myapp-postgres
+    environment:
+      POSTGRES_USER: myapp
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
+      POSTGRES_DB: myapp
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myapp -d myapp"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - backend
+
+  # ==========================================================================
+  # Redis
+  # ==========================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: myapp-redis
+    command: &gt;
+      redis-server
+      --appendonly yes
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - backend
+
+# ==========================================================================
+# Volumes
+# ==========================================================================
+volumes:
+  postgres-data:
+  redis-data:
+
+# ==========================================================================
+# Networks
+# ==========================================================================
+networks:
+  backend:
+    driver: bridge
+</code></pre>
+<p><strong>compose.override.yaml (development):</strong></p>
+<pre><code class="language-yaml"># compose.override.yaml — автоматически применяется к compose.yaml
+# Переопределения для разработки
+services:
+  app:
+    build:
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/app:cached
+      - go-mod-cache:/go/pkg/mod
+      - go-build-cache:/root/.cache/go-build
+    command: ["air", "-c", ".air.toml"]
+    environment:
+      - ENV=development
+      - LOG_LEVEL=debug
+
+  # Adminer для работы с БД
+  adminer:
+    image: adminer
+    container_name: myapp-adminer
+    ports:
+      - "8081:8080"
+    depends_on:
+      - postgres
+    networks:
+      - backend
+
+  # Redis Commander
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: myapp-redis-commander
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8082:8081"
+    depends_on:
+      - redis
+    networks:
+      - backend
+
+volumes:
+  go-mod-cache:
+  go-build-cache:
+</code></pre>
+<p><strong>compose.monitoring.yaml (мониторинг):</strong></p>
+<pre><code class="language-yaml"># compose.monitoring.yaml — для production/staging с мониторингом
+# Использование: docker compose -f compose.yaml -f compose.monitoring.yaml up
+
+services:
+  # ==========================================================================
+  # Prometheus
+  # ==========================================================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: myapp-prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-lifecycle'
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    ports:
+      - "9091:9090"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - backend
+
+  # ==========================================================================
+  # Grafana
+  # ==========================================================================
+  grafana:
+    image: grafana/grafana:latest
+    container_name: myapp-grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana-data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    networks:
+      - backend
+
+  # ==========================================================================
+  # Jaeger (Tracing)
+  # ==========================================================================
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: myapp-jaeger
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+      - "16686:16686"  # UI
+      - "4317:4317"    # OTLP gRPC
+      - "4318:4318"    # OTLP HTTP
+    restart: unless-stopped
+    networks:
+      - backend
+
+volumes:
+  prometheus-data:
+  grafana-data:
+</code></pre>
+<p><strong>config/prometheus.yml:</strong></p>
+<pre><code class="language-yaml">global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'myapp'
+    static_configs:
+      - targets: ['app:9090']
+    metrics_path: '/metrics'
+
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+</code></pre>
+<p><strong>scripts/init.sql:</strong></p>
+<pre><code class="language-sql">-- Инициализация базы данных
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+CREATE TABLE IF NOT EXISTS users (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    email VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+
+-- Тестовые данные
+INSERT INTO users (email, name) VALUES
+    ('alice@example.com', 'Alice'),
+    ('bob@example.com', 'Bob')
+ON CONFLICT (email) DO NOTHING;
+</code></pre>
+<p><strong>Dockerfile.dev:</strong></p>
+<pre><code class="language-dockerfile">FROM golang:1.23-alpine
+
+# Установка air для hot reload
+RUN go install github.com/air-verse/air@latest
+
+# Установка утилит для отладки
+RUN apk add --no-cache git curl
+
+WORKDIR /app
+
+# Копируем go.mod для начальной загрузки
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Исходный код будет смонтирован через volume
+CMD ["air", "-c", ".air.toml"]
+</code></pre>
+<p><strong>.air.toml:</strong></p>
+<pre><code class="language-toml">root = "."
+tmp_dir = "tmp"
+
+[build]
+  cmd = "go build -o ./tmp/main ./cmd/server"
+  bin = "./tmp/main"
+  delay = 500
+  exclude_dir = ["assets", "tmp", "vendor", "testdata"]
+  exclude_regex = ["_test.go"]
+  include_ext = ["go", "yaml", "yml", "toml"]
+  kill_delay = 500
+
+[log]
+  time = true
+  main_only = false
+
+[color]
+  main = "magenta"
+  watcher = "cyan"
+  build = "yellow"
+  runner = "green"
+
+[misc]
+  clean_on_exit = true
+</code></pre>
+<p><strong>.env.example:</strong></p>
+<pre><code class="language-bash"># Копировать в .env и заполнить
+
+# Database
+DB_PASSWORD=your-secure-password
+
+# Monitoring
+GRAFANA_PASSWORD=your-grafana-password
+
+# App
+VERSION=dev
+</code></pre>
+<p><strong>Использование:</strong></p>
+<pre><code class="language-bash"># Development (с hot reload, adminer, redis-commander)
+docker compose up
+
+# Production (только app + deps)
+docker compose -f compose.yaml up
+
+# Production с мониторингом
+docker compose -f compose.yaml -f compose.monitoring.yaml up
+
+# Сборка и запуск
+docker compose build
+docker compose up -d
+
+# Логи
+docker compose logs -f app
+
+# Остановка
+docker compose down
+
+# Очистка (включая volumes)
+docker compose down -v
+</code></pre>
+<hr>
+<h3 id="пример-3-kubernetes-deployment-с-health-checks-и-hpa"><a class="header" href="#пример-3-kubernetes-deployment-с-health-checks-и-hpa">Пример 3: Kubernetes Deployment с health checks и HPA</a></h3>
+<p><strong>Задача</strong>: Создать полный набор K8s манифестов для production деплоя Go сервиса.</p>
+<p><strong>Структура:</strong></p>
+<pre><code>k8s/
+├── namespace.yaml
+├── configmap.yaml
+├── secret.yaml
+├── deployment.yaml
+├── service.yaml
+├── ingress.yaml
+├── hpa.yaml
+└── kustomization.yaml
+</code></pre>
+<p><strong>k8s/namespace.yaml:</strong></p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Namespace
+metadata:
+  name: myapp
+  labels:
+    name: myapp
+    environment: production
+</code></pre>
+<p><strong>k8s/configmap.yaml:</strong></p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: myapp-config
+  namespace: myapp
+data:
+  # Конфигурация приложения
+  LOG_LEVEL: "info"
+  DB_HOST: "postgres.database.svc.cluster.local"
+  DB_PORT: "5432"
+  DB_NAME: "myapp"
+  DB_SSLMODE: "require"
+  REDIS_ADDR: "redis.cache.svc.cluster.local:6379"
+
+  # Конфигурационный файл (монтируется как volume)
+  config.yaml: |
+    server:
+      port: 8080
+      read_timeout: 5s
+      write_timeout: 10s
+    metrics:
+      port: 9090
+      path: /metrics
+</code></pre>
+<p><strong>k8s/secret.yaml:</strong></p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Secret
+metadata:
+  name: myapp-secrets
+  namespace: myapp
+type: Opaque
+stringData:
+  # В реальности используйте Sealed Secrets или External Secrets
+  DB_PASSWORD: "super-secret-password"
+  API_KEY: "secret-api-key"
+</code></pre>
+<p><strong>k8s/deployment.yaml:</strong></p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+  namespace: myapp
+  labels:
+    app: myapp
+    version: v1.0.0
+spec:
+  replicas: 3
+
+  # Стратегия обновления
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+
+  selector:
+    matchLabels:
+      app: myapp
+
+  template:
+    metadata:
+      labels:
+        app: myapp
+        version: v1.0.0
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9090"
+        prometheus.io/path: "/metrics"
+
+    spec:
+      # Security context для Pod
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+        seccompProfile:
+          type: RuntimeDefault
+
+      # Service Account
+      serviceAccountName: myapp
+
+      containers:
+        - name: myapp
+          image: ghcr.io/myorg/myapp:v1.0.0
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: metrics
+              containerPort: 9090
+              protocol: TCP
+
+          # Переменные окружения
+          env:
+            - name: ENV
+              value: "production"
+            # GOMEMLIMIT для Go GC (80% от limits.memory)
+            - name: GOMEMLIMIT
+              value: "200MiB"
+            # Pod info
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+
+          # Переменные из ConfigMap и Secret
+          envFrom:
+            - configMapRef:
+                name: myapp-config
+            - secretRef:
+                name: myapp-secrets
+
+          # Volume mounts
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+
+          # Liveness probe — приложение живо?
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+          # Readiness probe — готов к трафику?
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+            successThreshold: 1
+
+          # Startup probe — для медленного старта
+          startupProbe:
+            httpGet:
+              path: /health/live
+              port: http
+            periodSeconds: 5
+            failureThreshold: 30
+
+          # Resources
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+
+          # Security context для контейнера
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+
+      # Volumes
+      volumes:
+        - name: config
+          configMap:
+            name: myapp-config
+            items:
+              - key: config.yaml
+                path: config.yaml
+        - name: tmp
+          emptyDir: {}
+
+      # Anti-affinity — распределение по нодам
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: myapp
+                topologyKey: kubernetes.io/hostname
+
+      # Graceful shutdown
+      terminationGracePeriodSeconds: 30
+
+      # Image pull secrets (если private registry)
+      # imagePullSecrets:
+      #   - name: ghcr-secret
+</code></pre>
+<p><strong>k8s/service.yaml:</strong></p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: myapp
+  namespace: myapp
+  labels:
+    app: myapp
+spec:
+  type: ClusterIP
+  selector:
+    app: myapp
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+      protocol: TCP
+    - name: metrics
+      port: 9090
+      targetPort: 9090
+      protocol: TCP
+</code></pre>
+<p><strong>k8s/ingress.yaml:</strong></p>
+<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: myapp
+  namespace: myapp
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - api.example.com
+      secretName: myapp-tls
+  rules:
+    - host: api.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: myapp
+                port:
+                  number: 80
+</code></pre>
+<p><strong>k8s/hpa.yaml:</strong></p>
+<pre><code class="language-yaml">apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: myapp
+  namespace: myapp
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: myapp
+
+  minReplicas: 2
+  maxReplicas: 10
+
+  metrics:
+    # CPU utilization
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+
+    # Memory utilization
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+
+  # Поведение масштабирования
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+        - type: Percent
+          value: 50
+          periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 15
+        - type: Pods
+          value: 4
+          periodSeconds: 15
+      selectPolicy: Max
+</code></pre>
+<p><strong>k8s/kustomization.yaml:</strong></p>
+<pre><code class="language-yaml">apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: myapp
+
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - secret.yaml
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+  - hpa.yaml
+
+commonLabels:
+  app.kubernetes.io/name: myapp
+  app.kubernetes.io/part-of: myapp-system
+
+images:
+  - name: ghcr.io/myorg/myapp
+    newTag: v1.0.0
+</code></pre>
+<p><strong>Деплой:</strong></p>
+<pre><code class="language-bash"># Применение всех манифестов
+kubectl apply -k k8s/
+
+# Или по отдельности
+kubectl apply -f k8s/namespace.yaml
+kubectl apply -f k8s/configmap.yaml
+kubectl apply -f k8s/secret.yaml
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/service.yaml
+kubectl apply -f k8s/ingress.yaml
+kubectl apply -f k8s/hpa.yaml
+
+# Проверка статуса
+kubectl -n myapp get pods
+kubectl -n myapp get svc
+kubectl -n myapp get hpa
+
+# Логи
+kubectl -n myapp logs -f deployment/myapp
+
+# Port forward для тестирования
+kubectl -n myapp port-forward svc/myapp 8080:80
+
+# Масштабирование
+kubectl -n myapp scale deployment/myapp --replicas=5
+
+# Обновление образа
+kubectl -n myapp set image deployment/myapp myapp=ghcr.io/myorg/myapp:v1.1.0
+
+# Rollout статус
+kubectl -n myapp rollout status deployment/myapp
+
+# Откат
+kubectl -n myapp rollout undo deployment/myapp
+</code></pre>
+<hr><!-- AUTO: NAV -->
+<p><strong>Вопросы?</strong> Открой issue на <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/issues">GitHub</a></p>
+<p><a href="./06_config.html">← Назад: Конфигурация: Управление настройками в Go</a> | <a href="../part5-project1-url-shortener/">Вперёд: Проект 1: URL Shortener →</a></p>
+<!-- /AUTO: NAV -->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part4-infrastructure/06_config.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part5-project1-url-shortener/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part4-infrastructure/06_config.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part5-project1-url-shortener/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

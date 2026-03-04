@@ -1,0 +1,1671 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>3.2 Структура проекта - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-e1a1ce5b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-c19b06e6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part3-web-api/02_project_structure.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="32-структура-проекта-go"><a class="header" href="#32-структура-проекта-go">3.2 Структура проекта Go</a></h1>
+<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<ul>
+<li><a href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5">Введение</a>
+<ul>
+<li><a href="#%D1%87%D1%82%D0%BE-%D0%B2%D1%8B-%D1%83%D0%B7%D0%BD%D0%B0%D0%B5%D1%82%D0%B5">Что вы узнаете</a></li>
+</ul>
+</li>
+<li><a href="#%D1%84%D0%B8%D0%BB%D0%BE%D1%81%D0%BE%D1%84%D0%B8%D1%8F-%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D1%8B-%D0%B2-go">Философия структуры в Go</a>
+<ul>
+<li><a href="#%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5-%D0%BF%D1%80%D0%B8%D0%BD%D1%86%D0%B8%D0%BF%D1%8B">Ключевые принципы</a></li>
+<li><a href="#c-vs-go-%D0%BE%D1%80%D0%B3%D0%B0%D0%BD%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%BA%D0%BE%D0%B4%D0%B0">C# vs Go: организация кода</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B0%D0%B2%D0%B8%D0%BB%D0%BE-%D1%83%D1%81%D0%BB%D0%BE%D0%B6%D0%BD%D1%8F%D0%B9-%D1%82%D0%BE%D0%BB%D1%8C%D0%BA%D0%BE-%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%BD%D1%83%D0%B6%D0%BD%D0%BE">Правило: усложняй только когда нужно</a></li>
+</ul>
+</li>
+<li><a href="#flat-structure-%D0%BF%D0%BB%D0%BE%D1%81%D0%BA%D0%B0%D1%8F-%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%B0">Flat Structure (плоская структура)</a>
+<ul>
+<li><a href="#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C">Когда использовать</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D1%8B">Пример структуры</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B5%D0%B8%D0%BC%D1%83%D1%89%D0%B5%D1%81%D1%82%D0%B2%D0%B0">Преимущества</a></li>
+<li><a href="#%D0%BD%D0%B5%D0%B4%D0%BE%D1%81%D1%82%D0%B0%D1%82%D0%BA%D0%B8">Недостатки</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-%D0%BA%D0%BE%D0%B4%D0%B0-flat-structure">Пример кода (flat structure)</a></li>
+</ul>
+</li>
+<li><a href="#standard-go-project-layout">Standard Go Project Layout</a>
+<ul>
+<li><a href="#%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D0%BD%D1%8B%D0%B5-%D0%B4%D0%B8%D1%80%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%B8%D0%B8">Основные директории</a></li>
+<li><a href="#%D0%BE%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5-%D0%B4%D0%B8%D1%80%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%B8%D0%B9">Описание директорий</a></li>
+<li><a href="#internal--%D0%B2%D0%B0%D1%88-%D0%BB%D1%83%D1%87%D1%88%D0%B8%D0%B9-%D0%B4%D1%80%D1%83%D0%B3">internal/ — ваш лучший друг</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%BD%D0%B5-%D0%BD%D1%83%D0%B6%D0%B5%D0%BD-%D1%8D%D1%82%D0%BE%D1%82-layout">Когда НЕ нужен этот layout</a></li>
+</ul>
+</li>
+<li><a href="#clean-architecture-%D0%B2-go">Clean Architecture в Go</a>
+<ul>
+<li><a href="#%D1%81%D0%BB%D0%BE%D0%B8-%D0%B8-%D0%B7%D0%B0%D0%B2%D0%B8%D1%81%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D0%B8">Слои и зависимости</a></li>
+<li><a href="#%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%B2-go">Реализация в Go</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-%D0%BA%D0%BE%D0%B4%D0%B0-clean-architecture">Пример кода (Clean Architecture)</a>
+<ul>
+<li><a href="#domain-layer">Domain Layer</a></li>
+<li><a href="#application-layer-use-cases">Application Layer (Use Cases)</a></li>
+<li><a href="#adapter-layer-http-handler">Adapter Layer (HTTP Handler)</a></li>
+<li><a href="#adapter-layer-repository">Adapter Layer (Repository)</a></li>
+</ul>
+</li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-c">Сравнение с C#</a></li>
+</ul>
+</li>
+<li><a href="#dependency-injection">Dependency Injection</a>
+<ul>
+<li><a href="#manual-di-%D0%B8%D0%B4%D0%B8%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%BD%D1%8B%D0%B9-go">Manual DI (идиоматичный Go)</a></li>
+<li><a href="#wire-google">Wire (Google)</a></li>
+<li><a href="#fx-uber">Fx (Uber)</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4%D0%BE%D0%B2">Сравнение подходов</a></li>
+<li><a href="#%D1%80%D0%B5%D0%BA%D0%BE%D0%BC%D0%B5%D0%BD%D0%B4%D0%B0%D1%86%D0%B8%D0%B8">Рекомендации</a></li>
+</ul>
+</li>
+<li><a href="#configuration">Configuration</a>
+<ul>
+<li><a href="#environment-variables">Environment variables</a></li>
+<li><a href="#viper-%D0%B4%D0%BB%D1%8F-%D1%81%D0%BB%D0%BE%D0%B6%D0%BD%D1%8B%D1%85-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D0%BE%D0%B2">Viper для сложных конфигов</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-c-1">Сравнение с C#</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B">Практические примеры</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-flat-structure-%D0%B4%D0%BB%D1%8F-%D0%BC%D0%B8%D0%BA%D1%80%D0%BE%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%B0">Пример 1: Flat structure для микросервиса</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-clean-architecture">Пример 2: Clean Architecture</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-di-%D1%81-wire">Пример 3: DI с Wire</a></li>
+</ul>
+</li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<p>Структура проекта в Go кардинально отличается от C#. Нет Solution/Project файлов, нет жёсткой иерархии namespace’ов, нет требования “один класс — один файл”. Go продвигает простоту и практичность.</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Забудьте про <code>.sln</code>, <code>.csproj</code>, вложенные папки по namespace’ам. В Go структура проекта — это просто папки с файлами <code>.go</code>. Один пакет = одна папка.</p>
+</blockquote>
+<h3 id="что-вы-узнаете"><a class="header" href="#что-вы-узнаете">Что вы узнаете</a></h3>
+<ul>
+<li>Когда использовать плоскую структуру, а когда — сложную</li>
+<li>Standard Go Project Layout и его директории</li>
+<li>Clean Architecture в контексте Go</li>
+<li>Dependency Injection: от manual до Wire/Fx</li>
+<li>Работа с конфигурацией</li>
+</ul>
+<hr>
+<h2 id="философия-структуры-в-go"><a class="header" href="#философия-структуры-в-go">Философия структуры в Go</a></h2>
+<h3 id="ключевые-принципы"><a class="header" href="#ключевые-принципы">Ключевые принципы</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Принцип</th><th>Описание</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Начинай просто</strong></td><td>Не создавай сложную структуру “на вырост”</td></tr>
+<tr><td><strong>Пакет = директория</strong></td><td>Один пакет живёт в одной папке</td></tr>
+<tr><td><strong>internal/</strong></td><td>Код недоступный извне модуля</td></tr>
+<tr><td><strong>Минимум зависимостей</strong></td><td>Пакеты должны быть слабо связаны</td></tr>
+<tr><td><strong>Явность</strong></td><td>Структура должна быть понятна без документации</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="c-vs-go-организация-кода"><a class="header" href="#c-vs-go-организация-кода">C# vs Go: организация кода</a></h3>
+<pre><code># C# Solution
+MySolution/
+├── MySolution.sln
+├── MyApp.Api/
+│   ├── MyApp.Api.csproj
+│   ├── Controllers/
+│   │   └── UsersController.cs
+│   ├── Services/
+│   │   └── UserService.cs
+│   └── Program.cs
+├── MyApp.Domain/
+│   ├── MyApp.Domain.csproj
+│   └── Entities/
+│       └── User.cs
+└── MyApp.Infrastructure/
+    ├── MyApp.Infrastructure.csproj
+    └── Repositories/
+        └── UserRepository.cs
+</code></pre>
+<pre><code># Go Module (простой вариант)
+myapp/
+├── go.mod
+├── go.sum
+├── main.go
+├── handler.go
+├── service.go
+├── repository.go
+└── model.go
+</code></pre>
+<pre><code># Go Module (сложный вариант)
+myapp/
+├── go.mod
+├── go.sum
+├── cmd/
+│   └── api/
+│       └── main.go
+├── internal/
+│   ├── handler/
+│   ├── service/
+│   └── repository/
+└── pkg/
+    └── validator/
+</code></pre>
+<h3 id="правило-усложняй-только-когда-нужно"><a class="header" href="#правило-усложняй-только-когда-нужно">Правило: усложняй только когда нужно</a></h3>
+<pre><code>Маленький проект (&lt; 5 файлов)     → Flat structure
+Средний проект (5-20 файлов)      → Группировка по назначению
+Большой проект / команда          → Standard Layout + Clean Architecture
+Библиотека для переиспользования  → pkg/ структура
+</code></pre>
+<hr>
+<h2 id="flat-structure-плоская-структура"><a class="header" href="#flat-structure-плоская-структура">Flat Structure (плоская структура)</a></h2>
+<p>Простейший подход — все файлы в корне пакета.</p>
+<h3 id="когда-использовать"><a class="header" href="#когда-использовать">Когда использовать</a></h3>
+<ul>
+<li>Микросервисы с ограниченной ответственностью</li>
+<li>CLI утилиты</li>
+<li>Небольшие API (&lt; 10 endpoints)</li>
+<li>Прототипы и MVP</li>
+</ul>
+<h3 id="пример-структуры"><a class="header" href="#пример-структуры">Пример структуры</a></h3>
+<pre><code>user-service/
+├── go.mod
+├── go.sum
+├── main.go          # Entry point, инициализация
+├── config.go        # Конфигурация
+├── handler.go       # HTTP handlers
+├── service.go       # Бизнес-логика
+├── repository.go    # Работа с БД
+├── model.go         # Структуры данных
+├── middleware.go    # HTTP middleware
+└── errors.go        # Кастомные ошибки
+</code></pre>
+<h3 id="преимущества"><a class="header" href="#преимущества">Преимущества</a></h3>
+<ul>
+<li><strong>Простота</strong> — нет вложенности, всё на виду</li>
+<li><strong>Быстрый старт</strong> — минимум boilerplate</li>
+<li><strong>Легко навигировать</strong> — мало файлов</li>
+<li><strong>Нет циклических зависимостей</strong> — всё в одном пакете</li>
+</ul>
+<h3 id="недостатки"><a class="header" href="#недостатки">Недостатки</a></h3>
+<ul>
+<li><strong>Не масштабируется</strong> — при росте становится messy</li>
+<li><strong>Всё public</strong> — нет инкапсуляции между слоями</li>
+<li><strong>Сложно тестировать</strong> — нет изоляции</li>
+</ul>
+<h3 id="пример-кода-flat-structure"><a class="header" href="#пример-кода-flat-structure">Пример кода (flat structure)</a></h3>
+<pre><code class="language-go">// main.go
+package main
+
+import (
+    "log"
+    "net/http"
+)
+
+func main() {
+    cfg := LoadConfig()
+
+    repo := NewUserRepository(cfg.DatabaseURL)
+    svc := NewUserService(repo)
+    handler := NewUserHandler(svc)
+
+    router := SetupRouter(handler)
+
+    log.Printf("Starting server on %s", cfg.ServerAddr)
+    log.Fatal(http.ListenAndServe(cfg.ServerAddr, router))
+}
+</code></pre>
+<pre><code class="language-go">// config.go
+package main
+
+import "os"
+
+type Config struct {
+    ServerAddr  string
+    DatabaseURL string
+}
+
+func LoadConfig() Config {
+    return Config{
+        ServerAddr:  getEnv("SERVER_ADDR", ":8080"),
+        DatabaseURL: getEnv("DATABASE_URL", "postgres://localhost/mydb"),
+    }
+}
+
+func getEnv(key, defaultValue string) string {
+    if value := os.Getenv(key); value != "" {
+        return value
+    }
+    return defaultValue
+}
+</code></pre>
+<pre><code class="language-go">// model.go
+package main
+
+import "time"
+
+type User struct {
+    ID        int       `json:"id"`
+    Email     string    `json:"email"`
+    Name      string    `json:"name"`
+    CreatedAt time.Time `json:"created_at"`
+}
+
+type CreateUserRequest struct {
+    Email string `json:"email"`
+    Name  string `json:"name"`
+}
+</code></pre>
+<pre><code class="language-go">// repository.go
+package main
+
+import (
+    "context"
+    "database/sql"
+)
+
+type UserRepository struct {
+    db *sql.DB
+}
+
+func NewUserRepository(databaseURL string) *UserRepository {
+    db, err := sql.Open("postgres", databaseURL)
+    if err != nil {
+        panic(err)
+    }
+    return &amp;UserRepository{db: db}
+}
+
+func (r *UserRepository) Create(ctx context.Context, user *User) error {
+    query := `INSERT INTO users (email, name) VALUES ($1, $2) RETURNING id, created_at`
+    return r.db.QueryRowContext(ctx, query, user.Email, user.Name).
+        Scan(&amp;user.ID, &amp;user.CreatedAt)
+}
+
+func (r *UserRepository) GetByID(ctx context.Context, id int) (*User, error) {
+    user := &amp;User{}
+    query := `SELECT id, email, name, created_at FROM users WHERE id = $1`
+    err := r.db.QueryRowContext(ctx, query, id).
+        Scan(&amp;user.ID, &amp;user.Email, &amp;user.Name, &amp;user.CreatedAt)
+    if err == sql.ErrNoRows {
+        return nil, nil
+    }
+    return user, err
+}
+</code></pre>
+<pre><code class="language-go">// service.go
+package main
+
+import (
+    "context"
+    "errors"
+)
+
+var ErrUserNotFound = errors.New("user not found")
+
+type UserService struct {
+    repo *UserRepository
+}
+
+func NewUserService(repo *UserRepository) *UserService {
+    return &amp;UserService{repo: repo}
+}
+
+func (s *UserService) CreateUser(ctx context.Context, req CreateUserRequest) (*User, error) {
+    user := &amp;User{
+        Email: req.Email,
+        Name:  req.Name,
+    }
+
+    if err := s.repo.Create(ctx, user); err != nil {
+        return nil, err
+    }
+
+    return user, nil
+}
+
+func (s *UserService) GetUser(ctx context.Context, id int) (*User, error) {
+    user, err := s.repo.GetByID(ctx, id)
+    if err != nil {
+        return nil, err
+    }
+    if user == nil {
+        return nil, ErrUserNotFound
+    }
+    return user, nil
+}
+</code></pre>
+<hr>
+<h2 id="standard-go-project-layout"><a class="header" href="#standard-go-project-layout">Standard Go Project Layout</a></h2>
+<p><a href="https://github.com/golang-standards/project-layout">Standard Go Project Layout</a> — популярный (но не официальный) шаблон структуры.</p>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: Это НЕ официальный стандарт Go. Это набор общепринятых практик. Не копируйте все директории — используйте только нужные.</p>
+</blockquote>
+<h3 id="основные-директории"><a class="header" href="#основные-директории">Основные директории</a></h3>
+<pre><code>myproject/
+├── cmd/                    # Entry points (main packages)
+│   ├── api/
+│   │   └── main.go         # API сервер
+│   ├── worker/
+│   │   └── main.go         # Background worker
+│   └── migrate/
+│       └── main.go         # CLI для миграций
+│
+├── internal/               # Приватный код (не импортируется извне)
+│   ├── config/             # Конфигурация
+│   ├── handler/            # HTTP handlers
+│   ├── service/            # Бизнес-логика
+│   ├── repository/         # Работа с БД
+│   ├── model/              # Domain models
+│   └── pkg/                # Внутренние shared пакеты
+│
+├── pkg/                    # Публичные библиотеки (можно импортировать)
+│   ├── logger/
+│   └── validator/
+│
+├── api/                    # API спецификации
+│   ├── openapi.yaml
+│   └── proto/
+│       └── user.proto
+│
+├── configs/                # Конфигурационные файлы
+│   ├── config.yaml
+│   └── config.example.yaml
+│
+├── deployments/            # Docker, k8s, etc.
+│   ├── Dockerfile
+│   └── docker-compose.yaml
+│
+├── scripts/                # Скрипты для разработки
+│   ├── setup.sh
+│   └── migrate.sh
+│
+├── migrations/             # SQL миграции
+│   ├── 001_init.up.sql
+│   └── 001_init.down.sql
+│
+├── go.mod
+├── go.sum
+├── Makefile
+└── README.md
+</code></pre>
+<h3 id="описание-директорий"><a class="header" href="#описание-директорий">Описание директорий</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Директория</th><th>Назначение</th></tr>
+</thead>
+<tbody>
+<tr><td><code>cmd/</code></td><td>Entry points. Каждая поддиректория — отдельный binary</td></tr>
+<tr><td><code>internal/</code></td><td><strong>Приватный код</strong>. Go compiler запрещает импорт извне модуля</td></tr>
+<tr><td><code>pkg/</code></td><td>Публичные библиотеки. Можно импортировать из других проектов</td></tr>
+<tr><td><code>api/</code></td><td>OpenAPI, gRPC proto, JSON schemas</td></tr>
+<tr><td><code>configs/</code></td><td>Примеры конфигов, templates</td></tr>
+<tr><td><code>deployments/</code></td><td>Docker, Kubernetes, CI/CD</td></tr>
+<tr><td><code>scripts/</code></td><td>Build, install, analysis скрипты</td></tr>
+<tr><td><code>migrations/</code></td><td>Database migrations</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="internal--ваш-лучший-друг"><a class="header" href="#internal--ваш-лучший-друг">internal/ — ваш лучший друг</a></h3>
+<p>Директория <code>internal/</code> имеет особое значение в Go:</p>
+<pre><code class="language-go">// ✅ Можно импортировать из того же модуля
+// myproject/cmd/api/main.go
+import "myproject/internal/service"
+
+// ❌ НЕЛЬЗЯ импортировать из другого модуля
+// other-project/main.go
+import "myproject/internal/service" // Ошибка компиляции!
+</code></pre>
+<p>Это даёт <strong>гарантию инкапсуляции</strong> на уровне компилятора.</p>
+<h3 id="когда-не-нужен-этот-layout"><a class="header" href="#когда-не-нужен-этот-layout">Когда НЕ нужен этот layout</a></h3>
+<pre><code>❌ Не используйте для:
+- Маленьких проектов (&lt; 1000 строк)
+- Библиотек (только pkg/ структура)
+- Учебных проектов
+
+✅ Используйте для:
+- Больших приложений
+- Командных проектов
+- Микросервисов в монорепо
+</code></pre>
+<hr>
+<h2 id="clean-architecture-в-go"><a class="header" href="#clean-architecture-в-go">Clean Architecture в Go</a></h2>
+<p>Clean Architecture помогает разделить concerns и сделать код тестируемым.</p>
+<h3 id="слои-и-зависимости"><a class="header" href="#слои-и-зависимости">Слои и зависимости</a></h3>
+<pre><code>┌─────────────────────────────────────────────┐
+│              Frameworks &amp; Drivers           │  ← HTTP, DB, External APIs
+│  (handlers, repositories, external clients) │
+├─────────────────────────────────────────────┤
+│              Interface Adapters             │  ← Controllers, Presenters
+│         (DTOs, mappers, validators)         │
+├─────────────────────────────────────────────┤
+│              Application Layer              │  ← Use Cases
+│         (services, business logic)          │
+├─────────────────────────────────────────────┤
+│                 Domain Layer                │  ← Entities, Value Objects
+│            (models, interfaces)             │
+└─────────────────────────────────────────────┘
+
+Зависимости направлены ВНУТРЬ (от внешнего к внутреннему)
+</code></pre>
+<h3 id="реализация-в-go"><a class="header" href="#реализация-в-go">Реализация в Go</a></h3>
+<pre><code>myproject/
+├── cmd/
+│   └── api/
+│       └── main.go
+├── internal/
+│   ├── domain/           # Domain Layer
+│   │   ├── user.go       # Entities
+│   │   └── repository.go # Interfaces
+│   │
+│   ├── usecase/          # Application Layer (Use Cases)
+│   │   ├── user_service.go
+│   │   └── user_service_test.go
+│   │
+│   ├── adapter/          # Interface Adapters
+│   │   ├── http/         # HTTP handlers
+│   │   │   ├── user_handler.go
+│   │   │   └── dto.go    # Request/Response DTOs
+│   │   └── postgres/     # PostgreSQL repositories
+│   │       └── user_repository.go
+│   │
+│   └── infrastructure/   # Frameworks &amp; Drivers
+│       ├── config/
+│       └── database/
+└── go.mod
+</code></pre>
+<h3 id="пример-кода-clean-architecture"><a class="header" href="#пример-кода-clean-architecture">Пример кода (Clean Architecture)</a></h3>
+<h4 id="domain-layer"><a class="header" href="#domain-layer">Domain Layer</a></h4>
+<pre><code class="language-go">// internal/domain/user.go
+package domain
+
+import "time"
+
+// Entity — чистая бизнес-модель
+type User struct {
+    ID        int
+    Email     string
+    Name      string
+    CreatedAt time.Time
+}
+
+// Value Object
+type Email string
+
+func NewEmail(email string) (Email, error) {
+    // Валидация
+    if email == "" {
+        return "", ErrInvalidEmail
+    }
+    return Email(email), nil
+}
+</code></pre>
+<pre><code class="language-go">// internal/domain/repository.go
+package domain
+
+import "context"
+
+// Repository interface — определяется в domain, реализуется в adapter
+type UserRepository interface {
+    Create(ctx context.Context, user *User) error
+    GetByID(ctx context.Context, id int) (*User, error)
+    GetByEmail(ctx context.Context, email string) (*User, error)
+    Update(ctx context.Context, user *User) error
+    Delete(ctx context.Context, id int) error
+}
+</code></pre>
+<pre><code class="language-go">// internal/domain/errors.go
+package domain
+
+import "errors"
+
+var (
+    ErrUserNotFound  = errors.New("user not found")
+    ErrUserExists    = errors.New("user already exists")
+    ErrInvalidEmail  = errors.New("invalid email")
+)
+</code></pre>
+<h4 id="application-layer-use-cases"><a class="header" href="#application-layer-use-cases">Application Layer (Use Cases)</a></h4>
+<pre><code class="language-go">// internal/usecase/user_service.go
+package usecase
+
+import (
+    "context"
+    "myproject/internal/domain"
+)
+
+type UserService struct {
+    repo domain.UserRepository
+}
+
+func NewUserService(repo domain.UserRepository) *UserService {
+    return &amp;UserService{repo: repo}
+}
+
+type CreateUserInput struct {
+    Email string
+    Name  string
+}
+
+type CreateUserOutput struct {
+    ID int
+}
+
+func (s *UserService) CreateUser(ctx context.Context, input CreateUserInput) (*CreateUserOutput, error) {
+    // Проверяем, не существует ли пользователь
+    existing, err := s.repo.GetByEmail(ctx, input.Email)
+    if err != nil {
+        return nil, err
+    }
+    if existing != nil {
+        return nil, domain.ErrUserExists
+    }
+
+    // Создаём пользователя
+    user := &amp;domain.User{
+        Email: input.Email,
+        Name:  input.Name,
+    }
+
+    if err := s.repo.Create(ctx, user); err != nil {
+        return nil, err
+    }
+
+    return &amp;CreateUserOutput{ID: user.ID}, nil
+}
+
+func (s *UserService) GetUser(ctx context.Context, id int) (*domain.User, error) {
+    user, err := s.repo.GetByID(ctx, id)
+    if err != nil {
+        return nil, err
+    }
+    if user == nil {
+        return nil, domain.ErrUserNotFound
+    }
+    return user, nil
+}
+</code></pre>
+<h4 id="adapter-layer-http-handler"><a class="header" href="#adapter-layer-http-handler">Adapter Layer (HTTP Handler)</a></h4>
+<pre><code class="language-go">// internal/adapter/http/dto.go
+package http
+
+// Request DTOs
+type CreateUserRequest struct {
+    Email string `json:"email"`
+    Name  string `json:"name"`
+}
+
+// Response DTOs
+type UserResponse struct {
+    ID        int    `json:"id"`
+    Email     string `json:"email"`
+    Name      string `json:"name"`
+    CreatedAt string `json:"created_at"`
+}
+
+type ErrorResponse struct {
+    Error string `json:"error"`
+}
+</code></pre>
+<pre><code class="language-go">// internal/adapter/http/user_handler.go
+package http
+
+import (
+    "encoding/json"
+    "errors"
+    "net/http"
+    "strconv"
+
+    "github.com/go-chi/chi/v5"
+    "myproject/internal/domain"
+    "myproject/internal/usecase"
+)
+
+type UserHandler struct {
+    service *usecase.UserService
+}
+
+func NewUserHandler(service *usecase.UserService) *UserHandler {
+    return &amp;UserHandler{service: service}
+}
+
+func (h *UserHandler) Routes() chi.Router {
+    r := chi.NewRouter()
+    r.Post("/", h.Create)
+    r.Get("/{id}", h.Get)
+    return r
+}
+
+func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
+    var req CreateUserRequest
+    if err := json.NewDecoder(r.Body).Decode(&amp;req); err != nil {
+        respondError(w, http.StatusBadRequest, "Invalid JSON")
+        return
+    }
+
+    output, err := h.service.CreateUser(r.Context(), usecase.CreateUserInput{
+        Email: req.Email,
+        Name:  req.Name,
+    })
+    if err != nil {
+        handleServiceError(w, err)
+        return
+    }
+
+    respondJSON(w, http.StatusCreated, map[string]int{"id": output.ID})
+}
+
+func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
+    idStr := chi.URLParam(r, "id")
+    id, err := strconv.Atoi(idStr)
+    if err != nil {
+        respondError(w, http.StatusBadRequest, "Invalid user ID")
+        return
+    }
+
+    user, err := h.service.GetUser(r.Context(), id)
+    if err != nil {
+        handleServiceError(w, err)
+        return
+    }
+
+    respondJSON(w, http.StatusOK, UserResponse{
+        ID:        user.ID,
+        Email:     user.Email,
+        Name:      user.Name,
+        CreatedAt: user.CreatedAt.Format("2006-01-02T15:04:05Z"),
+    })
+}
+
+func handleServiceError(w http.ResponseWriter, err error) {
+    switch {
+    case errors.Is(err, domain.ErrUserNotFound):
+        respondError(w, http.StatusNotFound, "User not found")
+    case errors.Is(err, domain.ErrUserExists):
+        respondError(w, http.StatusConflict, "User already exists")
+    default:
+        respondError(w, http.StatusInternalServerError, "Internal server error")
+    }
+}
+
+func respondJSON(w http.ResponseWriter, status int, data any) {
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(status)
+    json.NewEncoder(w).Encode(data)
+}
+
+func respondError(w http.ResponseWriter, status int, message string) {
+    respondJSON(w, status, ErrorResponse{Error: message})
+}
+</code></pre>
+<h4 id="adapter-layer-repository"><a class="header" href="#adapter-layer-repository">Adapter Layer (Repository)</a></h4>
+<pre><code class="language-go">// internal/adapter/postgres/user_repository.go
+package postgres
+
+import (
+    "context"
+    "database/sql"
+
+    "myproject/internal/domain"
+)
+
+type UserRepository struct {
+    db *sql.DB
+}
+
+func NewUserRepository(db *sql.DB) *UserRepository {
+    return &amp;UserRepository{db: db}
+}
+
+// Проверяем, что реализуем интерфейс
+var _ domain.UserRepository = (*UserRepository)(nil)
+
+func (r *UserRepository) Create(ctx context.Context, user *domain.User) error {
+    query := `
+        INSERT INTO users (email, name, created_at)
+        VALUES ($1, $2, NOW())
+        RETURNING id, created_at
+    `
+    return r.db.QueryRowContext(ctx, query, user.Email, user.Name).
+        Scan(&amp;user.ID, &amp;user.CreatedAt)
+}
+
+func (r *UserRepository) GetByID(ctx context.Context, id int) (*domain.User, error) {
+    query := `SELECT id, email, name, created_at FROM users WHERE id = $1`
+
+    user := &amp;domain.User{}
+    err := r.db.QueryRowContext(ctx, query, id).
+        Scan(&amp;user.ID, &amp;user.Email, &amp;user.Name, &amp;user.CreatedAt)
+
+    if err == sql.ErrNoRows {
+        return nil, nil
+    }
+    if err != nil {
+        return nil, err
+    }
+    return user, nil
+}
+
+func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*domain.User, error) {
+    query := `SELECT id, email, name, created_at FROM users WHERE email = $1`
+
+    user := &amp;domain.User{}
+    err := r.db.QueryRowContext(ctx, query, email).
+        Scan(&amp;user.ID, &amp;user.Email, &amp;user.Name, &amp;user.CreatedAt)
+
+    if err == sql.ErrNoRows {
+        return nil, nil
+    }
+    if err != nil {
+        return nil, err
+    }
+    return user, nil
+}
+
+func (r *UserRepository) Update(ctx context.Context, user *domain.User) error {
+    query := `UPDATE users SET email = $1, name = $2 WHERE id = $3`
+    _, err := r.db.ExecContext(ctx, query, user.Email, user.Name, user.ID)
+    return err
+}
+
+func (r *UserRepository) Delete(ctx context.Context, id int) error {
+    query := `DELETE FROM users WHERE id = $1`
+    _, err := r.db.ExecContext(ctx, query, id)
+    return err
+}
+</code></pre>
+<h3 id="сравнение-с-c"><a class="header" href="#сравнение-с-c">Сравнение с C#</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# Clean Architecture</th><th>Go Clean Architecture</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Entities</strong></td><td>Отдельные .cs файлы в Domain проекте</td><td>Структуры в <code>internal/domain/</code></td></tr>
+<tr><td><strong>Use Cases</strong></td><td>Классы в Application проекте</td><td>Функции/методы в <code>internal/usecase/</code></td></tr>
+<tr><td><strong>Controllers</strong></td><td>Отдельные Controller классы</td><td>Handler структуры в <code>internal/adapter/http/</code></td></tr>
+<tr><td><strong>Repositories</strong></td><td>Interface + Implementation</td><td>Interface в domain, реализация в adapter</td></tr>
+<tr><td><strong>DI</strong></td><td><code>IServiceCollection</code></td><td>Manual или Wire/Fx</td></tr>
+<tr><td><strong>Проекты</strong></td><td>Отдельные .csproj</td><td>Пакеты (директории)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="dependency-injection"><a class="header" href="#dependency-injection">Dependency Injection</a></h2>
+<h3 id="manual-di-идиоматичный-go"><a class="header" href="#manual-di-идиоматичный-go">Manual DI (идиоматичный Go)</a></h3>
+<p>В Go предпочтительный подход — ручная инъекция зависимостей через конструкторы.</p>
+<pre><code class="language-go">// cmd/api/main.go
+package main
+
+import (
+    "database/sql"
+    "log"
+    "net/http"
+
+    "github.com/go-chi/chi/v5"
+    _ "github.com/lib/pq"
+
+    "myproject/internal/adapter/postgres"
+    httpAdapter "myproject/internal/adapter/http"
+    "myproject/internal/usecase"
+)
+
+func main() {
+    // 1. Загружаем конфигурацию
+    cfg := LoadConfig()
+
+    // 2. Создаём подключение к БД
+    db, err := sql.Open("postgres", cfg.DatabaseURL)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer db.Close()
+
+    // 3. Создаём зависимости (снизу вверх)
+    userRepo := postgres.NewUserRepository(db)
+    userService := usecase.NewUserService(userRepo)
+    userHandler := httpAdapter.NewUserHandler(userService)
+
+    // 4. Настраиваем роутер
+    r := chi.NewRouter()
+    r.Mount("/users", userHandler.Routes())
+
+    // 5. Запускаем сервер
+    log.Printf("Starting server on %s", cfg.ServerAddr)
+    log.Fatal(http.ListenAndServe(cfg.ServerAddr, r))
+}
+</code></pre>
+<p><strong>Преимущества:</strong></p>
+<ul>
+<li>Простота и понятность</li>
+<li>Нет магии</li>
+<li>Легко отследить зависимости</li>
+<li>Отличная поддержка IDE</li>
+</ul>
+<p><strong>Недостатки:</strong></p>
+<ul>
+<li>Много boilerplate при большом количестве зависимостей</li>
+<li>Нужно следить за порядком инициализации</li>
+</ul>
+<h3 id="wire-google"><a class="header" href="#wire-google">Wire (Google)</a></h3>
+<p><a href="https://github.com/google/wire">Wire</a> — compile-time dependency injection.</p>
+<pre><code class="language-bash">go install github.com/google/wire/cmd/wire@latest
+</code></pre>
+<pre><code class="language-go">// cmd/api/wire.go
+//go:build wireinject
+// +build wireinject
+
+package main
+
+import (
+    "database/sql"
+
+    "github.com/google/wire"
+
+    "myproject/internal/adapter/postgres"
+    httpAdapter "myproject/internal/adapter/http"
+    "myproject/internal/usecase"
+)
+
+func InitializeApp(db *sql.DB) (*httpAdapter.UserHandler, error) {
+    wire.Build(
+        postgres.NewUserRepository,
+        usecase.NewUserService,
+        httpAdapter.NewUserHandler,
+    )
+    return nil, nil // Wire заполнит это
+}
+</code></pre>
+<pre><code class="language-go">// cmd/api/main.go
+package main
+
+import (
+    "database/sql"
+    "log"
+    "net/http"
+
+    "github.com/go-chi/chi/v5"
+)
+
+func main() {
+    cfg := LoadConfig()
+
+    db, err := sql.Open("postgres", cfg.DatabaseURL)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer db.Close()
+
+    // Wire сгенерирует wire_gen.go с реализацией
+    handler, err := InitializeApp(db)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    r := chi.NewRouter()
+    r.Mount("/users", handler.Routes())
+
+    log.Fatal(http.ListenAndServe(cfg.ServerAddr, r))
+}
+</code></pre>
+<pre><code class="language-bash"># Генерация кода
+wire ./cmd/api/...
+</code></pre>
+<p>Wire сгенерирует <code>wire_gen.go</code>:</p>
+<pre><code class="language-go">// Code generated by Wire. DO NOT EDIT.
+//go:generate go run github.com/google/wire/cmd/wire
+//go:build !wireinject
+// +build !wireinject
+
+package main
+
+import (
+    "database/sql"
+
+    "myproject/internal/adapter/postgres"
+    httpAdapter "myproject/internal/adapter/http"
+    "myproject/internal/usecase"
+)
+
+func InitializeApp(db *sql.DB) (*httpAdapter.UserHandler, error) {
+    userRepository := postgres.NewUserRepository(db)
+    userService := usecase.NewUserService(userRepository)
+    userHandler := httpAdapter.NewUserHandler(userService)
+    return userHandler, nil
+}
+</code></pre>
+<p><strong>Преимущества Wire:</strong></p>
+<ul>
+<li>Compile-time проверка зависимостей</li>
+<li>Автоматическое разрешение графа зависимостей</li>
+<li>Нет runtime overhead</li>
+</ul>
+<p><strong>Недостатки:</strong></p>
+<ul>
+<li>Нужен отдельный шаг генерации</li>
+<li>Сложнее для понимания новичкам</li>
+</ul>
+<h3 id="fx-uber"><a class="header" href="#fx-uber">Fx (Uber)</a></h3>
+<p><a href="https://github.com/uber-go/fx">Fx</a> — runtime dependency injection framework.</p>
+<pre><code class="language-go">// cmd/api/main.go
+package main
+
+import (
+    "context"
+    "database/sql"
+    "net/http"
+
+    "github.com/go-chi/chi/v5"
+    "go.uber.org/fx"
+
+    "myproject/internal/adapter/postgres"
+    httpAdapter "myproject/internal/adapter/http"
+    "myproject/internal/usecase"
+)
+
+func main() {
+    fx.New(
+        fx.Provide(
+            LoadConfig,
+            NewDatabase,
+            postgres.NewUserRepository,
+            usecase.NewUserService,
+            httpAdapter.NewUserHandler,
+            NewRouter,
+        ),
+        fx.Invoke(StartServer),
+    ).Run()
+}
+
+func NewDatabase(cfg Config) (*sql.DB, error) {
+    return sql.Open("postgres", cfg.DatabaseURL)
+}
+
+func NewRouter(handler *httpAdapter.UserHandler) *chi.Mux {
+    r := chi.NewRouter()
+    r.Mount("/users", handler.Routes())
+    return r
+}
+
+func StartServer(lc fx.Lifecycle, cfg Config, router *chi.Mux) {
+    server := &amp;http.Server{
+        Addr:    cfg.ServerAddr,
+        Handler: router,
+    }
+
+    lc.Append(fx.Hook{
+        OnStart: func(ctx context.Context) error {
+            go server.ListenAndServe()
+            return nil
+        },
+        OnStop: func(ctx context.Context) error {
+            return server.Shutdown(ctx)
+        },
+    })
+}
+</code></pre>
+<p><strong>Преимущества Fx:</strong></p>
+<ul>
+<li>Автоматическое управление lifecycle</li>
+<li>Graceful shutdown из коробки</li>
+<li>Гибкая конфигурация</li>
+</ul>
+<p><strong>Недостатки:</strong></p>
+<ul>
+<li>Runtime overhead</li>
+<li>Сложнее дебажить</li>
+<li>“Магия” в разрешении зависимостей</li>
+</ul>
+<h3 id="сравнение-подходов"><a class="header" href="#сравнение-подходов">Сравнение подходов</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>Manual DI</th><th>Wire</th><th>Fx</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Тип</strong></td><td>Ручной</td><td>Compile-time</td><td>Runtime</td></tr>
+<tr><td><strong>Сложность</strong></td><td>Низкая</td><td>Средняя</td><td>Высокая</td></tr>
+<tr><td><strong>Производительность</strong></td><td>Лучшая</td><td>Лучшая</td><td>Хорошая</td></tr>
+<tr><td><strong>Boilerplate</strong></td><td>Много</td><td>Мало</td><td>Мало</td></tr>
+<tr><td><strong>Lifecycle</strong></td><td>Ручной</td><td>Ручной</td><td>Автоматический</td></tr>
+<tr><td><strong>Отладка</strong></td><td>Простая</td><td>Средняя</td><td>Сложная</td></tr>
+<tr><td><strong>Идиоматичность</strong></td><td>✅ Go-way</td><td>⚠️ Приемлемо</td><td>⚠️ Java-like</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="рекомендации"><a class="header" href="#рекомендации">Рекомендации</a></h3>
+<pre><code>Маленький проект (&lt; 10 зависимостей)  → Manual DI
+Средний проект (10-50 зависимостей)   → Wire
+Большой проект с lifecycle            → Fx
+</code></pre>
+<hr>
+<h2 id="configuration"><a class="header" href="#configuration">Configuration</a></h2>
+<h3 id="environment-variables"><a class="header" href="#environment-variables">Environment variables</a></h3>
+<p>12-factor app рекомендует использовать переменные окружения:</p>
+<pre><code class="language-go">// internal/config/config.go
+package config
+
+import (
+    "os"
+    "strconv"
+    "time"
+)
+
+type Config struct {
+    Server   ServerConfig
+    Database DatabaseConfig
+    Redis    RedisConfig
+}
+
+type ServerConfig struct {
+    Addr         string
+    ReadTimeout  time.Duration
+    WriteTimeout time.Duration
+}
+
+type DatabaseConfig struct {
+    URL             string
+    MaxOpenConns    int
+    MaxIdleConns    int
+    ConnMaxLifetime time.Duration
+}
+
+type RedisConfig struct {
+    Addr     string
+    Password string
+    DB       int
+}
+
+func Load() Config {
+    return Config{
+        Server: ServerConfig{
+            Addr:         getEnv("SERVER_ADDR", ":8080"),
+            ReadTimeout:  getDuration("SERVER_READ_TIMEOUT", 15*time.Second),
+            WriteTimeout: getDuration("SERVER_WRITE_TIMEOUT", 15*time.Second),
+        },
+        Database: DatabaseConfig{
+            URL:             mustGetEnv("DATABASE_URL"),
+            MaxOpenConns:    getInt("DATABASE_MAX_OPEN_CONNS", 25),
+            MaxIdleConns:    getInt("DATABASE_MAX_IDLE_CONNS", 5),
+            ConnMaxLifetime: getDuration("DATABASE_CONN_MAX_LIFETIME", 5*time.Minute),
+        },
+        Redis: RedisConfig{
+            Addr:     getEnv("REDIS_ADDR", "localhost:6379"),
+            Password: getEnv("REDIS_PASSWORD", ""),
+            DB:       getInt("REDIS_DB", 0),
+        },
+    }
+}
+
+func getEnv(key, defaultValue string) string {
+    if value := os.Getenv(key); value != "" {
+        return value
+    }
+    return defaultValue
+}
+
+func mustGetEnv(key string) string {
+    value := os.Getenv(key)
+    if value == "" {
+        panic("required environment variable not set: " + key)
+    }
+    return value
+}
+
+func getInt(key string, defaultValue int) int {
+    if value := os.Getenv(key); value != "" {
+        if i, err := strconv.Atoi(value); err == nil {
+            return i
+        }
+    }
+    return defaultValue
+}
+
+func getDuration(key string, defaultValue time.Duration) time.Duration {
+    if value := os.Getenv(key); value != "" {
+        if d, err := time.ParseDuration(value); err == nil {
+            return d
+        }
+    }
+    return defaultValue
+}
+</code></pre>
+<h3 id="viper-для-сложных-конфигов"><a class="header" href="#viper-для-сложных-конфигов">Viper для сложных конфигов</a></h3>
+<p><a href="https://github.com/spf13/viper">Viper</a> — популярная библиотека для конфигурации.</p>
+<pre><code class="language-go">// internal/config/config.go
+package config
+
+import (
+    "github.com/spf13/viper"
+)
+
+type Config struct {
+    Server   ServerConfig   `mapstructure:"server"`
+    Database DatabaseConfig `mapstructure:"database"`
+    Redis    RedisConfig    `mapstructure:"redis"`
+}
+
+type ServerConfig struct {
+    Addr         string `mapstructure:"addr"`
+    ReadTimeout  string `mapstructure:"read_timeout"`
+    WriteTimeout string `mapstructure:"write_timeout"`
+}
+
+type DatabaseConfig struct {
+    URL             string `mapstructure:"url"`
+    MaxOpenConns    int    `mapstructure:"max_open_conns"`
+    MaxIdleConns    int    `mapstructure:"max_idle_conns"`
+    ConnMaxLifetime string `mapstructure:"conn_max_lifetime"`
+}
+
+type RedisConfig struct {
+    Addr     string `mapstructure:"addr"`
+    Password string `mapstructure:"password"`
+    DB       int    `mapstructure:"db"`
+}
+
+func Load(configPath string) (*Config, error) {
+    viper.SetConfigFile(configPath)
+
+    // Переменные окружения переопределяют файл
+    viper.AutomaticEnv()
+    viper.SetEnvPrefix("APP")
+
+    if err := viper.ReadInConfig(); err != nil {
+        return nil, err
+    }
+
+    var cfg Config
+    if err := viper.Unmarshal(&amp;cfg); err != nil {
+        return nil, err
+    }
+
+    return &amp;cfg, nil
+}
+</code></pre>
+<pre><code class="language-yaml"># configs/config.yaml
+server:
+  addr: ":8080"
+  read_timeout: "15s"
+  write_timeout: "15s"
+
+database:
+  url: "postgres://localhost/mydb"
+  max_open_conns: 25
+  max_idle_conns: 5
+  conn_max_lifetime: "5m"
+
+redis:
+  addr: "localhost:6379"
+  password: ""
+  db: 0
+</code></pre>
+<h3 id="сравнение-с-c-1"><a class="header" href="#сравнение-с-c-1">Сравнение с C#</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C#</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td><code>appsettings.json</code></td><td><code>config.yaml</code> + viper</td></tr>
+<tr><td><code>IConfiguration</code></td><td>Struct + viper</td></tr>
+<tr><td><code>IOptions&lt;T&gt;</code></td><td>Struct fields</td></tr>
+<tr><td><code>User secrets</code></td><td><code>.env</code> файлы</td></tr>
+<tr><td><code>Azure Key Vault</code></td><td>Vault, AWS Secrets Manager</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="практические-примеры"><a class="header" href="#практические-примеры">Практические примеры</a></h2>
+<h3 id="пример-1-flat-structure-для-микросервиса"><a class="header" href="#пример-1-flat-structure-для-микросервиса">Пример 1: Flat structure для микросервиса</a></h3>
+<p>Простой сервис аутентификации:</p>
+<pre><code>auth-service/
+├── go.mod
+├── go.sum
+├── main.go
+├── config.go
+├── handler.go
+├── service.go
+├── repository.go
+├── model.go
+├── token.go
+├── middleware.go
+└── Dockerfile
+</code></pre>
+<pre><code class="language-go">// main.go
+package main
+
+import (
+    "log"
+    "net/http"
+
+    "github.com/go-chi/chi/v5"
+    "github.com/go-chi/chi/v5/middleware"
+)
+
+func main() {
+    cfg := LoadConfig()
+
+    db := NewDB(cfg.DatabaseURL)
+    defer db.Close()
+
+    repo := NewUserRepository(db)
+    tokenSvc := NewTokenService(cfg.JWTSecret)
+    authSvc := NewAuthService(repo, tokenSvc)
+    handler := NewAuthHandler(authSvc)
+
+    r := chi.NewRouter()
+    r.Use(middleware.Logger)
+    r.Use(middleware.Recoverer)
+
+    r.Post("/register", handler.Register)
+    r.Post("/login", handler.Login)
+    r.Post("/refresh", handler.Refresh)
+
+    // Protected routes
+    r.Group(func(r chi.Router) {
+        r.Use(AuthMiddleware(tokenSvc))
+        r.Get("/me", handler.Me)
+        r.Post("/logout", handler.Logout)
+    })
+
+    log.Printf("Auth service starting on %s", cfg.Addr)
+    log.Fatal(http.ListenAndServe(cfg.Addr, r))
+}
+</code></pre>
+<h3 id="пример-2-clean-architecture"><a class="header" href="#пример-2-clean-architecture">Пример 2: Clean Architecture</a></h3>
+<p>Полная структура для среднего проекта:</p>
+<pre><code>user-api/
+├── cmd/
+│   └── api/
+│       ├── main.go
+│       └── wire.go
+├── internal/
+│   ├── domain/
+│   │   ├── user.go
+│   │   ├── repository.go
+│   │   └── errors.go
+│   ├── usecase/
+│   │   ├── user_service.go
+│   │   └── user_service_test.go
+│   ├── adapter/
+│   │   ├── http/
+│   │   │   ├── handler.go
+│   │   │   ├── dto.go
+│   │   │   ├── router.go
+│   │   │   └── middleware.go
+│   │   └── postgres/
+│   │       ├── user_repository.go
+│   │       └── user_repository_test.go
+│   └── infrastructure/
+│       ├── config/
+│       │   └── config.go
+│       └── database/
+│           └── postgres.go
+├── migrations/
+│   ├── 001_create_users.up.sql
+│   └── 001_create_users.down.sql
+├── api/
+│   └── openapi.yaml
+├── deployments/
+│   ├── Dockerfile
+│   └── docker-compose.yaml
+├── go.mod
+├── go.sum
+├── Makefile
+└── README.md
+</code></pre>
+<h3 id="пример-3-di-с-wire"><a class="header" href="#пример-3-di-с-wire">Пример 3: DI с Wire</a></h3>
+<pre><code class="language-go">// cmd/api/wire.go
+//go:build wireinject
+
+package main
+
+import (
+    "github.com/google/wire"
+
+    "user-api/internal/adapter/http"
+    "user-api/internal/adapter/postgres"
+    "user-api/internal/infrastructure/config"
+    "user-api/internal/infrastructure/database"
+    "user-api/internal/usecase"
+)
+
+func InitializeApp() (*App, func(), error) {
+    wire.Build(
+        config.Load,
+        database.NewPostgres,
+
+        // Repository
+        postgres.NewUserRepository,
+
+        // Use Cases
+        usecase.NewUserService,
+
+        // HTTP
+        http.NewUserHandler,
+        http.NewRouter,
+
+        // App
+        NewApp,
+    )
+    return nil, nil, nil
+}
+</code></pre>
+<pre><code class="language-go">// cmd/api/app.go
+package main
+
+import (
+    "context"
+    "log"
+    "net/http"
+    "os"
+    "os/signal"
+    "syscall"
+    "time"
+
+    "github.com/go-chi/chi/v5"
+
+    "user-api/internal/infrastructure/config"
+)
+
+type App struct {
+    config *config.Config
+    router *chi.Mux
+}
+
+func NewApp(cfg *config.Config, router *chi.Mux) *App {
+    return &amp;App{
+        config: cfg,
+        router: router,
+    }
+}
+
+func (a *App) Run() error {
+    server := &amp;http.Server{
+        Addr:         a.config.Server.Addr,
+        Handler:      a.router,
+        ReadTimeout:  a.config.Server.ReadTimeout,
+        WriteTimeout: a.config.Server.WriteTimeout,
+    }
+
+    // Graceful shutdown
+    quit := make(chan os.Signal, 1)
+    signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+
+    go func() {
+        log.Printf("Server starting on %s", a.config.Server.Addr)
+        if err := server.ListenAndServe(); err != nil &amp;&amp; err != http.ErrServerClosed {
+            log.Fatalf("Server error: %v", err)
+        }
+    }()
+
+    &lt;-quit
+    log.Println("Shutting down server...")
+
+    ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+    defer cancel()
+
+    return server.Shutdown(ctx)
+}
+</code></pre>
+<pre><code class="language-go">// cmd/api/main.go
+package main
+
+import "log"
+
+func main() {
+    app, cleanup, err := InitializeApp()
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer cleanup()
+
+    if err := app.Run(); err != nil {
+        log.Fatal(err)
+    }
+}
+</code></pre>
+<hr><!-- AUTO: NAV -->
+<p><strong>Вопросы?</strong> Открой issue на <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/issues">GitHub</a></p>
+<p><a href="./01_http_server.html">← Назад: HTTP в Go: Создание веб-серверов</a> | <a href="./03_database.html">Вперёд: Работа с данными (PostgreSQL) →</a></p>
+<!-- /AUTO: NAV -->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part3-web-api/01_http_server.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part3-web-api/03_database.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part3-web-api/01_http_server.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part3-web-api/03_database.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

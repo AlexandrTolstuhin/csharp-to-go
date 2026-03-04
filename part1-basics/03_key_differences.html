@@ -1,0 +1,2711 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>1.3 Ключевые отличия от C# - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-e1a1ce5b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-c19b06e6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part1-basics/03_key_differences.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="13-ключевые-отличия-от-c"><a class="header" href="#13-ключевые-отличия-от-c">1.3 Ключевые отличия от C#</a></h1>
+<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<ul>
+<li><a href="#%D1%84%D0%B8%D0%BB%D0%BE%D1%81%D0%BE%D1%84%D0%B8%D1%8F-%D1%8F%D0%B7%D1%8B%D0%BA%D0%BE%D0%B2">Философия языков</a>
+<ul>
+<li><a href="#c-%D1%84%D0%B8%D0%BB%D0%BE%D1%81%D0%BE%D1%84%D0%B8%D1%8F">C# философия</a></li>
+<li><a href="#go-%D1%84%D0%B8%D0%BB%D0%BE%D1%81%D0%BE%D1%84%D0%B8%D1%8F">Go философия</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BE%D1%82%D1%81%D1%83%D1%82%D1%81%D1%82%D0%B2%D0%B8%D0%B5-%D0%BA%D0%BB%D0%B0%D1%81%D1%81%D0%BE%D0%B2-%D0%B8-%D0%BD%D0%B0%D1%81%D0%BB%D0%B5%D0%B4%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F">Отсутствие классов и наследования</a>
+<ul>
+<li><a href="#c-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4">C# подход</a></li>
+<li><a href="#go-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4">Go подход</a></li>
+<li><a href="#%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5-%D0%BE%D1%82%D0%BB%D0%B8%D1%87%D0%B8%D1%8F">Ключевые отличия</a></li>
+</ul>
+</li>
+<li><a href="#error-handling-vs-exceptions">Error Handling vs Exceptions</a>
+<ul>
+<li><a href="#c-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4-exceptions">C# подход: Exceptions</a></li>
+<li><a href="#go-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4-%D1%8F%D0%B2%D0%BD%D1%8B%D0%B5-%D0%BE%D1%88%D0%B8%D0%B1%D0%BA%D0%B8">Go подход: Явные ошибки</a></li>
+<li><a href="#%D0%B8%D0%B4%D0%B8%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%BD%D1%8B%D0%B5-%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD%D1%8B-%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B8-%D0%BE%D1%88%D0%B8%D0%B1%D0%BE%D0%BA">Идиоматичные паттерны обработки ошибок</a>
+<ul>
+<li><a href="#1-early-return-guard-clauses">1. Early Return (Guard Clauses)</a></li>
+<li><a href="#2-%D0%BE%D0%B1%D1%91%D1%80%D1%82%D1%8B%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BE%D1%88%D0%B8%D0%B1%D0%BE%D0%BA">2. Обёртывание ошибок</a></li>
+<li><a href="#3-%D0%BC%D0%BD%D0%BE%D0%B6%D0%B5%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5-%D0%B2%D0%BE%D0%B7%D0%B2%D1%80%D0%B0%D1%89%D0%B0%D0%B5%D0%BC%D1%8B%D0%B5-%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D1%8F">3. Множественные возвращаемые значения</a></li>
+</ul>
+</li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4%D0%BE%D0%B2">Сравнение подходов</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%B7%D0%B8%D1%86%D0%B8%D1%8F-vs-%D0%BD%D0%B0%D1%81%D0%BB%D0%B5%D0%B4%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5">Композиция vs Наследование</a>
+<ul>
+<li><a href="#c-%D0%BD%D0%B0%D1%81%D0%BB%D0%B5%D0%B4%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5">C# наследование</a></li>
+<li><a href="#go-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%B7%D0%B8%D1%86%D0%B8%D1%8F-embedding">Go композиция (embedding)</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%B7%D0%B8%D1%86%D0%B8%D1%8F-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D1%84%D0%B5%D0%B9%D1%81%D1%8B-%D0%B1%D0%BE%D0%BB%D0%B5%D0%B5-%D0%B8%D0%B4%D0%B8%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%BD%D0%BE">Композиция через интерфейсы (более идиоматично)</a></li>
+<li><a href="#%D0%B8%D0%B4%D0%B8%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%BD%D0%B0%D1%8F-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%B7%D0%B8%D1%86%D0%B8%D1%8F-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-%D1%81-http-middleware">Идиоматичная композиция: пример с HTTP middleware</a></li>
+</ul>
+</li>
+<li><a href="#zero-values">Zero Values</a>
+<ul>
+<li><a href="#c-%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D1%8F-%D0%BF%D0%BE-%D1%83%D0%BC%D0%BE%D0%BB%D1%87%D0%B0%D0%BD%D0%B8%D1%8E">C# значения по умолчанию</a></li>
+<li><a href="#go-zero-values">Go zero values</a></li>
+<li><a href="#%D0%B8%D0%B4%D0%B8%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%BD%D0%BE%D0%B5-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-zero-values">Идиоматичное использование zero values</a>
+<ul>
+<li><a href="#1-%D0%BA%D0%BE%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D0%BE%D1%80%D1%8B-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-zero-values">1. Конструкторы через zero values</a></li>
+<li><a href="#2-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%BA%D0%B0-%D0%BD%D0%B0-zero-value">2. Проверка на zero value</a></li>
+<li><a href="#3-zero-value-%D0%B2-%D0%BC%D0%B5%D1%82%D0%BE%D0%B4%D0%B0%D1%85">3. Zero value в методах</a></li>
+</ul>
+</li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5">Сравнение</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B2%D0%B8%D0%B4%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D1%8C-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80">Видимость через регистр</a>
+<ul>
+<li><a href="#c-%D0%BC%D0%BE%D0%B4%D0%B8%D1%84%D0%B8%D0%BA%D0%B0%D1%82%D0%BE%D1%80%D1%8B-%D0%B4%D0%BE%D1%81%D1%82%D1%83%D0%BF%D0%B0">C# модификаторы доступа</a></li>
+<li><a href="#go-%D0%B2%D0%B8%D0%B4%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D1%8C-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80">Go видимость через регистр</a></li>
+<li><a href="#%D0%B8%D0%B4%D0%B8%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%BD%D1%8B%D0%B5-%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD%D1%8B-%D0%B2%D0%B8%D0%B4%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D0%B8">Идиоматичные паттерны видимости</a>
+<ul>
+<li><a href="#1-%D0%B8%D0%BD%D0%BA%D0%B0%D0%BF%D1%81%D1%83%D0%BB%D1%8F%D1%86%D0%B8%D1%8F-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-unexported-%D0%BF%D0%BE%D0%BB%D1%8F">1. Инкапсуляция через unexported поля</a></li>
+<li><a href="#2-%D1%84%D0%B0%D0%B1%D1%80%D0%B8%D1%87%D0%BD%D1%8B%D0%B5-%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8-%D0%B4%D0%BB%D1%8F-%D0%B2%D0%B0%D0%BB%D0%B8%D0%B4%D0%B0%D1%86%D0%B8%D0%B8">2. Фабричные функции для валидации</a></li>
+<li><a href="#3-internal-packages-go-14">3. Internal packages (Go 1.4+)</a></li>
+</ul>
+</li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%83%D1%80%D0%BE%D0%B2%D0%BD%D0%B5%D0%B9-%D0%B4%D0%BE%D1%81%D1%82%D1%83%D0%BF%D0%B0">Сравнение уровней доступа</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B8%D0%B4%D0%B8%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%BD%D1%8B%D0%B5-%D1%80%D0%B0%D0%B7%D0%BB%D0%B8%D1%87%D0%B8%D1%8F">Идиоматичные различия</a>
+<ul>
+<li><a href="#1-%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0-nil">1. Обработка nil</a></li>
+<li><a href="#2-%D0%BA%D0%BE%D0%BB%D0%BB%D0%B5%D0%BA%D1%86%D0%B8%D0%B8-%D0%B8-linq-vs-%D1%86%D0%B8%D0%BA%D0%BB%D1%8B">2. Коллекции и LINQ vs циклы</a></li>
+<li><a href="#3-asyncawait-vs-goroutines">3. Async/Await vs Goroutines</a></li>
+<li><a href="#4-%D0%BA%D0%BE%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D0%BE%D1%80%D1%8B-%D0%B8-%D0%B8%D0%BD%D0%B8%D1%86%D0%B8%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F">4. Конструкторы и инициализация</a></li>
+<li><a href="#5-generics-%D0%BE%D0%B1%D0%BE%D0%B1%D1%89%D0%B5%D0%BD%D0%B8%D1%8F">5. Generics (Обобщения)</a>
+<ul>
+<li><a href="#%D0%BF%D0%BE%D1%87%D0%B5%D0%BC%D1%83-go-%D1%82%D0%B0%D0%BA-%D0%B4%D0%BE%D0%BB%D0%B3%D0%BE-%D0%B6%D0%B4%D0%B0%D0%BB-generics">Почему Go так долго ждал generics</a></li>
+<li><a href="#type-constraints">Type constraints</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C-generics">Когда использовать generics</a></li>
+<li><a href="#performance-%D0%B8-gc">Performance и GC</a></li>
+<li><a href="#self-referential-generics-go-126">Self-referential generics (Go 1.26)</a></li>
+</ul>
+</li>
+<li><a href="#6-properties-vs-getterssetters">6. Properties vs Getters/Setters</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B">Практические примеры</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-http-handler">Пример 1: HTTP Handler</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0-%D1%81-%D0%B1%D0%B0%D0%B7%D0%BE%D0%B9-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85">Пример 2: Работа с базой данных</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B8%D1%82%D0%BE%D0%B3%D0%B8">Итоги</a>
+<ul>
+<li><a href="#%D1%87%D1%82%D0%BE-%D0%BE%D1%81%D1%82%D0%B0%D1%91%D1%82%D1%81%D1%8F-%D0%BF%D0%BE%D1%85%D0%BE%D0%B6%D0%B8%D0%BC">Что остаётся похожим</a></li>
+<li><a href="#%D1%87%D1%82%D0%BE-%D1%80%D0%B0%D0%B4%D0%B8%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE-%D0%BE%D1%82%D0%BB%D0%B8%D1%87%D0%B0%D0%B5%D1%82%D1%81%D1%8F">Что радикально отличается</a></li>
+<li><a href="#%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5-%D0%B8%D0%B4%D0%B8%D0%BE%D0%BC%D1%8B-go-%D0%B4%D0%BB%D1%8F-c-%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%87%D0%B8%D0%BA%D0%BE%D0%B2">Ключевые идиомы Go для C# разработчиков</a></li>
+</ul>
+</li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<hr>
+<h2 id="философия-языков"><a class="header" href="#философия-языков">Философия языков</a></h2>
+<h3 id="c-философия"><a class="header" href="#c-философия">C# философия</a></h3>
+<ul>
+<li><strong>Богатство возможностей</strong>: множество способов решить задачу</li>
+<li><strong>ООП-центричность</strong>: классы, наследование, полиморфизм</li>
+<li><strong>Enterprise-ориентированность</strong>: SOLID, паттерны, абстракции</li>
+<li><strong>“Batteries included”</strong>: огромная стандартная библиотека</li>
+</ul>
+<h3 id="go-философия"><a class="header" href="#go-философия">Go философия</a></h3>
+<ul>
+<li><strong>Простота</strong>: один очевидный способ</li>
+<li><strong>Прагматизм</strong>: решение задач, а не красота архитектуры</li>
+<li><strong>Минимализм</strong>: 25 ключевых слов</li>
+<li><strong>“Less is more”</strong>: композиция, а не иерархии</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Ключевое отличие</strong>: C# даёт инструменты для создания сложных архитектур, Go заставляет писать простой код.</p>
+</blockquote>
+<hr>
+<h2 id="отсутствие-классов-и-наследования"><a class="header" href="#отсутствие-классов-и-наследования">Отсутствие классов и наследования</a></h2>
+<h3 id="c-подход"><a class="header" href="#c-подход">C# подход</a></h3>
+<pre><code class="language-csharp">// Классы, наследование, виртуальные методы
+public abstract class Animal
+{
+    public string Name { get; set; }
+
+    public abstract void MakeSound();
+
+    public virtual void Move()
+    {
+        Console.WriteLine($"{Name} is moving");
+    }
+}
+
+public class Dog : Animal
+{
+    public override void MakeSound()
+    {
+        Console.WriteLine("Woof!");
+    }
+
+    public override void Move()
+    {
+        base.Move();
+        Console.WriteLine("Running on four legs");
+    }
+}
+
+public class Cat : Animal
+{
+    public override void MakeSound()
+    {
+        Console.WriteLine("Meow!");
+    }
+}
+
+// Использование
+Animal dog = new Dog { Name = "Buddy" };
+dog.MakeSound(); // Woof!
+dog.Move();      // Buddy is moving \n Running on four legs
+</code></pre>
+<h3 id="go-подход"><a class="header" href="#go-подход">Go подход</a></h3>
+<pre><code class="language-go">// Структуры + интерфейсы (неявная реализация)
+type Animal interface {
+    MakeSound()
+    Move()
+}
+
+type Dog struct {
+    Name string
+}
+
+func (d Dog) MakeSound() {
+    fmt.Println("Woof!")
+}
+
+func (d Dog) Move() {
+    fmt.Printf("%s is moving\n", d.Name)
+    fmt.Println("Running on four legs")
+}
+
+type Cat struct {
+    Name string
+}
+
+func (c Cat) MakeSound() {
+    fmt.Println("Meow!")
+}
+
+func (c Cat) Move() {
+    fmt.Printf("%s is moving\n", c.Name)
+}
+
+// Использование
+var dog Animal = Dog{Name: "Buddy"}
+dog.MakeSound() // Woof!
+dog.Move()      // Buddy is moving \n Running on four legs
+</code></pre>
+<h3 id="ключевые-отличия"><a class="header" href="#ключевые-отличия">Ключевые отличия</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C#</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Тип системы</strong></td><td>Классы, наследование</td><td>Структуры, композиция</td></tr>
+<tr><td><strong>Полиморфизм</strong></td><td>Явный (<code>: BaseClass</code>, <code>override</code>)</td><td>Неявный (duck typing)</td></tr>
+<tr><td><strong>Переиспользование</strong></td><td>Наследование + интерфейсы</td><td>Композиция + встраивание</td></tr>
+<tr><td><strong>Абстракция</strong></td><td>Абстрактные классы</td><td>Только интерфейсы</td></tr>
+<tr><td><strong>Виртуальные методы</strong></td><td>Есть (<code>virtual</code>, <code>override</code>)</td><td>Все методы интерфейса “виртуальные”</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: В Go нет наследования в классическом понимании. Вместо “is-a” используется “has-a”.</p>
+</blockquote>
+<hr>
+<h2 id="error-handling-vs-exceptions"><a class="header" href="#error-handling-vs-exceptions">Error Handling vs Exceptions</a></h2>
+<h3 id="c-подход-exceptions"><a class="header" href="#c-подход-exceptions">C# подход: Exceptions</a></h3>
+<pre><code class="language-csharp">// Исключения - норма
+public class UserService
+{
+    public User GetUser(int id)
+    {
+        if (id &lt;= 0)
+            throw new ArgumentException("Invalid user ID", nameof(id));
+
+        var user = _repository.FindById(id);
+        if (user == null)
+            throw new UserNotFoundException($"User {id} not found");
+
+        return user;
+    }
+
+    public async Task&lt;Order&gt; CreateOrder(CreateOrderRequest request)
+    {
+        try
+        {
+            ValidateRequest(request);
+            var user = GetUser(request.UserId);
+            var order = await _orderRepository.Create(request);
+            await _emailService.SendConfirmation(user.Email, order);
+            return order;
+        }
+        catch (UserNotFoundException ex)
+        {
+            _logger.LogError(ex, "User not found");
+            throw; // Пробрасываем дальше
+        }
+        catch (SmtpException ex)
+        {
+            _logger.LogWarning(ex, "Email failed, order created");
+            // Не критично - заказ создан
+            throw new OrderCreatedButEmailFailedException(order.Id, ex);
+        }
+    }
+}
+
+// Использование
+try
+{
+    var order = await service.CreateOrder(request);
+    return Ok(order);
+}
+catch (ArgumentException ex)
+{
+    return BadRequest(ex.Message);
+}
+catch (UserNotFoundException ex)
+{
+    return NotFound(ex.Message);
+}
+catch (Exception ex)
+{
+    return StatusCode(500, "Internal error");
+}
+</code></pre>
+<h3 id="go-подход-явные-ошибки"><a class="header" href="#go-подход-явные-ошибки">Go подход: Явные ошибки</a></h3>
+<pre><code class="language-go">// Ошибки как значения
+type UserService struct {
+    repository *UserRepository
+    logger     *Logger
+}
+
+var (
+    ErrInvalidUserID   = errors.New("invalid user ID")
+    ErrUserNotFound    = errors.New("user not found")
+    ErrEmailFailed     = errors.New("email sending failed")
+)
+
+func (s *UserService) GetUser(id int) (*User, error) {
+    if id &lt;= 0 {
+        return nil, fmt.Errorf("%w: %d", ErrInvalidUserID, id)
+    }
+
+    user, err := s.repository.FindByID(id)
+    if err != nil {
+        return nil, fmt.Errorf("find user: %w", err)
+    }
+    if user == nil {
+        return nil, fmt.Errorf("%w: %d", ErrUserNotFound, id)
+    }
+
+    return user, nil
+}
+
+func (s *UserService) CreateOrder(ctx context.Context, req CreateOrderRequest) (*Order, error) {
+    if err := s.validateRequest(req); err != nil {
+        return nil, fmt.Errorf("validate: %w", err)
+    }
+
+    user, err := s.GetUser(req.UserID)
+    if err != nil {
+        s.logger.Error("get user failed", "error", err)
+        return nil, err
+    }
+
+    order, err := s.orderRepository.Create(ctx, req)
+    if err != nil {
+        return nil, fmt.Errorf("create order: %w", err)
+    }
+
+    // Email - не критично
+    if err := s.emailService.SendConfirmation(user.Email, order); err != nil {
+        s.logger.Warn("email failed", "order_id", order.ID, "error", err)
+        // Не возвращаем ошибку - заказ создан
+    }
+
+    return order, nil
+}
+
+// Использование
+order, err := service.CreateOrder(ctx, request)
+if err != nil {
+    switch {
+    case errors.Is(err, ErrInvalidUserID):
+        return nil, status.Error(codes.InvalidArgument, err.Error())
+    case errors.Is(err, ErrUserNotFound):
+        return nil, status.Error(codes.NotFound, err.Error())
+    default:
+        return nil, status.Error(codes.Internal, "internal error")
+    }
+}
+return &amp;pb.CreateOrderResponse{Order: order}, nil
+</code></pre>
+<h3 id="идиоматичные-паттерны-обработки-ошибок"><a class="header" href="#идиоматичные-паттерны-обработки-ошибок">Идиоматичные паттерны обработки ошибок</a></h3>
+<h4 id="1-early-return-guard-clauses"><a class="header" href="#1-early-return-guard-clauses">1. Early Return (Guard Clauses)</a></h4>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">public Result ProcessOrder(Order order)
+{
+    if (order == null)
+        throw new ArgumentNullException(nameof(order));
+
+    if (!order.IsValid())
+        throw new ValidationException("Invalid order");
+
+    if (order.Amount &lt;= 0)
+        throw new ArgumentException("Amount must be positive");
+
+    // Основная логика
+    return PerformProcessing(order);
+}
+</code></pre>
+<p><strong>Go</strong> (идиоматично):</p>
+<pre><code class="language-go">func ProcessOrder(order *Order) (*Result, error) {
+    if order == nil {
+        return nil, errors.New("order is nil")
+    }
+
+    if !order.IsValid() {
+        return nil, errors.New("invalid order")
+    }
+
+    if order.Amount &lt;= 0 {
+        return nil, errors.New("amount must be positive")
+    }
+
+    // Основная логика
+    return performProcessing(order)
+}
+</code></pre>
+<h4 id="2-обёртывание-ошибок"><a class="header" href="#2-обёртывание-ошибок">2. Обёртывание ошибок</a></h4>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">catch (SqlException ex)
+{
+    throw new DatabaseException("Failed to save user", ex);
+}
+</code></pre>
+<p><strong>Go</strong> (идиоматично):</p>
+<pre><code class="language-go">if err := db.SaveUser(user); err != nil {
+    return fmt.Errorf("save user: %w", err) // %w сохраняет цепочку
+}
+
+// Проверка типа ошибки
+if errors.Is(err, sql.ErrNoRows) {
+    // Обработка
+}
+
+// Извлечение конкретной ошибки
+var netErr *net.OpError
+if errors.As(err, &amp;netErr) {
+    // Работа с netErr
+}
+</code></pre>
+<h4 id="3-множественные-возвращаемые-значения"><a class="header" href="#3-множественные-возвращаемые-значения">3. Множественные возвращаемые значения</a></h4>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">// Try-паттерн
+public bool TryParseUser(string data, out User user)
+{
+    user = null;
+    try
+    {
+        user = JsonSerializer.Deserialize&lt;User&gt;(data);
+        return true;
+    }
+    catch
+    {
+        return false;
+    }
+}
+
+// Использование
+if (TryParseUser(data, out var user))
+{
+    Process(user);
+}
+</code></pre>
+<p><strong>Go</strong> (естественно):</p>
+<pre><code class="language-go">func ParseUser(data string) (*User, error) {
+    var user User
+    if err := json.Unmarshal([]byte(data), &amp;user); err != nil {
+        return nil, fmt.Errorf("unmarshal user: %w", err)
+    }
+    return &amp;user, nil
+}
+
+// Использование
+user, err := ParseUser(data)
+if err != nil {
+    return err
+}
+process(user)
+</code></pre>
+<h3 id="сравнение-подходов"><a class="header" href="#сравнение-подходов">Сравнение подходов</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# Exceptions</th><th>Go Errors</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Явность</strong></td><td>Неявные (не видны в сигнатуре)</td><td>Явные (часть возврата)</td></tr>
+<tr><td><strong>Производительность</strong></td><td>Медленные (stack unwinding)</td><td>Быстрые (обычные значения)</td></tr>
+<tr><td><strong>Контроль потока</strong></td><td>Неявный (try-catch)</td><td>Явный (if err != nil)</td></tr>
+<tr><td><strong>Типизация</strong></td><td>Сильная (иерархия классов)</td><td>Слабая (error интерфейс)</td></tr>
+<tr><td><strong>Стек вызовов</strong></td><td>Автоматический</td><td>Ручной (fmt.Errorf)</td></tr>
+<tr><td><strong>Частота проверки</strong></td><td>Выборочная</td><td>Каждый вызов</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Философия Go</strong>: “Errors are values” - обрабатывай ошибки там, где они возникают.</p>
+</blockquote>
+<hr>
+<h2 id="композиция-vs-наследование"><a class="header" href="#композиция-vs-наследование">Композиция vs Наследование</a></h2>
+<h3 id="c-наследование"><a class="header" href="#c-наследование">C# наследование</a></h3>
+<pre><code class="language-csharp">public abstract class BaseRepository&lt;T&gt; where T : class
+{
+    protected readonly DbContext _context;
+
+    protected BaseRepository(DbContext context)
+    {
+        _context = context;
+    }
+
+    public virtual async Task&lt;T&gt; GetByIdAsync(int id)
+    {
+        return await _context.Set&lt;T&gt;().FindAsync(id);
+    }
+
+    public virtual async Task&lt;IEnumerable&lt;T&gt;&gt; GetAllAsync()
+    {
+        return await _context.Set&lt;T&gt;().ToListAsync();
+    }
+}
+
+public class UserRepository : BaseRepository&lt;User&gt;
+{
+    public UserRepository(DbContext context) : base(context) { }
+
+    // Переопределяем базовый метод
+    public override async Task&lt;User&gt; GetByIdAsync(int id)
+    {
+        return await _context.Users
+            .Include(u =&gt; u.Orders)
+            .FirstOrDefaultAsync(u =&gt; u.Id == id);
+    }
+
+    // Добавляем специфичный метод
+    public async Task&lt;User&gt; GetByEmailAsync(string email)
+    {
+        return await _context.Users
+            .FirstOrDefaultAsync(u =&gt; u.Email == email);
+    }
+}
+</code></pre>
+<h3 id="go-композиция-embedding"><a class="header" href="#go-композиция-embedding">Go композиция (embedding)</a></h3>
+<pre><code class="language-go">// Базовый репозиторий
+type BaseRepository struct {
+    db *sql.DB
+}
+
+func (r *BaseRepository) GetByID(ctx context.Context, table string, id int, dest interface{}) error {
+    query := fmt.Sprintf("SELECT * FROM %s WHERE id = $1", table)
+    return r.db.QueryRowContext(ctx, query, id).Scan(dest)
+}
+
+func (r *BaseRepository) GetAll(ctx context.Context, table string, dest interface{}) error {
+    query := fmt.Sprintf("SELECT * FROM %s", table)
+    rows, err := r.db.QueryContext(ctx, query)
+    if err != nil {
+        return err
+    }
+    defer rows.Close()
+    // Сканирование в dest...
+    return nil
+}
+
+// UserRepository встраивает BaseRepository
+type UserRepository struct {
+    BaseRepository // Встраивание (embedding)
+}
+
+func NewUserRepository(db *sql.DB) *UserRepository {
+    return &amp;UserRepository{
+        BaseRepository: BaseRepository{db: db},
+    }
+}
+
+// "Переопределяем" метод (на самом деле - затеняем)
+func (r *UserRepository) GetByID(ctx context.Context, id int) (*User, error) {
+    query := `
+        SELECT u.*, o.*
+        FROM users u
+        LEFT JOIN orders o ON u.id = o.user_id
+        WHERE u.id = $1
+    `
+    var user User
+    err := r.db.QueryRowContext(ctx, query, id).Scan(&amp;user /* ... */)
+    if err != nil {
+        return nil, fmt.Errorf("get user: %w", err)
+    }
+    return &amp;user, nil
+}
+
+// Добавляем специфичный метод
+func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*User, error) {
+    query := "SELECT * FROM users WHERE email = $1"
+    var user User
+    err := r.db.QueryRowContext(ctx, query, email).Scan(&amp;user /* ... */)
+    if err != nil {
+        return nil, fmt.Errorf("get user by email: %w", err)
+    }
+    return &amp;user, nil
+}
+
+// Использование
+repo := NewUserRepository(db)
+user, err := repo.GetByID(ctx, 123)        // Вызывает UserRepository.GetByID
+user, err = repo.GetByEmail(ctx, "a@b.c") // Специфичный метод
+</code></pre>
+<h3 id="композиция-через-интерфейсы-более-идиоматично"><a class="header" href="#композиция-через-интерфейсы-более-идиоматично">Композиция через интерфейсы (более идиоматично)</a></h3>
+<pre><code class="language-go">// Определяем интерфейсы для нужной функциональности
+type Reader interface {
+    Get(ctx context.Context, id int) (interface{}, error)
+    List(ctx context.Context) ([]interface{}, error)
+}
+
+type Writer interface {
+    Create(ctx context.Context, entity interface{}) error
+    Update(ctx context.Context, entity interface{}) error
+    Delete(ctx context.Context, id int) error
+}
+
+// Logger - ещё один интерфейс
+type Logger interface {
+    Log(msg string, args ...interface{})
+}
+
+// UserService композирует нужные зависимости
+type UserService struct {
+    repo   Reader  // Только чтение
+    writer Writer  // Только запись
+    logger Logger  // Логирование
+    cache  Cache   // Кеширование
+}
+
+func NewUserService(repo Reader, writer Writer, logger Logger, cache Cache) *UserService {
+    return &amp;UserService{
+        repo:   repo,
+        writer: writer,
+        logger: logger,
+        cache:  cache,
+    }
+}
+
+func (s *UserService) GetUser(ctx context.Context, id int) (*User, error) {
+    // Пробуем кеш
+    if cached, ok := s.cache.Get(id); ok {
+        s.logger.Log("cache hit", "id", id)
+        return cached.(*User), nil
+    }
+
+    // Идём в БД
+    entity, err := s.repo.Get(ctx, id)
+    if err != nil {
+        s.logger.Log("repo error", "error", err)
+        return nil, err
+    }
+
+    user := entity.(*User)
+    s.cache.Set(id, user)
+    return user, nil
+}
+</code></pre>
+<h3 id="идиоматичная-композиция-пример-с-http-middleware"><a class="header" href="#идиоматичная-композиция-пример-с-http-middleware">Идиоматичная композиция: пример с HTTP middleware</a></h3>
+<p><strong>C# (ASP.NET Core)</strong>:</p>
+<pre><code class="language-csharp">// Базовый класс middleware
+public abstract class BaseMiddleware
+{
+    protected readonly RequestDelegate _next;
+
+    protected BaseMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
+
+    public abstract Task InvokeAsync(HttpContext context);
+}
+
+// Наследование
+public class LoggingMiddleware : BaseMiddleware
+{
+    private readonly ILogger _logger;
+
+    public LoggingMiddleware(RequestDelegate next, ILogger logger)
+        : base(next)
+    {
+        _logger = logger;
+    }
+
+    public override async Task InvokeAsync(HttpContext context)
+    {
+        _logger.LogInformation($"Request: {context.Request.Path}");
+        await _next(context);
+        _logger.LogInformation($"Response: {context.Response.StatusCode}");
+    }
+}
+</code></pre>
+<p><strong>Go (идиоматично через функции)</strong>:</p>
+<pre><code class="language-go">// Middleware - это просто функция
+type Middleware func(http.HandlerFunc) http.HandlerFunc
+
+// Логирование
+func LoggingMiddleware(logger *log.Logger) Middleware {
+    return func(next http.HandlerFunc) http.HandlerFunc {
+        return func(w http.ResponseWriter, r *http.Request) {
+            logger.Printf("Request: %s %s", r.Method, r.URL.Path)
+            next(w, r)
+            logger.Printf("Completed: %s", r.URL.Path)
+        }
+    }
+}
+
+// Аутентификация
+func AuthMiddleware(authService *AuthService) Middleware {
+    return func(next http.HandlerFunc) http.HandlerFunc {
+        return func(w http.ResponseWriter, r *http.Request) {
+            token := r.Header.Get("Authorization")
+            if !authService.Validate(token) {
+                http.Error(w, "Unauthorized", http.StatusUnauthorized)
+                return
+            }
+            next(w, r)
+        }
+    }
+}
+
+// Композиция middleware
+func Chain(handler http.HandlerFunc, middlewares ...Middleware) http.HandlerFunc {
+    for i := len(middlewares) - 1; i &gt;= 0; i-- {
+        handler = middlewares[i](handler)
+    }
+    return handler
+}
+
+// Использование
+func main() {
+    logger := log.New(os.Stdout, "HTTP: ", log.LstdFlags)
+    authService := NewAuthService()
+
+    handler := Chain(
+        handleUser,
+        LoggingMiddleware(logger),
+        AuthMiddleware(authService),
+    )
+
+    http.HandleFunc("/user", handler)
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>В Go</strong>: Предпочитай композицию через интерфейсы, а не встраивание структур.</p>
+</blockquote>
+<hr>
+<h2 id="zero-values"><a class="header" href="#zero-values">Zero Values</a></h2>
+<h3 id="c-значения-по-умолчанию"><a class="header" href="#c-значения-по-умолчанию">C# значения по умолчанию</a></h3>
+<pre><code class="language-csharp">// Классы - null по умолчанию
+User user;          // null (но компилятор предупредит в C# 8+)
+string name;        // null
+int[] numbers;      // null
+
+// Value types - нулевые значения
+int count;          // 0
+bool isActive;      // false
+DateTime created;   // 01.01.0001 00:00:00
+
+// Nullable value types
+int? nullableCount; // null
+DateTime? date;     // null
+
+// Default
+var items = new List&lt;string&gt;(); // Пустая коллекция
+var dict = new Dictionary&lt;string, int&gt;(); // Пустой словарь
+
+// Проблема: null reference exceptions
+public class UserService
+{
+    private ILogger _logger; // null!
+
+    public void DoSomething()
+    {
+        _logger.LogInfo("test"); // NullReferenceException
+    }
+}
+</code></pre>
+<h3 id="go-zero-values"><a class="header" href="#go-zero-values">Go zero values</a></h3>
+<pre><code class="language-go">// Все типы имеют zero value - безопасны для использования
+var user *User      // nil
+var name string     // "" (пустая строка)
+var numbers []int   // nil (но можно итерировать!)
+var count int       // 0
+var isActive bool   // false
+var created time.Time // 0001-01-01 00:00:00 UTC
+
+// Zero values полезны!
+var buffer bytes.Buffer  // Готов к использованию
+buffer.WriteString("hello") // Работает без инициализации
+
+var wg sync.WaitGroup    // Готов к использованию
+wg.Add(1)
+wg.Done()
+
+// nil slice безопасен
+var items []string       // nil
+fmt.Println(len(items))  // 0 (не паника!)
+for _, item := range items { // Корректно (ничего не выполнится)
+    fmt.Println(item)
+}
+
+// nil map - небезопасен для записи!
+var counts map[string]int // nil
+value := counts["key"]     // 0 (безопасно)
+counts["key"] = 1          // ПАНИКА! assignment to entry in nil map
+
+// Правильно
+counts = make(map[string]int)
+counts["key"] = 1           // OK
+</code></pre>
+<h3 id="идиоматичное-использование-zero-values"><a class="header" href="#идиоматичное-использование-zero-values">Идиоматичное использование zero values</a></h3>
+<h4 id="1-конструкторы-через-zero-values"><a class="header" href="#1-конструкторы-через-zero-values">1. Конструкторы через zero values</a></h4>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">public class Config
+{
+    public string Host { get; set; } = "localhost";
+    public int Port { get; set; } = 8080;
+    public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(30);
+
+    // Нужен конструктор для инициализации
+    public Config()
+    {
+        // Уже инициализировано через initializers
+    }
+}
+</code></pre>
+<p><strong>Go</strong> (идиоматично):</p>
+<pre><code class="language-go">type Config struct {
+    Host    string        // "" если не указано
+    Port    int           // 0 если не указано
+    Timeout time.Duration // 0 если не указано
+}
+
+// Инициализация со значениями по умолчанию
+func NewConfig() *Config {
+    return &amp;Config{
+        Host:    "localhost",
+        Port:    8080,
+        Timeout: 30 * time.Second,
+    }
+}
+
+// Или через functional options pattern (идиоматично)
+type Option func(*Config)
+
+func WithHost(host string) Option {
+    return func(c *Config) {
+        c.Host = host
+    }
+}
+
+func WithPort(port int) Option {
+    return func(c *Config) {
+        c.Port = port
+    }
+}
+
+func NewConfigWithOptions(opts ...Option) *Config {
+    // Zero value как основа
+    cfg := &amp;Config{
+        Host:    "localhost", // default
+        Port:    8080,
+        Timeout: 30 * time.Second,
+    }
+
+    for _, opt := range opts {
+        opt(cfg)
+    }
+
+    return cfg
+}
+
+// Использование
+cfg := NewConfigWithOptions(
+    WithHost("example.com"),
+    WithPort(9000),
+)
+</code></pre>
+<h4 id="2-проверка-на-zero-value"><a class="header" href="#2-проверка-на-zero-value">2. Проверка на zero value</a></h4>
+<p><strong>Go идиомы</strong>:</p>
+<pre><code class="language-go">// Структуры
+var t time.Time
+if t.IsZero() {  // Идиоматичная проверка
+    t = time.Now()
+}
+
+// Указатели
+var user *User
+if user == nil {
+    user = &amp;User{Name: "Guest"}
+}
+
+// Слайсы
+var items []string
+if len(items) == 0 {  // Идиоматично (работает и для nil)
+    items = []string{"default"}
+}
+
+// Мапы - осторожно!
+var counts map[string]int
+if counts == nil {
+    counts = make(map[string]int)
+}
+
+// Каналы
+var ch chan int
+if ch == nil {
+    ch = make(chan int, 10)
+}
+</code></pre>
+<h4 id="3-zero-value-в-методах"><a class="header" href="#3-zero-value-в-методах">3. Zero value в методах</a></h4>
+<pre><code class="language-go">// sync.Mutex не требует инициализации
+type Counter struct {
+    mu    sync.Mutex // Zero value готов к использованию!
+    count int
+}
+
+func (c *Counter) Increment() {
+    c.mu.Lock()         // Работает сразу
+    defer c.mu.Unlock()
+    c.count++
+}
+
+// bytes.Buffer тоже
+type Logger struct {
+    buf bytes.Buffer // Zero value готов
+}
+
+func (l *Logger) Log(msg string) {
+    l.buf.WriteString(msg) // Работает без make/new
+}
+</code></pre>
+<h3 id="сравнение"><a class="header" href="#сравнение">Сравнение</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Тип</th><th>C# default</th><th>Go zero value</th><th>Безопасность</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Числа</strong></td><td>0</td><td>0</td><td>✅ Идентично</td></tr>
+<tr><td><strong>bool</strong></td><td>false</td><td>false</td><td>✅ Идентично</td></tr>
+<tr><td><strong>string</strong></td><td>null</td><td>“”</td><td>⚠️ В Go безопаснее</td></tr>
+<tr><td><strong>Массивы</strong></td><td>null</td><td>zero values элементов</td><td>✅ В Go инициализированы</td></tr>
+<tr><td><strong>Слайсы</strong></td><td>null</td><td>nil (можно читать)</td><td>⚠️ В Go безопаснее</td></tr>
+<tr><td><strong>Мапы</strong></td><td>null</td><td>nil (нельзя писать)</td><td>⚠️ В Go опаснее</td></tr>
+<tr><td><strong>Указатели</strong></td><td>null</td><td>nil</td><td>✅ Идентично</td></tr>
+<tr><td><strong>Интерфейсы</strong></td><td>null</td><td>nil</td><td>✅ Идентично</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Философия Go</strong>: Zero value должен быть полезным. Проектируй типы так, чтобы zero value был готов к использованию.</p>
+</blockquote>
+<hr>
+<h2 id="видимость-через-регистр"><a class="header" href="#видимость-через-регистр">Видимость через регистр</a></h2>
+<h3 id="c-модификаторы-доступа"><a class="header" href="#c-модификаторы-доступа">C# модификаторы доступа</a></h3>
+<pre><code class="language-csharp">public class UserService
+{
+    // Public - доступен везде
+    public string PublicField;
+
+    // Private - только внутри класса
+    private string _privateField;
+
+    // Protected - класс и наследники
+    protected string ProtectedField;
+
+    // Internal - только в сборке
+    internal string InternalField;
+
+    // Protected internal - сборка + наследники
+    protected internal string ProtectedInternalField;
+
+    // Private protected - только наследники в сборке
+    private protected string PrivateProtectedField;
+
+    public void PublicMethod() { }
+    private void PrivateMethod() { }
+    internal void InternalMethod() { }
+}
+</code></pre>
+<h3 id="go-видимость-через-регистр"><a class="header" href="#go-видимость-через-регистр">Go видимость через регистр</a></h3>
+<pre><code class="language-go">package user
+
+// Exported (Public) - первая буква заглавная
+type User struct {
+    ID       int    // Exported поле
+    Name     string // Exported поле
+    email    string // unexported (private) поле
+    password string // unexported поле
+}
+
+// Exported функция
+func NewUser(name, email string) *User {
+    return &amp;User{
+        Name:  name,
+        email: email,
+    }
+}
+
+// Exported метод
+func (u *User) GetEmail() string {
+    return u.email
+}
+
+// unexported метод
+func (u *User) validatePassword(pwd string) bool {
+    return u.password == hashPassword(pwd)
+}
+
+// unexported функция
+func hashPassword(pwd string) string {
+    // ...
+}
+
+// Exported константы
+const MaxUsers = 1000
+const DefaultTimeout = 30 * time.Second
+
+// unexported константы
+const minPasswordLength = 8
+const saltSize = 32
+</code></pre>
+<h3 id="идиоматичные-паттерны-видимости"><a class="header" href="#идиоматичные-паттерны-видимости">Идиоматичные паттерны видимости</a></h3>
+<h4 id="1-инкапсуляция-через-unexported-поля"><a class="header" href="#1-инкапсуляция-через-unexported-поля">1. Инкапсуляция через unexported поля</a></h4>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">public class BankAccount
+{
+    private decimal _balance;
+
+    public decimal Balance =&gt; _balance; // Read-only property
+
+    public void Deposit(decimal amount)
+    {
+        if (amount &lt;= 0)
+            throw new ArgumentException("Amount must be positive");
+        _balance += amount;
+    }
+
+    public void Withdraw(decimal amount)
+    {
+        if (amount &gt; _balance)
+            throw new InvalidOperationException("Insufficient funds");
+        _balance -= amount;
+    }
+}
+</code></pre>
+<p><strong>Go</strong> (идиоматично):</p>
+<pre><code class="language-go">package bank
+
+type Account struct {
+    id      string  // unexported - нельзя изменить снаружи
+    balance float64 // unexported
+}
+
+func NewAccount(id string) *Account {
+    return &amp;Account{id: id, balance: 0}
+}
+
+// Exported getter
+func (a *Account) Balance() float64 {
+    return a.balance
+}
+
+// Exported методы для изменения
+func (a *Account) Deposit(amount float64) error {
+    if amount &lt;= 0 {
+        return errors.New("amount must be positive")
+    }
+    a.balance += amount
+    return nil
+}
+
+func (a *Account) Withdraw(amount float64) error {
+    if amount &gt; a.balance {
+        return errors.New("insufficient funds")
+    }
+    a.balance -= amount
+    return nil
+}
+</code></pre>
+<h4 id="2-фабричные-функции-для-валидации"><a class="header" href="#2-фабричные-функции-для-валидации">2. Фабричные функции для валидации</a></h4>
+<pre><code class="language-go">package config
+
+// Структура с unexported полями
+type Config struct {
+    host string
+    port int
+    timeout time.Duration
+}
+
+// Exported геттеры
+func (c *Config) Host() string        { return c.host }
+func (c *Config) Port() int           { return c.port }
+func (c *Config) Timeout() time.Duration { return c.timeout }
+
+// Фабрика с валидацией
+func NewConfig(host string, port int, timeout time.Duration) (*Config, error) {
+    if host == "" {
+        return nil, errors.New("host cannot be empty")
+    }
+    if port &lt;= 0 || port &gt; 65535 {
+        return nil, errors.New("invalid port")
+    }
+    if timeout &lt;= 0 {
+        return nil, errors.New("timeout must be positive")
+    }
+
+    return &amp;Config{
+        host:    host,
+        port:    port,
+        timeout: timeout,
+    }, nil
+}
+
+// Нельзя создать невалидный Config:
+// cfg := &amp;config.Config{host: "", port: -1} // ОШИБКА КОМПИЛЯЦИИ
+</code></pre>
+<h4 id="3-internal-packages-go-14"><a class="header" href="#3-internal-packages-go-14">3. Internal packages (Go 1.4+)</a></h4>
+<pre><code class="language-go">// Структура проекта:
+// myapp/
+//   cmd/
+//     server/
+//       main.go
+//   internal/           // "internal" - специальное имя
+//     database/
+//       db.go           // Доступно только внутри myapp/
+//     auth/
+//       auth.go
+//   pkg/
+//     api/
+//       api.go          // Публичное API
+
+// internal/database/db.go
+package database
+
+// Экспортировано, но только внутри myapp/
+type Connection struct {
+    dsn string
+}
+
+func NewConnection(dsn string) *Connection {
+    return &amp;Connection{dsn: dsn}
+}
+
+// cmd/server/main.go
+package main
+
+import "myapp/internal/database" // OK - внутри myapp/
+
+func main() {
+    db := database.NewConnection("...")
+}
+
+// Попытка использовать снаружи:
+// otherproject/main.go
+import "myapp/internal/database" // ОШИБКА КОМПИЛЯЦИИ
+</code></pre>
+<h3 id="сравнение-уровней-доступа"><a class="header" href="#сравнение-уровней-доступа">Сравнение уровней доступа</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C#</th><th>Go</th><th>Описание</th></tr>
+</thead>
+<tbody>
+<tr><td><code>public</code></td><td><code>Exported</code> (заглавная)</td><td>Доступно везде</td></tr>
+<tr><td><code>private</code></td><td><code>unexported</code> (строчная)</td><td>Только в пакете</td></tr>
+<tr><td><code>internal</code></td><td><code>internal/</code> package</td><td>Только в модуле</td></tr>
+<tr><td><code>protected</code></td><td>❌ Нет</td><td>Нет наследования</td></tr>
+<tr><td><code>protected internal</code></td><td>❌ Нет</td><td>Нет аналога</td></tr>
+<tr><td><code>private protected</code></td><td>❌ Нет</td><td>Нет аналога</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: В Go нет <code>protected</code> - нет наследования, нет необходимости.</p>
+</blockquote>
+<hr>
+<h2 id="идиоматичные-различия"><a class="header" href="#идиоматичные-различия">Идиоматичные различия</a></h2>
+<h3 id="1-обработка-nil"><a class="header" href="#1-обработка-nil">1. Обработка nil</a></h3>
+<p><strong>C# - defensive programming</strong>:</p>
+<pre><code class="language-csharp">public class OrderService
+{
+    private readonly ILogger _logger;
+
+    public OrderService(ILogger logger)
+    {
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
+
+    public Order ProcessOrder(Order order)
+    {
+        if (order == null)
+            throw new ArgumentNullException(nameof(order));
+
+        if (order.Items == null || !order.Items.Any())
+            throw new ArgumentException("Order must have items");
+
+        _logger?.LogInformation($"Processing order {order.Id}");
+
+        // ...
+    }
+}
+</code></pre>
+<p><strong>Go - early return</strong>:</p>
+<pre><code class="language-go">type OrderService struct {
+    logger *Logger
+}
+
+func NewOrderService(logger *Logger) *OrderService {
+    if logger == nil {
+        panic("logger cannot be nil") // Или вернуть error
+    }
+    return &amp;OrderService{logger: logger}
+}
+
+func (s *OrderService) ProcessOrder(order *Order) (*Order, error) {
+    if order == nil {
+        return nil, errors.New("order is nil")
+    }
+
+    if len(order.Items) == 0 {
+        return nil, errors.New("order must have items")
+    }
+
+    s.logger.Info("processing order", "id", order.ID)
+
+    // ...
+    return order, nil
+}
+</code></pre>
+<h3 id="2-коллекции-и-linq-vs-циклы"><a class="header" href="#2-коллекции-и-linq-vs-циклы">2. Коллекции и LINQ vs циклы</a></h3>
+<p><strong>C# - LINQ</strong>:</p>
+<pre><code class="language-csharp">var activeUsers = users
+    .Where(u =&gt; u.IsActive)
+    .Select(u =&gt; new UserDTO
+    {
+        Id = u.Id,
+        Name = u.Name
+    })
+    .OrderBy(u =&gt; u.Name)
+    .ToList();
+
+var totalAmount = orders
+    .Where(o =&gt; o.Status == OrderStatus.Completed)
+    .Sum(o =&gt; o.Amount);
+
+var usersByCity = users
+    .GroupBy(u =&gt; u.City)
+    .ToDictionary(g =&gt; g.Key, g =&gt; g.ToList());
+</code></pre>
+<p><strong>Go - явные циклы</strong> (идиоматично):</p>
+<pre><code class="language-go">// Фильтрация + маппинг
+activeUsers := make([]UserDTO, 0, len(users))
+for _, u := range users {
+    if u.IsActive {
+        activeUsers = append(activeUsers, UserDTO{
+            ID:   u.ID,
+            Name: u.Name,
+        })
+    }
+}
+
+// Сортировка
+sort.Slice(activeUsers, func(i, j int) bool {
+    return activeUsers[i].Name &lt; activeUsers[j].Name
+})
+
+// Агрегация
+var totalAmount float64
+for _, o := range orders {
+    if o.Status == OrderStatusCompleted {
+        totalAmount += o.Amount
+    }
+}
+
+// Группировка
+usersByCity := make(map[string][]*User)
+for _, u := range users {
+    usersByCity[u.City] = append(usersByCity[u.City], u)
+}
+</code></pre>
+<p><strong>Go - функциональный стиль</strong> (менее идиоматично, но возможно):</p>
+<pre><code class="language-go">// Можно создать вспомогательные функции
+func Filter[T any](slice []T, predicate func(T) bool) []T {
+    result := make([]T, 0)
+    for _, item := range slice {
+        if predicate(item) {
+            result = append(result, item)
+        }
+    }
+    return result
+}
+
+func Map[T, U any](slice []T, mapper func(T) U) []U {
+    result := make([]U, len(slice))
+    for i, item := range slice {
+        result[i] = mapper(item)
+    }
+    return result
+}
+
+// Использование
+activeUsers := Filter(users, func(u User) bool { return u.IsActive })
+userDTOs := Map(activeUsers, func(u User) UserDTO {
+    return UserDTO{ID: u.ID, Name: u.Name}
+})
+</code></pre>
+<blockquote>
+<p>💡 <strong>В Go предпочитают явные циклы</strong> - они понятнее и производительнее.</p>
+</blockquote>
+<h3 id="3-asyncawait-vs-goroutines"><a class="header" href="#3-asyncawait-vs-goroutines">3. Async/Await vs Goroutines</a></h3>
+<p><strong>C# - async/await</strong>:</p>
+<pre><code class="language-csharp">public async Task&lt;User&gt; GetUserWithOrdersAsync(int userId)
+{
+    var user = await _userRepository.GetByIdAsync(userId);
+
+    var ordersTask = _orderRepository.GetByUserIdAsync(userId);
+    var paymentsTask = _paymentRepository.GetByUserIdAsync(userId);
+
+    await Task.WhenAll(ordersTask, paymentsTask);
+
+    user.Orders = ordersTask.Result;
+    user.Payments = paymentsTask.Result;
+
+    return user;
+}
+
+// Обработка нескольких пользователей параллельно
+public async Task&lt;List&lt;User&gt;&gt; GetMultipleUsersAsync(List&lt;int&gt; userIds)
+{
+    var tasks = userIds.Select(id =&gt; GetUserWithOrdersAsync(id));
+    var users = await Task.WhenAll(tasks);
+    return users.ToList();
+}
+</code></pre>
+<p><strong>Go - goroutines + channels</strong>:</p>
+<pre><code class="language-go">func (s *Service) GetUserWithOrders(ctx context.Context, userID int) (*User, error) {
+    user, err := s.userRepo.GetByID(ctx, userID)
+    if err != nil {
+        return nil, err
+    }
+
+    // Параллельные запросы
+    type ordersResult struct {
+        orders []*Order
+        err    error
+    }
+    type paymentsResult struct {
+        payments []*Payment
+        err      error
+    }
+
+    ordersCh := make(chan ordersResult, 1)
+    paymentsCh := make(chan paymentsResult, 1)
+
+    // Goroutine для заказов
+    go func() {
+        orders, err := s.orderRepo.GetByUserID(ctx, userID)
+        ordersCh &lt;- ordersResult{orders: orders, err: err}
+    }()
+
+    // Goroutine для платежей
+    go func() {
+        payments, err := s.paymentRepo.GetByUserID(ctx, userID)
+        paymentsCh &lt;- paymentsResult{payments: payments, err: err}
+    }()
+
+    // Ожидание результатов
+    ordersRes := &lt;-ordersCh
+    paymentsRes := &lt;-paymentsCh
+
+    if ordersRes.err != nil {
+        return nil, fmt.Errorf("get orders: %w", ordersRes.err)
+    }
+    if paymentsRes.err != nil {
+        return nil, fmt.Errorf("get payments: %w", paymentsRes.err)
+    }
+
+    user.Orders = ordersRes.orders
+    user.Payments = paymentsRes.payments
+
+    return user, nil
+}
+
+// Обработка нескольких пользователей параллельно
+func (s *Service) GetMultipleUsers(ctx context.Context, userIDs []int) ([]*User, error) {
+    type result struct {
+        user *User
+        err  error
+    }
+
+    results := make(chan result, len(userIDs))
+
+    // Запускаем goroutine для каждого пользователя
+    for _, id := range userIDs {
+        go func(userID int) {
+            user, err := s.GetUserWithOrders(ctx, userID)
+            results &lt;- result{user: user, err: err}
+        }(id)
+    }
+
+    // Собираем результаты
+    users := make([]*User, 0, len(userIDs))
+    for i := 0; i &lt; len(userIDs); i++ {
+        res := &lt;-results
+        if res.err != nil {
+            return nil, res.err
+        }
+        users = append(users, res.user)
+    }
+
+    return users, nil
+}
+</code></pre>
+<p><strong>Go - errgroup (идиоматично для параллельных задач)</strong>:</p>
+<pre><code class="language-go">import "golang.org/x/sync/errgroup"
+
+func (s *Service) GetUserWithOrders(ctx context.Context, userID int) (*User, error) {
+    user, err := s.userRepo.GetByID(ctx, userID)
+    if err != nil {
+        return nil, err
+    }
+
+    var orders []*Order
+    var payments []*Payment
+
+    g, ctx := errgroup.WithContext(ctx)
+
+    // Goroutine для заказов
+    g.Go(func() error {
+        var err error
+        orders, err = s.orderRepo.GetByUserID(ctx, userID)
+        return err
+    })
+
+    // Goroutine для платежей
+    g.Go(func() error {
+        var err error
+        payments, err = s.paymentRepo.GetByUserID(ctx, userID)
+        return err
+    })
+
+    // Ожидаем завершения всех goroutines
+    if err := g.Wait(); err != nil {
+        return nil, err
+    }
+
+    user.Orders = orders
+    user.Payments = payments
+
+    return user, nil
+}
+
+// Обработка нескольких пользователей с ограничением параллелизма
+func (s *Service) GetMultipleUsers(ctx context.Context, userIDs []int) ([]*User, error) {
+    users := make([]*User, len(userIDs))
+
+    g, ctx := errgroup.WithContext(ctx)
+    g.SetLimit(10) // Максимум 10 параллельных запросов
+
+    for i, id := range userIDs {
+        i, id := i, id // Захват переменных цикла
+        g.Go(func() error {
+            user, err := s.GetUserWithOrders(ctx, id)
+            if err != nil {
+                return err
+            }
+            users[i] = user
+            return nil
+        })
+    }
+
+    if err := g.Wait(); err != nil {
+        return nil, err
+    }
+
+    return users, nil
+}
+</code></pre>
+<h3 id="4-конструкторы-и-инициализация"><a class="header" href="#4-конструкторы-и-инициализация">4. Конструкторы и инициализация</a></h3>
+<p><strong>C# - конструкторы</strong>:</p>
+<pre><code class="language-csharp">public class UserService
+{
+    private readonly IUserRepository _repository;
+    private readonly ILogger _logger;
+    private readonly ICache _cache;
+
+    // Основной конструктор
+    public UserService(
+        IUserRepository repository,
+        ILogger logger,
+        ICache cache)
+    {
+        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+    }
+
+    // Конструктор с default значениями
+    public UserService(IUserRepository repository, ILogger logger)
+        : this(repository, logger, new NullCache())
+    {
+    }
+
+    // Object initializer syntax
+    var config = new Config
+    {
+        Host = "localhost",
+        Port = 8080,
+        Timeout = TimeSpan.FromSeconds(30)
+    };
+}
+</code></pre>
+<p><strong>Go - функции New</strong>:</p>
+<pre><code class="language-go">type UserService struct {
+    repository UserRepository
+    logger     *Logger
+    cache      Cache
+}
+
+// Основной конструктор
+func NewUserService(repo UserRepository, logger *Logger, cache Cache) *UserService {
+    if repo == nil {
+        panic("repository cannot be nil")
+    }
+    if logger == nil {
+        panic("logger cannot be nil")
+    }
+    if cache == nil {
+        panic("cache cannot be nil")
+    }
+
+    return &amp;UserService{
+        repository: repo,
+        logger:     logger,
+        cache:      cache,
+    }
+}
+
+// Конструктор с default значениями
+func NewUserServiceWithDefaults(repo UserRepository, logger *Logger) *UserService {
+    return NewUserService(repo, logger, &amp;NullCache{})
+}
+
+// Composite literal (аналог object initializer)
+config := &amp;Config{
+    Host:    "localhost",
+    Port:    8080,
+    Timeout: 30 * time.Second,
+}
+</code></pre>
+<p><strong>Go - Functional Options Pattern</strong> (идиоматично для сложных случаев):</p>
+<pre><code class="language-go">type UserService struct {
+    repository UserRepository
+    logger     *Logger
+    cache      Cache
+    timeout    time.Duration
+    maxRetries int
+}
+
+type Option func(*UserService)
+
+func WithCache(cache Cache) Option {
+    return func(s *UserService) {
+        s.cache = cache
+    }
+}
+
+func WithTimeout(timeout time.Duration) Option {
+    return func(s *UserService) {
+        s.timeout = timeout
+    }
+}
+
+func WithMaxRetries(retries int) Option {
+    return func(s *UserService) {
+        s.maxRetries = retries
+    }
+}
+
+func NewUserService(repo UserRepository, logger *Logger, opts ...Option) *UserService {
+    if repo == nil || logger == nil {
+        panic("repo and logger are required")
+    }
+
+    // Default значения
+    s := &amp;UserService{
+        repository: repo,
+        logger:     logger,
+        cache:      &amp;NullCache{},
+        timeout:    30 * time.Second,
+        maxRetries: 3,
+    }
+
+    // Применяем опции
+    for _, opt := range opts {
+        opt(s)
+    }
+
+    return s
+}
+
+// Использование
+service := NewUserService(
+    repo,
+    logger,
+    WithCache(redisCache),
+    WithTimeout(60*time.Second),
+    WithMaxRetries(5),
+)
+</code></pre>
+<h3 id="5-generics-обобщения"><a class="header" href="#5-generics-обобщения">5. Generics (Обобщения)</a></h3>
+<p><strong>C# - generics везде</strong>:</p>
+<pre><code class="language-csharp">public interface IRepository&lt;T&gt; where T : class
+{
+    Task&lt;T&gt; GetByIdAsync(int id);
+    Task&lt;IEnumerable&lt;T&gt;&gt; GetAllAsync();
+    Task&lt;T&gt; AddAsync(T entity);
+}
+
+public class Repository&lt;T&gt; : IRepository&lt;T&gt; where T : class
+{
+    private readonly DbContext _context;
+
+    public async Task&lt;T&gt; GetByIdAsync(int id)
+    {
+        return await _context.Set&lt;T&gt;().FindAsync(id);
+    }
+}
+
+// Generic методы
+public static T FirstOrDefault&lt;T&gt;(IEnumerable&lt;T&gt; source, Func&lt;T, bool&gt; predicate)
+{
+    foreach (var item in source)
+    {
+        if (predicate(item))
+            return item;
+    }
+    return default(T);
+}
+
+// Generic constraints
+public class Cache&lt;TKey, TValue&gt; where TKey : IEquatable&lt;TKey&gt;
+{
+    private Dictionary&lt;TKey, TValue&gt; _items = new();
+
+    public void Set(TKey key, TValue value) =&gt; _items[key] = value;
+    public TValue Get(TKey key) =&gt; _items.TryGetValue(key, out var value) ? value : default;
+}
+</code></pre>
+<p><strong>Go - generics (Go 1.18+)</strong>:</p>
+<pre><code class="language-go">// Generic интерфейс
+type Repository[T any] interface {
+    GetByID(ctx context.Context, id int) (T, error)
+    GetAll(ctx context.Context) ([]T, error)
+    Add(ctx context.Context, entity T) (T, error)
+}
+
+// Generic struct
+type GenericRepository[T any] struct {
+    db *sql.DB
+}
+
+func (r *GenericRepository[T]) GetByID(ctx context.Context, id int) (T, error) {
+    var entity T
+    // ... реализация
+    return entity, nil
+}
+
+// Generic функция
+func FirstOrDefault[T any](slice []T, predicate func(T) bool) T {
+    for _, item := range slice {
+        if predicate(item) {
+            return item
+        }
+    }
+    var zero T
+    return zero
+}
+
+// Generic constraints
+type Equatable interface {
+    Equal(other Equatable) bool
+}
+
+type Cache[K comparable, V any] struct {
+    items map[K]V
+    mu    sync.RWMutex
+}
+
+func NewCache[K comparable, V any]() *Cache[K, V] {
+    return &amp;Cache[K, V]{
+        items: make(map[K]V),
+    }
+}
+
+func (c *Cache[K, V]) Set(key K, value V) {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+    c.items[key] = value
+}
+
+func (c *Cache[K, V]) Get(key K) (V, bool) {
+    c.mu.RLock()
+    defer c.mu.RUnlock()
+    value, ok := c.items[key]
+    return value, ok
+}
+
+// Использование
+cache := NewCache[string, *User]()
+cache.Set("user1", &amp;User{Name: "John"})
+user, ok := cache.Get("user1")
+</code></pre>
+<p><strong>Идиоматично в Go - interface{}</strong>:</p>
+<pre><code class="language-go">// До generics (Go &lt; 1.18) - и часто предпочитается сейчас
+type Cache struct {
+    items map[string]interface{}
+    mu    sync.RWMutex
+}
+
+func (c *Cache) Set(key string, value interface{}) {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+    c.items[key] = value
+}
+
+func (c *Cache) Get(key string) (interface{}, bool) {
+    c.mu.RLock()
+    defer c.mu.RUnlock()
+    value, ok := c.items[key]
+    return value, ok
+}
+
+// Использование с type assertion
+cache := &amp;Cache{items: make(map[string]interface{})}
+cache.Set("user1", &amp;User{Name: "John"})
+if value, ok := cache.Get("user1"); ok {
+    if user, ok := value.(*User); ok {
+        fmt.Println(user.Name)
+    }
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>В Go</strong>: Generics появились недавно (1.18). Многие библиотеки до сих пор используют <code>interface{}</code> + type assertions.</p>
+</blockquote>
+<h4 id="почему-go-так-долго-ждал-generics"><a class="header" href="#почему-go-так-долго-ждал-generics">Почему Go так долго ждал generics</a></h4>
+<p>Команда Go намеренно откладывала добавление generics:</p>
+<ol>
+<li><strong>Простота важнее</strong>: Generics усложняют язык и компилятор</li>
+<li><strong>Интерфейсы работали</strong>: Для большинства задач <code>interface{}</code> + type assertion было достаточно</li>
+<li><strong>Не хотели повторять ошибки</strong>: Java generics с type erasure, C++ templates с cryptic errors</li>
+</ol>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: Generics в Go — это <strong>не</strong> замена интерфейсам. Это дополнительный инструмент для случаев, когда нужна <strong>type safety без runtime overhead</strong>.</p>
+</blockquote>
+<h4 id="type-constraints"><a class="header" href="#type-constraints">Type constraints</a></h4>
+<p>Constraints (ограничения) определяют, какие типы могут использоваться как type parameters.</p>
+<pre><code class="language-go">import "cmp"
+
+// any — любой тип (аналог interface{})
+func Print[T any](value T) {
+    fmt.Println(value)
+}
+
+// comparable — типы, сравниваемые через == и !=
+func Contains[T comparable](slice []T, target T) bool {
+    for _, item := range slice {
+        if item == target {
+            return true
+        }
+    }
+    return false
+}
+
+// cmp.Ordered — типы с операторами &lt;, &gt;, &lt;=, &gt;= (Go 1.21+)
+func Min[T cmp.Ordered](a, b T) T {
+    if a &lt; b {
+        return a
+    }
+    return b
+}
+</code></pre>
+<p><strong>Сравнение constraints: C# vs Go</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C# Constraint</th><th>Go Equivalent</th><th>Пример</th></tr>
+</thead>
+<tbody>
+<tr><td><code>where T : class</code></td><td>Нет прямого аналога</td><td>—</td></tr>
+<tr><td><code>where T : new()</code></td><td>Нет прямого аналога</td><td>—</td></tr>
+<tr><td><code>where T : IComparable&lt;T&gt;</code></td><td><code>[T cmp.Ordered]</code></td><td><code>Max[T cmp.Ordered](a, b T)</code></td></tr>
+<tr><td><code>where T : IEquatable&lt;T&gt;</code></td><td><code>[T comparable]</code></td><td><code>Contains[T comparable](...)</code></td></tr>
+<tr><td><code>where T : SomeInterface</code></td><td><code>[T SomeInterface]</code></td><td><code>[T io.Reader]</code></td></tr>
+<tr><td><code>where T : BaseClass</code></td><td>Нет (нет наследования)</td><td>—</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Custom constraints:</strong></p>
+<pre><code class="language-go">// ~ означает "underlying type" — включает type aliases
+type Number interface {
+    ~int | ~int8 | ~int16 | ~int32 | ~int64 |
+    ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 |
+    ~float32 | ~float64
+}
+
+func Sum[T Number](numbers []T) T {
+    var total T
+    for _, n := range numbers {
+        total += n
+    }
+    return total
+}
+
+type MyInt int
+sum := Sum([]MyInt{1, 2, 3})  // Работает благодаря ~int
+</code></pre>
+<h4 id="когда-использовать-generics"><a class="header" href="#когда-использовать-generics">Когда использовать generics</a></h4>
+<p><strong>Используйте generics для:</strong></p>
+<ol>
+<li><strong>Структур данных (контейнеров)</strong>:</li>
+</ol>
+<pre><code class="language-go">type Set[T comparable] struct {
+    items map[T]struct{}
+}
+
+func NewSet[T comparable]() *Set[T] {
+    return &amp;Set[T]{items: make(map[T]struct{})}
+}
+
+func (s *Set[T]) Add(item T) { s.items[item] = struct{}{} }
+func (s *Set[T]) Contains(item T) bool {
+    _, ok := s.items[item]
+    return ok
+}
+</code></pre>
+<ol start="2">
+<li><strong>Утилит для работы с коллекциями</strong>:</li>
+</ol>
+<pre><code class="language-go">func Filter[T any](slice []T, predicate func(T) bool) []T {
+    var result []T
+    for _, item := range slice {
+        if predicate(item) {
+            result = append(result, item)
+        }
+    }
+    return result
+}
+
+func Map[T, R any](slice []T, fn func(T) R) []R {
+    result := make([]R, len(slice))
+    for i, item := range slice {
+        result[i] = fn(item)
+    }
+    return result
+}
+</code></pre>
+<p><strong>НЕ используйте generics когда:</strong></p>
+<pre><code class="language-go">// ❌ Избыточно — достаточно конкретного типа
+func ProcessUsers[T User](users []T) { ... }
+// ✅ Проще
+func ProcessUsers(users []User) { ... }
+
+// ❌ Интерфейс понятнее
+func Process[T interface{ Process() error }](item T) error {
+    return item.Process()
+}
+// ✅ Классический Go-style
+type Processor interface {
+    Process() error
+}
+func Process(item Processor) error {
+    return item.Process()
+}
+
+// ❌ Over-engineering для 1-2 типов
+func FormatID[T int | int64 | string](id T) string { ... }
+// ✅ Два простых метода
+func FormatIntID(id int) string { ... }
+func FormatStringID(id string) string { ... }
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Правило для C# разработчиков</strong>: В Go простой код предпочтительнее clever-кода. Если не уверены — начните без generics. Добавите позже, если действительно понадобится.</p>
+</blockquote>
+<h4 id="performance-и-gc"><a class="header" href="#performance-и-gc">Performance и GC</a></h4>
+<p>Go использует <strong>частичную мономорфизацию</strong> (GCShape stenciling):</p>
+<pre><code class="language-go">// Компилятор создаёт отдельные версии для:
+// - Non-pointer types (каждый размер отдельно)
+// - Pointer types (все указатели используют одну версию)
+
+// Process[int] и Process[int64] — разные версии
+// Process[*User] и Process[*Order] — одна версия (оба pointer)
+</code></pre>
+<p>Performance penalty от generics в Go <strong>минимален</strong> (~3%). Не избегайте generics из соображений производительности — используйте их там, где они улучшают читаемость и type safety.</p>
+<h4 id="self-referential-generics-go-126"><a class="header" href="#self-referential-generics-go-126">Self-referential generics (Go 1.26)</a></h4>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Аналог recursive type constraints в C# — <code>where T : IComparable&lt;T&gt;</code>.</p>
+</blockquote>
+<p>Go 1.26 добавил поддержку <strong>рекурсивных generic constraints</strong> — тип может ссылаться сам на себя в ограничении.</p>
+<p><strong>C# — recursive type constraints (давно поддерживаются):</strong></p>
+<pre><code class="language-csharp">// T : IComparable&lt;T&gt; — рекурсивное ограничение
+public interface ISortable&lt;T&gt; where T : ISortable&lt;T&gt;
+{
+    int CompareTo(T other);
+}
+
+public class Temperature : ISortable&lt;Temperature&gt;
+{
+    public int CompareTo(Temperature other) =&gt; this.Value.CompareTo(other.Value);
+    public double Value { get; }
+}
+</code></pre>
+<p><strong>Go 1.26 — self-referential generics:</strong></p>
+<pre><code class="language-go">// Интерфейс с рекурсивным ограничением
+type Adder[A Adder[A]] interface {
+    Add(A) A
+}
+
+// Реализация
+type Vector struct{ X, Y float64 }
+
+func (v Vector) Add(other Vector) Vector {
+    return Vector{X: v.X + other.X, Y: v.Y + other.Y}
+}
+
+// Использование в generic функции
+func Sum[A Adder[A]](items []A) A {
+    var result A
+    for _, item := range items {
+        result = result.Add(item)
+    }
+    return result
+}
+
+total := Sum([]Vector{{1, 2}, {3, 4}, {5, 6}})
+// total = {9, 12}
+</code></pre>
+<p><strong>Другой пример — Builder pattern:</strong></p>
+<pre><code class="language-go">// Типобезопасный Builder с method chaining
+type Builder[B Builder[B]] interface {
+    Set(key, value string) B
+    Build() map[string]string
+}
+
+type QueryBuilder struct {
+    params map[string]string
+}
+
+func (q *QueryBuilder) Set(key, value string) *QueryBuilder {
+    q.params[key] = value
+    return q
+}
+
+func (q *QueryBuilder) Build() map[string]string {
+    return q.params
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Осторожно</strong>: Self-referential generics мощны, но усложняют код. Используйте только когда рекурсивное ограничение действительно необходимо для type safety.</p>
+</blockquote>
+<h3 id="6-properties-vs-getterssetters"><a class="header" href="#6-properties-vs-getterssetters">6. Properties vs Getters/Setters</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">public class User
+{
+    // Auto-property
+    public string Name { get; set; }
+
+    // Read-only property
+    public int Age { get; }
+
+    // Property with backing field
+    private string _email;
+    public string Email
+    {
+        get =&gt; _email;
+        set
+        {
+            if (string.IsNullOrEmpty(value))
+                throw new ArgumentException("Email cannot be empty");
+            _email = value.ToLower();
+        }
+    }
+
+    // Computed property
+    public string FullInfo =&gt; $"{Name} ({Age})";
+
+    // Init-only property (C# 9+)
+    public DateTime CreatedAt { get; init; }
+}
+
+// Использование
+var user = new User
+{
+    Name = "John",
+    Email = "JOHN@EXAMPLE.COM", // Преобразуется в lowercase
+    CreatedAt = DateTime.Now
+};
+
+Console.WriteLine(user.Email); // john@example.com
+Console.WriteLine(user.FullInfo); // John (0)
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">type User struct {
+    name      string    // unexported
+    age       int       // unexported
+    email     string    // unexported
+    createdAt time.Time // unexported
+}
+
+// Getters (без префикса "Get" - идиоматично)
+func (u *User) Name() string {
+    return u.name
+}
+
+func (u *User) Age() int {
+    return u.age
+}
+
+func (u *User) Email() string {
+    return u.email
+}
+
+func (u *User) CreatedAt() time.Time {
+    return u.createdAt
+}
+
+// Setters (с валидацией)
+func (u *User) SetName(name string) error {
+    if name == "" {
+        return errors.New("name cannot be empty")
+    }
+    u.name = name
+    return nil
+}
+
+func (u *User) SetEmail(email string) error {
+    if email == "" {
+        return errors.New("email cannot be empty")
+    }
+    u.email = strings.ToLower(email)
+    return nil
+}
+
+// Computed method (вместо property)
+func (u *User) FullInfo() string {
+    return fmt.Sprintf("%s (%d)", u.name, u.age)
+}
+
+// Конструктор для инициализации
+func NewUser(name, email string, age int) (*User, error) {
+    if name == "" {
+        return nil, errors.New("name cannot be empty")
+    }
+    if email == "" {
+        return nil, errors.New("email cannot be empty")
+    }
+
+    return &amp;User{
+        name:      name,
+        email:     strings.ToLower(email),
+        age:       age,
+        createdAt: time.Now(),
+    }, nil
+}
+
+// Использование
+user, err := NewUser("John", "JOHN@EXAMPLE.COM", 30)
+if err != nil {
+    log.Fatal(err)
+}
+
+fmt.Println(user.Email())     // john@example.com
+fmt.Println(user.FullInfo())  // John (30)
+
+if err := user.SetEmail("new@example.com"); err != nil {
+    log.Fatal(err)
+}
+</code></pre>
+<p><strong>Go - Публичные поля</strong> (когда валидация не нужна):</p>
+<pre><code class="language-go">type Point struct {
+    X float64 // Публичное поле
+    Y float64 // Публичное поле
+}
+
+// Простое использование
+p := Point{X: 10, Y: 20}
+p.X = 30 // Прямое изменение - нормально для простых данных
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Геттеры без префикса <code>Get</code>, сеттеры с префиксом <code>Set</code>. Для простых данных - публичные поля.</p>
+</blockquote>
+<hr>
+<h2 id="практические-примеры"><a class="header" href="#практические-примеры">Практические примеры</a></h2>
+<h3 id="пример-1-http-handler"><a class="header" href="#пример-1-http-handler">Пример 1: HTTP Handler</a></h3>
+<p><strong>C# (ASP.NET Core)</strong>:</p>
+<pre><code class="language-csharp">[ApiController]
+[Route("api/[controller]")]
+public class UsersController : ControllerBase
+{
+    private readonly IUserService _userService;
+    private readonly ILogger&lt;UsersController&gt; _logger;
+
+    public UsersController(IUserService userService, ILogger&lt;UsersController&gt; logger)
+    {
+        _userService = userService;
+        _logger = logger;
+    }
+
+    [HttpGet("{id}")]
+    [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task&lt;ActionResult&lt;UserDTO&gt;&gt; GetUser(int id)
+    {
+        try
+        {
+            var user = await _userService.GetUserAsync(id);
+            return Ok(user);
+        }
+        catch (UserNotFoundException ex)
+        {
+            _logger.LogWarning(ex, "User {UserId} not found", id);
+            return NotFound(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting user {UserId}", id);
+            return StatusCode(500, new { error = "Internal server error" });
+        }
+    }
+
+    [HttpPost]
+    [ProducesResponseType(typeof(UserDTO), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task&lt;ActionResult&lt;UserDTO&gt;&gt; CreateUser([FromBody] CreateUserRequest request)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        try
+        {
+            var user = await _userService.CreateUserAsync(request);
+            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+        }
+        catch (ValidationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating user");
+            return StatusCode(500, new { error = "Internal server error" });
+        }
+    }
+}
+</code></pre>
+<p><strong>Go (идиоматично)</strong>:</p>
+<pre><code class="language-go">type UserHandler struct {
+    service *UserService
+    logger  *slog.Logger
+}
+
+func NewUserHandler(service *UserService, logger *slog.Logger) *UserHandler {
+    return &amp;UserHandler{
+        service: service,
+        logger:  logger,
+    }
+}
+
+func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
+    // Извлекаем ID из URL
+    idStr := r.PathValue("id") // Go 1.22+
+    id, err := strconv.Atoi(idStr)
+    if err != nil {
+        h.respondError(w, http.StatusBadRequest, "invalid user ID")
+        return
+    }
+
+    // Получаем пользователя
+    user, err := h.service.GetUser(r.Context(), id)
+    if err != nil {
+        if errors.Is(err, ErrUserNotFound) {
+            h.logger.Warn("user not found", "id", id)
+            h.respondError(w, http.StatusNotFound, "user not found")
+            return
+        }
+
+        h.logger.Error("get user failed", "id", id, "error", err)
+        h.respondError(w, http.StatusInternalServerError, "internal server error")
+        return
+    }
+
+    h.respondJSON(w, http.StatusOK, user)
+}
+
+func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
+    var req CreateUserRequest
+
+    // Декодируем JSON
+    if err := json.NewDecoder(r.Body).Decode(&amp;req); err != nil {
+        h.respondError(w, http.StatusBadRequest, "invalid request body")
+        return
+    }
+
+    // Валидация
+    if err := req.Validate(); err != nil {
+        h.respondError(w, http.StatusBadRequest, err.Error())
+        return
+    }
+
+    // Создаём пользователя
+    user, err := h.service.CreateUser(r.Context(), req)
+    if err != nil {
+        if errors.Is(err, ErrValidation) {
+            h.respondError(w, http.StatusBadRequest, err.Error())
+            return
+        }
+
+        h.logger.Error("create user failed", "error", err)
+        h.respondError(w, http.StatusInternalServerError, "internal server error")
+        return
+    }
+
+    w.Header().Set("Location", fmt.Sprintf("/api/users/%d", user.ID))
+    h.respondJSON(w, http.StatusCreated, user)
+}
+
+// Вспомогательные методы
+func (h *UserHandler) respondJSON(w http.ResponseWriter, status int, data interface{}) {
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(status)
+    json.NewEncoder(w).Encode(data)
+}
+
+func (h *UserHandler) respondError(w http.ResponseWriter, status int, message string) {
+    h.respondJSON(w, status, map[string]string{"error": message})
+}
+
+// Регистрация маршрутов
+func (h *UserHandler) RegisterRoutes(mux *http.ServeMux) {
+    mux.HandleFunc("GET /api/users/{id}", h.GetUser)
+    mux.HandleFunc("POST /api/users", h.CreateUser)
+}
+</code></pre>
+<h3 id="пример-2-работа-с-базой-данных"><a class="header" href="#пример-2-работа-с-базой-данных">Пример 2: Работа с базой данных</a></h3>
+<p><strong>C# (Entity Framework)</strong>:</p>
+<pre><code class="language-csharp">public class UserRepository : IUserRepository
+{
+    private readonly AppDbContext _context;
+
+    public UserRepository(AppDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task&lt;User&gt; GetByIdAsync(int id)
+    {
+        return await _context.Users
+            .Include(u =&gt; u.Orders)
+            .Include(u =&gt; u.Profile)
+            .FirstOrDefaultAsync(u =&gt; u.Id == id);
+    }
+
+    public async Task&lt;IEnumerable&lt;User&gt;&gt; GetActiveUsersAsync()
+    {
+        return await _context.Users
+            .Where(u =&gt; u.IsActive &amp;&amp; u.DeletedAt == null)
+            .OrderBy(u =&gt; u.CreatedAt)
+            .ToListAsync();
+    }
+
+    public async Task&lt;User&gt; CreateAsync(User user)
+    {
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
+        return user;
+    }
+
+    public async Task&lt;bool&gt; UpdateAsync(User user)
+    {
+        _context.Entry(user).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return false;
+        }
+    }
+}
+</code></pre>
+<p><strong>Go (database/sql)</strong>:</p>
+<pre><code class="language-go">type UserRepository struct {
+    db *sql.DB
+}
+
+func NewUserRepository(db *sql.DB) *UserRepository {
+    return &amp;UserRepository{db: db}
+}
+
+func (r *UserRepository) GetByID(ctx context.Context, id int) (*User, error) {
+    query := `
+        SELECT u.id, u.name, u.email, u.is_active, u.created_at,
+               o.id, o.amount, o.status,
+               p.id, p.bio, p.avatar_url
+        FROM users u
+        LEFT JOIN orders o ON u.id = o.user_id
+        LEFT JOIN profiles p ON u.id = p.user_id
+        WHERE u.id = $1
+    `
+
+    var user User
+    var orders []Order
+    var profile Profile
+
+    rows, err := r.db.QueryContext(ctx, query, id)
+    if err != nil {
+        return nil, fmt.Errorf("query user: %w", err)
+    }
+    defer rows.Close()
+
+    // Сканирование результатов...
+    // (упрощено для примера)
+
+    if err := rows.Err(); err != nil {
+        return nil, fmt.Errorf("scan rows: %w", err)
+    }
+
+    user.Orders = orders
+    user.Profile = &amp;profile
+
+    return &amp;user, nil
+}
+
+func (r *UserRepository) GetActiveUsers(ctx context.Context) ([]*User, error) {
+    query := `
+        SELECT id, name, email, is_active, created_at
+        FROM users
+        WHERE is_active = true AND deleted_at IS NULL
+        ORDER BY created_at
+    `
+
+    rows, err := r.db.QueryContext(ctx, query)
+    if err != nil {
+        return nil, fmt.Errorf("query active users: %w", err)
+    }
+    defer rows.Close()
+
+    var users []*User
+    for rows.Next() {
+        var u User
+        if err := rows.Scan(&amp;u.ID, &amp;u.Name, &amp;u.Email, &amp;u.IsActive, &amp;u.CreatedAt); err != nil {
+            return nil, fmt.Errorf("scan user: %w", err)
+        }
+        users = append(users, &amp;u)
+    }
+
+    if err := rows.Err(); err != nil {
+        return nil, fmt.Errorf("iterate rows: %w", err)
+    }
+
+    return users, nil
+}
+
+func (r *UserRepository) Create(ctx context.Context, user *User) error {
+    query := `
+        INSERT INTO users (name, email, is_active, created_at)
+        VALUES ($1, $2, $3, $4)
+        RETURNING id
+    `
+
+    err := r.db.QueryRowContext(
+        ctx,
+        query,
+        user.Name,
+        user.Email,
+        user.IsActive,
+        user.CreatedAt,
+    ).Scan(&amp;user.ID)
+
+    if err != nil {
+        return fmt.Errorf("create user: %w", err)
+    }
+
+    return nil
+}
+
+func (r *UserRepository) Update(ctx context.Context, user *User) error {
+    query := `
+        UPDATE users
+        SET name = $1, email = $2, is_active = $3
+        WHERE id = $4
+    `
+
+    result, err := r.db.ExecContext(ctx, query, user.Name, user.Email, user.IsActive, user.ID)
+    if err != nil {
+        return fmt.Errorf("update user: %w", err)
+    }
+
+    rows, err := result.RowsAffected()
+    if err != nil {
+        return fmt.Errorf("get rows affected: %w", err)
+    }
+
+    if rows == 0 {
+        return ErrUserNotFound
+    }
+
+    return nil
+}
+</code></pre>
+<p><strong>Go (sqlx - более удобная библиотека)</strong>:</p>
+<pre><code class="language-go">import "github.com/jmoiron/sqlx"
+
+type UserRepository struct {
+    db *sqlx.DB
+}
+
+func (r *UserRepository) GetByID(ctx context.Context, id int) (*User, error) {
+    var user User
+    query := `SELECT * FROM users WHERE id = $1`
+
+    if err := r.db.GetContext(ctx, &amp;user, query, id); err != nil {
+        if errors.Is(err, sql.ErrNoRows) {
+            return nil, ErrUserNotFound
+        }
+        return nil, fmt.Errorf("get user: %w", err)
+    }
+
+    return &amp;user, nil
+}
+
+func (r *UserRepository) GetActiveUsers(ctx context.Context) ([]*User, error) {
+    var users []*User
+    query := `
+        SELECT * FROM users
+        WHERE is_active = true AND deleted_at IS NULL
+        ORDER BY created_at
+    `
+
+    if err := r.db.SelectContext(ctx, &amp;users, query); err != nil {
+        return nil, fmt.Errorf("get active users: %w", err)
+    }
+
+    return users, nil
+}
+</code></pre>
+<hr>
+<h2 id="итоги"><a class="header" href="#итоги">Итоги</a></h2>
+<h3 id="что-остаётся-похожим"><a class="header" href="#что-остаётся-похожим">Что остаётся похожим</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Концепция</th><th>C#</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>Типизация</td><td>Статическая, строгая</td><td>Статическая, строгая</td></tr>
+<tr><td>Компиляция</td><td>Да (в IL, потом JIT)</td><td>Да (в нативный код)</td></tr>
+<tr><td>GC</td><td>Да</td><td>Да</td></tr>
+<tr><td>Указатели</td><td>Есть (unsafe)</td><td>Есть (повсеместно)</td></tr>
+<tr><td>Интерфейсы</td><td>Есть</td><td>Есть</td></tr>
+<tr><td>Пакеты/модули</td><td>Namespaces, NuGet</td><td>Packages, Go modules</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="что-радикально-отличается"><a class="header" href="#что-радикально-отличается">Что радикально отличается</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C#</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Парадигма</strong></td><td>ООП + функциональное</td><td>Процедурное + интерфейсы</td></tr>
+<tr><td><strong>Наследование</strong></td><td>Есть</td><td>Нет</td></tr>
+<tr><td><strong>Исключения</strong></td><td>Есть</td><td>Нет (только error)</td></tr>
+<tr><td><strong>Async</strong></td><td>async/await</td><td>goroutines + channels</td></tr>
+<tr><td><strong>Generics</strong></td><td>С начала (2.0)</td><td>С 1.18 (2022)</td></tr>
+<tr><td><strong>Properties</strong></td><td>Есть</td><td>Нет (методы)</td></tr>
+<tr><td><strong>LINQ</strong></td><td>Есть</td><td>Нет (циклы)</td></tr>
+<tr><td><strong>Reflection</strong></td><td>Мощный</td><td>Ограниченный</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="ключевые-идиомы-go-для-c-разработчиков"><a class="header" href="#ключевые-идиомы-go-для-c-разработчиков">Ключевые идиомы Go для C# разработчиков</a></h3>
+<ol>
+<li><strong>“Errors are values”</strong> - обрабатывай явно, не полагайся на try-catch</li>
+<li><strong>“Accept interfaces, return structs”</strong> - гибкость на входе, конкретность на выходе</li>
+<li><strong>“Make zero value useful”</strong> - проектируй типы готовыми к работе</li>
+<li><strong>“A little copying is better than a little dependency”</strong> - дублирование &gt; абстракция</li>
+<li><strong>“Clear is better than clever”</strong> - понятный код &gt; умный код</li>
+<li><strong>“Don’t communicate by sharing memory, share memory by communicating”</strong> - каналы &gt; locks</li>
+</ol>
+<hr><!-- AUTO: NAV -->
+<p><strong>Вопросы?</strong> Открой issue на <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/issues">GitHub</a></p>
+<p><a href="./02a_collections_performance_cheatsheet.html">← Назад: Коллекции и производительность: Шпаргалка для C# разработчика</a> | <a href="../part2-advanced/">Вперёд: Часть 2: Продвинутые темы →</a></p>
+<!-- /AUTO: NAV -->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part1-basics/02a_collections_performance_cheatsheet.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part2-advanced/01_goroutines_channels.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part1-basics/02a_collections_performance_cheatsheet.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part2-advanced/01_goroutines_channels.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

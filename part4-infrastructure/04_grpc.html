@@ -1,0 +1,3738 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>4.4 gRPC - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-e1a1ce5b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-c19b06e6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part4-infrastructure/04_grpc.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="44-grpc"><a class="header" href="#44-grpc">4.4 gRPC</a></h1>
+<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<ul>
+<li><a href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5">Введение</a>
+<ul>
+<li><a href="#%D1%87%D1%82%D0%BE-%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B8%D1%82%D1%81%D1%8F-%D0%B2-%D0%B2%D0%B0%D1%88%D0%B5%D0%BC-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4%D0%B5">Что изменится в вашем подходе</a></li>
+</ul>
+</li>
+<li><a href="#%D1%8D%D0%BA%D0%BE%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0-c-vs-go">Экосистема: C# vs Go</a></li>
+<li><a href="#protocol-buffers-%D0%B4%D0%BB%D1%8F-grpc">Protocol Buffers для gRPC</a>
+<ul>
+<li><a href="#api-design-best-practices-%D0%B4%D0%BB%D1%8F-proto">API Design: best practices для .proto</a>
+<ul>
+<li><a href="#naming-conventions">Naming conventions</a></li>
+<li><a href="#%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D0%BE%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-api">Версионирование API</a></li>
+<li><a href="#%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD%D1%8B-%D0%BF%D0%B0%D0%B3%D0%B8%D0%BD%D0%B0%D1%86%D0%B8%D0%B8-%D0%B8-%D1%84%D0%B8%D0%BB%D1%8C%D1%82%D1%80%D0%B0%D1%86%D0%B8%D0%B8">Паттерны пагинации и фильтрации</a></li>
+</ul>
+</li>
+<li><a href="#well-known-types">Well-Known Types</a></li>
+<li><a href="#%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%BD%D1%8B%D0%B5-%D0%BE%D0%BF%D1%80%D0%B5%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D1%8F">Сервисные определения</a></li>
+</ul>
+</li>
+<li><a href="#buf-%D1%81%D0%BE%D0%B2%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9-protobuf-tooling">buf: современный Protobuf tooling</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%BE%D0%B1%D0%BB%D0%B5%D0%BC%D1%8B-protoc">Проблемы protoc</a></li>
+<li><a href="#%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0-buf">Установка и настройка buf</a>
+<ul>
+<li><a href="#bufyaml--%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D0%BC%D0%BE%D0%B4%D1%83%D0%BB%D1%8F">buf.yaml — конфигурация модуля</a></li>
+<li><a href="#bufgenyaml--%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D0%BA%D0%BE%D0%B4%D0%BE%D0%B3%D0%B5%D0%BD%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D0%B8">buf.gen.yaml — конфигурация кодогенерации</a></li>
+</ul>
+</li>
+<li><a href="#buf-lint--%D0%BB%D0%B8%D0%BD%D1%82%D0%B8%D0%BD%D0%B3-proto-%D1%84%D0%B0%D0%B9%D0%BB%D0%BE%D0%B2">buf lint — линтинг proto файлов</a></li>
+<li><a href="#buf-breaking--%D0%BE%D0%B1%D0%BD%D0%B0%D1%80%D1%83%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BD%D0%B5%D1%81%D0%BE%D0%B2%D0%BC%D0%B5%D1%81%D1%82%D0%B8%D0%BC%D1%8B%D1%85-%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D0%B9">buf breaking — обнаружение несовместимых изменений</a></li>
+<li><a href="#buf-generate--%D0%B3%D0%B5%D0%BD%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D0%BA%D0%BE%D0%B4%D0%B0">buf generate — генерация кода</a></li>
+<li><a href="#buf-schema-registry-bsr">Buf Schema Registry (BSR)</a></li>
+<li><a href="#buf-%D0%B2-cicd">buf в CI/CD</a></li>
+</ul>
+</li>
+<li><a href="#%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80-grpc">Сервер gRPC</a>
+<ul>
+<li><a href="#%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80%D0%B0">Создание сервера</a></li>
+<li><a href="#%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%B0-%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%B0">Структура реализации сервиса</a></li>
+<li><a href="#unary-rpc">Unary RPC</a></li>
+<li><a href="#server-streaming-rpc">Server Streaming RPC</a></li>
+<li><a href="#client-streaming-rpc">Client Streaming RPC</a></li>
+<li><a href="#bidirectional-streaming-rpc">Bidirectional Streaming RPC</a></li>
+<li><a href="#graceful-shutdown">Graceful Shutdown</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82-grpc">Клиент gRPC</a>
+<ul>
+<li><a href="#%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5">Подключение</a></li>
+<li><a href="#%D0%B2%D1%8B%D0%B7%D0%BE%D0%B2-unary-rpc">Вызов Unary RPC</a></li>
+<li><a href="#%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0-%D1%81%D0%BE-%D1%81%D1%82%D1%80%D0%B8%D0%BC%D0%B0%D0%BC%D0%B8">Работа со стримами</a>
+<ul>
+<li><a href="#%D1%87%D1%82%D0%B5%D0%BD%D0%B8%D0%B5-server-stream">Чтение Server Stream</a></li>
+<li><a href="#%D0%BE%D1%82%D0%BF%D1%80%D0%B0%D0%B2%D0%BA%D0%B0-client-stream">Отправка Client Stream</a></li>
+<li><a href="#bidirectional-stream-%D0%BD%D0%B0-%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%D0%B5">Bidirectional Stream на клиенте</a></li>
+</ul>
+</li>
+<li><a href="#connection-management">Connection Management</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BA%D1%81%D1%82-%D0%B4%D0%B5%D0%B4%D0%BB%D0%B0%D0%B9%D0%BD%D1%8B-%D0%B8-%D0%BC%D0%B5%D1%82%D0%B0%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5">Контекст, дедлайны и метаданные</a>
+<ul>
+<li><a href="#deadlines-%D0%B8-timeouts">Deadlines и Timeouts</a></li>
+<li><a href="#metadata-%D0%B7%D0%B0%D0%B3%D0%BE%D0%BB%D0%BE%D0%B2%D0%BA%D0%B8">Metadata (заголовки)</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%B4%D1%8B-%D0%BE%D1%88%D0%B8%D0%B1%D0%BE%D0%BA-grpc">Коды ошибок gRPC</a></li>
+<li><a href="#rich-error-model">Rich Error Model</a></li>
+</ul>
+</li>
+<li><a href="#interceptors-middleware-%D0%B4%D0%BB%D1%8F-grpc">Interceptors (Middleware для gRPC)</a>
+<ul>
+<li><a href="#%D1%82%D0%B8%D0%BF%D1%8B-interceptors">Типы interceptors</a></li>
+<li><a href="#server-unary-interceptor">Server Unary Interceptor</a></li>
+<li><a href="#server-stream-interceptor">Server Stream Interceptor</a></li>
+<li><a href="#client-interceptors">Client Interceptors</a></li>
+<li><a href="#chaining-interceptors">Chaining interceptors</a></li>
+<li><a href="#go-grpc-middleware-v2">go-grpc-middleware v2</a></li>
+</ul>
+</li>
+<li><a href="#grpc-gateway-rest-api-%D0%B8%D0%B7-grpc">gRPC-Gateway: REST API из gRPC</a>
+<ul>
+<li><a href="#%D0%B7%D0%B0%D1%87%D0%B5%D0%BC-%D0%BD%D1%83%D0%B6%D0%B5%D0%BD-grpc-gateway">Зачем нужен gRPC-Gateway</a></li>
+<li><a href="#http-annotations-%D0%B2-proto">HTTP annotations в .proto</a></li>
+<li><a href="#%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-gateway">Реализация Gateway</a></li>
+<li><a href="#swaggeropenapi-%D0%B3%D0%B5%D0%BD%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D1%8F">Swagger/OpenAPI генерация</a></li>
+</ul>
+</li>
+<li><a href="#connectrpc-%D1%81%D0%BE%D0%B2%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D0%B0%D1%8F-%D0%B0%D0%BB%D1%8C%D1%82%D0%B5%D1%80%D0%BD%D0%B0%D1%82%D0%B8%D0%B2%D0%B0">ConnectRPC: современная альтернатива</a>
+<ul>
+<li><a href="#%D1%87%D1%82%D0%BE-%D1%82%D0%B0%D0%BA%D0%BE%D0%B5-connectrpc">Что такое ConnectRPC</a></li>
+<li><a href="#connect-go-%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80-%D0%B8-%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82">connect-go: сервер и клиент</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%B2%D1%8B%D0%B1%D1%80%D0%B0%D1%82%D1%8C-connectrpc-vs-classic-grpc">Когда выбрать ConnectRPC vs classic gRPC</a></li>
+</ul>
+</li>
+<li><a href="#health-checking-%D0%B8-reflection">Health Checking и Reflection</a>
+<ul>
+<li><a href="#grpc-health-checking-protocol">gRPC Health Checking Protocol</a></li>
+<li><a href="#server-reflection">Server Reflection</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B1%D0%B5%D0%B7%D0%BE%D0%BF%D0%B0%D1%81%D0%BD%D0%BE%D1%81%D1%82%D1%8C">Безопасность</a>
+<ul>
+<li><a href="#tls">TLS</a></li>
+<li><a href="#mtls-mutual-tls">mTLS (Mutual TLS)</a></li>
+<li><a href="#jwt-%D0%B0%D1%83%D1%82%D0%B5%D0%BD%D1%82%D0%B8%D1%84%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D1%8F-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-metadata">JWT аутентификация через metadata</a></li>
+</ul>
+</li>
+<li><a href="#%D1%82%D0%B5%D1%81%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-grpc">Тестирование gRPC</a>
+<ul>
+<li><a href="#bufconn-in-memory-%D1%82%D0%B5%D1%81%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5">bufconn: in-memory тестирование</a></li>
+<li><a href="#%D1%82%D0%B5%D1%81%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D1%81%D1%82%D1%80%D0%B8%D0%BC%D0%BE%D0%B2">Тестирование стримов</a></li>
+<li><a href="#grpcurl-%D0%B4%D0%BB%D1%8F-%D1%80%D1%83%D1%87%D0%BD%D0%BE%D0%B3%D0%BE-%D1%82%D0%B5%D1%81%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F">grpcurl для ручного тестирования</a></li>
+</ul>
+</li>
+<li><a href="#production-concerns">Production Concerns</a>
+<ul>
+<li><a href="#%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3-%D1%81-prometheus">Мониторинг с Prometheus</a></li>
+<li><a href="#opentelemetry-instrumentation">OpenTelemetry Instrumentation</a></li>
+<li><a href="#load-balancing">Load Balancing</a></li>
+<li><a href="#retry-policy-%D0%B8-keepalive">Retry Policy и Keepalive</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B">Практические примеры</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-crud-user-service">Пример 1: CRUD User Service</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-real-time-%D1%81%D1%82%D1%80%D0%B8%D0%BC%D0%B8%D0%BD%D0%B3-%D1%86%D0%B5%D0%BD">Пример 2: Real-Time стриминг цен</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-grpc-gateway--rest">Пример 3: gRPC-Gateway + REST</a></li>
+</ul>
+</li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<p>В <a href="../part3-web-api/04_validation_serialization.html">разделе 3.4</a> мы рассмотрели Protocol Buffers как формат сериализации — синтаксис <code>.proto</code> файлов, кодогенерацию через <code>protoc</code> и сравнение с JSON. Теперь мы используем protobuf как основу для <strong>gRPC</strong> — высокопроизводительного RPC-фреймворка, который стал стандартом межсервисного взаимодействия в микросервисных архитектурах.</p>
+<p>gRPC передаёт данные в бинарном формате Protocol Buffers поверх HTTP/2, обеспечивая мультиплексирование, двунаправленный стриминг и сжатие заголовков. В отличие от REST API с JSON, gRPC предлагает строгую типизацию контрактов, автоматическую кодогенерацию клиентов и серверов, и значительно меньший размер сообщений.</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В .NET gRPC глубоко интегрирован в ASP.NET Core — вы добавляете <code>Grpc.AspNetCore</code>, описываете <code>.proto</code>, и <code>Grpc.Tools</code> автоматически генерирует код при сборке через MSBuild. Сервис регистрируется через <code>services.AddGrpc()</code>, DI работает из коробки, interceptors наследуют базовый класс <code>Interceptor</code>. В Go gRPC — <strong>отдельная библиотека</strong>, не привязанная к веб-фреймворку. Вы явно генерируете код через <code>protoc</code> (или <code>buf</code>), вручную создаёте сервер, регистрируете сервисы и управляете жизненным циклом. Это больше кода, но полный контроль и отсутствие скрытых абстракций.</p>
+</blockquote>
+<h3 id="что-изменится-в-вашем-подходе"><a class="header" href="#что-изменится-в-вашем-подходе">Что изменится в вашем подходе</a></h3>
+<p><strong>C# (ASP.NET Core gRPC)</strong>:</p>
+<pre><code class="language-csharp">// Минимальная настройка — всё через DI и конвенции
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddGrpc();
+
+var app = builder.Build();
+app.MapGrpcService&lt;UserService&gt;(); // DI, interceptors, health — из коробки
+app.Run();
+
+// Сервис — обычный класс с DI
+public class UserService : Users.UsersBase
+{
+    private readonly IUserRepository _repo;
+
+    public UserService(IUserRepository repo) =&gt; _repo = repo;
+
+    public override async Task&lt;GetUserResponse&gt; GetUser(
+        GetUserRequest request, ServerCallContext context)
+    {
+        var user = await _repo.GetByIdAsync(request.Id);
+        return new GetUserResponse { User = MapToProto(user) };
+    }
+}
+</code></pre>
+<p><strong>Go — явная реализация</strong>:</p>
+<pre><code class="language-go">// Явное создание сервера, регистрация, управление lifecycle
+func main() {
+    lis, err := net.Listen("tcp", ":50051")
+    if err != nil {
+        log.Fatalf("не удалось слушать порт: %v", err)
+    }
+
+    // Зависимости передаются явно — никакого DI-контейнера
+    repo := postgres.NewUserRepository(db)
+    srv := grpc.NewServer()
+    pb.RegisterUserServiceServer(srv, &amp;userServer{repo: repo})
+
+    log.Println("gRPC сервер запущен на :50051")
+    if err := srv.Serve(lis); err != nil {
+        log.Fatalf("ошибка сервера: %v", err)
+    }
+}
+
+type userServer struct {
+    pb.UnimplementedUserServiceServer
+    repo UserRepository
+}
+
+func (s *userServer) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.GetUserResponse, error) {
+    user, err := s.repo.GetByID(ctx, req.GetId())
+    if err != nil {
+        return nil, status.Errorf(codes.NotFound, "пользователь не найден: %v", err)
+    }
+    return &amp;pb.GetUserResponse{User: toProtoUser(user)}, nil
+}
+</code></pre>
+<hr>
+<h2 id="экосистема-c-vs-go"><a class="header" href="#экосистема-c-vs-go">Экосистема: C# vs Go</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# (.NET)</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Фреймворк</strong></td><td><code>Grpc.AspNetCore</code> (часть ASP.NET Core)</td><td><code>google.golang.org/grpc</code> (отдельная библиотека)</td></tr>
+<tr><td><strong>Кодогенерация</strong></td><td><code>Grpc.Tools</code> NuGet (MSBuild, автоматически при сборке)</td><td><code>protoc</code> + плагины / <code>buf</code> (отдельный шаг)</td></tr>
+<tr><td><strong>Регистрация сервиса</strong></td><td><code>services.AddGrpc()</code> + <code>app.MapGrpcService&lt;T&gt;()</code></td><td><code>pb.RegisterXxxServer(s, &amp;impl{})</code></td></tr>
+<tr><td><strong>DI в обработчиках</strong></td><td>Constructor injection из DI-контейнера</td><td>Передача зависимостей в структуру вручную</td></tr>
+<tr><td><strong>Streaming</strong></td><td><code>IAsyncStreamReader&lt;T&gt;</code> / <code>IServerStreamWriter&lt;T&gt;</code></td><td><code>stream.Recv()</code> / <code>stream.Send()</code></td></tr>
+<tr><td><strong>Interceptors</strong></td><td>Наследование <code>Interceptor</code> (virtual методы)</td><td>Функции с определённой сигнатурой</td></tr>
+<tr><td><strong>Канал/подключение</strong></td><td><code>GrpcChannel.ForAddress()</code></td><td><code>grpc.NewClient()</code></td></tr>
+<tr><td><strong>Дедлайны</strong></td><td><code>CallOptions.Deadline</code> / <code>CancellationToken</code></td><td><code>context.WithTimeout()</code> / <code>context.WithDeadline()</code></td></tr>
+<tr><td><strong>Ошибки</strong></td><td><code>RpcException</code> + <code>StatusCode</code> enum</td><td><code>status.Error(codes.X, msg)</code></td></tr>
+<tr><td><strong>Health checks</strong></td><td><code>Grpc.AspNetCore.HealthChecks</code></td><td><code>grpc/health/grpc_health_v1</code></td></tr>
+<tr><td><strong>REST прокси</strong></td><td>gRPC-Web middleware (<code>Grpc.AspNetCore.Web</code>)</td><td>gRPC-Gateway (reverse proxy) / ConnectRPC</td></tr>
+<tr><td><strong>Тестирование</strong></td><td><code>WebApplicationFactory</code> / <code>TestServer</code></td><td><code>bufconn</code> (in-memory listener)</td></tr>
+<tr><td><strong>Линтинг proto</strong></td><td>Нет стандартного инструмента</td><td><code>buf lint</code></td></tr>
+<tr><td><strong>Breaking changes</strong></td><td>Ручная проверка / SemVer</td><td><code>buf breaking</code></td></tr>
+<tr><td><strong>Мониторинг</strong></td><td>Встроенные метрики .NET 8+</td><td>go-grpc-middleware prometheus</td></tr>
+<tr><td><strong>Трейсинг</strong></td><td><code>Activity</code> / OTel .NET SDK</td><td><code>otelgrpc</code> package</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Ключевое различие</strong>: В C# gRPC — это часть платформы ASP.NET Core, и всё работает через привычные механизмы (DI, middleware pipeline, конфигурация). В Go gRPC — независимая библиотека, и вы собираете всё вручную. Это требует больше кода, но даёт явность и контроль — философия Go.</p>
+</blockquote>
+<hr>
+<h2 id="protocol-buffers-для-grpc"><a class="header" href="#protocol-buffers-для-grpc">Protocol Buffers для gRPC</a></h2>
+<blockquote>
+<p>Базовый синтаксис Protocol Buffers рассмотрен в <a href="../part3-web-api/04_validation_serialization.html">разделе 3.4</a>. Здесь мы сфокусируемся на аспектах, специфичных для gRPC: проектирование API, сервисные определения и best practices.</p>
+</blockquote>
+<h3 id="api-design-best-practices-для-proto"><a class="header" href="#api-design-best-practices-для-proto">API Design: best practices для .proto</a></h3>
+<h4 id="naming-conventions"><a class="header" href="#naming-conventions">Naming conventions</a></h4>
+<pre><code class="language-protobuf">syntax = "proto3";
+
+// Пакет — всегда с версией для обратной совместимости
+package myapp.user.v1;
+
+// Go-специфичная опция (buf managed mode может генерировать автоматически)
+option go_package = "github.com/myapp/gen/user/v1;userv1";
+
+// Сервис: PascalCase, существительное + "Service"
+service UserService {
+    // Метод: PascalCase, глагол
+    rpc GetUser(GetUserRequest) returns (GetUserResponse);
+    rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+    rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+    rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
+    rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+}
+
+// Сообщения запросов/ответов: ИмяМетода + Request/Response
+message GetUserRequest {
+    // Поля: snake_case
+    string user_id = 1;
+}
+
+message GetUserResponse {
+    User user = 1;
+}
+
+// Ресурсные сообщения: существительное
+message User {
+    string id = 1;
+    string email = 2;
+    string display_name = 3;
+    UserRole role = 4;
+    google.protobuf.Timestamp created_at = 5;
+    google.protobuf.Timestamp updated_at = 6;
+}
+
+// Enum: PascalCase, значения — UPPER_SNAKE_CASE с префиксом
+enum UserRole {
+    USER_ROLE_UNSPECIFIED = 0; // Нулевое значение всегда UNSPECIFIED
+    USER_ROLE_ADMIN = 1;
+    USER_ROLE_MEMBER = 2;
+    USER_ROLE_VIEWER = 3;
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: Нулевое значение enum <strong>всегда</strong> должно быть <code>UNSPECIFIED</code>. Это гарантирует, что отсутствие значения не будет интерпретировано как осмысленное. В C# enum по умолчанию тоже <code>0</code>, но в .NET принято давать ему осмысленное значение (например, <code>None</code>). В protobuf конвенция — именно <code>UNSPECIFIED</code>.</p>
+</blockquote>
+<h4 id="версионирование-api"><a class="header" href="#версионирование-api">Версионирование API</a></h4>
+<pre><code>proto/
+├── myapp/
+│   ├── user/
+│   │   ├── v1/              # Стабильная версия
+│   │   │   └── user.proto
+│   │   └── v2/              # Новая версия с breaking changes
+│   │       └── user.proto
+│   └── order/
+│       └── v1/
+│           └── order.proto
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В .NET вы версионируете API через URL (<code>/api/v1/users</code>) или через заголовки (<code>api-version: 2.0</code>). В gRPC версия — часть <strong>пакета protobuf</strong> (<code>myapp.user.v1</code>). Это строже: разные версии — это разные сгенерированные типы, и компилятор гарантирует совместимость.</p>
+</blockquote>
+<h4 id="паттерны-пагинации-и-фильтрации"><a class="header" href="#паттерны-пагинации-и-фильтрации">Паттерны пагинации и фильтрации</a></h4>
+<pre><code class="language-protobuf">message ListUsersRequest {
+    int32 page_size = 1;          // Сколько записей вернуть
+    string page_token = 2;        // Токен следующей страницы (cursor)
+    string filter = 3;            // Опциональный фильтр
+    string order_by = 4;          // Сортировка: "created_at desc"
+}
+
+message ListUsersResponse {
+    repeated User users = 1;
+    string next_page_token = 2;   // Пустая строка = последняя страница
+    int32 total_count = 3;        // Опционально: общее количество
+}
+</code></pre>
+<h3 id="well-known-types"><a class="header" href="#well-known-types">Well-Known Types</a></h3>
+<p>Google предоставляет набор стандартных типов, которые следует использовать вместо собственных:</p>
+<pre><code class="language-protobuf">import "google/protobuf/timestamp.proto";  // Время
+import "google/protobuf/duration.proto";   // Длительность
+import "google/protobuf/empty.proto";      // Пустое сообщение
+import "google/protobuf/wrappers.proto";   // Nullable примитивы
+import "google/protobuf/field_mask.proto"; // Частичное обновление
+import "google/protobuf/struct.proto";     // Произвольный JSON
+import "google/protobuf/any.proto";        // Любой protobuf-тип
+
+message UpdateUserRequest {
+    string user_id = 1;
+    User user = 2;
+    // FieldMask — указывает, какие поля обновлять (аналог PATCH)
+    google.protobuf.FieldMask update_mask = 3;
+}
+
+message UserProfile {
+    string name = 1;
+    // Nullable int — отличие от обычного int32 (0 = не задано vs 0 = значение)
+    google.protobuf.Int32Value age = 2;
+    // Nullable string
+    google.protobuf.StringValue bio = 3;
+    // Произвольные метаданные
+    google.protobuf.Struct metadata = 4;
+}
+</code></pre>
+<p><strong>Сравнение Well-Known Types: C# vs Go</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Protobuf тип</th><th>C# маппинг</th><th>Go маппинг</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Timestamp</code></td><td><code>Google.Protobuf.WellKnownTypes.Timestamp</code> → <code>DateTime</code> через <code>.ToDateTime()</code></td><td><code>*timestamppb.Timestamp</code> → <code>time.Time</code> через <code>.AsTime()</code></td></tr>
+<tr><td><code>Duration</code></td><td><code>Google.Protobuf.WellKnownTypes.Duration</code> → <code>TimeSpan</code> через <code>.ToTimeSpan()</code></td><td><code>*durationpb.Duration</code> → <code>time.Duration</code> через <code>.AsDuration()</code></td></tr>
+<tr><td><code>Empty</code></td><td><code>Google.Protobuf.WellKnownTypes.Empty</code></td><td><code>*emptypb.Empty</code></td></tr>
+<tr><td><code>FieldMask</code></td><td><code>Google.Protobuf.WellKnownTypes.FieldMask</code></td><td><code>*fieldmaskpb.FieldMask</code></td></tr>
+<tr><td><code>StringValue</code></td><td><code>Google.Protobuf.WellKnownTypes.StringValue</code> → <code>string?</code> (nullable)</td><td><code>*wrapperspb.StringValue</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="сервисные-определения"><a class="header" href="#сервисные-определения">Сервисные определения</a></h3>
+<p>Определим сервис, который будем использовать в примерах на протяжении всего раздела:</p>
+<pre><code class="language-protobuf">syntax = "proto3";
+
+package myapp.user.v1;
+
+option go_package = "github.com/myapp/gen/user/v1;userv1";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/field_mask.proto";
+
+// UserService — CRUD операции и стриминг
+service UserService {
+    // Unary RPC — стандартный запрос-ответ
+    rpc GetUser(GetUserRequest) returns (GetUserResponse);
+    rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+    rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
+    rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty);
+    rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+
+    // Server Streaming — сервер отправляет поток данных
+    rpc WatchUsers(WatchUsersRequest) returns (stream UserEvent);
+
+    // Client Streaming — клиент отправляет поток, сервер — один ответ
+    rpc ImportUsers(stream ImportUserRequest) returns (ImportUsersResponse);
+
+    // Bidirectional Streaming — оба направления
+    rpc Chat(stream ChatMessage) returns (stream ChatMessage);
+}
+
+message User {
+    string id = 1;
+    string email = 2;
+    string display_name = 3;
+    UserRole role = 4;
+    google.protobuf.Timestamp created_at = 5;
+    google.protobuf.Timestamp updated_at = 6;
+}
+
+enum UserRole {
+    USER_ROLE_UNSPECIFIED = 0;
+    USER_ROLE_ADMIN = 1;
+    USER_ROLE_MEMBER = 2;
+    USER_ROLE_VIEWER = 3;
+}
+
+message GetUserRequest {
+    string user_id = 1;
+}
+
+message GetUserResponse {
+    User user = 1;
+}
+
+message CreateUserRequest {
+    string email = 1;
+    string display_name = 2;
+    UserRole role = 3;
+}
+
+message CreateUserResponse {
+    User user = 1;
+}
+
+message UpdateUserRequest {
+    string user_id = 1;
+    User user = 2;
+    google.protobuf.FieldMask update_mask = 3;
+}
+
+message UpdateUserResponse {
+    User user = 1;
+}
+
+message ListUsersRequest {
+    int32 page_size = 1;
+    string page_token = 2;
+}
+
+message ListUsersResponse {
+    repeated User users = 1;
+    string next_page_token = 2;
+}
+
+// Server Streaming: события изменения пользователей
+message WatchUsersRequest {
+    // Фильтр по ролям (пустой = все)
+    repeated UserRole roles = 1;
+}
+
+message UserEvent {
+    enum EventType {
+        EVENT_TYPE_UNSPECIFIED = 0;
+        EVENT_TYPE_CREATED = 1;
+        EVENT_TYPE_UPDATED = 2;
+        EVENT_TYPE_DELETED = 3;
+    }
+    EventType type = 1;
+    User user = 2;
+    google.protobuf.Timestamp timestamp = 3;
+}
+
+// Client Streaming: импорт пользователей пакетом
+message ImportUserRequest {
+    string email = 1;
+    string display_name = 2;
+    UserRole role = 3;
+}
+
+message ImportUsersResponse {
+    int32 imported_count = 1;
+    int32 failed_count = 2;
+    repeated string errors = 3;
+}
+
+// Bidirectional Streaming: чат
+message ChatMessage {
+    string user_id = 1;
+    string text = 2;
+    google.protobuf.Timestamp sent_at = 3;
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Обратите внимание</strong>: Каждый RPC использует <strong>отдельные типы</strong> Request/Response, даже если они кажутся похожими. Это позволяет развивать API без breaking changes — каждый метод эволюционирует независимо. В C# это аналогично паттерну CQRS с отдельными command/query объектами.</p>
+</blockquote>
+<hr>
+<h2 id="buf-современный-protobuf-tooling"><a class="header" href="#buf-современный-protobuf-tooling">buf: современный Protobuf tooling</a></h2>
+<h3 id="проблемы-protoc"><a class="header" href="#проблемы-protoc">Проблемы protoc</a></h3>
+<p>Традиционный <code>protoc</code> — мощный инструмент, но у него ряд проблем, знакомых C# разработчикам, которые привыкли к удобству NuGet:</p>
+<pre><code class="language-bash"># Типичная команда protoc — сложно запомнить и поддерживать
+protoc \
+  --go_out=. --go_opt=paths=source_relative \
+  --go-grpc_out=. --go-grpc_opt=paths=source_relative \
+  -I proto \
+  -I third_party/googleapis \
+  -I third_party/grpc-gateway \
+  proto/myapp/user/v1/user.proto
+</code></pre>
+<p><strong>Проблемы</strong>:</p>
+<ul>
+<li>Ручное управление зависимостями (нужно скачивать <code>googleapis</code>, <code>grpc-gateway</code> proto-файлы)</li>
+<li>Длинные команды с множеством флагов</li>
+<li>Нет линтинга — ошибки проектирования API обнаруживаются поздно</li>
+<li>Нет обнаружения breaking changes — можно случайно сломать клиентов</li>
+<li>Каждый разработчик должен установить <code>protoc</code> и плагины нужных версий</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В .NET всё это скрыто — <code>Grpc.Tools</code> NuGet пакет включает <code>protoc</code> и плагины, MSBuild автоматически запускает генерацию при сборке, а зависимости управляются через NuGet. <code>buf</code> приближает Go-экосистему к этому уровню удобства.</p>
+</blockquote>
+<h3 id="установка-и-настройка-buf"><a class="header" href="#установка-и-настройка-buf">Установка и настройка buf</a></h3>
+<pre><code class="language-bash"># Установка buf
+go install github.com/bufbuild/buf/cmd/buf@latest
+
+# Или через Homebrew (macOS/Linux)
+brew install bufbuild/buf/buf
+
+# Проверка
+buf --version
+</code></pre>
+<h4 id="bufyaml--конфигурация-модуля"><a class="header" href="#bufyaml--конфигурация-модуля">buf.yaml — конфигурация модуля</a></h4>
+<pre><code class="language-yaml"># buf.yaml — в корне вашего proto-проекта
+version: v2
+modules:
+  - path: proto
+    name: buf.build/mycompany/myapp
+lint:
+  use:
+    - STANDARD           # Стандартный набор правил
+  except:
+    - PACKAGE_VERSION_SUFFIX  # Не требовать v1 суффикс (опционально)
+breaking:
+  use:
+    - FILE                # Проверка breaking changes на уровне файлов
+deps:
+  - buf.build/googleapis/googleapis      # Google API annotations
+  - buf.build/grpc-ecosystem/grpc-gateway # gRPC-Gateway
+</code></pre>
+<h4 id="bufgenyaml--конфигурация-кодогенерации"><a class="header" href="#bufgenyaml--конфигурация-кодогенерации">buf.gen.yaml — конфигурация кодогенерации</a></h4>
+<pre><code class="language-yaml"># buf.gen.yaml
+version: v2
+plugins:
+  # Go protobuf код
+  - remote: buf.build/protocolbuffers/go
+    out: gen
+    opt:
+      - paths=source_relative
+  # Go gRPC код
+  - remote: buf.build/grpc/go
+    out: gen
+    opt:
+      - paths=source_relative
+      - require_unimplemented_servers=true
+  # gRPC-Gateway (REST прокси)
+  - remote: buf.build/grpc-ecosystem/gateway
+    out: gen
+    opt:
+      - paths=source_relative
+  # OpenAPI/Swagger документация
+  - remote: buf.build/grpc-ecosystem/openapiv2
+    out: gen/openapiv2
+managed:
+  enabled: true
+  override:
+    - file_option: go_package_prefix
+      value: github.com/mycompany/myapp/gen
+</code></pre>
+<blockquote>
+<p>💡 <strong>managed mode</strong> автоматически устанавливает <code>go_package</code> для всех proto-файлов на основе пути. Больше не нужно вручную прописывать <code>option go_package</code> в каждом файле — buf вычислит его из структуры директорий.</p>
+</blockquote>
+<h3 id="buf-lint--линтинг-proto-файлов"><a class="header" href="#buf-lint--линтинг-proto-файлов">buf lint — линтинг proto файлов</a></h3>
+<pre><code class="language-bash"># Запуск линтера
+buf lint
+
+# Пример ошибок:
+# proto/myapp/user/v1/user.proto:15:1:
+#   Enum value name "ADMIN" should be prefixed with "USER_ROLE_".
+# proto/myapp/user/v1/user.proto:8:3:
+#   RPC request type "UserRequest" should be named "GetUserRequest".
+</code></pre>
+<p><strong>Категории правил buf lint</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Категория</th><th>Правило</th><th>Пример нарушения</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>NAMING</strong></td><td>Naming conventions</td><td><code>getUserRequest</code> вместо <code>GetUserRequest</code></td></tr>
+<tr><td><strong>PACKAGE</strong></td><td>Package structure</td><td>Отсутствие version suffix в пакете</td></tr>
+<tr><td><strong>ENUM</strong></td><td>Enum best practices</td><td>Нет <code>UNSPECIFIED</code> нулевого значения</td></tr>
+<tr><td><strong>SERVICE</strong></td><td>Service design</td><td>Request/Response не по конвенции</td></tr>
+<tr><td><strong>FIELD</strong></td><td>Field naming</td><td><code>UserName</code> вместо <code>user_name</code></td></tr>
+<tr><td><strong>COMMENT</strong></td><td>Documentation</td><td>Отсутствие комментариев к сервисам</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Сравнение с C#</strong>: <code>buf lint</code> — это аналог <strong>Roslyn analyzers</strong> или <code>.editorconfig</code> для proto-файлов. Как StyleCop проверяет C# код на соответствие конвенциям, так <code>buf lint</code> проверяет proto-файлы.</p>
+<h3 id="buf-breaking--обнаружение-несовместимых-изменений"><a class="header" href="#buf-breaking--обнаружение-несовместимых-изменений">buf breaking — обнаружение несовместимых изменений</a></h3>
+<pre><code class="language-bash"># Проверка против предыдущего коммита в git
+buf breaking --against '.git#branch=main'
+
+# Проверка против определённого тега
+buf breaking --against '.git#tag=v1.0.0'
+
+# Проверка против BSR (Buf Schema Registry)
+buf breaking --against 'buf.build/mycompany/myapp'
+</code></pre>
+<p><strong>Что обнаруживает</strong>:</p>
+<pre><code class="language-bash"># Примеры breaking changes:
+# ❌ Удаление поля
+#   proto/user.proto:10: Previously present field "3" with name
+#   "display_name" on message "User" was deleted.
+#
+# ❌ Изменение типа поля
+#   proto/user.proto:8: Field "2" on message "User" changed type
+#   from "string" to "int32".
+#
+# ❌ Удаление RPC метода
+#   proto/user.proto:5: Previously present RPC "DeleteUser" on
+#   service "UserService" was deleted.
+</code></pre>
+<p><strong>Уровни проверки</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Уровень</th><th>Что проверяет</th><th>Когда использовать</th></tr>
+</thead>
+<tbody>
+<tr><td><code>FILE</code></td><td>Breaking changes на уровне файлов</td><td>По умолчанию, подходит для большинства</td></tr>
+<tr><td><code>PACKAGE</code></td><td>Breaking changes на уровне пакетов</td><td>Если перемещаете файлы между директориями</td></tr>
+<tr><td><code>WIRE</code></td><td>Только wire-совместимость (бинарная)</td><td>Если важна только бинарная совместимость</td></tr>
+<tr><td><code>WIRE_JSON</code></td><td>Wire + JSON совместимость</td><td>Если используете JSON сериализацию</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Это аналог проверки обратной совместимости NuGet-пакетов. Как <code>Microsoft.DotNet.ApiCompat</code> проверяет, что новая версия библиотеки не ломает существующих потребителей, так <code>buf breaking</code> проверяет proto API.</p>
+</blockquote>
+<h3 id="buf-generate--генерация-кода"><a class="header" href="#buf-generate--генерация-кода">buf generate — генерация кода</a></h3>
+<pre><code class="language-bash"># Генерация кода из всех proto-файлов
+buf generate
+
+# Генерация только для конкретного модуля
+buf generate proto/myapp/user/v1
+
+# Результат (в директории gen/):
+# gen/
+# ├── myapp/user/v1/
+# │   ├── user.pb.go           # Protobuf messages
+# │   ├── user_grpc.pb.go      # gRPC server/client код
+# │   └── user.pb.gw.go        # gRPC-Gateway reverse proxy
+# └── openapiv2/
+#     └── myapp/user/v1/
+#         └── user.swagger.json # OpenAPI документация
+</code></pre>
+<p><strong>Сравнение workflow: C# vs Go</strong>:</p>
+<pre><code class="language-csharp">// C# — генерация автоматическая при сборке
+// .csproj:
+// &lt;Protobuf Include="Protos\user.proto" GrpcServices="Both" /&gt;
+// dotnet build → автоматически вызывает protoc через MSBuild
+
+// Сгенерированный код в obj/ — не коммитится в git
+</code></pre>
+<pre><code class="language-bash"># Go — генерация явная, отдельный шаг
+buf generate
+
+# Сгенерированный код в gen/ — обычно коммитится в git
+# (или генерируется в CI)
+</code></pre>
+<h3 id="buf-schema-registry-bsr"><a class="header" href="#buf-schema-registry-bsr">Buf Schema Registry (BSR)</a></h3>
+<p>BSR — это реестр proto-модулей, аналог <strong>NuGet</strong> для protobuf:</p>
+<pre><code class="language-bash"># Авторизация
+buf registry login
+
+# Публикация модуля
+buf push
+
+# Использование чужого модуля (в buf.yaml):
+# deps:
+#   - buf.build/googleapis/googleapis
+#   - buf.build/envoyproxy/protoc-gen-validate
+
+# Обновление зависимостей (аналог go mod tidy)
+buf dep update
+</code></pre>
+<p><strong>Преимущества BSR</strong>:</p>
+<ul>
+<li>Централизованное хранение proto-определений</li>
+<li>Версионирование и breaking change detection</li>
+<li>Автоматическая генерация SDK для Go, TypeScript, Java, и др.</li>
+<li>Документация API из комментариев в proto</li>
+</ul>
+<h3 id="buf-в-cicd"><a class="header" href="#buf-в-cicd">buf в CI/CD</a></h3>
+<pre><code class="language-yaml"># .github/workflows/proto.yml
+name: Proto CI
+
+on:
+  push:
+    paths: ['proto/**']
+
+jobs:
+  proto:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: bufbuild/buf-setup-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Линтинг
+      - uses: bufbuild/buf-lint-action@v1
+        with:
+          input: proto
+
+      # Проверка breaking changes (относительно main)
+      - uses: bufbuild/buf-breaking-action@v1
+        with:
+          input: proto
+          against: 'https://github.com/${{ github.repository }}.git#branch=main,subdir=proto'
+
+      # Генерация и проверка актуальности
+      - run: buf generate
+      - run: |
+          if ! git diff --exit-code gen/; then
+            echo "Сгенерированный код устарел. Запустите 'buf generate' и закоммитьте."
+            exit 1
+          fi
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Этот CI pipeline — аналог того, что делает <code>dotnet build</code> + <code>Microsoft.DotNet.ApiCompat</code> + StyleCop в одном шаге. В .NET проекте подобные проверки обычно интегрированы в MSBuild, в Go — это отдельные шаги CI.</p>
+</blockquote>
+<hr>
+<h2 id="сервер-grpc"><a class="header" href="#сервер-grpc">Сервер gRPC</a></h2>
+<h3 id="создание-сервера"><a class="header" href="#создание-сервера">Создание сервера</a></h3>
+<pre><code class="language-go">package main
+
+import (
+    "log"
+    "net"
+
+    "google.golang.org/grpc"
+    pb "github.com/myapp/gen/user/v1"
+)
+
+func main() {
+    // 1. Создаём TCP listener
+    lis, err := net.Listen("tcp", ":50051")
+    if err != nil {
+        log.Fatalf("не удалось слушать порт: %v", err)
+    }
+
+    // 2. Создаём gRPC сервер с опциями
+    srv := grpc.NewServer(
+        // Опции добавляются здесь (interceptors, TLS, etc.)
+    )
+
+    // 3. Регистрируем реализацию сервиса
+    pb.RegisterUserServiceServer(srv, NewUserServer(repo))
+
+    // 4. Запускаем
+    log.Printf("gRPC сервер запущен на %s", lis.Addr())
+    if err := srv.Serve(lis); err != nil {
+        log.Fatalf("ошибка сервера: %v", err)
+    }
+}
+</code></pre>
+<p><strong>Сравнение создания сервера</strong>:</p>
+<pre><code class="language-csharp">// C# — сервер создаётся через WebApplication builder
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddGrpc(options =&gt;
+{
+    options.MaxReceiveMessageSize = 16 * 1024 * 1024; // 16 MB
+    options.EnableDetailedErrors = true;
+});
+
+var app = builder.Build();
+app.MapGrpcService&lt;UserService&gt;();
+app.Run("https://localhost:5001");
+</code></pre>
+<pre><code class="language-go">// Go — всё явно
+srv := grpc.NewServer(
+    grpc.MaxRecvMsgSize(16 * 1024 * 1024), // 16 MB
+)
+pb.RegisterUserServiceServer(srv, &amp;userServer{})
+srv.Serve(lis)
+</code></pre>
+<h3 id="структура-реализации-сервиса"><a class="header" href="#структура-реализации-сервиса">Структура реализации сервиса</a></h3>
+<p>При генерации кода <code>protoc-gen-go-grpc</code> создаёт интерфейс и <strong>Unimplemented</strong> структуру:</p>
+<pre><code class="language-go">// Сгенерированный код (user_grpc.pb.go):
+
+// Интерфейс, который нужно реализовать
+type UserServiceServer interface {
+    GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
+    CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
+    UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error)
+    DeleteUser(context.Context, *DeleteUserRequest) (*emptypb.Empty, error)
+    ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error)
+    WatchUsers(*WatchUsersRequest, grpc.ServerStreamingServer[UserEvent]) error
+    ImportUsers(grpc.ClientStreamingServer[ImportUserRequest, ImportUsersResponse]) error
+    Chat(grpc.BidiStreamingServer[ChatMessage, ChatMessage]) error
+    mustEmbedUnimplementedUserServiceServer()
+}
+
+// Встроить для forward compatibility
+type UnimplementedUserServiceServer struct{}
+</code></pre>
+<pre><code class="language-go">// Ваша реализация
+type userServer struct {
+    pb.UnimplementedUserServiceServer // Встраиваем для forward compatibility
+    repo UserRepository
+}
+
+// Конструктор — передаём зависимости явно (не через DI)
+func NewUserServer(repo UserRepository) *userServer {
+    return &amp;userServer{repo: repo}
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: Всегда встраивайте <code>UnimplementedUserServiceServer</code>. Если в proto добавится новый метод, сервер продолжит работать — новый метод вернёт <code>codes.Unimplemented</code>. Без встраивания код перестанет компилироваться при добавлении нового RPC. Это аналог наследования <code>UsersBase</code> в C#.</p>
+</blockquote>
+<h3 id="unary-rpc"><a class="header" href="#unary-rpc">Unary RPC</a></h3>
+<p>Самый простой тип — один запрос, один ответ:</p>
+<pre><code class="language-go">func (s *userServer) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.GetUserResponse, error) {
+    // Валидация
+    if req.GetUserId() == "" {
+        return nil, status.Error(codes.InvalidArgument, "user_id обязателен")
+    }
+
+    // Бизнес-логика
+    user, err := s.repo.GetByID(ctx, req.GetUserId())
+    if err != nil {
+        if errors.Is(err, ErrNotFound) {
+            return nil, status.Errorf(codes.NotFound, "пользователь %s не найден", req.GetUserId())
+        }
+        return nil, status.Errorf(codes.Internal, "ошибка базы данных: %v", err)
+    }
+
+    return &amp;pb.GetUserResponse{
+        User: toProtoUser(user),
+    }, nil
+}
+
+func (s *userServer) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
+    user := &amp;User{
+        Email:       req.GetEmail(),
+        DisplayName: req.GetDisplayName(),
+        Role:        fromProtoRole(req.GetRole()),
+    }
+
+    created, err := s.repo.Create(ctx, user)
+    if err != nil {
+        if errors.Is(err, ErrDuplicate) {
+            return nil, status.Errorf(codes.AlreadyExists, "email %s уже используется", req.GetEmail())
+        }
+        return nil, status.Errorf(codes.Internal, "не удалось создать пользователя: %v", err)
+    }
+
+    return &amp;pb.CreateUserResponse{
+        User: toProtoUser(created),
+    }, nil
+}
+</code></pre>
+<p><strong>Сравнение Unary RPC: C# vs Go</strong>:</p>
+<pre><code class="language-csharp">// C# — async Task, DI, исключения
+public override async Task&lt;GetUserResponse&gt; GetUser(
+    GetUserRequest request, ServerCallContext context)
+{
+    if (string.IsNullOrEmpty(request.UserId))
+        throw new RpcException(new Status(StatusCode.InvalidArgument, "user_id обязателен"));
+
+    var user = await _repo.GetByIdAsync(request.UserId, context.CancellationToken);
+    if (user == null)
+        throw new RpcException(new Status(StatusCode.NotFound, $"Пользователь {request.UserId} не найден"));
+
+    return new GetUserResponse { User = MapToProto(user) };
+}
+</code></pre>
+<pre><code class="language-go">// Go — синхронный стиль, явные ошибки, context
+func (s *userServer) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.GetUserResponse, error) {
+    if req.GetUserId() == "" {
+        return nil, status.Error(codes.InvalidArgument, "user_id обязателен")
+    }
+
+    user, err := s.repo.GetByID(ctx, req.GetUserId())
+    if err != nil {
+        return nil, status.Errorf(codes.NotFound, "пользователь %s не найден", req.GetUserId())
+    }
+
+    return &amp;pb.GetUserResponse{User: toProtoUser(user)}, nil
+}
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C#</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>Возврат ошибки</td><td><code>throw new RpcException(...)</code></td><td><code>return nil, status.Error(...)</code></td></tr>
+<tr><td>Async</td><td><code>async Task&lt;T&gt;</code> + <code>await</code></td><td>Синхронный стиль (context для отмены)</td></tr>
+<tr><td>Отмена</td><td><code>context.CancellationToken</code></td><td><code>ctx.Done()</code> / <code>ctx.Err()</code></td></tr>
+<tr><td>DI</td><td>Constructor injection</td><td>Поля структуры</td></tr>
+<tr><td>Null safety</td><td><code>user == null</code></td><td><code>errors.Is(err, ...)</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="server-streaming-rpc"><a class="header" href="#server-streaming-rpc">Server Streaming RPC</a></h3>
+<p>Сервер отправляет поток сообщений клиенту:</p>
+<pre><code class="language-go">func (s *userServer) WatchUsers(
+    req *pb.WatchUsersRequest,
+    stream grpc.ServerStreamingServer[pb.UserEvent],
+) error {
+    // Подписываемся на изменения (например, через канал)
+    events := s.repo.Subscribe(stream.Context(), req.GetRoles())
+
+    for {
+        select {
+        case &lt;-stream.Context().Done():
+            // Клиент отключился или дедлайн истёк
+            return stream.Context().Err()
+
+        case event, ok := &lt;-events:
+            if !ok {
+                // Канал закрыт — завершаем стрим
+                return nil
+            }
+
+            if err := stream.Send(toProtoEvent(event)); err != nil {
+                return err
+            }
+        }
+    }
+}
+</code></pre>
+<p><strong>Сравнение Server Streaming: C# vs Go</strong>:</p>
+<pre><code class="language-csharp">// C# — IServerStreamWriter&lt;T&gt; + await foreach
+public override async Task WatchUsers(
+    WatchUsersRequest request,
+    IServerStreamWriter&lt;UserEvent&gt; responseStream,
+    ServerCallContext context)
+{
+    await foreach (var evt in _repo.SubscribeAsync(request.Roles, context.CancellationToken))
+    {
+        await responseStream.WriteAsync(MapToProto(evt));
+    }
+}
+</code></pre>
+<pre><code class="language-go">// Go — for + select + stream.Send()
+func (s *userServer) WatchUsers(
+    req *pb.WatchUsersRequest,
+    stream grpc.ServerStreamingServer[pb.UserEvent],
+) error {
+    events := s.repo.Subscribe(stream.Context(), req.GetRoles())
+    for event := range events {
+        if err := stream.Send(toProtoEvent(event)); err != nil {
+            return err
+        }
+    }
+    return nil
+}
+</code></pre>
+<blockquote>
+<p>💡 Обратите внимание: в Go Server Streaming метод <strong>не получает</strong> <code>context.Context</code> как отдельный параметр — контекст доступен через <code>stream.Context()</code>. Также метод не получает <code>*Request</code> и <code>stream</code> одновременно как в C# (где 3 параметра) — в Go request и stream передаются как 2 параметра.</p>
+</blockquote>
+<h3 id="client-streaming-rpc"><a class="header" href="#client-streaming-rpc">Client Streaming RPC</a></h3>
+<p>Клиент отправляет поток сообщений, сервер возвращает один ответ:</p>
+<pre><code class="language-go">func (s *userServer) ImportUsers(
+    stream grpc.ClientStreamingServer[pb.ImportUserRequest, pb.ImportUsersResponse],
+) error {
+    var imported, failed int32
+    var errs []string
+
+    for {
+        req, err := stream.Recv()
+        if err == io.EOF {
+            // Клиент завершил отправку — возвращаем результат
+            return stream.SendAndClose(&amp;pb.ImportUsersResponse{
+                ImportedCount: imported,
+                FailedCount:   failed,
+                Errors:        errs,
+            })
+        }
+        if err != nil {
+            return err
+        }
+
+        // Обрабатываем каждого пользователя
+        if err := s.repo.Create(stream.Context(), &amp;User{
+            Email:       req.GetEmail(),
+            DisplayName: req.GetDisplayName(),
+            Role:        fromProtoRole(req.GetRole()),
+        }); err != nil {
+            failed++
+            errs = append(errs, fmt.Sprintf("email %s: %v", req.GetEmail(), err))
+        } else {
+            imported++
+        }
+    }
+}
+</code></pre>
+<p><strong>Сравнение Client Streaming: C# vs Go</strong>:</p>
+<pre><code class="language-csharp">// C# — IAsyncStreamReader&lt;T&gt; + MoveNext()
+public override async Task&lt;ImportUsersResponse&gt; ImportUsers(
+    IAsyncStreamReader&lt;ImportUserRequest&gt; requestStream,
+    ServerCallContext context)
+{
+    int imported = 0, failed = 0;
+    var errors = new List&lt;string&gt;();
+
+    await foreach (var req in requestStream.ReadAllAsync(context.CancellationToken))
+    {
+        try
+        {
+            await _repo.CreateAsync(new User { Email = req.Email });
+            imported++;
+        }
+        catch (Exception ex)
+        {
+            failed++;
+            errors.Add($"email {req.Email}: {ex.Message}");
+        }
+    }
+
+    return new ImportUsersResponse
+    {
+        ImportedCount = imported,
+        FailedCount = failed,
+        Errors = { errors }
+    };
+}
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C#</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>Чтение потока</td><td><code>await foreach (ReadAllAsync())</code></td><td><code>for { stream.Recv() }</code></td></tr>
+<tr><td>Конец потока</td><td>Итерация завершается</td><td><code>err == io.EOF</code></td></tr>
+<tr><td>Отправка ответа</td><td><code>return new Response(...)</code></td><td><code>stream.SendAndClose(...)</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="bidirectional-streaming-rpc"><a class="header" href="#bidirectional-streaming-rpc">Bidirectional Streaming RPC</a></h3>
+<p>Оба направления работают одновременно:</p>
+<pre><code class="language-go">func (s *userServer) Chat(
+    stream grpc.BidiStreamingServer[pb.ChatMessage, pb.ChatMessage],
+) error {
+    for {
+        msg, err := stream.Recv()
+        if err == io.EOF {
+            return nil
+        }
+        if err != nil {
+            return err
+        }
+
+        // Обрабатываем сообщение и отвечаем
+        reply := &amp;pb.ChatMessage{
+            UserId: "system",
+            Text:   fmt.Sprintf("Получено от %s: %s", msg.GetUserId(), msg.GetText()),
+            SentAt: timestamppb.Now(),
+        }
+
+        if err := stream.Send(reply); err != nil {
+            return err
+        }
+    }
+}
+</code></pre>
+<p>Для более сложных сценариев (например, чат-комната), приём и отправка разделяются в горутины:</p>
+<pre><code class="language-go">func (s *userServer) Chat(
+    stream grpc.BidiStreamingServer[pb.ChatMessage, pb.ChatMessage],
+) error {
+    // Канал для сообщений на отправку
+    outgoing := make(chan *pb.ChatMessage, 100)
+    defer close(outgoing)
+
+    // Горутина для отправки сообщений
+    var sendErr error
+    var wg sync.WaitGroup
+    wg.Add(1)
+    go func() {
+        defer wg.Done()
+        for msg := range outgoing {
+            if err := stream.Send(msg); err != nil {
+                sendErr = err
+                return
+            }
+        }
+    }()
+
+    // Основной цикл — чтение сообщений
+    for {
+        msg, err := stream.Recv()
+        if err == io.EOF {
+            break
+        }
+        if err != nil {
+            return err
+        }
+
+        // Рассылка всем подписчикам (через chat room)
+        s.chatRoom.Broadcast(msg, outgoing)
+    }
+
+    wg.Wait()
+    return sendErr
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В C# bidirectional streaming обычно тоже разделяют на чтение и запись, но используют <code>Task.WhenAll</code> или <code>Channel&lt;T&gt;</code>:</p>
+<pre><code class="language-csharp">var readTask = Task.Run(async () =&gt; {
+    await foreach (var msg in requestStream.ReadAllAsync(ct)) { ... }
+});
+var writeTask = WriteMessagesAsync(responseStream, ct);
+await Task.WhenAll(readTask, writeTask);
+</code></pre>
+<p>В Go аналогичная структура, но с горутинами и каналами вместо <code>Task</code> и <code>Channel&lt;T&gt;</code>.</p>
+</blockquote>
+<h3 id="graceful-shutdown"><a class="header" href="#graceful-shutdown">Graceful Shutdown</a></h3>
+<pre><code class="language-go">func main() {
+    lis, err := net.Listen("tcp", ":50051")
+    if err != nil {
+        log.Fatalf("не удалось слушать порт: %v", err)
+    }
+
+    srv := grpc.NewServer()
+    pb.RegisterUserServiceServer(srv, NewUserServer(repo))
+
+    // Запускаем сервер в горутине
+    go func() {
+        log.Printf("gRPC сервер запущен на %s", lis.Addr())
+        if err := srv.Serve(lis); err != nil {
+            log.Fatalf("ошибка сервера: %v", err)
+        }
+    }()
+
+    // Ожидаем сигнал завершения
+    quit := make(chan os.Signal, 1)
+    signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+    &lt;-quit
+
+    log.Println("Завершение работы сервера...")
+
+    // GracefulStop ждёт завершения активных RPC
+    // Stop() завершает немедленно
+    srv.GracefulStop()
+
+    log.Println("Сервер остановлен")
+}
+</code></pre>
+<p><strong>Сравнение Graceful Shutdown: C# vs Go</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C#</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>Механизм</td><td><code>IHostApplicationLifetime</code> / <code>WebApplication.StopAsync()</code></td><td><code>srv.GracefulStop()</code></td></tr>
+<tr><td>Сигнал</td><td><code>Console.CancelKeyPress</code> / <code>IHostedService</code></td><td><code>signal.Notify(quit, SIGTERM)</code></td></tr>
+<tr><td>Таймаут</td><td><code>HostOptions.ShutdownTimeout</code></td><td>Вручную через <code>context.WithTimeout</code> + <code>srv.Stop()</code></td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="клиент-grpc"><a class="header" href="#клиент-grpc">Клиент gRPC</a></h2>
+<h3 id="подключение"><a class="header" href="#подключение">Подключение</a></h3>
+<pre><code class="language-go">import (
+    "google.golang.org/grpc"
+    "google.golang.org/grpc/credentials/insecure"
+    pb "github.com/myapp/gen/user/v1"
+)
+
+func main() {
+    // grpc.NewClient — современный API (Go gRPC v1.63+)
+    // Заменяет устаревший grpc.Dial / grpc.DialContext
+    conn, err := grpc.NewClient(
+        "localhost:50051",
+        grpc.WithTransportCredentials(insecure.NewCredentials()), // Без TLS (dev)
+    )
+    if err != nil {
+        log.Fatalf("не удалось подключиться: %v", err)
+    }
+    defer conn.Close()
+
+    // Создаём типизированный клиент
+    client := pb.NewUserServiceClient(conn)
+
+    // Используем клиент...
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: <code>grpc.Dial</code> и <code>grpc.DialContext</code> помечены как deprecated начиная с gRPC Go v1.63. Используйте <code>grpc.NewClient</code> — он не создаёт соединение сразу (lazy connect), а подключается при первом вызове.</p>
+</blockquote>
+<p><strong>Сравнение подключения: C# vs Go</strong>:</p>
+<pre><code class="language-csharp">// C# — GrpcChannel (обёртка над HttpClient)
+using var channel = GrpcChannel.ForAddress("https://localhost:5001");
+var client = new UserService.UserServiceClient(channel);
+</code></pre>
+<pre><code class="language-go">// Go — grpc.NewClient + ClientConn
+conn, err := grpc.NewClient("localhost:50051",
+    grpc.WithTransportCredentials(insecure.NewCredentials()),
+)
+defer conn.Close()
+client := pb.NewUserServiceClient(conn)
+</code></pre>
+<h3 id="вызов-unary-rpc"><a class="header" href="#вызов-unary-rpc">Вызов Unary RPC</a></h3>
+<pre><code class="language-go">func getUser(ctx context.Context, client pb.UserServiceClient, userID string) (*pb.User, error) {
+    // Дедлайн через контекст
+    ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+    defer cancel()
+
+    resp, err := client.GetUser(ctx, &amp;pb.GetUserRequest{
+        UserId: userID,
+    })
+    if err != nil {
+        // Извлекаем gRPC статус из ошибки
+        st, ok := status.FromError(err)
+        if ok {
+            switch st.Code() {
+            case codes.NotFound:
+                return nil, fmt.Errorf("пользователь не найден: %s", userID)
+            case codes.DeadlineExceeded:
+                return nil, fmt.Errorf("таймаут запроса")
+            default:
+                return nil, fmt.Errorf("gRPC ошибка [%s]: %s", st.Code(), st.Message())
+            }
+        }
+        return nil, err
+    }
+
+    return resp.GetUser(), nil
+}
+</code></pre>
+<h3 id="работа-со-стримами"><a class="header" href="#работа-со-стримами">Работа со стримами</a></h3>
+<h4 id="чтение-server-stream"><a class="header" href="#чтение-server-stream">Чтение Server Stream</a></h4>
+<pre><code class="language-go">func watchUsers(ctx context.Context, client pb.UserServiceClient) error {
+    stream, err := client.WatchUsers(ctx, &amp;pb.WatchUsersRequest{
+        Roles: []pb.UserRole{pb.UserRole_USER_ROLE_ADMIN},
+    })
+    if err != nil {
+        return fmt.Errorf("не удалось начать watch: %w", err)
+    }
+
+    for {
+        event, err := stream.Recv()
+        if err == io.EOF {
+            log.Println("Стрим завершён сервером")
+            return nil
+        }
+        if err != nil {
+            return fmt.Errorf("ошибка чтения стрима: %w", err)
+        }
+
+        log.Printf("Событие: %s, пользователь: %s",
+            event.GetType(), event.GetUser().GetDisplayName())
+    }
+}
+</code></pre>
+<h4 id="отправка-client-stream"><a class="header" href="#отправка-client-stream">Отправка Client Stream</a></h4>
+<pre><code class="language-go">func importUsers(ctx context.Context, client pb.UserServiceClient, users []*User) (*pb.ImportUsersResponse, error) {
+    stream, err := client.ImportUsers(ctx)
+    if err != nil {
+        return nil, err
+    }
+
+    for _, u := range users {
+        if err := stream.Send(&amp;pb.ImportUserRequest{
+            Email:       u.Email,
+            DisplayName: u.DisplayName,
+            Role:        toProtoRole(u.Role),
+        }); err != nil {
+            return nil, fmt.Errorf("ошибка отправки: %w", err)
+        }
+    }
+
+    // Закрываем стрим и получаем ответ
+    return stream.CloseAndRecv()
+}
+</code></pre>
+<h4 id="bidirectional-stream-на-клиенте"><a class="header" href="#bidirectional-stream-на-клиенте">Bidirectional Stream на клиенте</a></h4>
+<pre><code class="language-go">func chat(ctx context.Context, client pb.UserServiceClient, userID string) error {
+    stream, err := client.Chat(ctx)
+    if err != nil {
+        return err
+    }
+
+    // Горутина для получения сообщений
+    go func() {
+        for {
+            msg, err := stream.Recv()
+            if err == io.EOF {
+                return
+            }
+            if err != nil {
+                log.Printf("ошибка получения: %v", err)
+                return
+            }
+            fmt.Printf("[%s]: %s\n", msg.GetUserId(), msg.GetText())
+        }
+    }()
+
+    // Отправка сообщений из stdin
+    scanner := bufio.NewScanner(os.Stdin)
+    for scanner.Scan() {
+        if err := stream.Send(&amp;pb.ChatMessage{
+            UserId: userID,
+            Text:   scanner.Text(),
+            SentAt: timestamppb.Now(),
+        }); err != nil {
+            return fmt.Errorf("ошибка отправки: %w", err)
+        }
+    }
+
+    // Закрываем сторону отправки
+    return stream.CloseSend()
+}
+</code></pre>
+<h3 id="connection-management"><a class="header" href="#connection-management">Connection Management</a></h3>
+<pre><code class="language-go">// Production-конфигурация клиента
+conn, err := grpc.NewClient(
+    "dns:///user-service.default.svc.cluster.local:50051",
+    grpc.WithTransportCredentials(credentials.NewTLS(tlsConfig)),
+    // Балансировка нагрузки (round-robin между эндпоинтами)
+    grpc.WithDefaultServiceConfig(`{"loadBalancingConfig": [{"round_robin":{}}]}`),
+    // Keepalive — поддержание соединения
+    grpc.WithKeepaliveParams(keepalive.ClientParameters{
+        Time:                10 * time.Second, // Пинг каждые 10 секунд при idle
+        Timeout:             3 * time.Second,  // Таймаут ожидания pong
+        PermitWithoutStream: true,             // Пинговать даже без активных стримов
+    }),
+)
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В .NET <code>GrpcChannel</code> — обёртка над <code>HttpClient</code>, и connection management наследует настройки <code>SocketsHttpHandler</code>. В Go <code>grpc.ClientConn</code> управляет соединениями самостоятельно через механизм resolvers и balancers. Одного <code>ClientConn</code> обычно достаточно для всех вызовов — он мультиплексирует запросы через HTTP/2.</p>
+</blockquote>
+<hr>
+<h2 id="контекст-дедлайны-и-метаданные"><a class="header" href="#контекст-дедлайны-и-метаданные">Контекст, дедлайны и метаданные</a></h2>
+<h3 id="deadlines-и-timeouts"><a class="header" href="#deadlines-и-timeouts">Deadlines и Timeouts</a></h3>
+<p>В gRPC дедлайн — это абсолютное время, после которого RPC считается неуспешным. Дедлайны <strong>пропагируются</strong> через цепочку сервисов: если Service A вызывает Service B с дедлайном 5 секунд, и 2 секунды уже потрачены — Service B получит оставшиеся 3 секунды.</p>
+<pre><code class="language-go">// Клиент: установка дедлайна
+ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+defer cancel()
+
+resp, err := client.GetUser(ctx, &amp;pb.GetUserRequest{UserId: "123"})
+if err != nil {
+    st, _ := status.FromError(err)
+    if st.Code() == codes.DeadlineExceeded {
+        log.Println("Запрос превысил дедлайн")
+    }
+}
+
+// Сервер: проверка дедлайна
+func (s *userServer) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.GetUserResponse, error) {
+    // Проверяем, не истёк ли дедлайн до начала работы
+    if ctx.Err() == context.DeadlineExceeded {
+        return nil, status.Error(codes.DeadlineExceeded, "дедлайн истёк")
+    }
+
+    // Передаём context дальше — дедлайн пропагируется автоматически
+    user, err := s.repo.GetByID(ctx, req.GetUserId())
+    // ...
+}
+</code></pre>
+<p><strong>Сравнение дедлайнов: C# vs Go</strong>:</p>
+<pre><code class="language-csharp">// C# — через CallOptions или CancellationToken
+var deadline = DateTime.UtcNow.AddSeconds(5);
+var response = await client.GetUserAsync(
+    request,
+    deadline: deadline,
+    cancellationToken: ct);
+
+// Или через GrpcChannelOptions (глобально)
+var channel = GrpcChannel.ForAddress("https://localhost:5001", new GrpcChannelOptions
+{
+    HttpHandler = new SocketsHttpHandler
+    {
+        // Общий таймаут на уровне HTTP
+        ConnectTimeout = TimeSpan.FromSeconds(5)
+    }
+});
+</code></pre>
+<pre><code class="language-go">// Go — через context (единый механизм)
+ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+defer cancel()
+resp, err := client.GetUser(ctx, req)
+</code></pre>
+<blockquote>
+<p>💡 <strong>Ключевое отличие</strong>: В C# есть два механизма — <code>Deadline</code> (gRPC-специфичный) и <code>CancellationToken</code> (универсальный .NET). В Go — единый <code>context.Context</code>, который обслуживает и дедлайны, и отмену, и передачу метаданных. Это проще и согласованнее.</p>
+</blockquote>
+<h3 id="metadata-заголовки"><a class="header" href="#metadata-заголовки">Metadata (заголовки)</a></h3>
+<p>Metadata — это key-value пары, аналог HTTP заголовков. Передаются в начале и конце RPC:</p>
+<pre><code class="language-go">import "google.golang.org/grpc/metadata"
+
+// === Клиент: отправка metadata ===
+func callWithMetadata(ctx context.Context, client pb.UserServiceClient) {
+    // Создаём metadata
+    md := metadata.Pairs(
+        "authorization", "Bearer eyJhbG...",
+        "x-request-id", uuid.New().String(),
+        "x-client-version", "1.2.0",
+    )
+
+    // Добавляем к контексту
+    ctx = metadata.NewOutgoingContext(ctx, md)
+
+    // Вызываем RPC — metadata отправится автоматически
+    resp, err := client.GetUser(ctx, &amp;pb.GetUserRequest{UserId: "123"})
+    // ...
+
+    // Чтение metadata из ответа (headers и trailers)
+    var header, trailer metadata.MD
+    resp, err = client.GetUser(ctx, req,
+        grpc.Header(&amp;header),   // Заголовки ответа
+        grpc.Trailer(&amp;trailer), // Трейлеры ответа
+    )
+    log.Printf("Server version: %s", header.Get("x-server-version"))
+}
+
+// === Сервер: чтение и отправка metadata ===
+func (s *userServer) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.GetUserResponse, error) {
+    // Чтение входящих metadata
+    md, ok := metadata.FromIncomingContext(ctx)
+    if !ok {
+        return nil, status.Error(codes.Internal, "нет metadata")
+    }
+
+    // Извлекаем значения
+    requestID := ""
+    if vals := md.Get("x-request-id"); len(vals) &gt; 0 {
+        requestID = vals[0]
+    }
+
+    authHeader := ""
+    if vals := md.Get("authorization"); len(vals) &gt; 0 {
+        authHeader = vals[0]
+    }
+
+    log.Printf("request_id=%s, auth=%s", requestID, authHeader)
+
+    // Отправляем metadata в ответе
+    header := metadata.Pairs("x-server-version", "2.1.0")
+    if err := grpc.SendHeader(ctx, header); err != nil {
+        return nil, err
+    }
+
+    // Трейлеры — отправляются после ответа
+    trailer := metadata.Pairs("x-processing-time-ms", "42")
+    if err := grpc.SetTrailer(ctx, trailer); err != nil {
+        return nil, err
+    }
+
+    // ...
+    return &amp;pb.GetUserResponse{User: toProtoUser(user)}, nil
+}
+</code></pre>
+<p><strong>Сравнение Metadata: C# vs Go</strong>:</p>
+<pre><code class="language-csharp">// C# — Metadata класс + ServerCallContext
+public override async Task&lt;GetUserResponse&gt; GetUser(
+    GetUserRequest request, ServerCallContext context)
+{
+    // Чтение
+    var requestId = context.RequestHeaders.GetValue("x-request-id");
+    var auth = context.RequestHeaders.GetValue("authorization");
+
+    // Отправка
+    await context.WriteResponseHeadersAsync(new Metadata
+    {
+        { "x-server-version", "2.1.0" }
+    });
+
+    context.ResponseTrailers.Add("x-processing-time-ms", "42");
+    // ...
+}
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C#</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>Входящие</td><td><code>context.RequestHeaders</code></td><td><code>metadata.FromIncomingContext(ctx)</code></td></tr>
+<tr><td>Исходящие (клиент)</td><td><code>new CallOptions(headers: md)</code></td><td><code>metadata.NewOutgoingContext(ctx, md)</code></td></tr>
+<tr><td>Ответ (сервер)</td><td><code>context.WriteResponseHeadersAsync()</code></td><td><code>grpc.SendHeader(ctx, md)</code></td></tr>
+<tr><td>Трейлеры</td><td><code>context.ResponseTrailers.Add()</code></td><td><code>grpc.SetTrailer(ctx, md)</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="коды-ошибок-grpc"><a class="header" href="#коды-ошибок-grpc">Коды ошибок gRPC</a></h3>
+<p>gRPC определяет 16 стандартных кодов ошибок. Правильный выбор кода критически важен для корректной работы retry и мониторинга:</p>
+<pre><code class="language-go">import (
+    "google.golang.org/grpc/codes"
+    "google.golang.org/grpc/status"
+)
+
+// Создание ошибки с кодом
+err := status.Error(codes.NotFound, "пользователь не найден")
+err = status.Errorf(codes.InvalidArgument, "email '%s' невалиден", email)
+
+// Извлечение кода из ошибки
+st, ok := status.FromError(err)
+if ok {
+    fmt.Println(st.Code())    // codes.NotFound
+    fmt.Println(st.Message()) // "пользователь не найден"
+}
+</code></pre>
+<p><strong>Сопоставление кодов gRPC с HTTP и типичными сценариями</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>gRPC Code</th><th>HTTP</th><th>Когда использовать</th><th>C# StatusCode</th></tr>
+</thead>
+<tbody>
+<tr><td><code>OK</code></td><td>200</td><td>Успех</td><td><code>StatusCode.OK</code></td></tr>
+<tr><td><code>InvalidArgument</code></td><td>400</td><td>Невалидные входные данные</td><td><code>StatusCode.InvalidArgument</code></td></tr>
+<tr><td><code>NotFound</code></td><td>404</td><td>Ресурс не найден</td><td><code>StatusCode.NotFound</code></td></tr>
+<tr><td><code>AlreadyExists</code></td><td>409</td><td>Ресурс уже существует</td><td><code>StatusCode.AlreadyExists</code></td></tr>
+<tr><td><code>PermissionDenied</code></td><td>403</td><td>Нет прав (аутентифицирован, но нет доступа)</td><td><code>StatusCode.PermissionDenied</code></td></tr>
+<tr><td><code>Unauthenticated</code></td><td>401</td><td>Не аутентифицирован</td><td><code>StatusCode.Unauthenticated</code></td></tr>
+<tr><td><code>ResourceExhausted</code></td><td>429</td><td>Rate limit, квота исчерпана</td><td><code>StatusCode.ResourceExhausted</code></td></tr>
+<tr><td><code>FailedPrecondition</code></td><td>400</td><td>Нарушено предусловие (например, optimistic lock)</td><td><code>StatusCode.FailedPrecondition</code></td></tr>
+<tr><td><code>Aborted</code></td><td>409</td><td>Конфликт (concurrency, transaction abort)</td><td><code>StatusCode.Aborted</code></td></tr>
+<tr><td><code>DeadlineExceeded</code></td><td>504</td><td>Таймаут</td><td><code>StatusCode.DeadlineExceeded</code></td></tr>
+<tr><td><code>Unavailable</code></td><td>503</td><td>Сервис недоступен (retry имеет смысл)</td><td><code>StatusCode.Unavailable</code></td></tr>
+<tr><td><code>Internal</code></td><td>500</td><td>Внутренняя ошибка сервера</td><td><code>StatusCode.Internal</code></td></tr>
+<tr><td><code>Unimplemented</code></td><td>501</td><td>Метод не реализован</td><td><code>StatusCode.Unimplemented</code></td></tr>
+<tr><td><code>Cancelled</code></td><td>499</td><td>Клиент отменил запрос</td><td><code>StatusCode.Cancelled</code></td></tr>
+<tr><td><code>DataLoss</code></td><td>500</td><td>Потеря данных</td><td><code>StatusCode.DataLoss</code></td></tr>
+<tr><td><code>Unknown</code></td><td>500</td><td>Неизвестная ошибка</td><td><code>StatusCode.Unknown</code></td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>⚠️ <strong>Распространённая ошибка</strong>: Не используйте <code>Internal</code> для всех ошибок. <code>InvalidArgument</code> для плохих входных данных, <code>NotFound</code> для отсутствующих ресурсов, <code>Unavailable</code> для временной недоступности (клиент может retry). Правильные коды позволяют клиентам принимать верные решения о retry.</p>
+</blockquote>
+<h3 id="rich-error-model"><a class="header" href="#rich-error-model">Rich Error Model</a></h3>
+<p>Стандартный <code>status.Error</code> передаёт только код и текст. Для структурированных деталей используйте <strong>Rich Error Model</strong>:</p>
+<pre><code class="language-go">import (
+    "google.golang.org/genproto/googleapis/rpc/errdetails"
+    "google.golang.org/grpc/codes"
+    "google.golang.org/grpc/status"
+)
+
+func (s *userServer) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
+    // Валидация с подробными ошибками
+    var violations []*errdetails.BadRequest_FieldViolation
+
+    if req.GetEmail() == "" {
+        violations = append(violations, &amp;errdetails.BadRequest_FieldViolation{
+            Field:       "email",
+            Description: "Email обязателен",
+        })
+    }
+    if !isValidEmail(req.GetEmail()) {
+        violations = append(violations, &amp;errdetails.BadRequest_FieldViolation{
+            Field:       "email",
+            Description: "Некорректный формат email",
+        })
+    }
+
+    if len(violations) &gt; 0 {
+        st := status.New(codes.InvalidArgument, "ошибка валидации")
+        detailed, err := st.WithDetails(&amp;errdetails.BadRequest{
+            FieldViolations: violations,
+        })
+        if err != nil {
+            return nil, st.Err() // Fallback без деталей
+        }
+        return nil, detailed.Err()
+    }
+
+    // ...
+}
+
+// Клиент: извлечение деталей
+func handleError(err error) {
+    st := status.Convert(err)
+    for _, detail := range st.Details() {
+        switch d := detail.(type) {
+        case *errdetails.BadRequest:
+            for _, v := range d.GetFieldViolations() {
+                fmt.Printf("Поле %s: %s\n", v.GetField(), v.GetDescription())
+            }
+        case *errdetails.RetryInfo:
+            fmt.Printf("Повторите через: %s\n", d.GetRetryDelay().AsDuration())
+        case *errdetails.ErrorInfo:
+            fmt.Printf("Причина: %s, домен: %s\n", d.GetReason(), d.GetDomain())
+        }
+    }
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В .NET rich errors доступны через <code>Google.Rpc.Status</code> и <code>Grpc.StatusProto</code>. Но на практике в C# чаще используют <code>RpcException</code> с простым текстом или custom metadata. В Go rich error model более распространён, особенно в Google-style API.</p>
+</blockquote>
+<hr>
+<h2 id="interceptors-middleware-для-grpc"><a class="header" href="#interceptors-middleware-для-grpc">Interceptors (Middleware для gRPC)</a></h2>
+<p>Interceptors — аналог middleware в HTTP-серверах и <code>Interceptor</code> базового класса в C# gRPC. Они перехватывают RPC вызовы для добавления cross-cutting concerns: логирование, аутентификация, метрики, recovery.</p>
+<h3 id="типы-interceptors"><a class="header" href="#типы-interceptors">Типы interceptors</a></h3>
+<p>В gRPC Go существует 4 типа interceptors:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Тип</th><th>Сторона</th><th>Сигнатура</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Unary Server</strong></td><td>Сервер</td><td><code>func(ctx, req, info, handler) (resp, err)</code></td></tr>
+<tr><td><strong>Stream Server</strong></td><td>Сервер</td><td><code>func(srv, stream, info, handler) err</code></td></tr>
+<tr><td><strong>Unary Client</strong></td><td>Клиент</td><td><code>func(ctx, method, req, reply, cc, invoker, opts) err</code></td></tr>
+<tr><td><strong>Stream Client</strong></td><td>Клиент</td><td><code>func(ctx, desc, cc, method, streamer, opts) (stream, err)</code></td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Сравнение с C#</strong>:</p>
+<pre><code class="language-csharp">// C# — один базовый класс с virtual методами
+public class LoggingInterceptor : Interceptor
+{
+    // Server Unary
+    public override async Task&lt;TResponse&gt; UnaryServerHandler&lt;TRequest, TResponse&gt;(
+        TRequest request, ServerCallContext context,
+        UnaryServerMethod&lt;TRequest, TResponse&gt; continuation) { ... }
+
+    // Server Streaming
+    public override async Task ServerStreamingServerHandler&lt;TRequest, TResponse&gt;(
+        TRequest request, IServerStreamWriter&lt;TResponse&gt; responseStream,
+        ServerCallContext context,
+        ServerStreamingServerMethod&lt;TRequest, TResponse&gt; continuation) { ... }
+
+    // Client Unary
+    public override AsyncUnaryCall&lt;TResponse&gt; AsyncUnaryCall&lt;TRequest, TResponse&gt;(
+        TRequest request, ClientInterceptorContext&lt;TRequest, TResponse&gt; context,
+        AsyncUnaryCallContinuation&lt;TRequest, TResponse&gt; continuation) { ... }
+}
+</code></pre>
+<pre><code class="language-go">// Go — отдельные функции для каждого типа
+type UnaryServerInterceptor func(
+    ctx context.Context,
+    req any,
+    info *grpc.UnaryServerInfo,
+    handler grpc.UnaryHandler,
+) (any, error)
+
+type StreamServerInterceptor func(
+    srv any,
+    ss grpc.ServerStream,
+    info *grpc.StreamServerInfo,
+    handler grpc.StreamHandler,
+) error
+</code></pre>
+<h3 id="server-unary-interceptor"><a class="header" href="#server-unary-interceptor">Server Unary Interceptor</a></h3>
+<pre><code class="language-go">// Логирование
+func loggingInterceptor(
+    ctx context.Context,
+    req any,
+    info *grpc.UnaryServerInfo,
+    handler grpc.UnaryHandler,
+) (any, error) {
+    start := time.Now()
+
+    // Вызываем следующий interceptor / handler
+    resp, err := handler(ctx, req)
+
+    // Логируем результат
+    duration := time.Since(start)
+    code := status.Code(err)
+
+    slog.Info("gRPC вызов",
+        "method", info.FullMethod,
+        "code", code.String(),
+        "duration", duration,
+        "error", err,
+    )
+
+    return resp, err
+}
+
+// Recovery (перехват panic)
+func recoveryInterceptor(
+    ctx context.Context,
+    req any,
+    info *grpc.UnaryServerInfo,
+    handler grpc.UnaryHandler,
+) (resp any, err error) {
+    defer func() {
+        if r := recover(); r != nil {
+            slog.Error("panic в gRPC handler",
+                "method", info.FullMethod,
+                "panic", r,
+                "stack", string(debug.Stack()),
+            )
+            err = status.Errorf(codes.Internal, "внутренняя ошибка сервера")
+        }
+    }()
+
+    return handler(ctx, req)
+}
+
+// Аутентификация
+func authInterceptor(
+    ctx context.Context,
+    req any,
+    info *grpc.UnaryServerInfo,
+    handler grpc.UnaryHandler,
+) (any, error) {
+    // Пропускаем health check и reflection
+    if info.FullMethod == "/grpc.health.v1.Health/Check" {
+        return handler(ctx, req)
+    }
+
+    md, ok := metadata.FromIncomingContext(ctx)
+    if !ok {
+        return nil, status.Error(codes.Unauthenticated, "нет metadata")
+    }
+
+    tokens := md.Get("authorization")
+    if len(tokens) == 0 {
+        return nil, status.Error(codes.Unauthenticated, "нет токена авторизации")
+    }
+
+    // Валидация токена
+    claims, err := validateToken(tokens[0])
+    if err != nil {
+        return nil, status.Errorf(codes.Unauthenticated, "невалидный токен: %v", err)
+    }
+
+    // Добавляем claims в context для использования в handlers
+    ctx = context.WithValue(ctx, claimsKey{}, claims)
+
+    return handler(ctx, req)
+}
+</code></pre>
+<h3 id="server-stream-interceptor"><a class="header" href="#server-stream-interceptor">Server Stream Interceptor</a></h3>
+<pre><code class="language-go">// Обёртка для стрима — добавляет функциональность
+type wrappedStream struct {
+    grpc.ServerStream
+    ctx context.Context
+}
+
+func (w *wrappedStream) Context() context.Context {
+    return w.ctx
+}
+
+func streamLoggingInterceptor(
+    srv any,
+    ss grpc.ServerStream,
+    info *grpc.StreamServerInfo,
+    handler grpc.StreamHandler,
+) error {
+    start := time.Now()
+
+    err := handler(srv, ss)
+
+    slog.Info("gRPC stream завершён",
+        "method", info.FullMethod,
+        "duration", time.Since(start),
+        "error", err,
+    )
+
+    return err
+}
+
+func streamAuthInterceptor(
+    srv any,
+    ss grpc.ServerStream,
+    info *grpc.StreamServerInfo,
+    handler grpc.StreamHandler,
+) error {
+    md, ok := metadata.FromIncomingContext(ss.Context())
+    if !ok {
+        return status.Error(codes.Unauthenticated, "нет metadata")
+    }
+
+    tokens := md.Get("authorization")
+    if len(tokens) == 0 {
+        return status.Error(codes.Unauthenticated, "нет токена")
+    }
+
+    claims, err := validateToken(tokens[0])
+    if err != nil {
+        return status.Errorf(codes.Unauthenticated, "невалидный токен: %v", err)
+    }
+
+    // Оборачиваем стрим с новым контекстом
+    ctx := context.WithValue(ss.Context(), claimsKey{}, claims)
+    wrapped := &amp;wrappedStream{ServerStream: ss, ctx: ctx}
+
+    return handler(srv, wrapped)
+}
+</code></pre>
+<h3 id="client-interceptors"><a class="header" href="#client-interceptors">Client Interceptors</a></h3>
+<pre><code class="language-go">// Клиентский interceptor — добавляет auth токен ко всем запросам
+func clientAuthInterceptor(
+    ctx context.Context,
+    method string,
+    req, reply any,
+    cc *grpc.ClientConn,
+    invoker grpc.UnaryInvoker,
+    opts ...grpc.CallOption,
+) error {
+    // Добавляем токен в metadata
+    ctx = metadata.AppendToOutgoingContext(ctx,
+        "authorization", "Bearer "+getAccessToken(),
+    )
+
+    return invoker(ctx, method, req, reply, cc, opts...)
+}
+
+// Клиентский interceptor — retry при Unavailable
+func clientRetryInterceptor(
+    ctx context.Context,
+    method string,
+    req, reply any,
+    cc *grpc.ClientConn,
+    invoker grpc.UnaryInvoker,
+    opts ...grpc.CallOption,
+) error {
+    var lastErr error
+    for attempt := 0; attempt &lt; 3; attempt++ {
+        lastErr = invoker(ctx, method, req, reply, cc, opts...)
+        if lastErr == nil {
+            return nil
+        }
+
+        st, ok := status.FromError(lastErr)
+        if !ok || st.Code() != codes.Unavailable {
+            return lastErr // Не retryable
+        }
+
+        // Exponential backoff
+        delay := time.Duration(1&lt;&lt;attempt) * 100 * time.Millisecond
+        select {
+        case &lt;-ctx.Done():
+            return ctx.Err()
+        case &lt;-time.After(delay):
+        }
+    }
+    return lastErr
+}
+</code></pre>
+<h3 id="chaining-interceptors"><a class="header" href="#chaining-interceptors">Chaining interceptors</a></h3>
+<pre><code class="language-go">// Сервер — порядок имеет значение: первый interceptor вызывается первым
+srv := grpc.NewServer(
+    grpc.ChainUnaryInterceptor(
+        recoveryInterceptor,     // 1. Recovery (обёртка вокруг всего)
+        loggingInterceptor,      // 2. Логирование (замер времени)
+        authInterceptor,         // 3. Аутентификация
+    ),
+    grpc.ChainStreamInterceptor(
+        streamLoggingInterceptor,
+        streamAuthInterceptor,
+    ),
+)
+
+// Клиент — аналогично
+conn, err := grpc.NewClient(
+    "localhost:50051",
+    grpc.WithChainUnaryInterceptor(
+        clientAuthInterceptor,
+        clientRetryInterceptor,
+    ),
+    grpc.WithTransportCredentials(insecure.NewCredentials()),
+)
+</code></pre>
+<p><strong>Сравнение chaining: C# vs Go</strong>:</p>
+<pre><code class="language-csharp">// C# — добавление через options
+services.AddGrpc(options =&gt;
+{
+    options.Interceptors.Add&lt;RecoveryInterceptor&gt;();
+    options.Interceptors.Add&lt;LoggingInterceptor&gt;();
+    options.Interceptors.Add&lt;AuthInterceptor&gt;();
+});
+</code></pre>
+<pre><code class="language-go">// Go — через ChainUnaryInterceptor
+grpc.ChainUnaryInterceptor(
+    recoveryInterceptor,
+    loggingInterceptor,
+    authInterceptor,
+)
+</code></pre>
+<h3 id="go-grpc-middleware-v2"><a class="header" href="#go-grpc-middleware-v2">go-grpc-middleware v2</a></h3>
+<p>Библиотека <code>github.com/grpc-ecosystem/go-grpc-middleware/v2</code> предоставляет готовые interceptors:</p>
+<pre><code class="language-go">import (
+    "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
+    "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
+    "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/auth"
+    "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/ratelimit"
+    "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/validator"
+    "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/retry"
+)
+
+// Сервер с полным набором middleware
+srv := grpc.NewServer(
+    grpc.ChainUnaryInterceptor(
+        // Recovery — перехват паников
+        recovery.UnaryServerInterceptor(
+            recovery.WithRecoveryHandler(func(p any) error {
+                slog.Error("panic перехвачен", "panic", p)
+                return status.Errorf(codes.Internal, "внутренняя ошибка")
+            }),
+        ),
+        // Логирование
+        logging.UnaryServerInterceptor(
+            interceptorLogger(slog.Default()),
+            logging.WithLogOnEvents(logging.StartCall, logging.FinishCall),
+        ),
+        // Аутентификация
+        auth.UnaryServerInterceptor(authFunc),
+        // Rate limiting
+        ratelimit.UnaryServerInterceptor(limiter),
+        // Валидация (если используете protovalidate)
+        validator.UnaryServerInterceptor(),
+    ),
+    grpc.ChainStreamInterceptor(
+        recovery.StreamServerInterceptor(),
+        logging.StreamServerInterceptor(interceptorLogger(slog.Default())),
+        auth.StreamServerInterceptor(authFunc),
+    ),
+)
+
+// Функция аутентификации для auth middleware
+func authFunc(ctx context.Context) (context.Context, error) {
+    token, err := auth.AuthFromMD(ctx, "bearer")
+    if err != nil {
+        return nil, err
+    }
+
+    claims, err := validateJWT(token)
+    if err != nil {
+        return nil, status.Errorf(codes.Unauthenticated, "невалидный токен: %v", err)
+    }
+
+    return context.WithValue(ctx, claimsKey{}, claims), nil
+}
+
+// Адаптер slog для logging middleware
+func interceptorLogger(l *slog.Logger) logging.Logger {
+    return logging.LoggerFunc(func(ctx context.Context, lvl logging.Level, msg string, fields ...any) {
+        l.Log(ctx, slog.Level(lvl), msg, fields...)
+    })
+}
+
+// Клиент с retry middleware
+conn, err := grpc.NewClient(
+    "localhost:50051",
+    grpc.WithChainUnaryInterceptor(
+        retry.UnaryClientInterceptor(
+            retry.WithMax(3),
+            retry.WithBackoff(retry.BackoffExponential(100*time.Millisecond)),
+            retry.WithCodes(codes.Unavailable, codes.ResourceExhausted),
+        ),
+    ),
+    grpc.WithTransportCredentials(insecure.NewCredentials()),
+)
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: <code>go-grpc-middleware</code> — это аналог того, что ASP.NET Core предоставляет из коробки: logging, auth, rate limiting, error handling. В .NET эти concerns встроены в middleware pipeline и DI. В Go вы явно собираете pipeline из отдельных interceptors — больше контроля, но и больше кода настройки.</p>
+</blockquote>
+<hr>
+<h2 id="grpc-gateway-rest-api-из-grpc"><a class="header" href="#grpc-gateway-rest-api-из-grpc">gRPC-Gateway: REST API из gRPC</a></h2>
+<h3 id="зачем-нужен-grpc-gateway"><a class="header" href="#зачем-нужен-grpc-gateway">Зачем нужен gRPC-Gateway</a></h3>
+<p>Не все клиенты могут использовать gRPC напрямую: браузеры, мобильные приложения, сторонние интеграции часто ожидают REST API с JSON. gRPC-Gateway автоматически генерирует reverse proxy, который транслирует REST-запросы в gRPC-вызовы.</p>
+<pre><code>             ┌──────────────────────────────┐
+  REST/JSON  │      gRPC-Gateway            │  gRPC/Protobuf
+  ─────────► │  (HTTP reverse proxy)        │ ──────────────►  gRPC Server
+  GET /users │  JSON ↔ Protobuf conversion  │  ListUsers()
+             └──────────────────────────────┘
+</code></pre>
+<p><strong>Сравнение подходов: C# vs Go</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Подход</th><th>C#</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>gRPC из браузера</td><td><code>Grpc.AspNetCore.Web</code> (gRPC-Web middleware)</td><td>gRPC-Gateway (reverse proxy)</td></tr>
+<tr><td>Один сервер REST+gRPC</td><td>Kestrel обслуживает оба протокола</td><td>Два listener или mux</td></tr>
+<tr><td>Swagger</td><td>Swashbuckle / NSwag (из контроллеров)</td><td><code>protoc-gen-openapiv2</code> (из proto)</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="http-annotations-в-proto"><a class="header" href="#http-annotations-в-proto">HTTP annotations в .proto</a></h3>
+<p>Для gRPC-Gateway нужно добавить HTTP маппинг в proto-файлы:</p>
+<pre><code class="language-protobuf">syntax = "proto3";
+
+package myapp.user.v1;
+
+import "google/api/annotations.proto"; // HTTP annotations
+
+service UserService {
+    rpc GetUser(GetUserRequest) returns (GetUserResponse) {
+        option (google.api.http) = {
+            get: "/api/v1/users/{user_id}"
+        };
+    }
+
+    rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {
+        option (google.api.http) = {
+            get: "/api/v1/users"
+        };
+    }
+
+    rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/users"
+            body: "*"  // Всё тело запроса маппится на CreateUserRequest
+        };
+    }
+
+    rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {
+        option (google.api.http) = {
+            patch: "/api/v1/users/{user_id}"
+            body: "user"  // Только поле "user" маппится из тела
+        };
+    }
+
+    rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            delete: "/api/v1/users/{user_id}"
+        };
+    }
+}
+</code></pre>
+<p><strong>Правила маппинга</strong>:</p>
+<ul>
+<li>Поля из URL path (<code>{user_id}</code>) → поля запроса</li>
+<li>Query parameters → оставшиеся поля запроса (для GET)</li>
+<li><code>body: "*"</code> → всё тело JSON маппится на запрос</li>
+<li><code>body: "field"</code> → тело маппится на конкретное поле</li>
+</ul>
+<h3 id="реализация-gateway"><a class="header" href="#реализация-gateway">Реализация Gateway</a></h3>
+<pre><code class="language-go">package main
+
+import (
+    "context"
+    "log"
+    "net"
+    "net/http"
+
+    "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+    "google.golang.org/grpc"
+    "google.golang.org/grpc/credentials/insecure"
+
+    pb "github.com/myapp/gen/user/v1"
+)
+
+func main() {
+    ctx := context.Background()
+
+    // === 1. Запускаем gRPC сервер ===
+    lis, err := net.Listen("tcp", ":50051")
+    if err != nil {
+        log.Fatalf("не удалось слушать: %v", err)
+    }
+
+    grpcServer := grpc.NewServer()
+    pb.RegisterUserServiceServer(grpcServer, NewUserServer(repo))
+
+    go func() {
+        log.Println("gRPC сервер на :50051")
+        if err := grpcServer.Serve(lis); err != nil {
+            log.Fatalf("ошибка gRPC: %v", err)
+        }
+    }()
+
+    // === 2. Настраиваем gRPC-Gateway ===
+    mux := runtime.NewServeMux(
+        // Маппинг ошибок gRPC → HTTP
+        runtime.WithErrorHandler(customErrorHandler),
+        // Формат JSON (используем оригинальные имена полей из proto)
+        runtime.WithMarshalerOption(runtime.MIMEWildcard, &amp;runtime.JSONPb{
+            MarshalOptions: protojson.MarshalOptions{
+                UseProtoNames:   true,   // snake_case вместо camelCase
+                EmitUnpopulated: false,  // Не выводить пустые поля
+            },
+            UnmarshalOptions: protojson.UnmarshalOptions{
+                DiscardUnknown: true, // Игнорировать неизвестные поля
+            },
+        }),
+    )
+
+    opts := []grpc.DialOption{
+        grpc.WithTransportCredentials(insecure.NewCredentials()),
+    }
+
+    // Регистрируем gateway handler (подключается к gRPC серверу)
+    if err := pb.RegisterUserServiceHandlerFromEndpoint(ctx, mux, "localhost:50051", opts); err != nil {
+        log.Fatalf("не удалось зарегистрировать gateway: %v", err)
+    }
+
+    // === 3. Запускаем HTTP сервер ===
+    httpServer := &amp;http.Server{
+        Addr:    ":8080",
+        Handler: mux,
+    }
+
+    log.Println("gRPC-Gateway (REST) на :8080")
+    if err := httpServer.ListenAndServe(); err != nil {
+        log.Fatalf("ошибка HTTP: %v", err)
+    }
+}
+
+// Кастомная обработка ошибок — маппинг gRPC кодов в HTTP
+func customErrorHandler(
+    ctx context.Context,
+    mux *runtime.ServeMux,
+    marshaler runtime.Marshaler,
+    w http.ResponseWriter,
+    r *http.Request,
+    err error,
+) {
+    // Используем стандартный обработчик (gRPC коды → HTTP коды автоматически)
+    runtime.DefaultHTTPErrorHandler(ctx, mux, marshaler, w, r, err)
+}
+</code></pre>
+<p><strong>Использование REST API</strong>:</p>
+<pre><code class="language-bash"># GET /api/v1/users/123 → GetUser(user_id: "123")
+curl http://localhost:8080/api/v1/users/123
+
+# POST /api/v1/users → CreateUser({...})
+curl -X POST http://localhost:8080/api/v1/users \
+  -H "Content-Type: application/json" \
+  -d '{"email": "user@example.com", "display_name": "John"}'
+
+# GET /api/v1/users?page_size=10 → ListUsers(page_size: 10)
+curl "http://localhost:8080/api/v1/users?page_size=10"
+</code></pre>
+<h3 id="swaggeropenapi-генерация"><a class="header" href="#swaggeropenapi-генерация">Swagger/OpenAPI генерация</a></h3>
+<p>При использовании <code>protoc-gen-openapiv2</code> (или через buf) автоматически генерируется OpenAPI spec:</p>
+<pre><code class="language-yaml"># buf.gen.yaml — добавляем плагин
+plugins:
+  - remote: buf.build/grpc-ecosystem/openapiv2
+    out: gen/openapiv2
+</code></pre>
+<pre><code class="language-go">// Раздача Swagger UI вместе с gateway
+import "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+
+func main() {
+    mux := runtime.NewServeMux()
+    // ... регистрация gateway
+
+    // Swagger JSON
+    httpMux := http.NewServeMux()
+    httpMux.Handle("/", mux) // gRPC-Gateway
+    httpMux.HandleFunc("/swagger/", func(w http.ResponseWriter, r *http.Request) {
+        http.ServeFile(w, r, "gen/openapiv2/user.swagger.json")
+    })
+
+    http.ListenAndServe(":8080", httpMux)
+}
+</code></pre>
+<hr>
+<h2 id="connectrpc-современная-альтернатива"><a class="header" href="#connectrpc-современная-альтернатива">ConnectRPC: современная альтернатива</a></h2>
+<h3 id="что-такое-connectrpc"><a class="header" href="#что-такое-connectrpc">Что такое ConnectRPC</a></h3>
+<p>ConnectRPC — это современная реализация RPC от команды Buf, которая решает основные проблемы classic gRPC:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Проблема classic gRPC</th><th>Решение ConnectRPC</th></tr>
+</thead>
+<tbody>
+<tr><td>Требует HTTP/2</td><td>Работает поверх HTTP/1.1 и HTTP/2</td></tr>
+<tr><td>Не работает из браузера</td><td>Нативная поддержка браузеров</td></tr>
+<tr><td>Сложный binary протокол</td><td>Три протокола: Connect, gRPC, gRPC-Web</td></tr>
+<tr><td>Нестандартные HTTP заголовки</td><td>Стандартные HTTP заголовки и коды</td></tr>
+<tr><td>Сложная отладка</td><td><code>curl</code>-friendly (JSON over HTTP)</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="connect-go-сервер-и-клиент"><a class="header" href="#connect-go-сервер-и-клиент">connect-go: сервер и клиент</a></h3>
+<pre><code class="language-go">// go get connectrpc.com/connect
+
+// === Сервер ===
+package main
+
+import (
+    "context"
+    "log"
+    "net/http"
+
+    "connectrpc.com/connect"
+    "golang.org/x/net/http2"
+    "golang.org/x/net/http2/h2c"
+
+    userv1 "github.com/myapp/gen/user/v1"
+    "github.com/myapp/gen/user/v1/userv1connect" // Сгенерированный connect-код
+)
+
+type userServer struct {
+    repo UserRepository
+}
+
+// Реализация — обычная функция, возвращающая connect.Response
+func (s *userServer) GetUser(
+    ctx context.Context,
+    req *connect.Request[userv1.GetUserRequest],
+) (*connect.Response[userv1.GetUserResponse], error) {
+    // req.Msg — protobuf сообщение
+    // req.Header() — HTTP заголовки (не gRPC metadata!)
+    log.Printf("Authorization: %s", req.Header().Get("Authorization"))
+
+    user, err := s.repo.GetByID(ctx, req.Msg.GetUserId())
+    if err != nil {
+        return nil, connect.NewError(connect.CodeNotFound, err)
+    }
+
+    resp := connect.NewResponse(&amp;userv1.GetUserResponse{
+        User: toProtoUser(user),
+    })
+    resp.Header().Set("X-Server-Version", "2.0")
+
+    return resp, nil
+}
+
+func main() {
+    srv := &amp;userServer{repo: repo}
+
+    // Регистрация — возвращает path и handler
+    path, handler := userv1connect.NewUserServiceHandler(srv)
+
+    mux := http.NewServeMux()
+    mux.Handle(path, handler)
+
+    // h2c — HTTP/2 без TLS (для development)
+    log.Println("ConnectRPC сервер на :8080")
+    http.ListenAndServe(":8080",
+        h2c.NewHandler(mux, &amp;http2.Server{}),
+    )
+}
+
+// === Клиент ===
+func connectClient() {
+    client := userv1connect.NewUserServiceClient(
+        http.DefaultClient,
+        "http://localhost:8080",
+    )
+
+    resp, err := client.GetUser(
+        context.Background(),
+        connect.NewRequest(&amp;userv1.GetUserRequest{UserId: "123"}),
+    )
+    if err != nil {
+        // connect.CodeOf(err) возвращает код ошибки
+        log.Fatalf("ошибка: %v (код: %s)", err, connect.CodeOf(err))
+    }
+
+    fmt.Printf("Пользователь: %s\n", resp.Msg.GetUser().GetDisplayName())
+}
+</code></pre>
+<p><strong>Тестирование через curl</strong> (невозможно с classic gRPC):</p>
+<pre><code class="language-bash"># ConnectRPC поддерживает JSON через обычный HTTP POST
+curl -X POST http://localhost:8080/myapp.user.v1.UserService/GetUser \
+  -H "Content-Type: application/json" \
+  -d '{"userId": "123"}'
+</code></pre>
+<h3 id="когда-выбрать-connectrpc-vs-classic-grpc"><a class="header" href="#когда-выбрать-connectrpc-vs-classic-grpc">Когда выбрать ConnectRPC vs classic gRPC</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Критерий</th><th>classic gRPC</th><th>ConnectRPC</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Зрелость</strong></td><td>Зрелый, proven (Google, CNCF)</td><td>Новый, быстро растёт</td></tr>
+<tr><td><strong>Экосистема</strong></td><td>Огромная (middleware, tools, infra)</td><td>Растущая, но меньше</td></tr>
+<tr><td><strong>Браузеры</strong></td><td>Нужен gRPC-Web proxy</td><td>Нативная поддержка</td></tr>
+<tr><td><strong>curl/отладка</strong></td><td>Нет (бинарный протокол)</td><td>Да (JSON over HTTP)</td></tr>
+<tr><td><strong>Interop</strong></td><td>gRPC стандарт</td><td>Совместим с gRPC серверами</td></tr>
+<tr><td><strong>HTTP/1.1</strong></td><td>Нет</td><td>Да</td></tr>
+<tr><td><strong>Streaming</strong></td><td>Все 4 типа</td><td>Все 4 типа</td></tr>
+<tr><td><strong>Когда выбрать</strong></td><td>Инфраструктура уже на gRPC, нужна максимальная совместимость</td><td>Новый проект, нужна простота, browser clients</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Рекомендация</strong>: Для внутренних микросервисов classic gRPC по-прежнему стандарт. Для public API или проектов, где нужна простота отладки и работа из браузера — рассмотрите ConnectRPC. Оба используют одни и те же <code>.proto</code> файлы.</p>
+</blockquote>
+<hr>
+<h2 id="health-checking-и-reflection"><a class="header" href="#health-checking-и-reflection">Health Checking и Reflection</a></h2>
+<h3 id="grpc-health-checking-protocol"><a class="header" href="#grpc-health-checking-protocol">gRPC Health Checking Protocol</a></h3>
+<p>Стандартный протокол для проверки здоровья gRPC сервисов, критически важный для Kubernetes и load balancers:</p>
+<pre><code class="language-go">import (
+    "google.golang.org/grpc/health"
+    "google.golang.org/grpc/health/grpc_health_v1"
+)
+
+func main() {
+    srv := grpc.NewServer()
+
+    // Регистрируем бизнес-сервисы
+    pb.RegisterUserServiceServer(srv, NewUserServer(repo))
+
+    // Регистрируем health check сервис
+    healthServer := health.NewServer()
+    grpc_health_v1.RegisterHealthServer(srv, healthServer)
+
+    // Устанавливаем статус для конкретного сервиса
+    healthServer.SetServingStatus(
+        "myapp.user.v1.UserService",
+        grpc_health_v1.HealthCheckResponse_SERVING,
+    )
+
+    // Устанавливаем общий статус (пустая строка = весь сервер)
+    healthServer.SetServingStatus(
+        "",
+        grpc_health_v1.HealthCheckResponse_SERVING,
+    )
+
+    // При shutdown
+    go func() {
+        &lt;-quit
+        healthServer.Shutdown() // Все сервисы → NOT_SERVING
+        srv.GracefulStop()
+    }()
+
+    srv.Serve(lis)
+}
+</code></pre>
+<p><strong>Kubernetes integration</strong>:</p>
+<pre><code class="language-yaml"># Kubernetes pod spec
+containers:
+  - name: user-service
+    ports:
+      - containerPort: 50051
+    livenessProbe:
+      grpc:
+        port: 50051
+      initialDelaySeconds: 10
+      periodSeconds: 10
+    readinessProbe:
+      grpc:
+        port: 50051
+        service: "myapp.user.v1.UserService"
+      initialDelaySeconds: 5
+      periodSeconds: 5
+</code></pre>
+<p><strong>Проверка через grpcurl</strong>:</p>
+<pre><code class="language-bash"># Проверка здоровья
+grpcurl -plaintext localhost:50051 grpc.health.v1.Health/Check
+
+# Проверка конкретного сервиса
+grpcurl -plaintext -d '{"service": "myapp.user.v1.UserService"}' \
+  localhost:50051 grpc.health.v1.Health/Check
+</code></pre>
+<p><strong>Сравнение с C#</strong>:</p>
+<pre><code class="language-csharp">// C# — через Grpc.AspNetCore.HealthChecks
+services.AddGrpcHealthChecks()
+    .AddCheck("database", () =&gt; /* ... */);
+
+app.MapGrpcHealthChecksService();
+</code></pre>
+<pre><code class="language-go">// Go — явная регистрация и управление статусом
+healthServer := health.NewServer()
+grpc_health_v1.RegisterHealthServer(srv, healthServer)
+healthServer.SetServingStatus("service", grpc_health_v1.HealthCheckResponse_SERVING)
+</code></pre>
+<h3 id="server-reflection"><a class="header" href="#server-reflection">Server Reflection</a></h3>
+<p>Reflection позволяет клиентам динамически обнаруживать сервисы и методы без <code>.proto</code> файлов. Незаменимо для отладки:</p>
+<pre><code class="language-go">import "google.golang.org/grpc/reflection"
+
+func main() {
+    srv := grpc.NewServer()
+    pb.RegisterUserServiceServer(srv, NewUserServer(repo))
+
+    // Включаем reflection (только для development!)
+    reflection.Register(srv)
+
+    srv.Serve(lis)
+}
+</code></pre>
+<p><strong>Использование с grpcurl</strong>:</p>
+<pre><code class="language-bash"># Список сервисов
+grpcurl -plaintext localhost:50051 list
+# myapp.user.v1.UserService
+# grpc.health.v1.Health
+# grpc.reflection.v1alpha.ServerReflection
+
+# Список методов сервиса
+grpcurl -plaintext localhost:50051 list myapp.user.v1.UserService
+# myapp.user.v1.UserService.GetUser
+# myapp.user.v1.UserService.CreateUser
+# ...
+
+# Описание метода
+grpcurl -plaintext localhost:50051 describe myapp.user.v1.UserService.GetUser
+
+# Вызов метода
+grpcurl -plaintext \
+  -d '{"user_id": "123"}' \
+  localhost:50051 myapp.user.v1.UserService/GetUser
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: Не включайте reflection в production без аутентификации — это раскрывает API surface атакующим. Либо отключайте в prod, либо защищайте interceptor-ом аутентификации.</p>
+</blockquote>
+<hr>
+<h2 id="безопасность"><a class="header" href="#безопасность">Безопасность</a></h2>
+<h3 id="tls"><a class="header" href="#tls">TLS</a></h3>
+<pre><code class="language-go">// === Сервер с TLS ===
+import "google.golang.org/grpc/credentials"
+
+func main() {
+    // Загружаем серверный сертификат и ключ
+    creds, err := credentials.NewServerTLSFromFile("server.crt", "server.key")
+    if err != nil {
+        log.Fatalf("не удалось загрузить TLS: %v", err)
+    }
+
+    srv := grpc.NewServer(
+        grpc.Creds(creds),
+    )
+    pb.RegisterUserServiceServer(srv, NewUserServer(repo))
+
+    lis, _ := net.Listen("tcp", ":50051")
+    srv.Serve(lis)
+}
+
+// === Клиент с TLS ===
+func main() {
+    creds, err := credentials.NewClientTLSFromFile("ca.crt", "server.example.com")
+    if err != nil {
+        log.Fatalf("не удалось загрузить CA: %v", err)
+    }
+
+    conn, err := grpc.NewClient(
+        "server.example.com:50051",
+        grpc.WithTransportCredentials(creds),
+    )
+    // ...
+}
+</code></pre>
+<h3 id="mtls-mutual-tls"><a class="header" href="#mtls-mutual-tls">mTLS (Mutual TLS)</a></h3>
+<p>Mutual TLS — обе стороны аутентифицируют друг друга сертификатами. Стандарт для service-to-service коммуникации:</p>
+<pre><code class="language-go">import (
+    "crypto/tls"
+    "crypto/x509"
+)
+
+// === Сервер с mTLS ===
+func newMTLSServer() *grpc.Server {
+    // Загружаем серверный сертификат
+    cert, err := tls.LoadX509KeyPair("server.crt", "server.key")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // Загружаем CA для верификации клиентских сертификатов
+    caCert, err := os.ReadFile("ca.crt")
+    if err != nil {
+        log.Fatal(err)
+    }
+    caPool := x509.NewCertPool()
+    caPool.AppendCertsFromPEM(caCert)
+
+    tlsConfig := &amp;tls.Config{
+        Certificates: []tls.Certificate{cert},
+        ClientAuth:   tls.RequireAndVerifyClientCert,
+        ClientCAs:    caPool,
+        MinVersion:   tls.VersionTLS13,
+    }
+
+    return grpc.NewServer(
+        grpc.Creds(credentials.NewTLS(tlsConfig)),
+    )
+}
+
+// === Клиент с mTLS ===
+func newMTLSClient() (*grpc.ClientConn, error) {
+    // Клиентский сертификат
+    cert, err := tls.LoadX509KeyPair("client.crt", "client.key")
+    if err != nil {
+        return nil, err
+    }
+
+    // CA сервера
+    caCert, err := os.ReadFile("ca.crt")
+    if err != nil {
+        return nil, err
+    }
+    caPool := x509.NewCertPool()
+    caPool.AppendCertsFromPEM(caCert)
+
+    tlsConfig := &amp;tls.Config{
+        Certificates: []tls.Certificate{cert},
+        RootCAs:      caPool,
+        MinVersion:   tls.VersionTLS13,
+    }
+
+    return grpc.NewClient(
+        "server.example.com:50051",
+        grpc.WithTransportCredentials(credentials.NewTLS(tlsConfig)),
+    )
+}
+</code></pre>
+<h3 id="jwt-аутентификация-через-metadata"><a class="header" href="#jwt-аутентификация-через-metadata">JWT аутентификация через metadata</a></h3>
+<p>Самый распространённый подход для аутентификации пользователей (не сервисов):</p>
+<pre><code class="language-go">// Per-RPC credentials — автоматически добавляют токен к каждому вызову
+type tokenAuth struct {
+    token string
+}
+
+func (t *tokenAuth) GetRequestMetadata(ctx context.Context, uri ...string) (map[string]string, error) {
+    return map[string]string{
+        "authorization": "Bearer " + t.token,
+    }, nil
+}
+
+func (t *tokenAuth) RequireTransportSecurity() bool {
+    return true // Требовать TLS
+}
+
+// Использование
+conn, err := grpc.NewClient(
+    "server.example.com:50051",
+    grpc.WithTransportCredentials(creds),
+    grpc.WithPerRPCCredentials(&amp;tokenAuth{token: "eyJhbG..."}),
+)
+</code></pre>
+<p><strong>Сравнение аутентификации: C# vs Go</strong>:</p>
+<pre><code class="language-csharp">// C# — через CallCredentials
+var credentials = CallCredentials.FromInterceptor(async (context, metadata) =&gt;
+{
+    var token = await GetTokenAsync();
+    metadata.Add("Authorization", $"Bearer {token}");
+});
+
+var channel = GrpcChannel.ForAddress("https://server:5001", new GrpcChannelOptions
+{
+    Credentials = ChannelCredentials.Create(
+        new SslCredentials(), credentials)
+});
+</code></pre>
+<pre><code class="language-go">// Go — через PerRPCCredentials или interceptor
+conn, err := grpc.NewClient("server:50051",
+    grpc.WithTransportCredentials(creds),
+    grpc.WithPerRPCCredentials(&amp;tokenAuth{token: token}),
+)
+</code></pre>
+<hr>
+<h2 id="тестирование-grpc"><a class="header" href="#тестирование-grpc">Тестирование gRPC</a></h2>
+<h3 id="bufconn-in-memory-тестирование"><a class="header" href="#bufconn-in-memory-тестирование">bufconn: in-memory тестирование</a></h3>
+<p><code>bufconn</code> создаёт in-memory listener, позволяя тестировать gRPC сервер без реального сетевого соединения. Это аналог <code>WebApplicationFactory</code> в ASP.NET Core:</p>
+<pre><code class="language-go">import (
+    "net"
+    "testing"
+
+    "google.golang.org/grpc"
+    "google.golang.org/grpc/credentials/insecure"
+    "google.golang.org/grpc/test/bufconn"
+
+    pb "github.com/myapp/gen/user/v1"
+)
+
+const bufSize = 1024 * 1024
+
+// setupTest создаёт in-memory gRPC сервер и клиент
+func setupTest(t *testing.T) pb.UserServiceClient {
+    t.Helper()
+
+    // In-memory listener
+    lis := bufconn.Listen(bufSize)
+
+    // Создаём сервер
+    srv := grpc.NewServer()
+    repo := NewInMemoryUserRepository() // Тестовый репозиторий
+    pb.RegisterUserServiceServer(srv, NewUserServer(repo))
+
+    go func() {
+        if err := srv.Serve(lis); err != nil {
+            t.Errorf("ошибка сервера: %v", err)
+        }
+    }()
+
+    // Создаём клиент через bufconn
+    conn, err := grpc.NewClient(
+        "passthrough://bufnet",
+        grpc.WithContextDialer(func(ctx context.Context, s string) (net.Conn, error) {
+            return lis.DialContext(ctx)
+        }),
+        grpc.WithTransportCredentials(insecure.NewCredentials()),
+    )
+    if err != nil {
+        t.Fatalf("не удалось подключиться: %v", err)
+    }
+
+    t.Cleanup(func() {
+        conn.Close()
+        srv.Stop()
+        lis.Close()
+    })
+
+    return pb.NewUserServiceClient(conn)
+}
+
+func TestGetUser(t *testing.T) {
+    client := setupTest(t)
+
+    // Создаём пользователя
+    createResp, err := client.CreateUser(context.Background(), &amp;pb.CreateUserRequest{
+        Email:       "test@example.com",
+        DisplayName: "Test User",
+        Role:        pb.UserRole_USER_ROLE_MEMBER,
+    })
+    if err != nil {
+        t.Fatalf("CreateUser: %v", err)
+    }
+
+    // Получаем пользователя
+    getResp, err := client.GetUser(context.Background(), &amp;pb.GetUserRequest{
+        UserId: createResp.GetUser().GetId(),
+    })
+    if err != nil {
+        t.Fatalf("GetUser: %v", err)
+    }
+
+    if getResp.GetUser().GetEmail() != "test@example.com" {
+        t.Errorf("email = %s, want test@example.com", getResp.GetUser().GetEmail())
+    }
+}
+
+func TestGetUser_NotFound(t *testing.T) {
+    client := setupTest(t)
+
+    _, err := client.GetUser(context.Background(), &amp;pb.GetUserRequest{
+        UserId: "nonexistent",
+    })
+
+    // Проверяем gRPC код ошибки
+    st, ok := status.FromError(err)
+    if !ok {
+        t.Fatalf("ожидалась gRPC ошибка, получено: %v", err)
+    }
+    if st.Code() != codes.NotFound {
+        t.Errorf("code = %s, want NotFound", st.Code())
+    }
+}
+
+func TestCreateUser_Validation(t *testing.T) {
+    client := setupTest(t)
+
+    _, err := client.CreateUser(context.Background(), &amp;pb.CreateUserRequest{
+        Email: "", // Пустой email
+    })
+
+    st, _ := status.FromError(err)
+    if st.Code() != codes.InvalidArgument {
+        t.Errorf("code = %s, want InvalidArgument", st.Code())
+    }
+}
+</code></pre>
+<p><strong>Сравнение тестирования: C# vs Go</strong>:</p>
+<pre><code class="language-csharp">// C# — WebApplicationFactory
+public class UserServiceTests : IClassFixture&lt;WebApplicationFactory&lt;Program&gt;&gt;
+{
+    private readonly UserService.UserServiceClient _client;
+
+    public UserServiceTests(WebApplicationFactory&lt;Program&gt; factory)
+    {
+        var channel = GrpcChannel.ForAddress(
+            factory.CreateClient().BaseAddress!,
+            new GrpcChannelOptions { HttpHandler = factory.Server.CreateHandler() });
+        _client = new UserService.UserServiceClient(channel);
+    }
+
+    [Fact]
+    public async Task GetUser_ReturnsUser()
+    {
+        var response = await _client.GetUserAsync(new GetUserRequest { UserId = "123" });
+        Assert.Equal("test@example.com", response.User.Email);
+    }
+}
+</code></pre>
+<pre><code class="language-go">// Go — bufconn (in-memory listener)
+func TestGetUser(t *testing.T) {
+    client := setupTest(t) // Вся настройка в helper
+    resp, err := client.GetUser(ctx, &amp;pb.GetUserRequest{UserId: "123"})
+    // ...
+}
+</code></pre>
+<h3 id="тестирование-стримов"><a class="header" href="#тестирование-стримов">Тестирование стримов</a></h3>
+<pre><code class="language-go">func TestWatchUsers(t *testing.T) {
+    client := setupTest(t)
+
+    // Создаём несколько пользователей для генерации событий
+    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+    defer cancel()
+
+    stream, err := client.WatchUsers(ctx, &amp;pb.WatchUsersRequest{})
+    if err != nil {
+        t.Fatalf("WatchUsers: %v", err)
+    }
+
+    // В отдельной горутине создаём пользователя (генерирует событие)
+    go func() {
+        time.Sleep(100 * time.Millisecond)
+        _, _ = client.CreateUser(context.Background(), &amp;pb.CreateUserRequest{
+            Email:       "stream-test@example.com",
+            DisplayName: "Stream Test",
+        })
+    }()
+
+    // Читаем событие
+    event, err := stream.Recv()
+    if err != nil {
+        t.Fatalf("Recv: %v", err)
+    }
+
+    if event.GetType() != pb.UserEvent_EVENT_TYPE_CREATED {
+        t.Errorf("type = %s, want CREATED", event.GetType())
+    }
+}
+
+func TestImportUsers(t *testing.T) {
+    client := setupTest(t)
+
+    stream, err := client.ImportUsers(context.Background())
+    if err != nil {
+        t.Fatalf("ImportUsers: %v", err)
+    }
+
+    // Отправляем 3 пользователей
+    users := []struct{ email, name string }{
+        {"a@test.com", "User A"},
+        {"b@test.com", "User B"},
+        {"c@test.com", "User C"},
+    }
+
+    for _, u := range users {
+        if err := stream.Send(&amp;pb.ImportUserRequest{
+            Email:       u.email,
+            DisplayName: u.name,
+            Role:        pb.UserRole_USER_ROLE_MEMBER,
+        }); err != nil {
+            t.Fatalf("Send: %v", err)
+        }
+    }
+
+    resp, err := stream.CloseAndRecv()
+    if err != nil {
+        t.Fatalf("CloseAndRecv: %v", err)
+    }
+
+    if resp.GetImportedCount() != 3 {
+        t.Errorf("imported = %d, want 3", resp.GetImportedCount())
+    }
+}
+</code></pre>
+<h3 id="grpcurl-для-ручного-тестирования"><a class="header" href="#grpcurl-для-ручного-тестирования">grpcurl для ручного тестирования</a></h3>
+<pre><code class="language-bash"># Установка
+go install github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
+
+# Список сервисов (нужен reflection)
+grpcurl -plaintext localhost:50051 list
+
+# Вызов метода с JSON
+grpcurl -plaintext \
+  -d '{"user_id": "123"}' \
+  localhost:50051 myapp.user.v1.UserService/GetUser
+
+# Вызов с metadata (заголовками)
+grpcurl -plaintext \
+  -H "Authorization: Bearer eyJhbG..." \
+  -d '{"email": "new@test.com", "display_name": "New User"}' \
+  localhost:50051 myapp.user.v1.UserService/CreateUser
+
+# Server streaming — выводит все сообщения
+grpcurl -plaintext \
+  -d '{}' \
+  localhost:50051 myapp.user.v1.UserService/WatchUsers
+
+# Без reflection — указываем proto файл
+grpcurl -plaintext \
+  -import-path ./proto \
+  -proto myapp/user/v1/user.proto \
+  -d '{"user_id": "123"}' \
+  localhost:50051 myapp.user.v1.UserService/GetUser
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: <code>grpcurl</code> — это аналог <strong>Postman</strong> или <strong>curl</strong> для gRPC. В .NET мире также доступны <strong>Postman</strong> (поддерживает gRPC), <strong>BloomRPC</strong> и <strong>grpcui</strong> (веб-интерфейс). <code>grpcui</code> запускается как <code>grpcui -plaintext localhost:50051</code> и открывает браузер с интерактивным UI.</p>
+</blockquote>
+<hr>
+<h2 id="production-concerns"><a class="header" href="#production-concerns">Production Concerns</a></h2>
+<h3 id="мониторинг-с-prometheus"><a class="header" href="#мониторинг-с-prometheus">Мониторинг с Prometheus</a></h3>
+<pre><code class="language-go">import (
+    grpcprom "github.com/grpc-ecosystem/go-grpc-middleware/providers/prometheus"
+    "github.com/prometheus/client_golang/prometheus"
+    "github.com/prometheus/client_golang/prometheus/promhttp"
+)
+
+func main() {
+    // Создаём метрики
+    srvMetrics := grpcprom.NewServerMetrics(
+        grpcprom.WithServerHandlingTimeHistogram(
+            grpcprom.WithHistogramBuckets([]float64{0.001, 0.01, 0.1, 0.3, 0.6, 1, 3, 6, 9, 20}),
+        ),
+    )
+
+    // Регистрируем в Prometheus
+    reg := prometheus.NewRegistry()
+    reg.MustRegister(srvMetrics)
+
+    // gRPC сервер с метриками
+    srv := grpc.NewServer(
+        grpc.ChainUnaryInterceptor(
+            srvMetrics.UnaryServerInterceptor(),
+        ),
+        grpc.ChainStreamInterceptor(
+            srvMetrics.StreamServerInterceptor(),
+        ),
+    )
+
+    pb.RegisterUserServiceServer(srv, NewUserServer(repo))
+    srvMetrics.InitializeMetrics(srv) // Инициализация нулевых метрик
+
+    // HTTP сервер для /metrics
+    httpMux := http.NewServeMux()
+    httpMux.Handle("/metrics", promhttp.HandlerFor(reg, promhttp.HandlerOpts{}))
+
+    go http.ListenAndServe(":9090", httpMux)
+
+    lis, _ := net.Listen("tcp", ":50051")
+    srv.Serve(lis)
+}
+</code></pre>
+<p><strong>Ключевые метрики</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Метрика</th><th>Тип</th><th>Описание</th></tr>
+</thead>
+<tbody>
+<tr><td><code>grpc_server_started_total</code></td><td>Counter</td><td>Количество начатых RPC</td></tr>
+<tr><td><code>grpc_server_handled_total</code></td><td>Counter</td><td>Количество завершённых RPC (с кодом)</td></tr>
+<tr><td><code>grpc_server_handling_seconds</code></td><td>Histogram</td><td>Длительность обработки RPC</td></tr>
+<tr><td><code>grpc_server_msg_received_total</code></td><td>Counter</td><td>Количество полученных сообщений (streaming)</td></tr>
+<tr><td><code>grpc_server_msg_sent_total</code></td><td>Counter</td><td>Количество отправленных сообщений (streaming)</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Полезные PromQL запросы</strong>:</p>
+<pre><code class="language-promql"># Error rate по сервисам
+sum(rate(grpc_server_handled_total{grpc_code!="OK"}[5m])) by (grpc_service, grpc_method)
+/
+sum(rate(grpc_server_handled_total[5m])) by (grpc_service, grpc_method)
+
+# p99 latency
+histogram_quantile(0.99, rate(grpc_server_handling_seconds_bucket[5m]))
+
+# RPS по методам
+sum(rate(grpc_server_started_total[1m])) by (grpc_method)
+</code></pre>
+<h3 id="opentelemetry-instrumentation"><a class="header" href="#opentelemetry-instrumentation">OpenTelemetry Instrumentation</a></h3>
+<pre><code class="language-go">import (
+    "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+    "go.opentelemetry.io/otel"
+)
+
+func main() {
+    // Инициализация OTel (trace provider, exporter) — см. раздел 4.5
+
+    // gRPC сервер с OTel
+    srv := grpc.NewServer(
+        grpc.StatsHandler(otelgrpc.NewServerHandler()),
+    )
+
+    // gRPC клиент с OTel
+    conn, err := grpc.NewClient(
+        "localhost:50051",
+        grpc.WithStatsHandler(otelgrpc.NewClientHandler()),
+        grpc.WithTransportCredentials(insecure.NewCredentials()),
+    )
+}
+</code></pre>
+<blockquote>
+<p>💡 <code>otelgrpc</code> использует <code>StatsHandler</code> вместо interceptors — это более точный механизм для сбора метрик и трейсов, работающий на уровне транспорта gRPC. Подробнее об OpenTelemetry — в <a href="./05_observability.html">разделе 4.5</a>.</p>
+</blockquote>
+<h3 id="load-balancing"><a class="header" href="#load-balancing">Load Balancing</a></h3>
+<pre><code class="language-go">// Client-side load balancing — round robin
+conn, err := grpc.NewClient(
+    // dns:/// resolver — обнаруживает все IP адреса
+    "dns:///user-service.default.svc.cluster.local:50051",
+    grpc.WithDefaultServiceConfig(`{
+        "loadBalancingConfig": [{"round_robin": {}}]
+    }`),
+    grpc.WithTransportCredentials(creds),
+)
+
+// Или pick_first (по умолчанию) — одно соединение
+conn, err := grpc.NewClient(
+    "dns:///user-service:50051",
+    grpc.WithDefaultServiceConfig(`{
+        "loadBalancingConfig": [{"pick_first": {"shuffleAddressList": true}}]
+    }`),
+    grpc.WithTransportCredentials(creds),
+)
+</code></pre>
+<p><strong>Виды балансировки</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Тип</th><th>Описание</th><th>Когда использовать</th></tr>
+</thead>
+<tbody>
+<tr><td><code>pick_first</code></td><td>Одно соединение к первому доступному адресу</td><td>По умолчанию, простые случаи</td></tr>
+<tr><td><code>round_robin</code></td><td>Распределение по всем адресам</td><td>Kubernetes, множество реплик</td></tr>
+<tr><td>Proxy (Envoy, Nginx)</td><td>Внешний балансировщик</td><td>Service mesh, сложная маршрутизация</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В .NET <code>HttpClient</code> управляет DNS resolution и может использовать <code>SocketsHttpHandler</code> для connection pooling. В Go gRPC имеет собственную систему resolvers и balancers, независимую от <code>net/http</code>.</p>
+</blockquote>
+<h3 id="retry-policy-и-keepalive"><a class="header" href="#retry-policy-и-keepalive">Retry Policy и Keepalive</a></h3>
+<pre><code class="language-go">// Retry policy через service config
+serviceConfig := `{
+    "methodConfig": [{
+        "name": [{"service": "myapp.user.v1.UserService"}],
+        "timeout": "5s",
+        "retryPolicy": {
+            "maxAttempts": 3,
+            "initialBackoff": "0.1s",
+            "maxBackoff": "1s",
+            "backoffMultiplier": 2,
+            "retryableStatusCodes": ["UNAVAILABLE", "RESOURCE_EXHAUSTED"]
+        }
+    }]
+}`
+
+conn, err := grpc.NewClient(
+    "dns:///user-service:50051",
+    grpc.WithDefaultServiceConfig(serviceConfig),
+    grpc.WithTransportCredentials(creds),
+)
+
+// Keepalive — поддержание соединения
+import "google.golang.org/grpc/keepalive"
+
+// Серверная сторона
+srv := grpc.NewServer(
+    grpc.KeepaliveParams(keepalive.ServerParameters{
+        MaxConnectionIdle:     15 * time.Minute, // Закрыть idle соединение
+        MaxConnectionAge:      30 * time.Minute, // Максимальный возраст соединения
+        MaxConnectionAgeGrace: 5 * time.Second,  // Время на завершение RPC после MaxConnectionAge
+        Time:                  5 * time.Minute,  // Пинг каждые 5 минут
+        Timeout:               1 * time.Second,  // Таймаут пинга
+    }),
+    grpc.KeepaliveEnforcementPolicy(keepalive.EnforcementPolicy{
+        MinTime:             5 * time.Second, // Минимальный интервал пинга от клиента
+        PermitWithoutStream: true,
+    }),
+)
+
+// Клиентская сторона
+conn, err := grpc.NewClient(
+    "localhost:50051",
+    grpc.WithKeepaliveParams(keepalive.ClientParameters{
+        Time:                10 * time.Second,
+        Timeout:             3 * time.Second,
+        PermitWithoutStream: true,
+    }),
+    grpc.WithTransportCredentials(creds),
+)
+</code></pre>
+<hr>
+<h2 id="практические-примеры"><a class="header" href="#практические-примеры">Практические примеры</a></h2>
+<h3 id="пример-1-crud-user-service"><a class="header" href="#пример-1-crud-user-service">Пример 1: CRUD User Service</a></h3>
+<p>Полный пример gRPC сервиса с interceptors, error handling и тестами.</p>
+<details>
+<summary>Структура проекта</summary>
+<pre><code>user-service/
+├── proto/
+│   └── user/v1/
+│       └── user.proto
+├── buf.yaml
+├── buf.gen.yaml
+├── gen/                    # Сгенерированный код
+│   └── user/v1/
+│       ├── user.pb.go
+│       └── user_grpc.pb.go
+├── internal/
+│   ├── server/
+│   │   └── user.go         # Реализация gRPC сервиса
+│   └── repository/
+│       ├── memory.go        # In-memory репозиторий
+│       └── repository.go    # Интерфейс
+├── cmd/
+│   └── server/
+│       └── main.go          # Точка входа
+└── server_test.go           # Тесты
+</code></pre>
+</details>
+<p><strong>Интерфейс репозитория</strong>:</p>
+<pre><code class="language-go">// internal/repository/repository.go
+package repository
+
+import (
+    "context"
+    "time"
+)
+
+type User struct {
+    ID          string
+    Email       string
+    DisplayName string
+    Role        string
+    CreatedAt   time.Time
+    UpdatedAt   time.Time
+}
+
+type UserRepository interface {
+    GetByID(ctx context.Context, id string) (*User, error)
+    Create(ctx context.Context, user *User) (*User, error)
+    Update(ctx context.Context, user *User) (*User, error)
+    Delete(ctx context.Context, id string) error
+    List(ctx context.Context, pageSize int, pageToken string) ([]*User, string, error)
+}
+</code></pre>
+<p><strong>Реализация сервера</strong> (ключевые части):</p>
+<pre><code class="language-go">// internal/server/user.go
+package server
+
+import (
+    "context"
+    "errors"
+
+    "google.golang.org/grpc/codes"
+    "google.golang.org/grpc/status"
+    "google.golang.org/protobuf/types/known/emptypb"
+    "google.golang.org/protobuf/types/known/timestamppb"
+
+    pb "github.com/myapp/gen/user/v1"
+    "github.com/myapp/internal/repository"
+)
+
+type UserServer struct {
+    pb.UnimplementedUserServiceServer
+    repo repository.UserRepository
+}
+
+func NewUserServer(repo repository.UserRepository) *UserServer {
+    return &amp;UserServer{repo: repo}
+}
+
+func (s *UserServer) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.GetUserResponse, error) {
+    if req.GetUserId() == "" {
+        return nil, status.Error(codes.InvalidArgument, "user_id обязателен")
+    }
+
+    user, err := s.repo.GetByID(ctx, req.GetUserId())
+    if err != nil {
+        if errors.Is(err, repository.ErrNotFound) {
+            return nil, status.Errorf(codes.NotFound, "пользователь %s не найден", req.GetUserId())
+        }
+        return nil, status.Errorf(codes.Internal, "ошибка получения пользователя: %v", err)
+    }
+
+    return &amp;pb.GetUserResponse{User: toProto(user)}, nil
+}
+
+func (s *UserServer) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
+    if req.GetEmail() == "" {
+        return nil, status.Error(codes.InvalidArgument, "email обязателен")
+    }
+
+    user, err := s.repo.Create(ctx, &amp;repository.User{
+        Email:       req.GetEmail(),
+        DisplayName: req.GetDisplayName(),
+        Role:        req.GetRole().String(),
+    })
+    if err != nil {
+        if errors.Is(err, repository.ErrDuplicate) {
+            return nil, status.Errorf(codes.AlreadyExists, "email %s уже используется", req.GetEmail())
+        }
+        return nil, status.Errorf(codes.Internal, "ошибка создания: %v", err)
+    }
+
+    return &amp;pb.CreateUserResponse{User: toProto(user)}, nil
+}
+
+func (s *UserServer) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) (*emptypb.Empty, error) {
+    if req.GetUserId() == "" {
+        return nil, status.Error(codes.InvalidArgument, "user_id обязателен")
+    }
+
+    if err := s.repo.Delete(ctx, req.GetUserId()); err != nil {
+        if errors.Is(err, repository.ErrNotFound) {
+            return nil, status.Errorf(codes.NotFound, "пользователь %s не найден", req.GetUserId())
+        }
+        return nil, status.Errorf(codes.Internal, "ошибка удаления: %v", err)
+    }
+
+    return &amp;emptypb.Empty{}, nil
+}
+
+func (s *UserServer) ListUsers(ctx context.Context, req *pb.ListUsersRequest) (*pb.ListUsersResponse, error) {
+    pageSize := int(req.GetPageSize())
+    if pageSize &lt;= 0 || pageSize &gt; 100 {
+        pageSize = 20
+    }
+
+    users, nextToken, err := s.repo.List(ctx, pageSize, req.GetPageToken())
+    if err != nil {
+        return nil, status.Errorf(codes.Internal, "ошибка списка: %v", err)
+    }
+
+    pbUsers := make([]*pb.User, 0, len(users))
+    for _, u := range users {
+        pbUsers = append(pbUsers, toProto(u))
+    }
+
+    return &amp;pb.ListUsersResponse{
+        Users:         pbUsers,
+        NextPageToken: nextToken,
+    }, nil
+}
+
+// Конвертация domain → proto
+func toProto(u *repository.User) *pb.User {
+    return &amp;pb.User{
+        Id:          u.ID,
+        Email:       u.Email,
+        DisplayName: u.DisplayName,
+        CreatedAt:   timestamppb.New(u.CreatedAt),
+        UpdatedAt:   timestamppb.New(u.UpdatedAt),
+    }
+}
+</code></pre>
+<p><strong>Точка входа с interceptors</strong>:</p>
+<pre><code class="language-go">// cmd/server/main.go
+package main
+
+import (
+    "log/slog"
+    "net"
+    "os"
+    "os/signal"
+    "syscall"
+
+    "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
+    "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
+    "google.golang.org/grpc"
+    "google.golang.org/grpc/health"
+    "google.golang.org/grpc/health/grpc_health_v1"
+    "google.golang.org/grpc/reflection"
+
+    pb "github.com/myapp/gen/user/v1"
+    "github.com/myapp/internal/repository"
+    "github.com/myapp/internal/server"
+)
+
+func main() {
+    logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+
+    repo := repository.NewInMemory()
+    userServer := server.NewUserServer(repo)
+
+    srv := grpc.NewServer(
+        grpc.ChainUnaryInterceptor(
+            recovery.UnaryServerInterceptor(),
+            logging.UnaryServerInterceptor(interceptorLogger(logger)),
+        ),
+        grpc.ChainStreamInterceptor(
+            recovery.StreamServerInterceptor(),
+            logging.StreamServerInterceptor(interceptorLogger(logger)),
+        ),
+    )
+
+    pb.RegisterUserServiceServer(srv, userServer)
+
+    // Health checking
+    healthSrv := health.NewServer()
+    grpc_health_v1.RegisterHealthServer(srv, healthSrv)
+    healthSrv.SetServingStatus("", grpc_health_v1.HealthCheckResponse_SERVING)
+
+    // Reflection (development only)
+    reflection.Register(srv)
+
+    lis, err := net.Listen("tcp", ":50051")
+    if err != nil {
+        logger.Error("не удалось слушать порт", "error", err)
+        os.Exit(1)
+    }
+
+    go func() {
+        logger.Info("gRPC сервер запущен", "addr", lis.Addr())
+        if err := srv.Serve(lis); err != nil {
+            logger.Error("ошибка сервера", "error", err)
+        }
+    }()
+
+    quit := make(chan os.Signal, 1)
+    signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+    &lt;-quit
+
+    logger.Info("завершение работы...")
+    healthSrv.Shutdown()
+    srv.GracefulStop()
+    logger.Info("сервер остановлен")
+}
+</code></pre>
+<h3 id="пример-2-real-time-стриминг-цен"><a class="header" href="#пример-2-real-time-стриминг-цен">Пример 2: Real-Time стриминг цен</a></h3>
+<p>Server streaming для отправки обновлений цен в реальном времени. Типичный сценарий для финансовых приложений и маркетплейсов.</p>
+<p><strong>Proto</strong>:</p>
+<pre><code class="language-protobuf">service PriceService {
+    // Server streaming — поток обновлений цен
+    rpc WatchPrices(WatchPricesRequest) returns (stream PriceUpdate);
+}
+
+message WatchPricesRequest {
+    repeated string symbols = 1;  // Список символов (например, ["BTC", "ETH"])
+}
+
+message PriceUpdate {
+    string symbol = 1;
+    double price = 2;
+    double change_percent = 3;
+    google.protobuf.Timestamp timestamp = 4;
+}
+</code></pre>
+<p><strong>Сервер</strong>:</p>
+<pre><code class="language-go">type priceServer struct {
+    pb.UnimplementedPriceServiceServer
+    priceFeed *PriceFeed // Источник данных
+}
+
+func (s *priceServer) WatchPrices(
+    req *pb.WatchPricesRequest,
+    stream grpc.ServerStreamingServer[pb.PriceUpdate],
+) error {
+    symbols := req.GetSymbols()
+    if len(symbols) == 0 {
+        return status.Error(codes.InvalidArgument, "укажите хотя бы один символ")
+    }
+
+    // Подписываемся на обновления цен
+    updates := s.priceFeed.Subscribe(stream.Context(), symbols)
+
+    for {
+        select {
+        case &lt;-stream.Context().Done():
+            return stream.Context().Err()
+
+        case update, ok := &lt;-updates:
+            if !ok {
+                return nil // Канал закрыт
+            }
+
+            if err := stream.Send(&amp;pb.PriceUpdate{
+                Symbol:        update.Symbol,
+                Price:         update.Price,
+                ChangePercent: update.ChangePercent,
+                Timestamp:     timestamppb.Now(),
+            }); err != nil {
+                return err
+            }
+        }
+    }
+}
+</code></pre>
+<p><strong>Клиент с reconnection</strong>:</p>
+<pre><code class="language-go">func watchPricesWithReconnect(ctx context.Context, client pb.PriceServiceClient, symbols []string) {
+    backoff := 100 * time.Millisecond
+    maxBackoff := 30 * time.Second
+
+    for {
+        err := watchPrices(ctx, client, symbols)
+        if err == nil || ctx.Err() != nil {
+            return // Завершение по контексту
+        }
+
+        slog.Warn("стрим прервался, переподключение...",
+            "error", err,
+            "backoff", backoff,
+        )
+
+        select {
+        case &lt;-ctx.Done():
+            return
+        case &lt;-time.After(backoff):
+        }
+
+        // Exponential backoff с cap
+        backoff = min(backoff*2, maxBackoff)
+    }
+}
+
+func watchPrices(ctx context.Context, client pb.PriceServiceClient, symbols []string) error {
+    stream, err := client.WatchPrices(ctx, &amp;pb.WatchPricesRequest{
+        Symbols: symbols,
+    })
+    if err != nil {
+        return fmt.Errorf("не удалось начать watch: %w", err)
+    }
+
+    for {
+        update, err := stream.Recv()
+        if err == io.EOF {
+            return nil
+        }
+        if err != nil {
+            return fmt.Errorf("ошибка чтения: %w", err)
+        }
+
+        fmt.Printf("%s: $%.2f (%+.2f%%)\n",
+            update.GetSymbol(),
+            update.GetPrice(),
+            update.GetChangePercent(),
+        )
+    }
+}
+</code></pre>
+<h3 id="пример-3-grpc-gateway--rest"><a class="header" href="#пример-3-grpc-gateway--rest">Пример 3: gRPC-Gateway + REST</a></h3>
+<p>Полный пример совмещения gRPC и REST API через gRPC-Gateway.</p>
+<p><strong>Proto с HTTP annotations</strong>:</p>
+<pre><code class="language-protobuf">syntax = "proto3";
+
+package myapp.product.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/myapp/gen/product/v1;productv1";
+
+// Swagger metadata
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+    info: {
+        title: "Product API"
+        version: "1.0"
+        description: "API для управления продуктами"
+    }
+    schemes: HTTPS
+};
+
+service ProductService {
+    rpc GetProduct(GetProductRequest) returns (GetProductResponse) {
+        option (google.api.http) = {
+            get: "/api/v1/products/{product_id}"
+        };
+    }
+
+    rpc ListProducts(ListProductsRequest) returns (ListProductsResponse) {
+        option (google.api.http) = {
+            get: "/api/v1/products"
+        };
+    }
+
+    rpc CreateProduct(CreateProductRequest) returns (CreateProductResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/products"
+            body: "*"
+        };
+    }
+}
+
+message Product {
+    string id = 1;
+    string name = 2;
+    string description = 3;
+    int64 price_cents = 4;      // Цена в центах (не float!)
+    string currency = 5;
+    int32 stock = 6;
+    google.protobuf.Timestamp created_at = 7;
+}
+
+message GetProductRequest { string product_id = 1; }
+message GetProductResponse { Product product = 1; }
+
+message ListProductsRequest {
+    int32 page_size = 1;
+    string page_token = 2;
+    string category = 3;       // Фильтр по категории (query param)
+}
+message ListProductsResponse {
+    repeated Product products = 1;
+    string next_page_token = 2;
+}
+
+message CreateProductRequest {
+    string name = 1;
+    string description = 2;
+    int64 price_cents = 3;
+    string currency = 4;
+    int32 stock = 5;
+}
+message CreateProductResponse { Product product = 1; }
+</code></pre>
+<p><strong>Сервер с gRPC + REST gateway</strong>:</p>
+<pre><code class="language-go">package main
+
+import (
+    "context"
+    "log/slog"
+    "net"
+    "net/http"
+    "os"
+    "os/signal"
+    "syscall"
+
+    "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+    "google.golang.org/grpc"
+    "google.golang.org/grpc/credentials/insecure"
+    "google.golang.org/grpc/reflection"
+    "google.golang.org/protobuf/encoding/protojson"
+
+    pb "github.com/myapp/gen/product/v1"
+)
+
+func main() {
+    logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+    ctx, cancel := context.WithCancel(context.Background())
+    defer cancel()
+
+    // === gRPC сервер ===
+    grpcLis, err := net.Listen("tcp", ":50051")
+    if err != nil {
+        logger.Error("не удалось слушать gRPC порт", "error", err)
+        os.Exit(1)
+    }
+
+    grpcServer := grpc.NewServer()
+    pb.RegisterProductServiceServer(grpcServer, NewProductServer(repo))
+    reflection.Register(grpcServer)
+
+    go func() {
+        logger.Info("gRPC сервер запущен", "addr", ":50051")
+        if err := grpcServer.Serve(grpcLis); err != nil {
+            logger.Error("ошибка gRPC сервера", "error", err)
+        }
+    }()
+
+    // === gRPC-Gateway (REST) ===
+    gwMux := runtime.NewServeMux(
+        runtime.WithMarshalerOption(runtime.MIMEWildcard, &amp;runtime.JSONPb{
+            MarshalOptions: protojson.MarshalOptions{
+                UseProtoNames:   true,
+                EmitUnpopulated: false,
+            },
+            UnmarshalOptions: protojson.UnmarshalOptions{
+                DiscardUnknown: true,
+            },
+        }),
+    )
+
+    opts := []grpc.DialOption{
+        grpc.WithTransportCredentials(insecure.NewCredentials()),
+    }
+    if err := pb.RegisterProductServiceHandlerFromEndpoint(ctx, gwMux, ":50051", opts); err != nil {
+        logger.Error("не удалось зарегистрировать gateway", "error", err)
+        os.Exit(1)
+    }
+
+    // HTTP mux для gateway + swagger + health
+    httpMux := http.NewServeMux()
+    httpMux.Handle("/", gwMux)
+    httpMux.HandleFunc("/swagger.json", func(w http.ResponseWriter, r *http.Request) {
+        http.ServeFile(w, r, "gen/openapiv2/product.swagger.json")
+    })
+
+    httpServer := &amp;http.Server{Addr: ":8080", Handler: httpMux}
+
+    go func() {
+        logger.Info("REST gateway запущен", "addr", ":8080")
+        if err := httpServer.ListenAndServe(); err != http.ErrServerClosed {
+            logger.Error("ошибка HTTP сервера", "error", err)
+        }
+    }()
+
+    // === Graceful shutdown ===
+    quit := make(chan os.Signal, 1)
+    signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+    &lt;-quit
+
+    logger.Info("завершение работы...")
+    httpServer.Shutdown(ctx)
+    grpcServer.GracefulStop()
+    logger.Info("серверы остановлены")
+}
+</code></pre>
+<p><strong>Использование</strong>:</p>
+<pre><code class="language-bash"># gRPC (через grpcurl)
+grpcurl -plaintext \
+  -d '{"product_id": "prod-1"}' \
+  localhost:50051 myapp.product.v1.ProductService/GetProduct
+
+# REST (через curl) — тот же сервис, другой протокол
+curl http://localhost:8080/api/v1/products/prod-1
+
+# Создание через REST
+curl -X POST http://localhost:8080/api/v1/products \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Go книга", "description": "Продвинутый Go", "price_cents": 4999, "currency": "USD", "stock": 100}'
+
+# Список с фильтрацией (query params → proto fields)
+curl "http://localhost:8080/api/v1/products?page_size=10&amp;category=books"
+
+# Swagger документация
+curl http://localhost:8080/swagger.json
+</code></pre>
+<hr><!-- AUTO: NAV -->
+<p><strong>Вопросы?</strong> Открой issue на <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/issues">GitHub</a></p>
+<p><a href="./03_message_queues.html">← Назад: Очереди сообщений</a> | <a href="./05_observability.html">Вперёд: Observability: Логирование, Метрики, Трейсинг →</a></p>
+<!-- /AUTO: NAV -->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part4-infrastructure/03_message_queues.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part4-infrastructure/05_observability.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part4-infrastructure/03_message_queues.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part4-infrastructure/05_observability.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

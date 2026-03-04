@@ -1,0 +1,28 @@
+[book]
+title = "Переход с C# на Go"
+authors = ["Alexandr Tolstukhin"]
+description = "Комплексный курс по изучению Go для опытного C# разработчика"
+language = "ru"
+src = "."
+
+[build]
+build-dir = "book"
+
+[preprocessor.mermaid]
+command = "mdbook-mermaid"
+
+[output.html]
+git-repository-url = "https://github.com/AlexandrTolstuhin/csharp-to-go"
+edit-url-template = "https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/{path}"
+additional-js = ["mermaid.min.js", "mermaid-init.js"]
+
+[output.html.search]
+enable = true
+limit-results = 30
+teaser-word-count = 30
+use-boolean-and = true
+boost-title = 2
+boost-hierarchy = 1
+boost-paragraph = 1
+expand = true
+heading-split-level = 3

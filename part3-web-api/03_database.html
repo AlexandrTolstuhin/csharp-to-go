@@ -1,0 +1,1706 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>3.3 Работа с данными (PostgreSQL) - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-e1a1ce5b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-c19b06e6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part3-web-api/03_database.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="33-работа-с-данными-postgresql"><a class="header" href="#33-работа-с-данными-postgresql">3.3 Работа с данными (PostgreSQL)</a></h1>
+<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<ul>
+<li><a href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5">Введение</a>
+<ul>
+<li><a href="#%D1%87%D1%82%D0%BE-%D0%B2%D1%8B-%D1%83%D0%B7%D0%BD%D0%B0%D0%B5%D1%82%D0%B5">Что вы узнаете</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4%D1%8B-%D0%BA-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B5-%D1%81-%D0%B1%D0%B4-%D0%B2-go">Подходы к работе с БД в Go</a>
+<ul>
+<li><a href="#%D1%84%D0%B8%D0%BB%D0%BE%D1%81%D0%BE%D1%84%D0%B8%D1%8F-go-sql-first">Философия Go: SQL First</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-c">Сравнение с C#</a></li>
+</ul>
+</li>
+<li><a href="#databasesql-%D1%81%D1%82%D0%B0%D0%BD%D0%B4%D0%B0%D1%80%D1%82%D0%BD%D0%B0%D1%8F-%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA%D0%B0">database/sql: стандартная библиотека</a>
+<ul>
+<li><a href="#%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B8-connection-pool">Подключение и Connection Pool</a></li>
+<li><a href="#%D0%B2%D1%8B%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2">Выполнение запросов</a></li>
+<li><a href="#context-%D0%B4%D0%BB%D1%8F-timeout-%D0%B8-cancellation">Context для timeout и cancellation</a></li>
+<li><a href="#prepared-statements">Prepared Statements</a></li>
+<li><a href="#%D1%82%D1%80%D0%B0%D0%BD%D0%B7%D0%B0%D0%BA%D1%86%D0%B8%D0%B8">Транзакции</a></li>
+<li><a href="#null-%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D1%8F">Null значения</a></li>
+</ul>
+</li>
+<li><a href="#pgx-production-postgresql-driver">pgx: Production PostgreSQL Driver</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%B5%D0%B8%D0%BC%D1%83%D1%89%D0%B5%D1%81%D1%82%D0%B2%D0%B0-%D0%BD%D0%B0%D0%B4-databasesql">Преимущества над database/sql</a></li>
+<li><a href="#%D0%B1%D0%B0%D0%B7%D0%BE%D0%B2%D0%BE%D0%B5-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5">Базовое использование</a></li>
+<li><a href="#batch-%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D1%8B">Batch запросы</a></li>
+<li><a href="#copy-protocol">COPY Protocol</a></li>
+<li><a href="#listennotify">Listen/Notify</a></li>
+</ul>
+</li>
+<li><a href="#sqlc-type-safe-sql">sqlc: Type-Safe SQL</a>
+<ul>
+<li><a href="#%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0">Установка и настройка</a></li>
+<li><a href="#%D0%BD%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5-%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2">Написание запросов</a></li>
+<li><a href="#%D0%B3%D0%B5%D0%BD%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D0%BA%D0%BE%D0%B4%D0%B0">Генерация кода</a></li>
+<li><a href="#%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5">Использование</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-dapper-c">Сравнение с Dapper (C#)</a></li>
+</ul>
+</li>
+<li><a href="#gorm-%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%BD%D1%83%D0%B6%D0%B5%D0%BD-orm">GORM: когда нужен ORM</a>
+<ul>
+<li><a href="#%D0%B1%D0%B0%D0%B7%D0%BE%D0%B2%D1%8B%D0%B5-%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D0%B8">Базовые операции</a></li>
+<li><a href="#%D0%BC%D0%B8%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D0%B8-gorm">Миграции (GORM)</a></li>
+<li><a href="#associations">Associations</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C-gorm">Когда использовать GORM</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BC%D0%B8%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D0%B8-%D0%B1%D0%B0%D0%B7%D1%8B-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85">Миграции базы данных</a>
+<ul>
+<li><a href="#golang-migrate">golang-migrate</a></li>
+<li><a href="#goose">goose</a></li>
+</ul>
+</li>
+<li><a href="#repository-pattern">Repository Pattern</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B">Практические примеры</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-crud-%D1%81-pgx">Пример 1: CRUD с pgx</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-type-safe-queries-%D1%81-sqlc">Пример 2: Type-safe queries с sqlc</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-repository-%D1%81-%D1%82%D1%80%D0%B0%D0%BD%D0%B7%D0%B0%D0%BA%D1%86%D0%B8%D1%8F%D0%BC%D0%B8">Пример 3: Repository с транзакциями</a></li>
+</ul>
+</li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<p>Работа с базами данных в Go существенно отличается от C#. Вместо мощного ORM (Entity Framework) Go-сообщество предпочитает более простые инструменты: чистый SQL или кодогенерацию.</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В Go нет LINQ, нет Change Tracker, нет Lazy Loading. Но есть простота, предсказуемость и полный контроль над SQL.</p>
+</blockquote>
+<h3 id="что-вы-узнаете"><a class="header" href="#что-вы-узнаете">Что вы узнаете</a></h3>
+<ul>
+<li>Стандартную библиотеку <code>database/sql</code> и её ограничения</li>
+<li>pgx — production-ready PostgreSQL драйвер</li>
+<li>sqlc — генерация type-safe Go кода из SQL</li>
+<li>Когда использовать GORM</li>
+<li>Миграции и управление схемой БД</li>
+<li>Repository pattern в Go</li>
+</ul>
+<hr>
+<h2 id="подходы-к-работе-с-бд-в-go"><a class="header" href="#подходы-к-работе-с-бд-в-go">Подходы к работе с БД в Go</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Подход</th><th>Инструменты</th><th>Плюсы</th><th>Минусы</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Raw SQL</strong></td><td>database/sql, pgx</td><td>Полный контроль, производительность</td><td>Нет type safety, много boilerplate</td></tr>
+<tr><td><strong>Query Builder</strong></td><td>squirrel, goqu</td><td>Программное построение запросов</td><td>Сложнее читать, нет type safety</td></tr>
+<tr><td><strong>Code Generation</strong></td><td>sqlc</td><td>Type safety, нет runtime overhead</td><td>Нужен шаг генерации</td></tr>
+<tr><td><strong>ORM</strong></td><td>GORM, ent</td><td>Привычно для C# разработчиков</td><td>Magic, производительность, N+1</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="философия-go-sql-first"><a class="header" href="#философия-go-sql-first">Философия Go: SQL First</a></h3>
+<pre><code>C# подход (EF Core):
+1. Пишем C# классы (модели)
+2. EF генерирует SQL
+3. Change Tracker отслеживает изменения
+4. LINQ транслируется в SQL
+
+Go подход (sqlc):
+1. Пишем SQL запросы
+2. sqlc генерирует Go код
+3. Работаем с type-safe функциями
+4. Полный контроль над SQL
+</code></pre>
+<h3 id="сравнение-с-c"><a class="header" href="#сравнение-с-c">Сравнение с C#</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>EF Core</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td><code>DbContext</code></td><td><code>*sql.DB</code> или <code>*pgxpool.Pool</code></td></tr>
+<tr><td>LINQ <code>Where(x =&gt; ...)</code></td><td>Чистый SQL</td></tr>
+<tr><td><code>context.SaveChanges()</code></td><td>Явные INSERT/UPDATE</td></tr>
+<tr><td><code>Include()</code></td><td>JOIN в SQL</td></tr>
+<tr><td>Migrations CLI</td><td>golang-migrate, goose</td></tr>
+<tr><td>Code First</td><td>SQL First (sqlc)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="databasesql-стандартная-библиотека"><a class="header" href="#databasesql-стандартная-библиотека">database/sql: стандартная библиотека</a></h2>
+<p><code>database/sql</code> — абстракция над SQL базами данных. Работает с любой БД через драйверы.</p>
+<h3 id="подключение-и-connection-pool"><a class="header" href="#подключение-и-connection-pool">Подключение и Connection Pool</a></h3>
+<pre><code class="language-go">import (
+    "database/sql"
+    "log"
+    "time"
+
+    _ "github.com/lib/pq" // PostgreSQL драйвер
+)
+
+func NewDB(databaseURL string) (*sql.DB, error) {
+    db, err := sql.Open("postgres", databaseURL)
+    if err != nil {
+        return nil, err
+    }
+
+    // Настройка connection pool
+    db.SetMaxOpenConns(25)                 // Максимум открытых соединений
+    db.SetMaxIdleConns(5)                  // Максимум idle соединений
+    db.SetConnMaxLifetime(5 * time.Minute) // Время жизни соединения
+    db.SetConnMaxIdleTime(1 * time.Minute) // Время простоя
+
+    // Проверка подключения
+    if err := db.Ping(); err != nil {
+        return nil, err
+    }
+
+    return db, nil
+}
+
+func main() {
+    db, err := NewDB("postgres://user:pass@localhost/mydb?sslmode=disable")
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer db.Close()
+
+    // Используем db...
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Connection Pool</strong>: <code>sql.DB</code> — это не одно соединение, а пул! Безопасен для concurrent использования.</p>
+</blockquote>
+<h3 id="выполнение-запросов"><a class="header" href="#выполнение-запросов">Выполнение запросов</a></h3>
+<pre><code class="language-go">// SELECT один ряд
+func GetUserByID(db *sql.DB, id int) (*User, error) {
+    user := &amp;User{}
+    query := `SELECT id, email, name, created_at FROM users WHERE id = $1`
+
+    err := db.QueryRow(query, id).Scan(
+        &amp;user.ID,
+        &amp;user.Email,
+        &amp;user.Name,
+        &amp;user.CreatedAt,
+    )
+    if err == sql.ErrNoRows {
+        return nil, nil // Не найден
+    }
+    if err != nil {
+        return nil, err
+    }
+    return user, nil
+}
+
+// SELECT несколько рядов
+func GetAllUsers(db *sql.DB) ([]User, error) {
+    query := `SELECT id, email, name, created_at FROM users ORDER BY id`
+
+    rows, err := db.Query(query)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close() // ВАЖНО: всегда закрывать!
+
+    var users []User
+    for rows.Next() {
+        var user User
+        if err := rows.Scan(&amp;user.ID, &amp;user.Email, &amp;user.Name, &amp;user.CreatedAt); err != nil {
+            return nil, err
+        }
+        users = append(users, user)
+    }
+
+    // Проверяем ошибки итерации
+    if err := rows.Err(); err != nil {
+        return nil, err
+    }
+
+    return users, nil
+}
+
+// INSERT
+func CreateUser(db *sql.DB, email, name string) (int, error) {
+    query := `INSERT INTO users (email, name) VALUES ($1, $2) RETURNING id`
+
+    var id int
+    err := db.QueryRow(query, email, name).Scan(&amp;id)
+    return id, err
+}
+
+// UPDATE
+func UpdateUser(db *sql.DB, id int, name string) error {
+    query := `UPDATE users SET name = $1 WHERE id = $2`
+    result, err := db.Exec(query, name, id)
+    if err != nil {
+        return err
+    }
+
+    rowsAffected, _ := result.RowsAffected()
+    if rowsAffected == 0 {
+        return sql.ErrNoRows
+    }
+    return nil
+}
+
+// DELETE
+func DeleteUser(db *sql.DB, id int) error {
+    query := `DELETE FROM users WHERE id = $1`
+    _, err := db.Exec(query, id)
+    return err
+}
+</code></pre>
+<h3 id="context-для-timeout-и-cancellation"><a class="header" href="#context-для-timeout-и-cancellation">Context для timeout и cancellation</a></h3>
+<pre><code class="language-go">func GetUserByIDWithContext(ctx context.Context, db *sql.DB, id int) (*User, error) {
+    user := &amp;User{}
+    query := `SELECT id, email, name, created_at FROM users WHERE id = $1`
+
+    // Используем QueryRowContext
+    err := db.QueryRowContext(ctx, query, id).Scan(
+        &amp;user.ID,
+        &amp;user.Email,
+        &amp;user.Name,
+        &amp;user.CreatedAt,
+    )
+    if err == sql.ErrNoRows {
+        return nil, nil
+    }
+    return user, err
+}
+
+// В handler
+func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {
+    // Контекст с timeout
+    ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
+    defer cancel()
+
+    user, err := GetUserByIDWithContext(ctx, h.db, id)
+    if err != nil {
+        if ctx.Err() == context.DeadlineExceeded {
+            http.Error(w, "Database timeout", http.StatusGatewayTimeout)
+            return
+        }
+        // Другая ошибка...
+    }
+}
+</code></pre>
+<h3 id="prepared-statements"><a class="header" href="#prepared-statements">Prepared Statements</a></h3>
+<pre><code class="language-go">// Подготовленные запросы — оптимизация для повторяющихся запросов
+func NewUserRepository(db *sql.DB) (*UserRepository, error) {
+    getByID, err := db.Prepare(`SELECT id, email, name FROM users WHERE id = $1`)
+    if err != nil {
+        return nil, err
+    }
+
+    create, err := db.Prepare(`INSERT INTO users (email, name) VALUES ($1, $2) RETURNING id`)
+    if err != nil {
+        return nil, err
+    }
+
+    return &amp;UserRepository{
+        db:          db,
+        getByIDStmt: getByID,
+        createStmt:  create,
+    }, nil
+}
+
+type UserRepository struct {
+    db          *sql.DB
+    getByIDStmt *sql.Stmt
+    createStmt  *sql.Stmt
+}
+
+func (r *UserRepository) GetByID(ctx context.Context, id int) (*User, error) {
+    user := &amp;User{}
+    err := r.getByIDStmt.QueryRowContext(ctx, id).Scan(&amp;user.ID, &amp;user.Email, &amp;user.Name)
+    if err == sql.ErrNoRows {
+        return nil, nil
+    }
+    return user, err
+}
+
+func (r *UserRepository) Close() error {
+    r.getByIDStmt.Close()
+    r.createStmt.Close()
+    return nil
+}
+</code></pre>
+<h3 id="транзакции"><a class="header" href="#транзакции">Транзакции</a></h3>
+<pre><code class="language-go">func TransferMoney(db *sql.DB, fromID, toID int, amount float64) error {
+    // Начинаем транзакцию
+    tx, err := db.Begin()
+    if err != nil {
+        return err
+    }
+    // Откат при ошибке
+    defer tx.Rollback()
+
+    // Снимаем деньги
+    _, err = tx.Exec(`UPDATE accounts SET balance = balance - $1 WHERE id = $2`, amount, fromID)
+    if err != nil {
+        return err
+    }
+
+    // Добавляем деньги
+    _, err = tx.Exec(`UPDATE accounts SET balance = balance + $1 WHERE id = $2`, amount, toID)
+    if err != nil {
+        return err
+    }
+
+    // Коммитим
+    return tx.Commit()
+}
+
+// С контекстом
+func TransferMoneyWithContext(ctx context.Context, db *sql.DB, fromID, toID int, amount float64) error {
+    tx, err := db.BeginTx(ctx, &amp;sql.TxOptions{
+        Isolation: sql.LevelSerializable, // Уровень изоляции
+        ReadOnly:  false,
+    })
+    if err != nil {
+        return err
+    }
+    defer tx.Rollback()
+
+    // ... операции ...
+
+    return tx.Commit()
+}
+</code></pre>
+<h3 id="null-значения"><a class="header" href="#null-значения">Null значения</a></h3>
+<pre><code class="language-go">import "database/sql"
+
+// Способ 1: sql.NullString, sql.NullInt64, etc.
+type User struct {
+    ID        int
+    Email     string
+    Name      sql.NullString // Может быть NULL
+    DeletedAt sql.NullTime
+}
+
+func (r *Repository) GetUser(ctx context.Context, id int) (*User, error) {
+    user := &amp;User{}
+    err := r.db.QueryRowContext(ctx, query, id).Scan(
+        &amp;user.ID,
+        &amp;user.Email,
+        &amp;user.Name,     // sql.NullString
+        &amp;user.DeletedAt, // sql.NullTime
+    )
+    // ...
+}
+
+// Проверка
+if user.Name.Valid {
+    fmt.Println(user.Name.String)
+}
+
+// Способ 2: Указатели
+type User struct {
+    ID        int
+    Email     string
+    Name      *string    // nil если NULL
+    DeletedAt *time.Time // nil если NULL
+}
+
+// Способ 3: Значения по умолчанию с COALESCE в SQL
+query := `SELECT id, email, COALESCE(name, '') FROM users WHERE id = $1`
+</code></pre>
+<hr>
+<h2 id="pgx-production-postgresql-driver"><a class="header" href="#pgx-production-postgresql-driver">pgx: Production PostgreSQL Driver</a></h2>
+<p><a href="https://github.com/jackc/pgx">pgx</a> — рекомендуемый драйвер для PostgreSQL в Go.</p>
+<h3 id="преимущества-над-databasesql"><a class="header" href="#преимущества-над-databasesql">Преимущества над database/sql</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Функция</th><th>database/sql + lib/pq</th><th>pgx</th></tr>
+</thead>
+<tbody>
+<tr><td>Производительность</td><td>Базовая</td><td>Выше на 30-50%</td></tr>
+<tr><td>Batch запросы</td><td>Нет</td><td>Есть</td></tr>
+<tr><td>COPY Protocol</td><td>Нет</td><td>Есть</td></tr>
+<tr><td>Listen/Notify</td><td>Ограниченно</td><td>Полная поддержка</td></tr>
+<tr><td>Prepared statements cache</td><td>Нет</td><td>Автоматически</td></tr>
+<tr><td>Native types</td><td>Ограниченно</td><td>UUID, JSON, arrays</td></tr>
+<tr><td>Connection Pool</td><td>Внешний</td><td>Встроенный (pgxpool)</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="базовое-использование"><a class="header" href="#базовое-использование">Базовое использование</a></h3>
+<pre><code class="language-go">import (
+    "context"
+    "github.com/jackc/pgx/v5"
+    "github.com/jackc/pgx/v5/pgxpool"
+)
+
+func NewPool(ctx context.Context, databaseURL string) (*pgxpool.Pool, error) {
+    config, err := pgxpool.ParseConfig(databaseURL)
+    if err != nil {
+        return nil, err
+    }
+
+    // Настройка пула
+    config.MaxConns = 25
+    config.MinConns = 5
+    config.MaxConnLifetime = 5 * time.Minute
+    config.MaxConnIdleTime = 1 * time.Minute
+
+    pool, err := pgxpool.NewWithConfig(ctx, config)
+    if err != nil {
+        return nil, err
+    }
+
+    // Проверка подключения
+    if err := pool.Ping(ctx); err != nil {
+        return nil, err
+    }
+
+    return pool, nil
+}
+
+func main() {
+    ctx := context.Background()
+
+    pool, err := NewPool(ctx, "postgres://user:pass@localhost/mydb")
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer pool.Close()
+
+    // CRUD операции
+    var id int
+    err = pool.QueryRow(ctx,
+        `INSERT INTO users (email, name) VALUES ($1, $2) RETURNING id`,
+        "user@example.com", "John",
+    ).Scan(&amp;id)
+
+    // Выборка
+    rows, _ := pool.Query(ctx, `SELECT id, email, name FROM users`)
+    defer rows.Close()
+
+    for rows.Next() {
+        var user User
+        rows.Scan(&amp;user.ID, &amp;user.Email, &amp;user.Name)
+    }
+}
+</code></pre>
+<h3 id="batch-запросы"><a class="header" href="#batch-запросы">Batch запросы</a></h3>
+<p>Batch позволяет отправить несколько запросов за один round-trip:</p>
+<pre><code class="language-go">func InsertUsers(ctx context.Context, pool *pgxpool.Pool, users []User) error {
+    batch := &amp;pgx.Batch{}
+
+    for _, user := range users {
+        batch.Queue(
+            `INSERT INTO users (email, name) VALUES ($1, $2)`,
+            user.Email, user.Name,
+        )
+    }
+
+    // Отправляем все запросы разом
+    results := pool.SendBatch(ctx, batch)
+    defer results.Close()
+
+    // Проверяем результаты
+    for range users {
+        _, err := results.Exec()
+        if err != nil {
+            return err
+        }
+    }
+
+    return nil
+}
+
+// Batch с разными типами запросов
+func BatchOperations(ctx context.Context, pool *pgxpool.Pool) error {
+    batch := &amp;pgx.Batch{}
+
+    // INSERT
+    batch.Queue(`INSERT INTO logs (message) VALUES ($1)`, "Operation started")
+
+    // UPDATE
+    batch.Queue(`UPDATE counters SET value = value + 1 WHERE name = $1`, "operations")
+
+    // SELECT
+    batch.Queue(`SELECT COUNT(*) FROM users`)
+
+    results := pool.SendBatch(ctx, batch)
+    defer results.Close()
+
+    // Обрабатываем INSERT
+    _, err := results.Exec()
+    if err != nil {
+        return err
+    }
+
+    // Обрабатываем UPDATE
+    _, err = results.Exec()
+    if err != nil {
+        return err
+    }
+
+    // Обрабатываем SELECT
+    var count int
+    err = results.QueryRow().Scan(&amp;count)
+    if err != nil {
+        return err
+    }
+
+    log.Printf("Total users: %d", count)
+    return nil
+}
+</code></pre>
+<h3 id="copy-protocol"><a class="header" href="#copy-protocol">COPY Protocol</a></h3>
+<p>Массовая вставка данных (в 10-100 раз быстрее INSERT):</p>
+<pre><code class="language-go">func BulkInsertUsers(ctx context.Context, pool *pgxpool.Pool, users []User) error {
+    // Временная таблица для COPY
+    _, err := pool.Exec(ctx, `
+        CREATE TEMP TABLE temp_users (
+            email TEXT,
+            name TEXT
+        ) ON COMMIT DROP
+    `)
+    if err != nil {
+        return err
+    }
+
+    // COPY данные
+    _, err = pool.CopyFrom(
+        ctx,
+        pgx.Identifier{"temp_users"},
+        []string{"email", "name"},
+        pgx.CopyFromSlice(len(users), func(i int) ([]any, error) {
+            return []any{users[i].Email, users[i].Name}, nil
+        }),
+    )
+    if err != nil {
+        return err
+    }
+
+    // INSERT из временной таблицы
+    _, err = pool.Exec(ctx, `
+        INSERT INTO users (email, name)
+        SELECT email, name FROM temp_users
+        ON CONFLICT (email) DO NOTHING
+    `)
+    return err
+}
+
+// CopyFromRows для готовых данных
+func BulkInsertSimple(ctx context.Context, pool *pgxpool.Pool) error {
+    rows := [][]any{
+        {"user1@example.com", "User 1"},
+        {"user2@example.com", "User 2"},
+        {"user3@example.com", "User 3"},
+    }
+
+    _, err := pool.CopyFrom(
+        ctx,
+        pgx.Identifier{"users"},
+        []string{"email", "name"},
+        pgx.CopyFromRows(rows),
+    )
+    return err
+}
+</code></pre>
+<h3 id="listennotify"><a class="header" href="#listennotify">Listen/Notify</a></h3>
+<p>PostgreSQL LISTEN/NOTIFY для real-time событий:</p>
+<pre><code class="language-go">func ListenForChanges(ctx context.Context, pool *pgxpool.Pool) error {
+    conn, err := pool.Acquire(ctx)
+    if err != nil {
+        return err
+    }
+    defer conn.Release()
+
+    // Подписываемся на канал
+    _, err = conn.Exec(ctx, "LISTEN user_changes")
+    if err != nil {
+        return err
+    }
+
+    log.Println("Listening for user changes...")
+
+    for {
+        // Ждём уведомление
+        notification, err := conn.Conn().WaitForNotification(ctx)
+        if err != nil {
+            return err
+        }
+
+        log.Printf("Received: channel=%s, payload=%s",
+            notification.Channel, notification.Payload)
+
+        // Обработка события...
+    }
+}
+
+// Отправка уведомления (из другого соединения или триггера)
+func NotifyChange(ctx context.Context, pool *pgxpool.Pool, userID int) error {
+    payload := fmt.Sprintf(`{"user_id": %d, "action": "updated"}`, userID)
+    _, err := pool.Exec(ctx, "SELECT pg_notify('user_changes', $1)", payload)
+    return err
+}
+</code></pre>
+<hr>
+<h2 id="sqlc-type-safe-sql"><a class="header" href="#sqlc-type-safe-sql">sqlc: Type-Safe SQL</a></h2>
+<p><a href="https://sqlc.dev/">sqlc</a> генерирует Go код из SQL запросов. Это идиоматичный Go-подход: SQL First.</p>
+<h3 id="установка-и-настройка"><a class="header" href="#установка-и-настройка">Установка и настройка</a></h3>
+<pre><code class="language-bash"># Установка
+go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+
+# Или через brew
+brew install sqlc
+</code></pre>
+<pre><code class="language-yaml"># sqlc.yaml
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "queries/"
+    schema: "schema/"
+    gen:
+      go:
+        package: "db"
+        out: "internal/db"
+        sql_package: "pgx/v5"
+        emit_json_tags: true
+        emit_empty_slices: true
+</code></pre>
+<h3 id="написание-запросов"><a class="header" href="#написание-запросов">Написание запросов</a></h3>
+<pre><code class="language-sql">-- schema/001_users.sql
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    email TEXT UNIQUE NOT NULL,
+    name TEXT NOT NULL,
+    role TEXT NOT NULL DEFAULT 'user',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    deleted_at TIMESTAMP WITH TIME ZONE
+);
+
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_users_role ON users(role) WHERE deleted_at IS NULL;
+</code></pre>
+<pre><code class="language-sql">-- queries/users.sql
+
+-- name: GetUser :one
+SELECT id, email, name, role, created_at
+FROM users
+WHERE id = $1 AND deleted_at IS NULL;
+
+-- name: GetUserByEmail :one
+SELECT id, email, name, role, created_at
+FROM users
+WHERE email = $1 AND deleted_at IS NULL;
+
+-- name: ListUsers :many
+SELECT id, email, name, role, created_at
+FROM users
+WHERE deleted_at IS NULL
+ORDER BY created_at DESC
+LIMIT $1 OFFSET $2;
+
+-- name: ListUsersByRole :many
+SELECT id, email, name, role, created_at
+FROM users
+WHERE role = $1 AND deleted_at IS NULL
+ORDER BY name;
+
+-- name: CreateUser :one
+INSERT INTO users (email, name, role)
+VALUES ($1, $2, $3)
+RETURNING id, email, name, role, created_at;
+
+-- name: UpdateUser :one
+UPDATE users
+SET name = $2, role = $3
+WHERE id = $1 AND deleted_at IS NULL
+RETURNING id, email, name, role, created_at;
+
+-- name: SoftDeleteUser :exec
+UPDATE users
+SET deleted_at = NOW()
+WHERE id = $1;
+
+-- name: CountUsersByRole :one
+SELECT COUNT(*) FROM users
+WHERE role = $1 AND deleted_at IS NULL;
+</code></pre>
+<h3 id="генерация-кода"><a class="header" href="#генерация-кода">Генерация кода</a></h3>
+<pre><code class="language-bash">sqlc generate
+</code></pre>
+<p>sqlc сгенерирует:</p>
+<pre><code class="language-go">// internal/db/models.go
+package db
+
+import "time"
+
+type User struct {
+    ID        int32     `json:"id"`
+    Email     string    `json:"email"`
+    Name      string    `json:"name"`
+    Role      string    `json:"role"`
+    CreatedAt time.Time `json:"created_at"`
+}
+</code></pre>
+<pre><code class="language-go">// internal/db/users.sql.go
+package db
+
+import (
+    "context"
+)
+
+type CreateUserParams struct {
+    Email string `json:"email"`
+    Name  string `json:"name"`
+    Role  string `json:"role"`
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
+    row := q.db.QueryRow(ctx, createUser, arg.Email, arg.Name, arg.Role)
+    var i User
+    err := row.Scan(
+        &amp;i.ID,
+        &amp;i.Email,
+        &amp;i.Name,
+        &amp;i.Role,
+        &amp;i.CreatedAt,
+    )
+    return i, err
+}
+
+func (q *Queries) GetUser(ctx context.Context, id int32) (User, error) {
+    row := q.db.QueryRow(ctx, getUser, id)
+    var i User
+    err := row.Scan(&amp;i.ID, &amp;i.Email, &amp;i.Name, &amp;i.Role, &amp;i.CreatedAt)
+    return i, err
+}
+
+type ListUsersParams struct {
+    Limit  int32 `json:"limit"`
+    Offset int32 `json:"offset"`
+}
+
+func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error) {
+    rows, err := q.db.Query(ctx, listUsers, arg.Limit, arg.Offset)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    items := []User{}
+    for rows.Next() {
+        var i User
+        if err := rows.Scan(&amp;i.ID, &amp;i.Email, &amp;i.Name, &amp;i.Role, &amp;i.CreatedAt); err != nil {
+            return nil, err
+        }
+        items = append(items, i)
+    }
+    return items, nil
+}
+</code></pre>
+<h3 id="использование"><a class="header" href="#использование">Использование</a></h3>
+<pre><code class="language-go">package main
+
+import (
+    "context"
+    "log"
+
+    "github.com/jackc/pgx/v5/pgxpool"
+    "myapp/internal/db"
+)
+
+func main() {
+    ctx := context.Background()
+
+    pool, err := pgxpool.New(ctx, "postgres://localhost/mydb")
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer pool.Close()
+
+    queries := db.New(pool)
+
+    // Создание пользователя — type-safe!
+    user, err := queries.CreateUser(ctx, db.CreateUserParams{
+        Email: "user@example.com",
+        Name:  "John Doe",
+        Role:  "admin",
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
+    log.Printf("Created user: %+v", user)
+
+    // Получение пользователя
+    user, err = queries.GetUser(ctx, user.ID)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // Список пользователей
+    users, err := queries.ListUsers(ctx, db.ListUsersParams{
+        Limit:  10,
+        Offset: 0,
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // Подсчёт
+    count, err := queries.CountUsersByRole(ctx, "admin")
+    if err != nil {
+        log.Fatal(err)
+    }
+    log.Printf("Admin count: %d", count)
+}
+</code></pre>
+<h3 id="сравнение-с-dapper-c"><a class="header" href="#сравнение-с-dapper-c">Сравнение с Dapper (C#)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Dapper</th><th>sqlc</th></tr>
+</thead>
+<tbody>
+<tr><td>Runtime SQL → Object</td><td>Compile-time SQL → Go code</td></tr>
+<tr><td>Reflection для маппинга</td><td>Генерация кода</td></tr>
+<tr><td>Ошибки в runtime</td><td>Ошибки при генерации</td></tr>
+<tr><td>Гибкий</td><td>Строгий</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-csharp">// Dapper (C#)
+var user = connection.QuerySingleOrDefault&lt;User&gt;(
+    "SELECT * FROM users WHERE id = @Id",
+    new { Id = 1 }
+);
+</code></pre>
+<pre><code class="language-go">// sqlc (Go) — type-safe, compile-time проверка
+user, err := queries.GetUser(ctx, 1)
+</code></pre>
+<hr>
+<h2 id="gorm-когда-нужен-orm"><a class="header" href="#gorm-когда-нужен-orm">GORM: когда нужен ORM</a></h2>
+<p><a href="https://gorm.io/">GORM</a> — самый популярный ORM для Go. Похож на EF Core.</p>
+<h3 id="базовые-операции"><a class="header" href="#базовые-операции">Базовые операции</a></h3>
+<pre><code class="language-go">import (
+    "gorm.io/driver/postgres"
+    "gorm.io/gorm"
+)
+
+type User struct {
+    gorm.Model        // ID, CreatedAt, UpdatedAt, DeletedAt
+    Email     string  `gorm:"uniqueIndex;not null"`
+    Name      string  `gorm:"not null"`
+    Role      string  `gorm:"default:user"`
+    Posts     []Post  // Has Many
+}
+
+type Post struct {
+    gorm.Model
+    Title   string
+    Content string
+    UserID  uint
+    User    User // Belongs To
+}
+
+func main() {
+    dsn := "host=localhost user=postgres password=postgres dbname=mydb"
+    db, err := gorm.Open(postgres.Open(dsn), &amp;gorm.Config{})
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // Автоматические миграции
+    db.AutoMigrate(&amp;User{}, &amp;Post{})
+
+    // CREATE
+    user := User{Email: "user@example.com", Name: "John"}
+    result := db.Create(&amp;user)
+    if result.Error != nil {
+        log.Fatal(result.Error)
+    }
+    log.Printf("Created user ID: %d", user.ID)
+
+    // READ
+    var foundUser User
+    db.First(&amp;foundUser, user.ID)                          // по primary key
+    db.First(&amp;foundUser, "email = ?", "user@example.com")  // по условию
+
+    // READ несколько
+    var users []User
+    db.Where("role = ?", "admin").Find(&amp;users)
+
+    // UPDATE
+    db.Model(&amp;user).Update("name", "John Doe")
+    db.Model(&amp;user).Updates(User{Name: "John", Role: "admin"})
+    db.Model(&amp;user).Updates(map[string]interface{}{"name": "John", "role": "admin"})
+
+    // DELETE (soft delete по умолчанию)
+    db.Delete(&amp;user)
+
+    // Hard delete
+    db.Unscoped().Delete(&amp;user)
+}
+</code></pre>
+<h3 id="миграции-gorm"><a class="header" href="#миграции-gorm">Миграции (GORM)</a></h3>
+<pre><code class="language-go">// AutoMigrate — только добавляет колонки, не удаляет
+db.AutoMigrate(&amp;User{}, &amp;Post{})
+
+// Для production лучше использовать golang-migrate или goose
+</code></pre>
+<h3 id="associations"><a class="header" href="#associations">Associations</a></h3>
+<pre><code class="language-go">// Preload (аналог Include в EF)
+var user User
+db.Preload("Posts").First(&amp;user, 1)
+
+// Вложенный Preload
+db.Preload("Posts.Comments").First(&amp;user, 1)
+
+// Условный Preload
+db.Preload("Posts", "published = ?", true).First(&amp;user, 1)
+
+// Joins (более эффективно для single query)
+db.Joins("Posts").First(&amp;user, 1)
+</code></pre>
+<h3 id="когда-использовать-gorm"><a class="header" href="#когда-использовать-gorm">Когда использовать GORM</a></h3>
+<pre><code>✅ Используйте GORM если:
+- Привыкли к EF Core / Hibernate
+- Нужны быстрые CRUD операции
+- Проект небольшой, производительность не критична
+- Много связей между таблицами
+
+❌ Не используйте GORM если:
+- Критична производительность
+- Сложные SQL запросы
+- Нужен полный контроль над SQL
+- Большие объёмы данных
+</code></pre>
+<hr>
+<h2 id="миграции-базы-данных"><a class="header" href="#миграции-базы-данных">Миграции базы данных</a></h2>
+<h3 id="golang-migrate"><a class="header" href="#golang-migrate">golang-migrate</a></h3>
+<p><a href="https://github.com/golang-migrate/migrate">golang-migrate</a> — популярный инструмент миграций.</p>
+<pre><code class="language-bash"># Установка
+go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+
+# Создание миграции
+migrate create -ext sql -dir migrations -seq create_users
+
+# Применение миграций
+migrate -path migrations -database "postgres://localhost/mydb?sslmode=disable" up
+
+# Откат
+migrate -path migrations -database "postgres://localhost/mydb?sslmode=disable" down 1
+
+# Статус
+migrate -path migrations -database "postgres://localhost/mydb?sslmode=disable" version
+</code></pre>
+<pre><code class="language-sql">-- migrations/000001_create_users.up.sql
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    email TEXT UNIQUE NOT NULL,
+    name TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX idx_users_email ON users(email);
+</code></pre>
+<pre><code class="language-sql">-- migrations/000001_create_users.down.sql
+DROP TABLE IF EXISTS users;
+</code></pre>
+<pre><code class="language-go">// Программное применение миграций
+import (
+    "github.com/golang-migrate/migrate/v4"
+    _ "github.com/golang-migrate/migrate/v4/database/postgres"
+    _ "github.com/golang-migrate/migrate/v4/source/file"
+)
+
+func RunMigrations(databaseURL string) error {
+    m, err := migrate.New(
+        "file://migrations",
+        databaseURL,
+    )
+    if err != nil {
+        return err
+    }
+
+    if err := m.Up(); err != nil &amp;&amp; err != migrate.ErrNoChange {
+        return err
+    }
+
+    return nil
+}
+</code></pre>
+<h3 id="goose"><a class="header" href="#goose">goose</a></h3>
+<p><a href="https://github.com/pressly/goose">goose</a> — альтернатива с поддержкой Go-миграций.</p>
+<pre><code class="language-bash"># Установка
+go install github.com/pressly/goose/v3/cmd/goose@latest
+
+# Создание миграции
+goose -dir migrations create create_users sql
+
+# Применение
+goose -dir migrations postgres "postgres://localhost/mydb" up
+
+# Откат
+goose -dir migrations postgres "postgres://localhost/mydb" down
+</code></pre>
+<pre><code class="language-sql">-- migrations/20240101120000_create_users.sql
+
+-- +goose Up
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    email TEXT UNIQUE NOT NULL,
+    name TEXT NOT NULL
+);
+
+-- +goose Down
+DROP TABLE users;
+</code></pre>
+<pre><code class="language-go">// Go-миграции (для сложных операций)
+// migrations/20240102120000_seed_data.go
+
+package migrations
+
+import (
+    "context"
+    "database/sql"
+    "github.com/pressly/goose/v3"
+)
+
+func init() {
+    goose.AddMigrationContext(upSeedData, downSeedData)
+}
+
+func upSeedData(ctx context.Context, tx *sql.Tx) error {
+    _, err := tx.ExecContext(ctx, `
+        INSERT INTO users (email, name) VALUES
+        ('admin@example.com', 'Admin'),
+        ('user@example.com', 'User')
+    `)
+    return err
+}
+
+func downSeedData(ctx context.Context, tx *sql.Tx) error {
+    _, err := tx.ExecContext(ctx, `DELETE FROM users WHERE email IN ('admin@example.com', 'user@example.com')`)
+    return err
+}
+</code></pre>
+<hr>
+<h2 id="repository-pattern"><a class="header" href="#repository-pattern">Repository Pattern</a></h2>
+<p>Паттерн Repository инкапсулирует логику доступа к данным.</p>
+<pre><code class="language-go">// internal/domain/user.go
+package domain
+
+import (
+    "context"
+    "time"
+)
+
+type User struct {
+    ID        int
+    Email     string
+    Name      string
+    Role      string
+    CreatedAt time.Time
+}
+
+type UserRepository interface {
+    GetByID(ctx context.Context, id int) (*User, error)
+    GetByEmail(ctx context.Context, email string) (*User, error)
+    List(ctx context.Context, limit, offset int) ([]User, error)
+    Create(ctx context.Context, user *User) error
+    Update(ctx context.Context, user *User) error
+    Delete(ctx context.Context, id int) error
+}
+</code></pre>
+<pre><code class="language-go">// internal/repository/postgres/user.go
+package postgres
+
+import (
+    "context"
+    "errors"
+
+    "github.com/jackc/pgx/v5"
+    "github.com/jackc/pgx/v5/pgxpool"
+
+    "myapp/internal/domain"
+)
+
+type UserRepository struct {
+    pool *pgxpool.Pool
+}
+
+func NewUserRepository(pool *pgxpool.Pool) *UserRepository {
+    return &amp;UserRepository{pool: pool}
+}
+
+// Проверяем реализацию интерфейса
+var _ domain.UserRepository = (*UserRepository)(nil)
+
+func (r *UserRepository) GetByID(ctx context.Context, id int) (*domain.User, error) {
+    query := `
+        SELECT id, email, name, role, created_at
+        FROM users
+        WHERE id = $1 AND deleted_at IS NULL
+    `
+
+    user := &amp;domain.User{}
+    err := r.pool.QueryRow(ctx, query, id).Scan(
+        &amp;user.ID,
+        &amp;user.Email,
+        &amp;user.Name,
+        &amp;user.Role,
+        &amp;user.CreatedAt,
+    )
+    if errors.Is(err, pgx.ErrNoRows) {
+        return nil, nil
+    }
+    if err != nil {
+        return nil, err
+    }
+    return user, nil
+}
+
+func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*domain.User, error) {
+    query := `
+        SELECT id, email, name, role, created_at
+        FROM users
+        WHERE email = $1 AND deleted_at IS NULL
+    `
+
+    user := &amp;domain.User{}
+    err := r.pool.QueryRow(ctx, query, email).Scan(
+        &amp;user.ID,
+        &amp;user.Email,
+        &amp;user.Name,
+        &amp;user.Role,
+        &amp;user.CreatedAt,
+    )
+    if errors.Is(err, pgx.ErrNoRows) {
+        return nil, nil
+    }
+    return user, err
+}
+
+func (r *UserRepository) List(ctx context.Context, limit, offset int) ([]domain.User, error) {
+    query := `
+        SELECT id, email, name, role, created_at
+        FROM users
+        WHERE deleted_at IS NULL
+        ORDER BY created_at DESC
+        LIMIT $1 OFFSET $2
+    `
+
+    rows, err := r.pool.Query(ctx, query, limit, offset)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    var users []domain.User
+    for rows.Next() {
+        var user domain.User
+        if err := rows.Scan(&amp;user.ID, &amp;user.Email, &amp;user.Name, &amp;user.Role, &amp;user.CreatedAt); err != nil {
+            return nil, err
+        }
+        users = append(users, user)
+    }
+
+    return users, rows.Err()
+}
+
+func (r *UserRepository) Create(ctx context.Context, user *domain.User) error {
+    query := `
+        INSERT INTO users (email, name, role)
+        VALUES ($1, $2, $3)
+        RETURNING id, created_at
+    `
+
+    return r.pool.QueryRow(ctx, query, user.Email, user.Name, user.Role).
+        Scan(&amp;user.ID, &amp;user.CreatedAt)
+}
+
+func (r *UserRepository) Update(ctx context.Context, user *domain.User) error {
+    query := `
+        UPDATE users
+        SET name = $2, role = $3
+        WHERE id = $1 AND deleted_at IS NULL
+    `
+
+    result, err := r.pool.Exec(ctx, query, user.ID, user.Name, user.Role)
+    if err != nil {
+        return err
+    }
+
+    if result.RowsAffected() == 0 {
+        return domain.ErrUserNotFound
+    }
+    return nil
+}
+
+func (r *UserRepository) Delete(ctx context.Context, id int) error {
+    query := `UPDATE users SET deleted_at = NOW() WHERE id = $1`
+    _, err := r.pool.Exec(ctx, query, id)
+    return err
+}
+</code></pre>
+<hr>
+<h2 id="практические-примеры"><a class="header" href="#практические-примеры">Практические примеры</a></h2>
+<h3 id="пример-1-crud-с-pgx"><a class="header" href="#пример-1-crud-с-pgx">Пример 1: CRUD с pgx</a></h3>
+<pre><code class="language-go">// internal/repository/user_repository.go
+package repository
+
+import (
+    "context"
+    "errors"
+    "time"
+
+    "github.com/jackc/pgx/v5"
+    "github.com/jackc/pgx/v5/pgxpool"
+)
+
+type User struct {
+    ID        int       `json:"id"`
+    Email     string    `json:"email"`
+    Name      string    `json:"name"`
+    CreatedAt time.Time `json:"created_at"`
+}
+
+var ErrNotFound = errors.New("not found")
+
+type UserRepository struct {
+    pool *pgxpool.Pool
+}
+
+func NewUserRepository(pool *pgxpool.Pool) *UserRepository {
+    return &amp;UserRepository{pool: pool}
+}
+
+func (r *UserRepository) Create(ctx context.Context, email, name string) (*User, error) {
+    user := &amp;User{}
+    err := r.pool.QueryRow(ctx,
+        `INSERT INTO users (email, name) VALUES ($1, $2)
+         RETURNING id, email, name, created_at`,
+        email, name,
+    ).Scan(&amp;user.ID, &amp;user.Email, &amp;user.Name, &amp;user.CreatedAt)
+
+    return user, err
+}
+
+func (r *UserRepository) GetByID(ctx context.Context, id int) (*User, error) {
+    user := &amp;User{}
+    err := r.pool.QueryRow(ctx,
+        `SELECT id, email, name, created_at FROM users WHERE id = $1`,
+        id,
+    ).Scan(&amp;user.ID, &amp;user.Email, &amp;user.Name, &amp;user.CreatedAt)
+
+    if errors.Is(err, pgx.ErrNoRows) {
+        return nil, ErrNotFound
+    }
+    return user, err
+}
+
+func (r *UserRepository) List(ctx context.Context, limit, offset int) ([]User, error) {
+    rows, err := r.pool.Query(ctx,
+        `SELECT id, email, name, created_at FROM users
+         ORDER BY id LIMIT $1 OFFSET $2`,
+        limit, offset,
+    )
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    var users []User
+    for rows.Next() {
+        var u User
+        if err := rows.Scan(&amp;u.ID, &amp;u.Email, &amp;u.Name, &amp;u.CreatedAt); err != nil {
+            return nil, err
+        }
+        users = append(users, u)
+    }
+    return users, rows.Err()
+}
+
+func (r *UserRepository) Update(ctx context.Context, id int, name string) error {
+    result, err := r.pool.Exec(ctx,
+        `UPDATE users SET name = $1 WHERE id = $2`,
+        name, id,
+    )
+    if err != nil {
+        return err
+    }
+    if result.RowsAffected() == 0 {
+        return ErrNotFound
+    }
+    return nil
+}
+
+func (r *UserRepository) Delete(ctx context.Context, id int) error {
+    result, err := r.pool.Exec(ctx, `DELETE FROM users WHERE id = $1`, id)
+    if err != nil {
+        return err
+    }
+    if result.RowsAffected() == 0 {
+        return ErrNotFound
+    }
+    return nil
+}
+</code></pre>
+<h3 id="пример-2-type-safe-queries-с-sqlc"><a class="header" href="#пример-2-type-safe-queries-с-sqlc">Пример 2: Type-safe queries с sqlc</a></h3>
+<p>Полная структура проекта с sqlc:</p>
+<pre><code>myapp/
+├── sqlc.yaml
+├── schema/
+│   └── 001_init.sql
+├── queries/
+│   ├── users.sql
+│   └── posts.sql
+├── internal/
+│   └── db/           # Сгенерированный код
+└── cmd/
+    └── api/
+        └── main.go
+</code></pre>
+<pre><code class="language-yaml"># sqlc.yaml
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "queries/"
+    schema: "schema/"
+    gen:
+      go:
+        package: "db"
+        out: "internal/db"
+        sql_package: "pgx/v5"
+        emit_json_tags: true
+        emit_empty_slices: true
+        emit_result_struct_pointers: true
+</code></pre>
+<pre><code class="language-sql">-- queries/users.sql
+
+-- name: GetUser :one
+SELECT * FROM users WHERE id = $1;
+
+-- name: ListUsers :many
+SELECT * FROM users ORDER BY created_at DESC LIMIT $1 OFFSET $2;
+
+-- name: CreateUser :one
+INSERT INTO users (email, name) VALUES ($1, $2) RETURNING *;
+
+-- name: UpdateUserName :exec
+UPDATE users SET name = $2 WHERE id = $1;
+
+-- name: DeleteUser :exec
+DELETE FROM users WHERE id = $1;
+
+-- name: GetUserWithPosts :many
+SELECT
+    u.id, u.email, u.name, u.created_at,
+    p.id as post_id, p.title, p.content
+FROM users u
+LEFT JOIN posts p ON p.user_id = u.id
+WHERE u.id = $1;
+</code></pre>
+<h3 id="пример-3-repository-с-транзакциями"><a class="header" href="#пример-3-repository-с-транзакциями">Пример 3: Repository с транзакциями</a></h3>
+<pre><code class="language-go">// internal/repository/txmanager.go
+package repository
+
+import (
+    "context"
+
+    "github.com/jackc/pgx/v5"
+    "github.com/jackc/pgx/v5/pgxpool"
+)
+
+type TxManager struct {
+    pool *pgxpool.Pool
+}
+
+func NewTxManager(pool *pgxpool.Pool) *TxManager {
+    return &amp;TxManager{pool: pool}
+}
+
+type TxFunc func(ctx context.Context, tx pgx.Tx) error
+
+func (m *TxManager) WithTx(ctx context.Context, fn TxFunc) error {
+    tx, err := m.pool.Begin(ctx)
+    if err != nil {
+        return err
+    }
+    defer tx.Rollback(ctx)
+
+    if err := fn(ctx, tx); err != nil {
+        return err
+    }
+
+    return tx.Commit(ctx)
+}
+
+// Использование
+type OrderService struct {
+    txManager *TxManager
+    orderRepo *OrderRepository
+    stockRepo *StockRepository
+}
+
+func (s *OrderService) CreateOrder(ctx context.Context, order Order) error {
+    return s.txManager.WithTx(ctx, func(ctx context.Context, tx pgx.Tx) error {
+        // Создаём заказ
+        if err := s.orderRepo.CreateWithTx(ctx, tx, &amp;order); err != nil {
+            return err
+        }
+
+        // Уменьшаем остатки
+        for _, item := range order.Items {
+            if err := s.stockRepo.DecrementWithTx(ctx, tx, item.ProductID, item.Quantity); err != nil {
+                return err // Автоматический rollback
+            }
+        }
+
+        return nil
+    })
+}
+</code></pre>
+<hr><!-- AUTO: NAV -->
+<p><strong>Вопросы?</strong> Открой issue на <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/issues">GitHub</a></p>
+<p><a href="./02_project_structure.html">← Назад: Структура проекта Go</a> | <a href="./04_validation_serialization.html">Вперёд: Валидация и сериализация →</a></p>
+<!-- /AUTO: NAV -->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part3-web-api/02_project_structure.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part3-web-api/04_validation_serialization.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part3-web-api/02_project_structure.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part3-web-api/04_validation_serialization.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

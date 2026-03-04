@@ -1,0 +1,971 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>4. Тестирование - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-e1a1ce5b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-c19b06e6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part5-project1-url-shortener/04_testing.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="4-тестирование-и-бенчмарки"><a class="header" href="#4-тестирование-и-бенчмарки">4. Тестирование и бенчмарки</a></h1>
+<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<ul>
+<li><a href="#%D1%81%D1%82%D1%80%D0%B0%D1%82%D0%B5%D0%B3%D0%B8%D1%8F-%D1%82%D0%B5%D1%81%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F">Стратегия тестирования</a></li>
+<li><a href="#unit-%D1%82%D0%B5%D1%81%D1%82%D1%8B-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%BD%D0%BE%D0%B3%D0%BE-%D1%81%D0%BB%D0%BE%D1%8F">Unit тесты сервисного слоя</a>
+<ul>
+<li><a href="#%D0%BC%D0%BE%D0%BA-%D1%80%D0%B5%D0%BF%D0%BE%D0%B7%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D1%8F">Мок репозитория</a></li>
+<li><a href="#%D1%82%D0%B5%D1%81%D1%82%D1%8B-createurl">Тесты CreateURL</a></li>
+<li><a href="#%D1%82%D0%B5%D1%81%D1%82-redirect-cache-aside">Тест Redirect (cache-aside)</a></li>
+<li><a href="#%D1%82%D0%B5%D1%81%D1%82-%D0%B3%D0%B5%D0%BD%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D0%B8-%D0%BA%D0%BE%D0%B4%D0%B0">Тест генерации кода</a></li>
+</ul>
+</li>
+<li><a href="#%D1%82%D0%B5%D1%81%D1%82%D1%8B-http-%D1%85%D1%8D%D0%BD%D0%B4%D0%BB%D0%B5%D1%80%D0%BE%D0%B2">Тесты HTTP хэндлеров</a></li>
+<li><a href="#integration-%D1%82%D0%B5%D1%81%D1%82%D1%8B-%D1%81-testcontainers-go">Integration тесты с testcontainers-go</a></li>
+<li><a href="#%D0%B1%D0%B5%D0%BD%D1%87%D0%BC%D0%B0%D1%80%D0%BA%D0%B8">Бенчмарки</a></li>
+<li><a href="#%D0%BF%D0%BE%D0%BA%D1%80%D1%8B%D1%82%D0%B8%D0%B5-%D0%BA%D0%BE%D0%B4%D0%B0">Покрытие кода</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0">Сравнительная таблица</a></li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<hr>
+<h2 id="стратегия-тестирования"><a class="header" href="#стратегия-тестирования">Стратегия тестирования</a></h2>
+<pre class="mermaid">graph TB
+    UT["Unit тесты&lt;br/&gt;service + codegen&lt;br/&gt;Быстрые, без зависимостей"]
+    HT["Handler тесты&lt;br/&gt;httptest.NewRecorder&lt;br/&gt;Мок сервиса"]
+    IT["Integration тесты&lt;br/&gt;testcontainers-go&lt;br/&gt;Реальные PG + Redis"]
+    BN["Бенчмарки&lt;br/&gt;Benchmark*&lt;br/&gt;Производительность"]
+
+    UT --&gt; HT --&gt; IT
+</pre>
+
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Тип</th><th>Инструмент</th><th>Что тестирует</th><th>Скорость</th></tr>
+</thead>
+<tbody>
+<tr><td>Unit</td><td><code>testing</code> + <code>testify</code></td><td>Бизнес-логика, алгоритмы</td><td>&lt; 1мс</td></tr>
+<tr><td>Handler</td><td><code>net/http/httptest</code></td><td>HTTP слой с моком</td><td>&lt; 5мс</td></tr>
+<tr><td>Integration</td><td><code>testcontainers-go</code></td><td>Полный стек</td><td>5-30с (холодный старт)</td></tr>
+<tr><td>Benchmark</td><td><code>testing.B</code></td><td>Производительность</td><td>По необходимости</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: <code>testing</code> + <code>testify</code> ≈ xUnit + FluentAssertions.
+<code>testcontainers-go</code> ≈ TestContainers.NET. Мок-объекты через интерфейсы — без Moq.</p>
+</blockquote>
+<hr>
+<h2 id="unit-тесты-сервисного-слоя"><a class="header" href="#unit-тесты-сервисного-слоя">Unit тесты сервисного слоя</a></h2>
+<p>В Go не нужны mock-библиотеки как Moq. Мок — это просто struct, реализующий интерфейс.</p>
+<h3 id="мок-репозитория"><a class="header" href="#мок-репозитория">Мок репозитория</a></h3>
+<p><strong>C# (Moq)</strong>:</p>
+<pre><code class="language-csharp">var mockRepo = new Mock&lt;IUrlRepository&gt;();
+mockRepo.Setup(r =&gt; r.GetByCodeAsync("abc123", It.IsAny&lt;CancellationToken&gt;()))
+        .ReturnsAsync(new Url { Code = "abc123", OriginalUrl = "https://go.dev" });
+</code></pre>
+<p><strong>Go (вручную)</strong>:</p>
+<pre><code class="language-go">// internal/domain/service_test.go
+package domain_test
+
+import (
+    "context"
+    "testing"
+
+    "github.com/stretchr/testify/assert"
+    "github.com/stretchr/testify/require"
+    "github.com/yourname/urlshortener/internal/domain"
+)
+
+// mockURLRepo — мок репозитория. Реализует domain.URLRepository.
+// Никаких библиотек — просто struct с полями-функциями для гибкости.
+type mockURLRepo struct {
+    getByCodeFn         func(ctx context.Context, code string) (domain.URL, error)
+    createFn            func(ctx context.Context, url domain.URL) (domain.URL, error)
+    incrementClickCountFn func(ctx context.Context, code string) error
+}
+
+func (m *mockURLRepo) GetByCode(ctx context.Context, code string) (domain.URL, error) {
+    if m.getByCodeFn != nil {
+        return m.getByCodeFn(ctx, code)
+    }
+    return domain.URL{}, domain.ErrNotFound
+}
+
+func (m *mockURLRepo) Create(ctx context.Context, url domain.URL) (domain.URL, error) {
+    if m.createFn != nil {
+        return m.createFn(ctx, url)
+    }
+    return url, nil
+}
+
+func (m *mockURLRepo) IncrementClickCount(ctx context.Context, code string) error {
+    if m.incrementClickCountFn != nil {
+        return m.incrementClickCountFn(ctx, code)
+    }
+    return nil
+}
+
+// mockCache — мок кэша.
+type mockCache struct {
+    getFn    func(ctx context.Context, code string) (string, error)
+    setFn    func(ctx context.Context, code, url string) error
+    deleteFn func(ctx context.Context, code string) error
+}
+
+func (m *mockCache) Get(ctx context.Context, code string) (string, error) {
+    if m.getFn != nil {
+        return m.getFn(ctx, code)
+    }
+    return "", domain.ErrNotFound
+}
+
+func (m *mockCache) Set(ctx context.Context, code, url string) error {
+    if m.setFn != nil {
+        return m.setFn(ctx, code, url)
+    }
+    return nil
+}
+
+func (m *mockCache) Delete(ctx context.Context, code string) error {
+    if m.deleteFn != nil {
+        return m.deleteFn(ctx, code)
+    }
+    return nil
+}
+</code></pre>
+<h3 id="тесты-createurl"><a class="header" href="#тесты-createurl">Тесты CreateURL</a></h3>
+<pre><code class="language-go">func TestURLService_CreateURL(t *testing.T) {
+    // Табличные тесты — идиоматичный Go подход
+    // Аналог [Theory] + [InlineData] в xUnit
+    tests := []struct {
+        name        string
+        originalURL string
+        wantErr     bool
+        errIs       error
+    }{
+        {
+            name:        "валидный http URL",
+            originalURL: "http://example.com/very/long/path",
+            wantErr:     false,
+        },
+        {
+            name:        "валидный https URL",
+            originalURL: "https://go.dev/doc",
+            wantErr:     false,
+        },
+        {
+            name:        "невалидный URL без схемы",
+            originalURL: "example.com",
+            wantErr:     true,
+            errIs:       domain.ErrInvalidURL,
+        },
+        {
+            name:        "пустой URL",
+            originalURL: "",
+            wantErr:     true,
+            errIs:       domain.ErrInvalidURL,
+        },
+        {
+            name:        "ftp схема не поддерживается",
+            originalURL: "ftp://files.example.com",
+            wantErr:     true,
+            errIs:       domain.ErrInvalidURL,
+        },
+    }
+
+    for _, tt := range tests {
+        t.Run(tt.name, func(t *testing.T) {
+            // Arrange: создаём сервис с моками
+            repo := &amp;mockURLRepo{
+                // Мок: код всегда свободен (GetByCode возвращает ErrNotFound)
+                getByCodeFn: func(_ context.Context, _ string) (domain.URL, error) {
+                    return domain.URL{}, domain.ErrNotFound
+                },
+                createFn: func(_ context.Context, url domain.URL) (domain.URL, error) {
+                    url.ID = 1
+                    return url, nil
+                },
+            }
+            cache := &amp;mockCache{}
+            svc := domain.NewURLService(repo, cache)
+
+            // Act
+            result, err := svc.CreateURL(context.Background(), tt.originalURL)
+
+            // Assert
+            if tt.wantErr {
+                require.Error(t, err)
+                if tt.errIs != nil {
+                    assert.ErrorIs(t, err, tt.errIs)
+                }
+                return
+            }
+
+            require.NoError(t, err)
+            assert.Equal(t, tt.originalURL, result.OriginalURL)
+            assert.NotEmpty(t, result.Code)
+            assert.Len(t, result.Code, 6)
+        })
+    }
+}
+</code></pre>
+<h3 id="тест-redirect-cache-aside"><a class="header" href="#тест-redirect-cache-aside">Тест Redirect (cache-aside)</a></h3>
+<pre><code class="language-go">func TestURLService_Redirect(t *testing.T) {
+    t.Run("кэш-попадание — не обращается к БД", func(t *testing.T) {
+        dbCalled := false
+
+        repo := &amp;mockURLRepo{
+            getByCodeFn: func(_ context.Context, _ string) (domain.URL, error) {
+                dbCalled = true // помечаем что БД была вызвана
+                return domain.URL{}, nil
+            },
+        }
+        cache := &amp;mockCache{
+            getFn: func(_ context.Context, code string) (string, error) {
+                // Кэш-попадание
+                return "https://go.dev", nil
+            },
+        }
+        svc := domain.NewURLService(repo, cache)
+
+        url, err := svc.Redirect(context.Background(), "abc123")
+
+        require.NoError(t, err)
+        assert.Equal(t, "https://go.dev", url)
+
+        // Даём горутинам время на выполнение (запись клика асинхронна)
+        // В production тестах используют sync-примитивы или faketime
+        time.Sleep(10 * time.Millisecond)
+        assert.False(t, dbCalled, "при кэш-попадании не должны ходить в БД")
+    })
+
+    t.Run("кэш-промах — обращается к БД и заполняет кэш", func(t *testing.T) {
+        setCalled := false
+
+        repo := &amp;mockURLRepo{
+            getByCodeFn: func(_ context.Context, code string) (domain.URL, error) {
+                return domain.URL{Code: code, OriginalURL: "https://go.dev"}, nil
+            },
+        }
+        cache := &amp;mockCache{
+            getFn: func(_ context.Context, _ string) (string, error) {
+                return "", domain.ErrNotFound // кэш-промах
+            },
+            setFn: func(_ context.Context, _, _ string) error {
+                setCalled = true
+                return nil
+            },
+        }
+        svc := domain.NewURLService(repo, cache)
+
+        url, err := svc.Redirect(context.Background(), "abc123")
+
+        require.NoError(t, err)
+        assert.Equal(t, "https://go.dev", url)
+
+        time.Sleep(10 * time.Millisecond)
+        assert.True(t, setCalled, "при промахе должны заполнить кэш")
+    })
+
+    t.Run("URL не найден — ErrNotFound", func(t *testing.T) {
+        repo := &amp;mockURLRepo{
+            getByCodeFn: func(_ context.Context, code string) (domain.URL, error) {
+                return domain.URL{}, domain.NewNotFoundError(code)
+            },
+        }
+        svc := domain.NewURLService(repo, &amp;mockCache{})
+
+        _, err := svc.Redirect(context.Background(), "unknown")
+
+        require.Error(t, err)
+        assert.ErrorIs(t, err, domain.ErrNotFound)
+    })
+}
+</code></pre>
+<h3 id="тест-генерации-кода"><a class="header" href="#тест-генерации-кода">Тест генерации кода</a></h3>
+<pre><code class="language-go">// internal/domain/codegen_test.go
+package domain_test
+
+import (
+    "strings"
+    "testing"
+
+    "github.com/stretchr/testify/assert"
+    "github.com/stretchr/testify/require"
+)
+
+func TestGenerateCode(t *testing.T) {
+    t.Run("длина кода 6 символов", func(t *testing.T) {
+        code, err := domain.GenerateCode()
+        require.NoError(t, err)
+        assert.Len(t, code, 6)
+    })
+
+    t.Run("только Base62 символы", func(t *testing.T) {
+        const validChars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        for range 100 {
+            code, err := domain.GenerateCode()
+            require.NoError(t, err)
+            for _, ch := range code {
+                assert.True(t, strings.ContainsRune(validChars, ch),
+                    "символ %q не из Base62 алфавита", ch)
+            }
+        }
+    })
+
+    t.Run("коды уникальны (статистически)", func(t *testing.T) {
+        const n = 1000
+        codes := make(map[string]struct{}, n)
+        for range n {
+            code, err := domain.GenerateCode()
+            require.NoError(t, err)
+            codes[code] = struct{}{}
+        }
+        // При 1000 генерациях вероятность коллизии крайне мала
+        assert.Greater(t, len(codes), 990,
+            "слишком много коллизий: %d уникальных из %d", len(codes), n)
+    })
+}
+</code></pre>
+<hr>
+<h2 id="тесты-http-хэндлеров"><a class="header" href="#тесты-http-хэндлеров">Тесты HTTP хэндлеров</a></h2>
+<p><code>httptest</code> — стандартный пакет для тестирования HTTP без запуска реального сервера.</p>
+<pre><code class="language-go">// internal/handler/url_test.go
+package handler_test
+
+import (
+    "bytes"
+    "context"
+    "encoding/json"
+    "errors"
+    "net/http"
+    "net/http/httptest"
+    "testing"
+
+    "github.com/stretchr/testify/assert"
+    "github.com/stretchr/testify/require"
+    "github.com/yourname/urlshortener/internal/domain"
+    "github.com/yourname/urlshortener/internal/handler"
+)
+
+// mockURLService — мок сервиса для тестов хэндлеров.
+type mockURLService struct {
+    createFn   func(ctx context.Context, url string) (handler.URLResult, error)
+    redirectFn func(ctx context.Context, code string) (string, error)
+    getStatsFn func(ctx context.Context, code string) (handler.StatsResult, error)
+}
+
+func (m *mockURLService) CreateURL(ctx context.Context, url string) (handler.URLResult, error) {
+    return m.createFn(ctx, url)
+}
+func (m *mockURLService) Redirect(ctx context.Context, code string) (string, error) {
+    return m.redirectFn(ctx, code)
+}
+func (m *mockURLService) GetStats(ctx context.Context, code string) (handler.StatsResult, error) {
+    return m.getStatsFn(ctx, code)
+}
+
+func TestURLHandler_CreateURL(t *testing.T) {
+    t.Run("успешное создание — 201 Created", func(t *testing.T) {
+        svc := &amp;mockURLService{
+            createFn: func(_ context.Context, url string) (handler.URLResult, error) {
+                return handler.URLResult{Code: "abc123", OriginalURL: url}, nil
+            },
+        }
+        h := handler.NewURLHandler(svc, "http://localhost:8080")
+
+        // Создаём тестовый запрос
+        body := bytes.NewBufferString(`{"url": "https://go.dev"}`)
+        req := httptest.NewRequest(http.MethodPost, "/api/urls", body)
+        req.Header.Set("Content-Type", "application/json")
+
+        // Recorder записывает ответ хэндлера
+        rec := httptest.NewRecorder()
+
+        h.CreateURL(rec, req)
+
+        assert.Equal(t, http.StatusCreated, rec.Code)
+
+        var resp map[string]string
+        require.NoError(t, json.NewDecoder(rec.Body).Decode(&amp;resp))
+        assert.Equal(t, "abc123", resp["code"])
+        assert.Equal(t, "http://localhost:8080/abc123", resp["short_url"])
+    })
+
+    t.Run("невалидный URL — 400 Bad Request", func(t *testing.T) {
+        svc := &amp;mockURLService{
+            createFn: func(_ context.Context, url string) (handler.URLResult, error) {
+                return handler.URLResult{}, fmt.Errorf("%w: no https", domain.ErrInvalidURL)
+            },
+        }
+        h := handler.NewURLHandler(svc, "http://localhost:8080")
+
+        body := bytes.NewBufferString(`{"url": "not-a-url"}`)
+        req := httptest.NewRequest(http.MethodPost, "/api/urls", body)
+        rec := httptest.NewRecorder()
+
+        h.CreateURL(rec, req)
+
+        assert.Equal(t, http.StatusBadRequest, rec.Code)
+    })
+
+    t.Run("невалидный JSON — 400 Bad Request", func(t *testing.T) {
+        svc := &amp;mockURLService{}
+        h := handler.NewURLHandler(svc, "http://localhost:8080")
+
+        body := bytes.NewBufferString(`{invalid json`)
+        req := httptest.NewRequest(http.MethodPost, "/api/urls", body)
+        rec := httptest.NewRecorder()
+
+        h.CreateURL(rec, req)
+
+        assert.Equal(t, http.StatusBadRequest, rec.Code)
+    })
+}
+
+func TestURLHandler_Redirect(t *testing.T) {
+    t.Run("редирект на оригинальный URL", func(t *testing.T) {
+        svc := &amp;mockURLService{
+            redirectFn: func(_ context.Context, code string) (string, error) {
+                return "https://go.dev", nil
+            },
+        }
+        h := handler.NewURLHandler(svc, "http://localhost:8080")
+
+        // Для path-параметров в net/http тестах используем SetPathValue (Go 1.22+)
+        req := httptest.NewRequest(http.MethodGet, "/abc123", nil)
+        req.SetPathValue("code", "abc123")
+        rec := httptest.NewRecorder()
+
+        h.Redirect(rec, req)
+
+        assert.Equal(t, http.StatusFound, rec.Code)
+        assert.Equal(t, "https://go.dev", rec.Header().Get("Location"))
+    })
+
+    t.Run("код не найден — 404", func(t *testing.T) {
+        svc := &amp;mockURLService{
+            redirectFn: func(_ context.Context, code string) (string, error) {
+                return "", domain.NewNotFoundError(code)
+            },
+        }
+        h := handler.NewURLHandler(svc, "http://localhost:8080")
+
+        req := httptest.NewRequest(http.MethodGet, "/unknown", nil)
+        req.SetPathValue("code", "unknown")
+        rec := httptest.NewRecorder()
+
+        h.Redirect(rec, req)
+
+        assert.Equal(t, http.StatusNotFound, rec.Code)
+    })
+}
+</code></pre>
+<hr>
+<h2 id="integration-тесты-с-testcontainers-go"><a class="header" href="#integration-тесты-с-testcontainers-go">Integration тесты с testcontainers-go</a></h2>
+<p>Integration тесты запускают реальные PostgreSQL и Redis в Docker-контейнерах.</p>
+<pre><code class="language-go">// internal/storage/postgres/url_repo_integration_test.go
+package postgres_test
+
+import (
+    "context"
+    "testing"
+
+    "github.com/stretchr/testify/assert"
+    "github.com/stretchr/testify/require"
+    "github.com/testcontainers/testcontainers-go"
+    "github.com/testcontainers/testcontainers-go/modules/postgres"
+    "github.com/yourname/urlshortener/internal/domain"
+    postgresRepo "github.com/yourname/urlshortener/internal/storage/postgres"
+)
+
+// TestMain запускается перед всеми тестами пакета.
+// Здесь можно настроить общий контейнер для всего пакета.
+func setupPostgres(t *testing.T) *pgxpool.Pool {
+    t.Helper()
+
+    ctx := context.Background()
+
+    // Запускаем PostgreSQL контейнер
+    pgContainer, err := postgres.RunContainer(ctx,
+        testcontainers.WithImage("postgres:16-alpine"),
+        postgres.WithDatabase("testdb"),
+        postgres.WithUsername("test"),
+        postgres.WithPassword("test"),
+        testcontainers.WithWaitStrategy(
+            wait.ForLog("database system is ready to accept connections").
+                WithOccurrence(2).
+                WithStartupTimeout(30*time.Second),
+        ),
+    )
+    require.NoError(t, err)
+
+    // Cleanup: останавливаем контейнер после теста
+    t.Cleanup(func() {
+        require.NoError(t, pgContainer.Terminate(ctx))
+    })
+
+    // Получаем строку подключения
+    connStr, err := pgContainer.ConnectionString(ctx, "sslmode=disable")
+    require.NoError(t, err)
+
+    // Создаём пул
+    pool, err := postgresRepo.NewPool(connStr)
+    require.NoError(t, err)
+    t.Cleanup(pool.Close)
+
+    // Применяем миграции
+    applyMigrations(t, pool)
+
+    return pool
+}
+
+func applyMigrations(t *testing.T, pool *pgxpool.Pool) {
+    t.Helper()
+    ctx := context.Background()
+
+    migrations := []string{
+        `CREATE TABLE IF NOT EXISTS urls (
+            id BIGSERIAL PRIMARY KEY,
+            code VARCHAR(10) NOT NULL UNIQUE,
+            original_url TEXT NOT NULL,
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        )`,
+        `CREATE TABLE IF NOT EXISTS url_clicks (
+            code VARCHAR(10) NOT NULL REFERENCES urls(code) ON DELETE CASCADE,
+            click_count BIGINT NOT NULL DEFAULT 0,
+            PRIMARY KEY (code)
+        )`,
+        `CREATE OR REPLACE FUNCTION increment_click(p_code VARCHAR)
+         RETURNS VOID AS $$
+         BEGIN
+             INSERT INTO url_clicks(code, click_count) VALUES (p_code, 1)
+             ON CONFLICT (code) DO UPDATE SET click_count = url_clicks.click_count + 1;
+         END;
+         $$ LANGUAGE plpgsql`,
+    }
+
+    for _, m := range migrations {
+        _, err := pool.Exec(ctx, m)
+        require.NoError(t, err)
+    }
+}
+
+func TestURLRepository_Integration(t *testing.T) {
+    // testcontainers требует Docker; пропускаем в CI без Docker
+    if testing.Short() {
+        t.Skip("пропускаем integration тесты в -short режиме")
+    }
+
+    pool := setupPostgres(t)
+    repo := postgresRepo.NewURLRepository(pool)
+    ctx := context.Background()
+
+    t.Run("Create и GetByCode", func(t *testing.T) {
+        // Arrange
+        toCreate := domain.URL{
+            Code:        "test01",
+            OriginalURL: "https://go.dev/doc",
+        }
+
+        // Act: Create
+        created, err := repo.Create(ctx, toCreate)
+        require.NoError(t, err)
+        assert.NotZero(t, created.ID)
+        assert.Equal(t, "test01", created.Code)
+
+        // Act: GetByCode
+        found, err := repo.GetByCode(ctx, "test01")
+        require.NoError(t, err)
+        assert.Equal(t, created.ID, found.ID)
+        assert.Equal(t, "https://go.dev/doc", found.OriginalURL)
+    })
+
+    t.Run("GetByCode — несуществующий код — ErrNotFound", func(t *testing.T) {
+        _, err := repo.GetByCode(ctx, "zzzzzz")
+        require.Error(t, err)
+        assert.ErrorIs(t, err, domain.ErrNotFound)
+    })
+
+    t.Run("IncrementClickCount — атомарный счётчик", func(t *testing.T) {
+        // Создаём URL
+        _, err := repo.Create(ctx, domain.URL{Code: "clktest", OriginalURL: "https://example.com"})
+        require.NoError(t, err)
+
+        // Инкрементируем 3 раза
+        for range 3 {
+            require.NoError(t, repo.IncrementClickCount(ctx, "clktest"))
+        }
+
+        found, err := repo.GetByCode(ctx, "clktest")
+        require.NoError(t, err)
+        assert.Equal(t, int64(3), found.ClickCount)
+    })
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong><code>testing.Short()</code></strong>: Флаг <code>-short</code> позволяет пропустить медленные тесты.
+Запуск без Docker: <code>go test -short ./...</code>
+Запуск всех тестов: <code>go test ./...</code>
+В C# аналог — <code>[Trait("Category", "Integration")]</code> + фильтры в <code>dotnet test</code>.</p>
+</blockquote>
+<hr>
+<h2 id="бенчмарки"><a class="header" href="#бенчмарки">Бенчмарки</a></h2>
+<pre><code class="language-go">// internal/domain/codegen_bench_test.go
+package domain_test
+
+import "testing"
+
+// BenchmarkGenerateCode измеряет скорость генерации кода.
+// Запуск: go test -bench=BenchmarkGenerateCode -benchmem ./internal/domain/
+func BenchmarkGenerateCode(b *testing.B) {
+    // b.N — число итераций, автоматически подбирается фреймворком
+    for b.Loop() { // Go 1.24+: b.Loop() вместо range b.N
+        _, _ = GenerateCode()
+    }
+}
+
+// BenchmarkGenerateCode_Parallel — параллельный бенчмарк.
+// Показывает производительность при конкурентных вызовах.
+func BenchmarkGenerateCode_Parallel(b *testing.B) {
+    b.RunParallel(func(pb *testing.PB) {
+        for pb.Next() {
+            _, _ = GenerateCode()
+        }
+    })
+}
+</code></pre>
+<pre><code class="language-go">// internal/handler/handler_bench_test.go
+package handler_test
+
+// BenchmarkCreateURLHandler измеряет throughput хэндлера.
+func BenchmarkCreateURLHandler(b *testing.B) {
+    svc := &amp;mockURLService{
+        createFn: func(_ context.Context, url string) (URLResult, error) {
+            return URLResult{Code: "abc123", OriginalURL: url}, nil
+        },
+    }
+    h := NewURLHandler(svc, "http://localhost:8080")
+
+    // Готовим запрос один раз — он будет переиспользоваться
+    bodyBytes := []byte(`{"url": "https://go.dev"}`)
+
+    b.ResetTimer() // не считаем время подготовки
+    for b.Loop() {
+        body := bytes.NewBuffer(bodyBytes)
+        req := httptest.NewRequest(http.MethodPost, "/api/urls", body)
+        req.Header.Set("Content-Type", "application/json")
+        rec := httptest.NewRecorder()
+        h.CreateURL(rec, req)
+    }
+}
+</code></pre>
+<p><strong>Пример вывода бенчмарков</strong>:</p>
+<pre><code>goos: linux
+goarch: amd64
+BenchmarkGenerateCode-8              2000000    650 ns/op    48 B/op    2 allocs/op
+BenchmarkGenerateCode_Parallel-8     8000000    180 ns/op    48 B/op    2 allocs/op
+BenchmarkCreateURLHandler-8           500000   2800 ns/op   1024 B/op    8 allocs/op
+</code></pre>
+<p>Интерпретация:</p>
+<ul>
+<li><code>650 ns/op</code> — 650 наносекунд на одну операцию (~1.5 млн/сек)</li>
+<li><code>48 B/op</code> — 48 байт аллокаций на операцию</li>
+<li><code>2 allocs/op</code> — 2 аллокации в heap на операцию</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Аналог в C#</strong>: <code>BenchmarkDotNet</code> — стандартный инструмент для бенчмарков.
+В Go бенчмарки встроены в <code>testing</code> — не нужны внешние библиотеки.</p>
+</blockquote>
+<hr>
+<h2 id="покрытие-кода"><a class="header" href="#покрытие-кода">Покрытие кода</a></h2>
+<pre><code class="language-bash"># Запустить тесты с покрытием
+go test -cover ./...
+
+# Подробный отчёт в браузере
+go test -coverprofile=coverage.out ./...
+go tool cover -html=coverage.out
+
+# Только unit тесты (без integration)
+go test -short -cover ./...
+</code></pre>
+<p><strong>Целевые показатели</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Пакет</th><th>Цель покрытия</th></tr>
+</thead>
+<tbody>
+<tr><td><code>internal/domain</code></td><td>&gt; 90%</td></tr>
+<tr><td><code>internal/handler</code></td><td>&gt; 80%</td></tr>
+<tr><td><code>internal/storage/postgres</code></td><td>&gt; 70% (integration)</td></tr>
+<tr><td><code>internal/storage/redis</code></td><td>&gt; 70% (integration)</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>⚠️ <strong>100% покрытие — не цель</strong>: тестируйте критичную бизнес-логику и граничные
+случаи, а не геттеры и логи. Аналогично принципу в C# — coverage metric не самоцель.</p>
+</blockquote>
+<hr>
+<h2 id="сравнительная-таблица"><a class="header" href="#сравнительная-таблица">Сравнительная таблица</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C#</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>Тестовый фреймворк</td><td>xUnit / NUnit</td><td><code>testing</code> (stdlib)</td></tr>
+<tr><td>Assertions</td><td>FluentAssertions</td><td><code>testify/assert</code></td></tr>
+<tr><td>Мок-объекты</td><td>Moq / NSubstitute</td><td>Ручные struct-и</td></tr>
+<tr><td>HTTP тесты</td><td><code>WebApplicationFactory</code></td><td><code>httptest.NewRecorder</code></td></tr>
+<tr><td>Integration тесты</td><td>TestContainers.NET</td><td><code>testcontainers-go</code></td></tr>
+<tr><td>Бенчмарки</td><td>BenchmarkDotNet</td><td><code>testing.B</code> (stdlib)</td></tr>
+<tr><td>Покрытие</td><td><code>dotnet test --collect:"Code Coverage"</code></td><td><code>go test -cover</code></td></tr>
+<tr><td>Параллельные тесты</td><td><code>[Fact(Parallel)]</code></td><td><code>t.Parallel()</code></td></tr>
+<tr><td>Пропуск тестов</td><td><code>Skip()</code></td><td><code>t.Skip()</code></td></tr>
+<tr><td>Short режим</td><td>Категории трейтов</td><td><code>-short</code> флаг</td></tr>
+<tr><td>Подтесты</td><td><code>[Theory]</code> / <code>[InlineData]</code></td><td><code>t.Run("name", func)</code></td></tr>
+<tr><td>Setup/Teardown</td><td><code>IClassFixture</code></td><td><code>TestMain</code> / <code>t.Cleanup</code></td></tr>
+</tbody>
+</table>
+</div>
+<hr><!-- AUTO: NAV -->
+<p><strong>Вопросы?</strong> Открой issue на <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/issues">GitHub</a></p>
+<p><a href="./03_http.html">← Назад: 3. HTTP слой: net/http и chi</a> | <a href="./05_deployment.html">Вперёд: 5. Деплой: Docker Compose и Production →</a></p>
+<!-- /AUTO: NAV -->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part5-project1-url-shortener/03_http.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part5-project1-url-shortener/05_deployment.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part5-project1-url-shortener/03_http.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part5-project1-url-shortener/05_deployment.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,3853 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>4.3 Очереди сообщений - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-e1a1ce5b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-c19b06e6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part4-infrastructure/03_message_queues.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="43-очереди-сообщений"><a class="header" href="#43-очереди-сообщений">4.3 Очереди сообщений</a></h1>
+<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<ul>
+<li><a href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5">Введение</a>
+<ul>
+<li><a href="#%D1%87%D1%82%D0%BE-%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B8%D1%82%D1%81%D1%8F-%D0%B2-%D0%B2%D0%B0%D1%88%D0%B5%D0%BC-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4%D0%B5">Что изменится в вашем подходе</a></li>
+</ul>
+</li>
+<li><a href="#%D1%8D%D0%BA%D0%BE%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0-c-vs-go">Экосистема: C# vs Go</a>
+<ul>
+<li><a href="#%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D0%BE%D0%B5-%D0%BE%D1%82%D0%BB%D0%B8%D1%87%D0%B8%D0%B5">Ключевое отличие</a></li>
+<li><a href="#%D0%B2-%D1%8D%D1%82%D0%BE%D0%BC-%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB%D0%B5-%D0%B2%D1%8B-%D0%BD%D0%B0%D1%83%D1%87%D0%B8%D1%82%D0%B5%D1%81%D1%8C">В этом разделе вы научитесь</a></li>
+</ul>
+</li>
+<li><a href="#apache-kafka-segmentiokafka-go">Apache Kafka (segmentio/kafka-go)</a>
+<ul>
+<li><a href="#%D0%BF%D0%BE%D1%87%D0%B5%D0%BC%D1%83-kafka-go">Почему kafka-go</a></li>
+<li><a href="#%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B8-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F">Подключение и конфигурация</a></li>
+<li><a href="#producer-%D0%BE%D1%82%D0%BF%D1%80%D0%B0%D0%B2%D0%BA%D0%B0-%D1%81%D0%BE%D0%BE%D0%B1%D1%89%D0%B5%D0%BD%D0%B8%D0%B9">Producer: отправка сообщений</a>
+<ul>
+<li><a href="#%D1%81%D0%B8%D0%BD%D1%85%D1%80%D0%BE%D0%BD%D0%BD%D0%B0%D1%8F-%D0%BE%D1%82%D0%BF%D1%80%D0%B0%D0%B2%D0%BA%D0%B0">Синхронная отправка</a></li>
+<li><a href="#%D0%B1%D0%B0%D1%82%D1%87%D0%B5%D0%B2%D0%B0%D1%8F-%D0%BE%D1%82%D0%BF%D1%80%D0%B0%D0%B2%D0%BA%D0%B0">Батчевая отправка</a></li>
+<li><a href="#%D1%81%D1%82%D1%80%D0%B0%D1%82%D0%B5%D0%B3%D0%B8%D0%B8-%D0%BF%D0%B0%D1%80%D1%82%D0%B8%D1%86%D0%B8%D0%BE%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F">Стратегии партиционирования</a></li>
+<li><a href="#%D0%B0%D1%81%D0%B8%D0%BD%D1%85%D1%80%D0%BE%D0%BD%D0%BD%D1%8B%D0%B9-producer-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-%D0%B3%D0%BE%D1%80%D1%83%D1%82%D0%B8%D0%BD%D1%8B">Асинхронный producer через горутины</a></li>
+</ul>
+</li>
+<li><a href="#consumer-%D0%BF%D0%BE%D1%82%D1%80%D0%B5%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81%D0%BE%D0%BE%D0%B1%D1%89%D0%B5%D0%BD%D0%B8%D0%B9">Consumer: потребление сообщений</a>
+<ul>
+<li><a href="#%D0%B1%D0%B0%D0%B7%D0%BE%D0%B2%D1%8B%D0%B9-consumer">Базовый consumer</a></li>
+<li><a href="#manual-commit-vs-auto-commit">Manual commit vs Auto commit</a></li>
+<li><a href="#%D0%BF%D0%B0%D1%80%D0%B0%D0%BB%D0%BB%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0-%D1%81-worker-pool">Параллельная обработка с worker pool</a></li>
+</ul>
+</li>
+<li><a href="#consumer-groups">Consumer Groups</a></li>
+<li><a href="#production-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F-kafka">Production конфигурация Kafka</a>
+<ul>
+<li><a href="#production-writer-producer">Production Writer (Producer)</a></li>
+<li><a href="#production-reader-consumer">Production Reader (Consumer)</a></li>
+<li><a href="#tls-%D0%B8-sasl-%D0%B0%D1%83%D1%82%D0%B5%D0%BD%D1%82%D0%B8%D1%84%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D1%8F">TLS и SASL аутентификация</a></li>
+</ul>
+</li>
+<li><a href="#error-handling-%D0%B8-dead-letter-topics">Error Handling и Dead Letter Topics</a>
+<ul>
+<li><a href="#%D0%BA%D0%BB%D0%B0%D1%81%D1%81%D0%B8%D1%84%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D1%8F-%D0%BE%D1%88%D0%B8%D0%B1%D0%BE%D0%BA">Классификация ошибок</a></li>
+<li><a href="#dead-letter-topic-%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F">Dead Letter Topic реализация</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#rabbitmq-amqp091-go">RabbitMQ (amqp091-go)</a>
+<ul>
+<li><a href="#%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B8-%D1%83%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB%D0%B0%D0%BC%D0%B8">Подключение и управление каналами</a>
+<ul>
+<li><a href="#%D0%B1%D0%B0%D0%B7%D0%BE%D0%B2%D0%BE%D0%B5-%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5">Базовое подключение</a></li>
+<li><a href="#%D0%BF%D1%83%D0%BB-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB%D0%BE%D0%B2">Пул каналов</a></li>
+</ul>
+</li>
+<li><a href="#exchanges-queues-bindings">Exchanges, Queues, Bindings</a>
+<ul>
+<li><a href="#%D1%82%D0%B8%D0%BF%D1%8B-exchange">Типы exchange</a></li>
+</ul>
+</li>
+<li><a href="#publishing-%D0%BF%D0%BE%D0%B4%D1%82%D0%B2%D0%B5%D1%80%D0%B6%D0%B4%D0%B5%D0%BD%D0%B8%D1%8F-%D0%B8-%D0%B3%D0%B0%D1%80%D0%B0%D0%BD%D1%82%D0%B8%D0%B8">Publishing: подтверждения и гарантии</a>
+<ul>
+<li><a href="#%D0%B1%D0%B0%D0%B7%D0%BE%D0%B2%D0%B0%D1%8F-%D0%BF%D1%83%D0%B1%D0%BB%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D1%8F">Базовая публикация</a></li>
+<li><a href="#publisher-confirms">Publisher Confirms</a></li>
+</ul>
+</li>
+<li><a href="#consuming-prefetch-acknack">Consuming: prefetch, ack/nack</a>
+<ul>
+<li><a href="#worker-pool-%D0%B4%D0%BB%D1%8F-%D0%BF%D0%B0%D1%80%D0%B0%D0%BB%D0%BB%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D0%B9-%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B8">Worker Pool для параллельной обработки</a></li>
+</ul>
+</li>
+<li><a href="#connection-recovery-%D0%B8-reconnection">Connection Recovery и Reconnection</a></li>
+<li><a href="#dead-letter-exchanges-dlx">Dead Letter Exchanges (DLX)</a>
+<ul>
+<li><a href="#%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0-dlx">Настройка DLX</a></li>
+<li><a href="#retry-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-%D1%86%D0%B5%D0%BF%D0%BE%D1%87%D0%BA%D1%83-dlx--ttl">Retry через цепочку DLX + TTL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#nats-natsgo">NATS (nats.go)</a>
+<ul>
+<li><a href="#core-nats-pubsub-%D0%B8-requestreply">Core NATS: Pub/Sub и Request/Reply</a>
+<ul>
+<li><a href="#pubsub">Pub/Sub</a></li>
+<li><a href="#queue-groups-%D0%B1%D0%B0%D0%BB%D0%B0%D0%BD%D1%81%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-%D0%BD%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BA%D0%B8">Queue Groups (балансировка нагрузки)</a></li>
+<li><a href="#requestreply-%D1%81%D0%B8%D0%BD%D1%85%D1%80%D0%BE%D0%BD%D0%BD%D1%8B%D0%B9-rpc">Request/Reply (синхронный RPC)</a></li>
+</ul>
+</li>
+<li><a href="#jetstream-%D0%BF%D0%B5%D1%80%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BD%D1%82%D0%BD%D1%8B%D0%B9-%D0%BE%D0%B1%D0%BC%D0%B5%D0%BD-%D1%81%D0%BE%D0%BE%D0%B1%D1%89%D0%B5%D0%BD%D0%B8%D1%8F%D0%BC%D0%B8">JetStream: персистентный обмен сообщениями</a>
+<ul>
+<li><a href="#consumer-%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81%D0%BE%D0%BE%D0%B1%D1%89%D0%B5%D0%BD%D0%B8%D0%B9-%D0%B8%D0%B7-jetstream">Consumer: получение сообщений из JetStream</a></li>
+</ul>
+</li>
+<li><a href="#push-vs-pull-consumers">Push vs Pull Consumers</a></li>
+<li><a href="#key-value-store-%D0%B8-object-store">Key-Value Store и Object Store</a></li>
+</ul>
+</li>
+<li><a href="#redis-streams">Redis Streams</a>
+<ul>
+<li><a href="#%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D0%BD%D1%8B%D0%B5-%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D0%B8-xadd-xread">Основные операции (XADD, XREAD)</a></li>
+<li><a href="#consumer-groups-redis">Consumer Groups (Redis)</a></li>
+<li><a href="#acknowledgment-%D0%B8-claiming">Acknowledgment и Claiming</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C-redis-streams">Когда использовать Redis Streams</a></li>
+</ul>
+</li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%82%D0%B5%D1%85%D0%BD%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D0%B9">Сравнение технологий</a>
+<ul>
+<li><a href="#%D1%81%D0%B2%D0%BE%D0%B4%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0">Сводная таблица</a></li>
+<li><a href="#%D0%B1%D0%BB%D0%BE%D0%BA-%D1%81%D1%85%D0%B5%D0%BC%D0%B0-%D0%B2%D1%8B%D0%B1%D0%BE%D1%80%D0%B0">Блок-схема выбора</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD%D1%8B-%D0%B8-best-practices">Паттерны и Best Practices</a>
+<ul>
+<li><a href="#%D0%B8%D0%B4%D0%B5%D0%BC%D0%BF%D0%BE%D1%82%D0%B5%D0%BD%D1%82%D0%BD%D0%BE%D1%81%D1%82%D1%8C-exactly-once-processing">Идемпотентность (Exactly-Once Processing)</a></li>
+<li><a href="#graceful-shutdown">Graceful Shutdown</a></li>
+<li><a href="#retry-%D1%81-exponential-backoff">Retry с Exponential Backoff</a></li>
+<li><a href="#dead-letter-queue">Dead Letter Queue</a></li>
+<li><a href="#%D1%81%D0%B5%D1%80%D0%B8%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D1%81%D0%BE%D0%BE%D0%B1%D1%89%D0%B5%D0%BD%D0%B8%D0%B9">Сериализация сообщений</a></li>
+<li><a href="#outbox-pattern">Outbox Pattern</a></li>
+<li><a href="#saga-pattern">Saga Pattern</a></li>
+</ul>
+</li>
+<li><a href="#production-concerns">Production Concerns</a>
+<ul>
+<li><a href="#%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3-%D1%81-prometheus">Мониторинг с Prometheus</a>
+<ul>
+<li><a href="#kafka-consumer-lag">Kafka Consumer Lag</a></li>
+</ul>
+</li>
+<li><a href="#opentelemetry-instrumentation">OpenTelemetry Instrumentation</a></li>
+<li><a href="#health-checks">Health Checks</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B">Практические примеры</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-event-driven-order-processing-kafka">Пример 1: Event-Driven Order Processing (Kafka)</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-task-queue-%D1%81-rabbitmq">Пример 2: Task Queue с RabbitMQ</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-real-time-notifications-nats">Пример 3: Real-Time Notifications (NATS)</a></li>
+</ul>
+</li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<p>В <a href="./02_caching.html">разделе 4.2</a> мы рассмотрели Pub/Sub в Redis и упомянули, что для надёжной доставки сообщений нужны специализированные решения. Очереди сообщений (Message Queues) — это фундамент асинхронной архитектуры: они позволяют сервисам обмениваться данными без прямой связи, обеспечивая надёжность, масштабируемость и устойчивость к сбоям.</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В .NET вы привыкли к <strong>MassTransit</strong> или <strong>NServiceBus</strong> — высокоуровневым абстракциям, которые скрывают детали транспорта. Вы регистрируете <code>IConsumer&lt;T&gt;</code> в DI, настраиваете retry policies, saga state machines, и фреймворк сам управляет подключениями, сериализацией, dead letter queues и consumer lifecycle. В Go <strong>нет аналога MassTransit</strong>. Вы работаете с клиентскими библиотеками напрямую — это больше кода, но полный контроль над поведением. Горутины делают consumer concurrency тривиальным, а отсутствие скрытой «магии» упрощает отладку.</p>
+</blockquote>
+<h3 id="что-изменится-в-вашем-подходе"><a class="header" href="#что-изменится-в-вашем-подходе">Что изменится в вашем подходе</a></h3>
+<p><strong>C# с MassTransit</strong>:</p>
+<pre><code class="language-csharp">// Регистрация — и всё работает «из коробки»
+services.AddMassTransit(x =&gt;
+{
+    x.AddConsumer&lt;OrderCreatedConsumer&gt;();
+    x.UsingRabbitMq((context, cfg) =&gt;
+    {
+        cfg.UseMessageRetry(r =&gt; r.Exponential(5, TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1), TimeSpan.FromSeconds(2)));
+        cfg.ConfigureEndpoints(context);
+    });
+});
+
+// Consumer — чистая бизнес-логика
+public class OrderCreatedConsumer : IConsumer&lt;OrderCreated&gt;
+{
+    public async Task Consume(ConsumeContext&lt;OrderCreated&gt; context)
+    {
+        // MassTransit сам десериализует, управляет retry, dead letter, tracing
+        await ProcessOrder(context.Message);
+    }
+}
+</code></pre>
+<p><strong>Go — явная реализация</strong>:</p>
+<pre><code class="language-go">// Подключение, consumer loop, retry, DLQ — всё вручную
+reader := kafka.NewReader(kafka.ReaderConfig{
+    Brokers: []string{"localhost:9092"},
+    Topic:   "orders.created",
+    GroupID: "order-processor",
+})
+defer reader.Close()
+
+for {
+    msg, err := reader.ReadMessage(ctx)
+    if err != nil {
+        break
+    }
+
+    if err := processOrder(msg); err != nil {
+        // Retry, DLQ — реализуем сами
+        handleError(ctx, msg, err)
+    }
+}
+</code></pre>
+<hr>
+<h2 id="экосистема-c-vs-go"><a class="header" href="#экосистема-c-vs-go">Экосистема: C# vs Go</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Концепция</th><th>C# (.NET)</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Абстракция</strong></td><td>MassTransit, NServiceBus</td><td>Нет аналога (явный код)</td></tr>
+<tr><td><strong>Kafka клиент</strong></td><td>Confluent.Kafka (через MassTransit)</td><td>segmentio/kafka-go, confluent-kafka-go</td></tr>
+<tr><td><strong>RabbitMQ клиент</strong></td><td>RabbitMQ.Client (через MassTransit)</td><td>amqp091-go</td></tr>
+<tr><td><strong>NATS клиент</strong></td><td>NATS.Client</td><td>nats.go</td></tr>
+<tr><td><strong>In-process очередь</strong></td><td><code>System.Threading.Channels</code></td><td>Go каналы (встроены в язык)</td></tr>
+<tr><td><strong>Consumer паттерн</strong></td><td><code>IConsumer&lt;T&gt;</code>, hosted service</td><td>Горутина + <code>for</code> loop</td></tr>
+<tr><td><strong>Retry / DLQ</strong></td><td>Встроено в MassTransit</td><td>Ручная реализация</td></tr>
+<tr><td><strong>Сериализация</strong></td><td>Автоматическая (System.Text.Json)</td><td>Ручная (encoding/json, protobuf)</td></tr>
+<tr><td><strong>Saga</strong></td><td>MassTransit Saga / Automatonymous</td><td>Ручная реализация</td></tr>
+<tr><td><strong>Health checks</strong></td><td><code>IHealthCheck</code></td><td>Ручная проверка или alexliesenfeld/health</td></tr>
+<tr><td><strong>Tracing</strong></td><td><code>UseOpenTelemetry()</code> в MassTransit</td><td>Ручная инструментация</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="ключевое-отличие"><a class="header" href="#ключевое-отличие">Ключевое отличие</a></h3>
+<p>В .NET <strong>фреймворк управляет всем жизненным циклом</strong>: подключение → десериализация → маршрутизация к consumer → retry при ошибке → DLQ при исчерпании попыток → метрики → трейсинг. Вы пишете только бизнес-логику.</p>
+<p>В Go <strong>вы управляете каждым шагом явно</strong>: создаёте подключение, читаете сообщения в цикле, десериализуете, обрабатываете ошибки, реализуете retry и DLQ. Это требует больше кода, но:</p>
+<ul>
+<li><strong>Нет скрытого поведения</strong> — легко отлаживать</li>
+<li><strong>Полный контроль</strong> над concurrency (горутины, worker pool)</li>
+<li><strong>Предсказуемая производительность</strong> — нет reflection, нет DI overhead</li>
+<li><strong>Простота</strong> — нет сложных конфигурационных цепочек</li>
+</ul>
+<blockquote>
+<p>⚠️ <strong>Распространённая ошибка C# разработчиков</strong>: искать “Go MassTransit” или пытаться создать аналогичную абстракцию. В Go-сообществе предпочитают явный код библиотечным фреймворкам. Напишите тонкую обёртку для вашего конкретного случая, а не универсальный фреймворк.</p>
+</blockquote>
+<h3 id="в-этом-разделе-вы-научитесь"><a class="header" href="#в-этом-разделе-вы-научитесь">В этом разделе вы научитесь</a></h3>
+<ul>
+<li>Работать с 4 системами обмена сообщениями: <strong>Kafka</strong>, <strong>RabbitMQ</strong>, <strong>NATS</strong>, <strong>Redis Streams</strong></li>
+<li>Реализовывать <strong>producer</strong> и <strong>consumer</strong> для каждой системы</li>
+<li>Настраивать <strong>production-конфигурацию</strong> (TLS, batching, compression)</li>
+<li>Реализовывать <strong>retry</strong>, <strong>dead letter queue</strong>, <strong>idempotency</strong></li>
+<li>Применять паттерны: <strong>Outbox</strong>, <strong>Saga</strong>, <strong>Graceful Shutdown</strong></li>
+<li>Инструментировать очереди через <strong>Prometheus</strong> и <strong>OpenTelemetry</strong></li>
+<li>Выбирать подходящую технологию для вашего сценария</li>
+</ul>
+<hr>
+<h2 id="apache-kafka-segmentiokafka-go"><a class="header" href="#apache-kafka-segmentiokafka-go">Apache Kafka (segmentio/kafka-go)</a></h2>
+<p>Apache Kafka — распределённый лог событий, оптимизированный для высокой пропускной способности и долгосрочного хранения. Kafka хранит сообщения на диске и позволяет перечитывать их — это делает его идеальным для event sourcing, stream processing и интеграции между микросервисами.</p>
+<h3 id="почему-kafka-go"><a class="header" href="#почему-kafka-go">Почему kafka-go</a></h3>
+<p>В Go-экосистеме существуют три основных Kafka-клиента:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Библиотека</th><th>CGo</th><th>API стиль</th><th>Статус</th><th>Когда использовать</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>segmentio/kafka-go</strong></td><td>Нет (pure Go)</td><td>Идиоматичный Go</td><td>Активная поддержка</td><td>Основной выбор для большинства проектов</td></tr>
+<tr><td><strong>confluent-kafka-go</strong></td><td>Да (librdkafka)</td><td>Обёртка над C</td><td>Активная поддержка</td><td>Нужны exactly-once транзакции, максимальная производительность</td></tr>
+<tr><td><strong>Shopify/sarama</strong></td><td>Нет (pure Go)</td><td>Низкоуровневый</td><td>IBM передала Shopify, менее активная</td><td>Legacy проекты</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Рекомендация</strong>: Используйте <code>segmentio/kafka-go</code> как основной клиент. Он не требует CGo (проще кросс-компиляция и Docker), имеет понятный API и активно поддерживается. <code>confluent-kafka-go</code> оправдан только если вам нужны exactly-once транзакции Kafka или вы уже используете librdkafka в инфраструктуре.</p>
+</blockquote>
+<p><strong>C# аналогия</strong>: В C# стандарт — <code>Confluent.Kafka</code>, который тоже обёртка над librdkafka. Разница в том, что в Go есть pure-Go альтернатива (kafka-go), которая проще в деплое.</p>
+<p>Установка:</p>
+<pre><code class="language-bash">go get github.com/segmentio/kafka-go
+</code></pre>
+<h3 id="подключение-и-конфигурация"><a class="header" href="#подключение-и-конфигурация">Подключение и конфигурация</a></h3>
+<p>kafka-go использует два основных типа: <code>kafka.Writer</code> для отправки и <code>kafka.Reader</code> для потребления. В отличие от Confluent.Kafka в C#, здесь нет единого «клиента» — producer и consumer полностью независимы.</p>
+<p><strong>C#</strong> (Confluent.Kafka):</p>
+<pre><code class="language-csharp">// Producer
+var config = new ProducerConfig
+{
+    BootstrapServers = "localhost:9092",
+    Acks = Acks.All,
+    EnableIdempotence = true
+};
+using var producer = new ProducerBuilder&lt;string, string&gt;(config).Build();
+
+// Consumer
+var consumerConfig = new ConsumerConfig
+{
+    BootstrapServers = "localhost:9092",
+    GroupId = "my-group",
+    AutoOffsetReset = AutoOffsetReset.Earliest
+};
+using var consumer = new ConsumerBuilder&lt;string, string&gt;(consumerConfig).Build();
+</code></pre>
+<p><strong>Go</strong> (kafka-go):</p>
+<pre><code class="language-go">package main
+
+import (
+    "context"
+    "log"
+    "time"
+
+    "github.com/segmentio/kafka-go"
+)
+
+func main() {
+    // Writer (producer) — автоматически управляет подключениями
+    writer := &amp;kafka.Writer{
+        Addr:         kafka.TCP("localhost:9092"),
+        Topic:        "orders",
+        Balancer:     &amp;kafka.LeastBytes{}, // Стратегия выбора партиции
+        BatchTimeout: 10 * time.Millisecond,
+        RequiredAcks: kafka.RequireAll, // Аналог Acks.All в C#
+    }
+    defer writer.Close()
+
+    // Reader (consumer) — привязан к топику и группе
+    reader := kafka.NewReader(kafka.ReaderConfig{
+        Brokers:        []string{"localhost:9092"},
+        Topic:          "orders",
+        GroupID:        "order-processor",
+        MinBytes:       1,              // Минимум 1 байт для fetch
+        MaxBytes:       10e6,           // Максимум 10 MB
+        CommitInterval: time.Second,    // Автоматический коммит каждую секунду
+        StartOffset:    kafka.FirstOffset, // Аналог AutoOffsetReset.Earliest
+    })
+    defer reader.Close()
+
+    log.Println("Kafka writer и reader созданы")
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Отличие от C#</strong>: В Confluent.Kafka вы создаёте <code>ProducerBuilder</code> и <code>ConsumerBuilder</code> с конфигурацией через словарь строк. В kafka-go конфигурация — типизированные структуры с автодополнением в IDE.</p>
+</blockquote>
+<h3 id="producer-отправка-сообщений"><a class="header" href="#producer-отправка-сообщений">Producer: отправка сообщений</a></h3>
+<h4 id="синхронная-отправка"><a class="header" href="#синхронная-отправка">Синхронная отправка</a></h4>
+<pre><code class="language-go">// Отправка одного сообщения с ожиданием подтверждения
+func sendOrder(ctx context.Context, w *kafka.Writer, order Order) error {
+    data, err := json.Marshal(order)
+    if err != nil {
+        return fmt.Errorf("сериализация заказа: %w", err)
+    }
+
+    err = w.WriteMessages(ctx, kafka.Message{
+        Key:   []byte(order.ID),     // Ключ определяет партицию
+        Value: data,
+        Headers: []kafka.Header{
+            {Key: "content-type", Value: []byte("application/json")},
+            {Key: "source", Value: []byte("order-service")},
+        },
+    })
+    if err != nil {
+        return fmt.Errorf("отправка в Kafka: %w", err)
+    }
+
+    return nil
+}
+</code></pre>
+<h4 id="батчевая-отправка"><a class="header" href="#батчевая-отправка">Батчевая отправка</a></h4>
+<pre><code class="language-go">// WriteMessages поддерживает отправку нескольких сообщений за раз
+func sendOrders(ctx context.Context, w *kafka.Writer, orders []Order) error {
+    messages := make([]kafka.Message, 0, len(orders))
+
+    for _, order := range orders {
+        data, err := json.Marshal(order)
+        if err != nil {
+            return fmt.Errorf("сериализация заказа %s: %w", order.ID, err)
+        }
+        messages = append(messages, kafka.Message{
+            Key:   []byte(order.ID),
+            Value: data,
+        })
+    }
+
+    // kafka-go автоматически группирует сообщения в батчи
+    // и отправляет их эффективно
+    return w.WriteMessages(ctx, messages...)
+}
+</code></pre>
+<h4 id="стратегии-партиционирования"><a class="header" href="#стратегии-партиционирования">Стратегии партиционирования</a></h4>
+<pre><code class="language-go">// Round-Robin — равномерное распределение
+writer := &amp;kafka.Writer{
+    Addr:     kafka.TCP("localhost:9092"),
+    Topic:    "events",
+    Balancer: &amp;kafka.RoundRobin{},
+}
+
+// По ключу — сообщения с одним ключом попадают в одну партицию
+// (гарантирует порядок для одного ключа)
+writer = &amp;kafka.Writer{
+    Addr:     kafka.TCP("localhost:9092"),
+    Topic:    "events",
+    Balancer: &amp;kafka.Hash{}, // Murmur2 хэш по ключу
+}
+
+// Least Bytes — в партицию с наименьшим объёмом данных
+writer = &amp;kafka.Writer{
+    Addr:     kafka.TCP("localhost:9092"),
+    Topic:    "events",
+    Balancer: &amp;kafka.LeastBytes{},
+}
+
+// Кастомный балансировщик
+type RegionBalancer struct{}
+
+func (b *RegionBalancer) Balance(msg kafka.Message, partitions ...int) int {
+    // Определяем партицию по региону из headers
+    for _, h := range msg.Headers {
+        if h.Key == "region" {
+            switch string(h.Value) {
+            case "eu":
+                return partitions[0]
+            case "us":
+                return partitions[1 % len(partitions)]
+            }
+        }
+    }
+    return partitions[0]
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: Если вам нужен строгий порядок сообщений для одной сущности (например, все события одного заказа), используйте <code>Hash</code> балансировщик и задавайте <code>Key</code> = ID сущности. Это гарантирует, что все сообщения с одним ключом попадут в одну партицию.</p>
+</blockquote>
+<h4 id="асинхронный-producer-через-горутины"><a class="header" href="#асинхронный-producer-через-горутины">Асинхронный producer через горутины</a></h4>
+<pre><code class="language-go">// Паттерн: буферизация через канал + горутина-writer
+type AsyncProducer struct {
+    writer *kafka.Writer
+    ch     chan kafka.Message
+    wg     sync.WaitGroup
+}
+
+func NewAsyncProducer(brokers []string, topic string, bufferSize int) *AsyncProducer {
+    p := &amp;AsyncProducer{
+        writer: &amp;kafka.Writer{
+            Addr:         kafka.TCP(brokers...),
+            Topic:        topic,
+            Balancer:     &amp;kafka.Hash{},
+            BatchTimeout: 50 * time.Millisecond,
+            RequiredAcks: kafka.RequireAll,
+        },
+        ch: make(chan kafka.Message, bufferSize),
+    }
+
+    p.wg.Add(1)
+    go p.run()
+
+    return p
+}
+
+func (p *AsyncProducer) run() {
+    defer p.wg.Done()
+
+    batch := make([]kafka.Message, 0, 100)
+    ticker := time.NewTicker(100 * time.Millisecond)
+    defer ticker.Stop()
+
+    for {
+        select {
+        case msg, ok := &lt;-p.ch:
+            if !ok {
+                // Канал закрыт — отправляем оставшиеся
+                if len(batch) &gt; 0 {
+                    p.flush(batch)
+                }
+                return
+            }
+            batch = append(batch, msg)
+            if len(batch) &gt;= 100 {
+                p.flush(batch)
+                batch = batch[:0]
+            }
+
+        case &lt;-ticker.C:
+            if len(batch) &gt; 0 {
+                p.flush(batch)
+                batch = batch[:0]
+            }
+        }
+    }
+}
+
+func (p *AsyncProducer) flush(batch []kafka.Message) {
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
+
+    if err := p.writer.WriteMessages(ctx, batch...); err != nil {
+        log.Printf("ошибка отправки батча (%d сообщений): %v", len(batch), err)
+    }
+}
+
+// Send — неблокирующая отправка (блокирует только если буфер полон)
+func (p *AsyncProducer) Send(msg kafka.Message) {
+    p.ch &lt;- msg
+}
+
+// Close — дожидается отправки всех сообщений
+func (p *AsyncProducer) Close() {
+    close(p.ch)
+    p.wg.Wait()
+    p.writer.Close()
+}
+</code></pre>
+<p><strong>Сравнение с C#</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# (Confluent.Kafka)</th><th>Go (kafka-go)</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Sync отправка</strong></td><td><code>ProduceAsync()</code> + <code>await</code></td><td><code>WriteMessages()</code></td></tr>
+<tr><td><strong>Async отправка</strong></td><td><code>Produce()</code> + callback</td><td>Канал + горутина</td></tr>
+<tr><td><strong>Батчинг</strong></td><td>Автоматический (linger.ms)</td><td>Автоматический (BatchTimeout)</td></tr>
+<tr><td><strong>Подтверждение</strong></td><td><code>DeliveryResult</code></td><td>Ошибка от <code>WriteMessages</code></td></tr>
+<tr><td><strong>Ключ</strong></td><td><code>Message&lt;TKey, TValue&gt;.Key</code></td><td><code>kafka.Message.Key</code> ([]byte)</td></tr>
+<tr><td><strong>Headers</strong></td><td><code>Headers</code> коллекция</td><td><code>[]kafka.Header</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="consumer-потребление-сообщений"><a class="header" href="#consumer-потребление-сообщений">Consumer: потребление сообщений</a></h3>
+<h4 id="базовый-consumer"><a class="header" href="#базовый-consumer">Базовый consumer</a></h4>
+<pre><code class="language-go">func consumeOrders(ctx context.Context) error {
+    reader := kafka.NewReader(kafka.ReaderConfig{
+        Brokers:  []string{"localhost:9092"},
+        Topic:    "orders",
+        GroupID:  "order-processor",
+        MinBytes: 1,
+        MaxBytes: 10e6,
+    })
+    defer reader.Close()
+
+    for {
+        // ReadMessage блокирует до получения сообщения или отмены контекста
+        msg, err := reader.ReadMessage(ctx)
+        if err != nil {
+            if errors.Is(err, context.Canceled) {
+                return nil // Штатное завершение
+            }
+            return fmt.Errorf("чтение из Kafka: %w", err)
+        }
+
+        var order Order
+        if err := json.Unmarshal(msg.Value, &amp;order); err != nil {
+            log.Printf("невалидное сообщение (offset=%d): %v", msg.Offset, err)
+            continue // Пропускаем невалидные — они не будут обработаны
+        }
+
+        if err := processOrder(ctx, order); err != nil {
+            log.Printf("ошибка обработки заказа %s: %v", order.ID, err)
+            // При ошибке обработки — сообщение уже прочитано
+            // Нужна стратегия: retry, DLQ или пропуск
+        }
+
+        log.Printf("обработан заказ %s (partition=%d, offset=%d)",
+            order.ID, msg.Partition, msg.Offset)
+    }
+}
+</code></pre>
+<h4 id="manual-commit-vs-auto-commit"><a class="header" href="#manual-commit-vs-auto-commit">Manual commit vs Auto commit</a></h4>
+<pre><code class="language-go">// Auto commit (по умолчанию) — ReadMessage автоматически коммитит offset
+reader := kafka.NewReader(kafka.ReaderConfig{
+    Brokers:        []string{"localhost:9092"},
+    Topic:          "orders",
+    GroupID:        "order-processor",
+    CommitInterval: time.Second, // Коммит каждую секунду
+})
+
+// Manual commit — для at-least-once гарантий
+reader = kafka.NewReader(kafka.ReaderConfig{
+    Brokers: []string{"localhost:9092"},
+    Topic:   "orders",
+    GroupID: "order-processor",
+    // CommitInterval: 0 — не задаём, коммитим вручную
+})
+
+for {
+    // FetchMessage НЕ коммитит offset (в отличие от ReadMessage)
+    msg, err := reader.FetchMessage(ctx)
+    if err != nil {
+        break
+    }
+
+    // Обрабатываем сообщение
+    if err := processOrder(ctx, msg); err != nil {
+        log.Printf("ошибка: %v", err)
+        continue // Не коммитим — при рестарте сообщение будет обработано повторно
+    }
+
+    // Коммитим только после успешной обработки
+    if err := reader.CommitMessages(ctx, msg); err != nil {
+        log.Printf("ошибка коммита offset: %v", err)
+    }
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В Confluent.Kafka вы управляете offset через <code>consumer.Commit()</code> или <code>EnableAutoCommit</code>. В kafka-go разница между <code>ReadMessage</code> (auto commit) и <code>FetchMessage</code> (manual commit) делает выбор явным.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>At-least-once</strong>: При manual commit сообщение может быть обработано повторно (crash между обработкой и коммитом). Реализуйте <strong>идемпотентность</strong> в consumer — см. раздел <a href="#идемпотентность-exactly-once-processing">Паттерны</a>.</p>
+</blockquote>
+<h4 id="параллельная-обработка-с-worker-pool"><a class="header" href="#параллельная-обработка-с-worker-pool">Параллельная обработка с worker pool</a></h4>
+<pre><code class="language-go">// Паттерн: reader читает из Kafka, workers обрабатывают параллельно
+func consumeWithWorkers(ctx context.Context, reader *kafka.Reader, workers int) error {
+    // Канал для передачи сообщений воркерам
+    jobs := make(chan kafka.Message, workers*2)
+
+    var wg sync.WaitGroup
+
+    // Запускаем worker pool
+    for i := 0; i &lt; workers; i++ {
+        wg.Add(1)
+        go func(workerID int) {
+            defer wg.Done()
+            for msg := range jobs {
+                if err := processMessage(ctx, msg); err != nil {
+                    log.Printf("[worker %d] ошибка обработки offset=%d: %v",
+                        workerID, msg.Offset, err)
+                    continue
+                }
+                // Коммитим offset после успешной обработки
+                if err := reader.CommitMessages(ctx, msg); err != nil {
+                    log.Printf("[worker %d] ошибка коммита: %v", workerID, err)
+                }
+            }
+        }(i)
+    }
+
+    // Читаем сообщения и передаём воркерам
+    for {
+        msg, err := reader.FetchMessage(ctx)
+        if err != nil {
+            if errors.Is(err, context.Canceled) {
+                break
+            }
+            return fmt.Errorf("чтение: %w", err)
+        }
+        jobs &lt;- msg
+    }
+
+    close(jobs)
+    wg.Wait()
+    return nil
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Предупреждение о порядке</strong>: При параллельной обработке порядок сообщений <strong>не гарантируется</strong>. Если порядок важен, обрабатывайте сообщения последовательно в рамках одной партиции. Вариант — создать отдельный worker на каждую партицию.</p>
+</blockquote>
+<h3 id="consumer-groups"><a class="header" href="#consumer-groups">Consumer Groups</a></h3>
+<p>Consumer groups позволяют масштабировать обработку: Kafka распределяет партиции между участниками группы. Каждая партиция обрабатывается ровно одним consumer в группе.</p>
+<pre><code class="language-go">// Несколько инстансов с одним GroupID автоматически делят партиции
+func startConsumer(ctx context.Context, brokers []string, groupID string) {
+    reader := kafka.NewReader(kafka.ReaderConfig{
+        Brokers: brokers,
+        Topic:   "events",
+        GroupID: groupID,          // Все инстансы с одним GroupID = одна группа
+
+        // Стратегия начала чтения для новых групп
+        StartOffset: kafka.FirstOffset, // Читать с начала (аналог Earliest)
+        // StartOffset: kafka.LastOffset, // Только новые (аналог Latest)
+
+        // Rebalance strategy
+        GroupBalancers: []kafka.GroupBalancer{
+            kafka.RangeGroupBalancer{},      // По умолчанию
+            kafka.RoundRobinGroupBalancer{}, // Равномерное распределение
+        },
+
+        // Heartbeat — как часто consumer сообщает, что жив
+        HeartbeatInterval: 3 * time.Second,
+        // Таймаут сессии — если нет heartbeat, consumer считается мёртвым
+        SessionTimeout: 30 * time.Second,
+        // Таймаут rebalance — сколько ждать присоединения всех consumers
+        RebalanceTimeout: 60 * time.Second,
+    })
+    defer reader.Close()
+
+    log.Printf("consumer %s запущен (группа: %s)", reader.Config().GroupID, groupID)
+
+    for {
+        msg, err := reader.FetchMessage(ctx)
+        if err != nil {
+            if errors.Is(err, context.Canceled) {
+                return
+            }
+            log.Printf("ошибка чтения: %v", err)
+            continue
+        }
+
+        log.Printf("partition=%d offset=%d key=%s",
+            msg.Partition, msg.Offset, string(msg.Key))
+
+        if err := reader.CommitMessages(ctx, msg); err != nil {
+            log.Printf("ошибка коммита: %v", err)
+        }
+    }
+}
+</code></pre>
+<p><strong>Масштабирование</strong>: Запустите N инстансов с одним <code>GroupID</code>, и Kafka автоматически распределит партиции. Максимальный параллелизм = количество партиций в топике.</p>
+<h3 id="production-конфигурация-kafka"><a class="header" href="#production-конфигурация-kafka">Production конфигурация Kafka</a></h3>
+<h4 id="production-writer-producer"><a class="header" href="#production-writer-producer">Production Writer (Producer)</a></h4>
+<pre><code class="language-go">func newProductionWriter(brokers []string, topic string) *kafka.Writer {
+    return &amp;kafka.Writer{
+        Addr:  kafka.TCP(brokers...),
+        Topic: topic,
+
+        // Балансировка — по ключу для сохранения порядка
+        Balancer: &amp;kafka.Hash{},
+
+        // Батчинг — накапливаем сообщения перед отправкой
+        BatchSize:    100,                   // До 100 сообщений в батче
+        BatchBytes:   1048576,               // До 1 MB в батче
+        BatchTimeout: 10 * time.Millisecond, // Максимум 10ms ожидания
+
+        // Надёжность
+        RequiredAcks: kafka.RequireAll,  // Все ISR реплики подтвердили
+        MaxAttempts:  10,                // Retry при transient ошибках
+        WriteTimeout: 10 * time.Second,
+        ReadTimeout:  10 * time.Second,
+
+        // Сжатие — уменьшает трафик и дисковое пространство
+        Compression: kafka.Zstd, // Лучшее соотношение сжатие/скорость
+
+        // Логирование
+        Logger:      kafka.LoggerFunc(log.Printf),
+        ErrorLogger: kafka.LoggerFunc(log.Printf),
+
+        // Автоматическое создание топика (отключить в production!)
+        AllowAutoTopicCreation: false,
+    }
+}
+</code></pre>
+<h4 id="production-reader-consumer"><a class="header" href="#production-reader-consumer">Production Reader (Consumer)</a></h4>
+<pre><code class="language-go">func newProductionReader(brokers []string, topic, groupID string) *kafka.Reader {
+    return kafka.NewReader(kafka.ReaderConfig{
+        Brokers: brokers,
+        Topic:   topic,
+        GroupID: groupID,
+
+        // Размер fetch
+        MinBytes: 1,          // Не ждать накопления
+        MaxBytes: 10 &lt;&lt; 20,   // 10 MB максимум за fetch
+
+        // Offset management
+        StartOffset:    kafka.LastOffset,  // Новые группы читают только новые
+        CommitInterval: 0,                 // Manual commit
+
+        // Таймауты
+        MaxWait:           500 * time.Millisecond,
+        HeartbeatInterval: 3 * time.Second,
+        SessionTimeout:    30 * time.Second,
+        RebalanceTimeout:  60 * time.Second,
+
+        // Retry
+        RetentionTime: 7 * 24 * time.Hour, // Хранить offset 7 дней
+
+        // Логирование
+        Logger:      kafka.LoggerFunc(log.Printf),
+        ErrorLogger: kafka.LoggerFunc(log.Printf),
+    })
+}
+</code></pre>
+<h4 id="tls-и-sasl-аутентификация"><a class="header" href="#tls-и-sasl-аутентификация">TLS и SASL аутентификация</a></h4>
+<pre><code class="language-go">import (
+    "crypto/tls"
+    "crypto/x509"
+    "os"
+
+    "github.com/segmentio/kafka-go"
+    "github.com/segmentio/kafka-go/sasl/scram"
+)
+
+func newTLSWriter(brokers []string, topic string) (*kafka.Writer, error) {
+    // Загружаем CA сертификат
+    caCert, err := os.ReadFile("/etc/kafka/ca.crt")
+    if err != nil {
+        return nil, fmt.Errorf("чтение CA сертификата: %w", err)
+    }
+    caCertPool := x509.NewCertPool()
+    caCertPool.AppendCertsFromPEM(caCert)
+
+    // SASL/SCRAM аутентификация
+    mechanism, err := scram.Mechanism(scram.SHA512,
+        os.Getenv("KAFKA_USERNAME"),
+        os.Getenv("KAFKA_PASSWORD"),
+    )
+    if err != nil {
+        return nil, fmt.Errorf("SASL механизм: %w", err)
+    }
+
+    // Dialer с TLS и SASL
+    dialer := &amp;kafka.Dialer{
+        SASLMechanism: mechanism,
+        TLS: &amp;tls.Config{
+            RootCAs: caCertPool,
+        },
+    }
+
+    transport := &amp;kafka.Transport{
+        TLS:  dialer.TLS,
+        SASL: mechanism,
+    }
+
+    return &amp;kafka.Writer{
+        Addr:      kafka.TCP(brokers...),
+        Topic:     topic,
+        Transport: transport,
+    }, nil
+}
+</code></pre>
+<h3 id="error-handling-и-dead-letter-topics"><a class="header" href="#error-handling-и-dead-letter-topics">Error Handling и Dead Letter Topics</a></h3>
+<p>В отличие от MassTransit, где <code>_error</code> и <code>_skipped</code> очереди создаются автоматически, в Go вы реализуете Dead Letter Topic (DLT) вручную.</p>
+<h4 id="классификация-ошибок"><a class="header" href="#классификация-ошибок">Классификация ошибок</a></h4>
+<pre><code class="language-go">// Transient ошибки — временные, имеет смысл retry
+// Permanent ошибки — повторная обработка не поможет
+
+type permanentError struct {
+    err error
+}
+
+func (e *permanentError) Error() string { return e.err.Error() }
+func (e *permanentError) Unwrap() error { return e.err }
+
+func isPermanent(err error) bool {
+    var pe *permanentError
+    return errors.As(err, &amp;pe)
+}
+
+// Примеры:
+// - JSON unmarshal error → permanent (данные невалидны)
+// - Database timeout → transient (повторить)
+// - Business rule violation → permanent
+// - Network error → transient
+</code></pre>
+<h4 id="dead-letter-topic-реализация"><a class="header" href="#dead-letter-topic-реализация">Dead Letter Topic реализация</a></h4>
+<pre><code class="language-go">type ConsumerWithDLT struct {
+    reader    *kafka.Reader
+    dlWriter  *kafka.Writer // Writer для Dead Letter Topic
+    maxRetry  int
+}
+
+func NewConsumerWithDLT(brokers []string, topic, groupID string, maxRetry int) *ConsumerWithDLT {
+    return &amp;ConsumerWithDLT{
+        reader: kafka.NewReader(kafka.ReaderConfig{
+            Brokers: brokers,
+            Topic:   topic,
+            GroupID: groupID,
+        }),
+        dlWriter: &amp;kafka.Writer{
+            Addr:  kafka.TCP(brokers...),
+            Topic: topic + ".dlq", // Конвенция: &lt;topic&gt;.dlq
+        },
+        maxRetry: maxRetry,
+    }
+}
+
+func (c *ConsumerWithDLT) Run(ctx context.Context) error {
+    defer c.reader.Close()
+    defer c.dlWriter.Close()
+
+    for {
+        msg, err := c.reader.FetchMessage(ctx)
+        if err != nil {
+            if errors.Is(err, context.Canceled) {
+                return nil
+            }
+            return fmt.Errorf("fetch: %w", err)
+        }
+
+        if err := c.processWithRetry(ctx, msg); err != nil {
+            // Все retry исчерпаны или permanent error — отправляем в DLT
+            if dlErr := c.sendToDLT(ctx, msg, err); dlErr != nil {
+                log.Printf("КРИТИЧНО: не удалось отправить в DLT: %v", dlErr)
+                // Не коммитим — сообщение будет обработано повторно
+                continue
+            }
+            log.Printf("сообщение отправлено в DLT (offset=%d): %v", msg.Offset, err)
+        }
+
+        // Коммитим offset (успех или отправка в DLT)
+        if err := c.reader.CommitMessages(ctx, msg); err != nil {
+            log.Printf("ошибка коммита: %v", err)
+        }
+    }
+}
+
+func (c *ConsumerWithDLT) processWithRetry(ctx context.Context, msg kafka.Message) error {
+    var lastErr error
+
+    for attempt := 0; attempt &lt;= c.maxRetry; attempt++ {
+        err := processMessage(ctx, msg)
+        if err == nil {
+            return nil
+        }
+
+        // Permanent error — не retry
+        if isPermanent(err) {
+            return err
+        }
+
+        lastErr = err
+        if attempt &lt; c.maxRetry {
+            // Exponential backoff: 100ms, 200ms, 400ms, 800ms, ...
+            backoff := time.Duration(100&lt;&lt;uint(attempt)) * time.Millisecond
+            log.Printf("retry %d/%d через %v: %v", attempt+1, c.maxRetry, backoff, err)
+
+            select {
+            case &lt;-time.After(backoff):
+            case &lt;-ctx.Done():
+                return ctx.Err()
+            }
+        }
+    }
+
+    return fmt.Errorf("исчерпаны retry (%d попыток): %w", c.maxRetry, lastErr)
+}
+
+func (c *ConsumerWithDLT) sendToDLT(ctx context.Context, original kafka.Message, processingErr error) error {
+    // Сохраняем контекст ошибки в headers
+    headers := make([]kafka.Header, len(original.Headers))
+    copy(headers, original.Headers)
+
+    headers = append(headers,
+        kafka.Header{Key: "dlq-error", Value: []byte(processingErr.Error())},
+        kafka.Header{Key: "dlq-original-topic", Value: []byte(original.Topic)},
+        kafka.Header{Key: "dlq-original-partition", Value: []byte(fmt.Sprintf("%d", original.Partition))},
+        kafka.Header{Key: "dlq-original-offset", Value: []byte(fmt.Sprintf("%d", original.Offset))},
+        kafka.Header{Key: "dlq-timestamp", Value: []byte(time.Now().UTC().Format(time.RFC3339))},
+    )
+
+    return c.dlWriter.WriteMessages(ctx, kafka.Message{
+        Key:     original.Key,
+        Value:   original.Value,
+        Headers: headers,
+    })
+}
+</code></pre>
+<p><strong>Сравнение с C# MassTransit</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# MassTransit</th><th>Go (ручная реализация)</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>DLQ создание</strong></td><td>Автоматически (<code>_error</code> queue)</td><td>Вручную (создать топик, написать логику)</td></tr>
+<tr><td><strong>Retry</strong></td><td><code>UseMessageRetry(r =&gt; r.Exponential(...))</code></td><td>Цикл с backoff</td></tr>
+<tr><td><strong>Error context</strong></td><td>Автоматически (exception details)</td><td>Headers с метаданными ошибки</td></tr>
+<tr><td><strong>Reprocessing</strong></td><td>MassTransit Retry/Redelivery</td><td>Читаем из DLT и отправляем обратно</td></tr>
+<tr><td><strong>Конфигурация</strong></td><td>Fluent API</td><td>Явный код</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Совет</strong>: Создайте утилиту для мониторинга DLT — Prometheus метрику <code>dlq_messages_total</code> и alert, когда DLT начинает расти.</p>
+</blockquote>
+<hr>
+<h2 id="rabbitmq-amqp091-go"><a class="header" href="#rabbitmq-amqp091-go">RabbitMQ (amqp091-go)</a></h2>
+<p>RabbitMQ — классический брокер сообщений, реализующий протокол AMQP 0.9.1. В отличие от Kafka (лог событий), RabbitMQ — это <strong>очередь</strong>: сообщение доставляется одному consumer и удаляется после подтверждения. RabbitMQ отлично подходит для task queues, RPC и сложной маршрутизации.</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: RabbitMQ — самый популярный брокер в .NET экосистеме. Вы наверняка работали с ним через MassTransit, который скрывает AMQP-детали (exchanges, bindings, channels). В Go вы работаете с AMQP напрямую — это означает, что вы должны понимать, как устроены exchanges и bindings.</p>
+</blockquote>
+<p>Установка:</p>
+<pre><code class="language-bash">go get github.com/rabbitmq/amqp091-go
+</code></pre>
+<h3 id="подключение-и-управление-каналами"><a class="header" href="#подключение-и-управление-каналами">Подключение и управление каналами</a></h3>
+<h4 id="базовое-подключение"><a class="header" href="#базовое-подключение">Базовое подключение</a></h4>
+<pre><code class="language-go">import amqp "github.com/rabbitmq/amqp091-go"
+
+func connectRabbitMQ(url string) (*amqp.Connection, *amqp.Channel, error) {
+    // Подключение к RabbitMQ
+    conn, err := amqp.Dial(url)
+    if err != nil {
+        return nil, nil, fmt.Errorf("подключение к RabbitMQ: %w", err)
+    }
+
+    // Создание канала — основной объект для операций
+    ch, err := conn.Channel()
+    if err != nil {
+        conn.Close()
+        return nil, nil, fmt.Errorf("создание канала: %w", err)
+    }
+
+    return conn, ch, nil
+}
+
+func main() {
+    conn, ch, err := connectRabbitMQ("amqp://guest:guest@localhost:5672/")
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer conn.Close()
+    defer ch.Close()
+
+    log.Println("подключение к RabbitMQ установлено")
+}
+</code></pre>
+<p><strong>C#</strong> (RabbitMQ.Client):</p>
+<pre><code class="language-csharp">var factory = new ConnectionFactory
+{
+    HostName = "localhost",
+    UserName = "guest",
+    Password = "guest"
+};
+await using var connection = await factory.CreateConnectionAsync();
+await using var channel = await connection.CreateChannelAsync();
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Критически важно</strong>: Каналы (<code>amqp.Channel</code>) <strong>НЕ goroutine-safe</strong>! Используйте один канал на горутину. Подключения (<code>amqp.Connection</code>) — потокобезопасны. В C# <code>IChannel</code> также не thread-safe, но MassTransit скрывает это за абстракцией.</p>
+</blockquote>
+<h4 id="пул-каналов"><a class="header" href="#пул-каналов">Пул каналов</a></h4>
+<pre><code class="language-go">// ChannelPool — безопасное управление каналами для concurrent доступа
+type ChannelPool struct {
+    conn *amqp.Connection
+    pool chan *amqp.Channel
+}
+
+func NewChannelPool(conn *amqp.Connection, size int) (*ChannelPool, error) {
+    pool := make(chan *amqp.Channel, size)
+
+    for i := 0; i &lt; size; i++ {
+        ch, err := conn.Channel()
+        if err != nil {
+            return nil, fmt.Errorf("создание канала %d: %w", i, err)
+        }
+        pool &lt;- ch
+    }
+
+    return &amp;ChannelPool{conn: conn, pool: pool}, nil
+}
+
+// Get — получить канал из пула (блокирует, если пул пуст)
+func (p *ChannelPool) Get() *amqp.Channel {
+    return &lt;-p.pool
+}
+
+// Put — вернуть канал в пул
+func (p *ChannelPool) Put(ch *amqp.Channel) {
+    // Проверяем, что канал ещё жив
+    if ch.IsClosed() {
+        newCh, err := p.conn.Channel()
+        if err != nil {
+            log.Printf("ошибка пересоздания канала: %v", err)
+            return
+        }
+        ch = newCh
+    }
+    p.pool &lt;- ch
+}
+
+// WithChannel — выполнить операцию с каналом из пула
+func (p *ChannelPool) WithChannel(fn func(*amqp.Channel) error) error {
+    ch := p.Get()
+    defer p.Put(ch)
+    return fn(ch)
+}
+
+func (p *ChannelPool) Close() {
+    close(p.pool)
+    for ch := range p.pool {
+        ch.Close()
+    }
+}
+</code></pre>
+<h3 id="exchanges-queues-bindings"><a class="header" href="#exchanges-queues-bindings">Exchanges, Queues, Bindings</a></h3>
+<p>RabbitMQ использует модель exchange → binding → queue. Сообщения отправляются в exchange, который маршрутизирует их в очереди через bindings.</p>
+<h4 id="типы-exchange"><a class="header" href="#типы-exchange">Типы exchange</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Тип</th><th>Маршрутизация</th><th>Аналог в C# MassTransit</th><th>Пример использования</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>direct</strong></td><td>По точному routing key</td><td>Endpoint name</td><td>Точечная доставка</td></tr>
+<tr><td><strong>fanout</strong></td><td>Во все привязанные очереди</td><td><code>Publish&lt;T&gt;()</code> (все consumers)</td><td>Broadcast, notifications</td></tr>
+<tr><td><strong>topic</strong></td><td>По паттерну routing key</td><td><code>Publish&lt;T&gt;()</code> с фильтром</td><td>Логирование по уровням</td></tr>
+<tr><td><strong>headers</strong></td><td>По headers сообщения</td><td>Редко используется</td><td>Сложная маршрутизация</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-go">func setupTopology(ch *amqp.Channel) error {
+    // Объявляем exchange
+    err := ch.ExchangeDeclare(
+        "orders",  // Имя
+        "topic",   // Тип
+        true,      // Durable — переживёт рестарт RabbitMQ
+        false,     // Auto-delete — не удалять при отсутствии bindings
+        false,     // Internal — доступен для publish
+        false,     // No-wait — ждать подтверждения от сервера
+        nil,       // Arguments
+    )
+    if err != nil {
+        return fmt.Errorf("exchange declare: %w", err)
+    }
+
+    // Объявляем очередь
+    q, err := ch.QueueDeclare(
+        "order-processor", // Имя очереди
+        true,              // Durable
+        false,             // Auto-delete
+        false,             // Exclusive (только одно подключение)
+        false,             // No-wait
+        amqp.Table{
+            // Dead letter exchange для отклонённых сообщений
+            "x-dead-letter-exchange":    "orders.dlx",
+            "x-dead-letter-routing-key": "dead",
+            // Максимальная длина очереди (overflow → DLX)
+            "x-max-length": int32(100000),
+            // TTL сообщений — 24 часа
+            "x-message-ttl": int32(86400000),
+        },
+    )
+    if err != nil {
+        return fmt.Errorf("queue declare: %w", err)
+    }
+
+    // Привязываем очередь к exchange с routing key паттерном
+    err = ch.QueueBind(
+        q.Name,            // Очередь
+        "order.created",   // Routing key (паттерн для topic exchange)
+        "orders",          // Exchange
+        false,             // No-wait
+        nil,               // Arguments
+    )
+    if err != nil {
+        return fmt.Errorf("queue bind: %w", err)
+    }
+
+    // Для topic exchange: привязка с wildcard
+    // "order.*" — order.created, order.updated, order.deleted
+    // "order.#" — order.created, order.payment.completed
+    err = ch.QueueBind(q.Name, "order.*", "orders", false, nil)
+
+    log.Printf("топология настроена: exchange=%s, queue=%s", "orders", q.Name)
+    return nil
+}
+</code></pre>
+<h3 id="publishing-подтверждения-и-гарантии"><a class="header" href="#publishing-подтверждения-и-гарантии">Publishing: подтверждения и гарантии</a></h3>
+<h4 id="базовая-публикация"><a class="header" href="#базовая-публикация">Базовая публикация</a></h4>
+<pre><code class="language-go">func publishOrder(ctx context.Context, ch *amqp.Channel, order Order) error {
+    body, err := json.Marshal(order)
+    if err != nil {
+        return fmt.Errorf("сериализация: %w", err)
+    }
+
+    return ch.PublishWithContext(ctx,
+        "orders",        // Exchange
+        "order.created", // Routing key
+        false,           // Mandatory — вернуть, если нет подходящей очереди
+        false,           // Immediate (deprecated в RabbitMQ 3.x)
+        amqp.Publishing{
+            ContentType:  "application/json",
+            DeliveryMode: amqp.Persistent, // Сообщение сохраняется на диск
+            MessageId:    uuid.NewString(), // Уникальный ID для идемпотентности
+            Timestamp:    time.Now(),
+            Type:         "OrderCreated",
+            Body:         body,
+        },
+    )
+}
+</code></pre>
+<h4 id="publisher-confirms"><a class="header" href="#publisher-confirms">Publisher Confirms</a></h4>
+<pre><code class="language-go">// Publisher confirms — RabbitMQ подтверждает, что сообщение записано
+func publishWithConfirm(ctx context.Context, ch *amqp.Channel, order Order) error {
+    // Включаем режим confirm
+    if err := ch.Confirm(false); err != nil {
+        return fmt.Errorf("включение confirm mode: %w", err)
+    }
+
+    // Канал для получения подтверждений
+    confirms := ch.NotifyPublish(make(chan amqp.Confirmation, 1))
+
+    body, err := json.Marshal(order)
+    if err != nil {
+        return fmt.Errorf("сериализация: %w", err)
+    }
+
+    err = ch.PublishWithContext(ctx,
+        "orders",
+        "order.created",
+        true, // Mandatory — обязательно доставить
+        false,
+        amqp.Publishing{
+            ContentType:  "application/json",
+            DeliveryMode: amqp.Persistent,
+            MessageId:    uuid.NewString(),
+            Body:         body,
+        },
+    )
+    if err != nil {
+        return fmt.Errorf("publish: %w", err)
+    }
+
+    // Ждём подтверждение от RabbitMQ
+    select {
+    case confirm := &lt;-confirms:
+        if !confirm.Ack {
+            return fmt.Errorf("сообщение не подтверждено (nack)")
+        }
+        return nil
+    case &lt;-ctx.Done():
+        return ctx.Err()
+    case &lt;-time.After(5 * time.Second):
+        return fmt.Errorf("таймаут ожидания подтверждения")
+    }
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В RabbitMQ.Client это <code>channel.WaitForConfirmsAsync()</code>. MassTransit включает publisher confirms автоматически. В Go — явная настройка через <code>ch.Confirm()</code>.</p>
+</blockquote>
+<h3 id="consuming-prefetch-acknack"><a class="header" href="#consuming-prefetch-acknack">Consuming: prefetch, ack/nack</a></h3>
+<pre><code class="language-go">func consumeOrders(ctx context.Context, ch *amqp.Channel) error {
+    // Prefetch — ограничиваем количество unacked сообщений
+    // Это критично для backpressure и равномерного распределения
+    err := ch.Qos(
+        10,    // Prefetch count — максимум 10 unacked на consumer
+        0,     // Prefetch size — 0 = без ограничения по размеру
+        false, // Global — false = per consumer, true = per channel
+    )
+    if err != nil {
+        return fmt.Errorf("настройка QoS: %w", err)
+    }
+
+    // Начинаем потребление
+    deliveries, err := ch.Consume(
+        "order-processor", // Очередь
+        "worker-1",        // Consumer tag (уникальный идентификатор)
+        false,             // Auto-ack: false = manual ack
+        false,             // Exclusive
+        false,             // No-local
+        false,             // No-wait
+        nil,               // Arguments
+    )
+    if err != nil {
+        return fmt.Errorf("consume: %w", err)
+    }
+
+    for {
+        select {
+        case d, ok := &lt;-deliveries:
+            if !ok {
+                return fmt.Errorf("канал deliveries закрыт")
+            }
+
+            var order Order
+            if err := json.Unmarshal(d.Body, &amp;order); err != nil {
+                // Невалидные данные — reject без requeue (пойдут в DLX)
+                log.Printf("невалидное сообщение: %v", err)
+                d.Reject(false) // false = не возвращать в очередь
+                continue
+            }
+
+            if err := processOrder(ctx, order); err != nil {
+                // Ошибка обработки — nack с requeue для retry
+                log.Printf("ошибка обработки: %v", err)
+                d.Nack(false, true) // multiple=false, requeue=true
+                continue
+            }
+
+            // Успешно — ack
+            d.Ack(false) // multiple=false (подтверждаем только это сообщение)
+
+        case &lt;-ctx.Done():
+            return nil
+        }
+    }
+}
+</code></pre>
+<h4 id="worker-pool-для-параллельной-обработки"><a class="header" href="#worker-pool-для-параллельной-обработки">Worker Pool для параллельной обработки</a></h4>
+<pre><code class="language-go">func consumeWithWorkerPool(ctx context.Context, ch *amqp.Channel, workers int) error {
+    // Prefetch = 2x workers — всегда есть сообщения для обработки
+    if err := ch.Qos(workers*2, 0, false); err != nil {
+        return fmt.Errorf("QoS: %w", err)
+    }
+
+    deliveries, err := ch.Consume("order-processor", "", false, false, false, false, nil)
+    if err != nil {
+        return fmt.Errorf("consume: %w", err)
+    }
+
+    var wg sync.WaitGroup
+    // Запускаем workers горутин, каждая читает из одного канала deliveries
+    for i := 0; i &lt; workers; i++ {
+        wg.Add(1)
+        go func(workerID int) {
+            defer wg.Done()
+            for {
+                select {
+                case d, ok := &lt;-deliveries:
+                    if !ok {
+                        return
+                    }
+                    if err := processDelivery(ctx, d); err != nil {
+                        log.Printf("[worker %d] ошибка: %v", workerID, err)
+                        d.Nack(false, true)
+                    } else {
+                        d.Ack(false)
+                    }
+                case &lt;-ctx.Done():
+                    return
+                }
+            }
+        }(i)
+    }
+
+    wg.Wait()
+    return nil
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Подсказка по prefetch</strong>: Устанавливайте <code>prefetch = 2 * workers</code>. Это обеспечит, что каждый worker всегда имеет следующее сообщение для обработки, минимизируя простой.</p>
+</blockquote>
+<p><strong>Сравнение ack/nack с C#</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Действие</th><th>C# (RabbitMQ.Client)</th><th>Go (amqp091-go)</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Подтвердить</strong></td><td><code>channel.BasicAckAsync(tag, false)</code></td><td><code>d.Ack(false)</code></td></tr>
+<tr><td><strong>Отклонить + requeue</strong></td><td><code>channel.BasicNackAsync(tag, false, true)</code></td><td><code>d.Nack(false, true)</code></td></tr>
+<tr><td><strong>Отклонить без requeue</strong></td><td><code>channel.BasicRejectAsync(tag, false)</code></td><td><code>d.Reject(false)</code></td></tr>
+<tr><td><strong>Auto ack</strong></td><td><code>autoAck: true</code> в <code>BasicConsumeAsync</code></td><td><code>autoAck: true</code> в <code>Consume</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="connection-recovery-и-reconnection"><a class="header" href="#connection-recovery-и-reconnection">Connection Recovery и Reconnection</a></h3>
+<p>Это <strong>самый важный</strong> production-аспект RabbitMQ в Go. В отличие от C#, где <code>RabbitMQ.Client</code> имеет <code>AutomaticRecoveryEnabled = true</code>, библиотека <code>amqp091-go</code> <strong>не реализует автоматическое переподключение</strong>.</p>
+<blockquote>
+<p>⚠️ <strong>Критическое отличие от C#</strong>: В .NET вы устанавливаете <code>factory.AutomaticRecoveryEnabled = true</code> и забываете. В Go вы <strong>обязаны</strong> реализовать reconnection самостоятельно. Без этого любой сетевой сбой убьёт ваш сервис.</p>
+</blockquote>
+<pre><code class="language-go">// RabbitMQClient — обёртка с автоматическим переподключением
+type RabbitMQClient struct {
+    url        string
+    conn       *amqp.Connection
+    ch         *amqp.Channel
+    mu         sync.RWMutex
+    done       chan struct{}
+    notifyClose chan *amqp.Error
+}
+
+func NewRabbitMQClient(url string) (*RabbitMQClient, error) {
+    client := &amp;RabbitMQClient{
+        url:  url,
+        done: make(chan struct{}),
+    }
+
+    if err := client.connect(); err != nil {
+        return nil, err
+    }
+
+    go client.reconnectLoop()
+
+    return client, nil
+}
+
+func (c *RabbitMQClient) connect() error {
+    conn, err := amqp.Dial(c.url)
+    if err != nil {
+        return fmt.Errorf("dial: %w", err)
+    }
+
+    ch, err := conn.Channel()
+    if err != nil {
+        conn.Close()
+        return fmt.Errorf("channel: %w", err)
+    }
+
+    c.mu.Lock()
+    c.conn = conn
+    c.ch = ch
+    c.notifyClose = conn.NotifyClose(make(chan *amqp.Error, 1))
+    c.mu.Unlock()
+
+    log.Println("подключение к RabbitMQ установлено")
+    return nil
+}
+
+func (c *RabbitMQClient) reconnectLoop() {
+    for {
+        select {
+        case &lt;-c.done:
+            return
+        case amqpErr, ok := &lt;-c.notifyClose:
+            if !ok {
+                return // Штатное закрытие
+            }
+            log.Printf("соединение с RabbitMQ потеряно: %v", amqpErr)
+
+            // Exponential backoff с jitter
+            for attempt := 0; ; attempt++ {
+                backoff := time.Duration(math.Min(
+                    float64(time.Second)*math.Pow(2, float64(attempt)),
+                    float64(30*time.Second),
+                ))
+                // Добавляем jitter ±25%
+                jitter := time.Duration(rand.Int63n(int64(backoff) / 2))
+                backoff = backoff + jitter
+
+                log.Printf("переподключение к RabbitMQ через %v (попытка %d)...", backoff, attempt+1)
+
+                select {
+                case &lt;-time.After(backoff):
+                case &lt;-c.done:
+                    return
+                }
+
+                if err := c.connect(); err != nil {
+                    log.Printf("ошибка переподключения: %v", err)
+                    continue
+                }
+
+                log.Println("переподключение к RabbitMQ успешно")
+                break
+            }
+        }
+    }
+}
+
+// Channel — получить текущий канал (потокобезопасно)
+func (c *RabbitMQClient) Channel() *amqp.Channel {
+    c.mu.RLock()
+    defer c.mu.RUnlock()
+    return c.ch
+}
+
+// Publish — публикация с автоматическим retry при потере соединения
+func (c *RabbitMQClient) Publish(ctx context.Context, exchange, routingKey string, msg amqp.Publishing) error {
+    for attempt := 0; attempt &lt; 3; attempt++ {
+        ch := c.Channel()
+        if ch == nil {
+            time.Sleep(time.Second)
+            continue
+        }
+
+        err := ch.PublishWithContext(ctx, exchange, routingKey, false, false, msg)
+        if err == nil {
+            return nil
+        }
+
+        // Если ошибка связана с закрытым каналом, ждём reconnect
+        if errors.Is(err, amqp.ErrClosed) {
+            log.Printf("канал закрыт, ожидаем переподключения...")
+            time.Sleep(time.Second * time.Duration(attempt+1))
+            continue
+        }
+
+        return err
+    }
+
+    return fmt.Errorf("publish не удался после 3 попыток")
+}
+
+func (c *RabbitMQClient) Close() {
+    close(c.done)
+    c.mu.Lock()
+    defer c.mu.Unlock()
+    if c.ch != nil {
+        c.ch.Close()
+    }
+    if c.conn != nil {
+        c.conn.Close()
+    }
+}
+</code></pre>
+<h3 id="dead-letter-exchanges-dlx"><a class="header" href="#dead-letter-exchanges-dlx">Dead Letter Exchanges (DLX)</a></h3>
+<p>DLX — механизм RabbitMQ для обработки сообщений, которые не удалось доставить: отклонённые (<code>reject</code>/<code>nack</code> без requeue), expired (TTL) или overflow (очередь переполнена).</p>
+<pre><code>┌─────────┐     publish     ┌──────────┐     binding     ┌────────────┐
+│ Producer │ ──────────────→ │ Exchange │ ──────────────→ │   Queue    │
+└─────────┘                  └──────────┘                 └────────────┘
+                                                               │
+                                                          reject/nack
+                                                          TTL expired
+                                                          overflow
+                                                               │
+                                                               ▼
+                                                         ┌──────────┐     ┌──────────┐
+                                                         │   DLX    │ ──→ │ DLQ      │
+                                                         └──────────┘     └──────────┘
+</code></pre>
+<h4 id="настройка-dlx"><a class="header" href="#настройка-dlx">Настройка DLX</a></h4>
+<pre><code class="language-go">func setupDLX(ch *amqp.Channel) error {
+    // 1. Создаём Dead Letter Exchange
+    err := ch.ExchangeDeclare("orders.dlx", "direct", true, false, false, false, nil)
+    if err != nil {
+        return fmt.Errorf("DLX exchange: %w", err)
+    }
+
+    // 2. Создаём Dead Letter Queue
+    _, err = ch.QueueDeclare("orders.dlq", true, false, false, false, nil)
+    if err != nil {
+        return fmt.Errorf("DLQ queue: %w", err)
+    }
+
+    // 3. Привязываем DLQ к DLX
+    err = ch.QueueBind("orders.dlq", "dead", "orders.dlx", false, nil)
+    if err != nil {
+        return fmt.Errorf("DLQ bind: %w", err)
+    }
+
+    // 4. Основная очередь с указанием DLX
+    _, err = ch.QueueDeclare(
+        "order-processor",
+        true, false, false, false,
+        amqp.Table{
+            "x-dead-letter-exchange":    "orders.dlx",
+            "x-dead-letter-routing-key": "dead",
+        },
+    )
+    if err != nil {
+        return fmt.Errorf("main queue: %w", err)
+    }
+
+    return nil
+}
+</code></pre>
+<h4 id="retry-через-цепочку-dlx--ttl"><a class="header" href="#retry-через-цепочку-dlx--ttl">Retry через цепочку DLX + TTL</a></h4>
+<pre><code class="language-go">// Паттерн: retry через промежуточные очереди с TTL
+// Сообщение → retry-queue (TTL=5s) → expire → DLX → основная очередь
+func setupRetryTopology(ch *amqp.Channel) error {
+    // Основной exchange
+    ch.ExchangeDeclare("orders", "direct", true, false, false, false, nil)
+    // Retry exchange
+    ch.ExchangeDeclare("orders.retry", "direct", true, false, false, false, nil)
+    // DLX для окончательных отказов
+    ch.ExchangeDeclare("orders.dlx", "direct", true, false, false, false, nil)
+
+    // Retry очередь с TTL — сообщения «отлёживаются» и возвращаются
+    ch.QueueDeclare("orders.retry.5s", true, false, false, false, amqp.Table{
+        "x-dead-letter-exchange":    "orders",      // После TTL → обратно в основной exchange
+        "x-dead-letter-routing-key": "process",
+        "x-message-ttl":             int32(5000),   // 5 секунд
+    })
+    ch.QueueBind("orders.retry.5s", "retry", "orders.retry", false, nil)
+
+    ch.QueueDeclare("orders.retry.30s", true, false, false, false, amqp.Table{
+        "x-dead-letter-exchange":    "orders",
+        "x-dead-letter-routing-key": "process",
+        "x-message-ttl":             int32(30000), // 30 секунд
+    })
+    ch.QueueBind("orders.retry.30s", "retry-slow", "orders.retry", false, nil)
+
+    // Основная очередь
+    ch.QueueDeclare("order-processor", true, false, false, false, amqp.Table{
+        "x-dead-letter-exchange":    "orders.dlx",
+        "x-dead-letter-routing-key": "dead",
+    })
+    ch.QueueBind("order-processor", "process", "orders", false, nil)
+
+    // DLQ
+    ch.QueueDeclare("orders.dlq", true, false, false, false, nil)
+    ch.QueueBind("orders.dlq", "dead", "orders.dlx", false, nil)
+
+    return nil
+}
+
+// При ошибке обработки — отправляем в retry queue
+func retryMessage(ch *amqp.Channel, d amqp.Delivery, attempt int) error {
+    routingKey := "retry"
+    if attempt &gt; 3 {
+        routingKey = "retry-slow" // После 3 попыток — более длинная пауза
+    }
+
+    return ch.PublishWithContext(context.Background(),
+        "orders.retry",
+        routingKey,
+        false, false,
+        amqp.Publishing{
+            ContentType: d.ContentType,
+            Body:        d.Body,
+            Headers: amqp.Table{
+                "x-retry-count": int32(attempt),
+                "x-first-failure": func() interface{} {
+                    if v, ok := d.Headers["x-first-failure"]; ok {
+                        return v
+                    }
+                    return time.Now().UTC().Format(time.RFC3339)
+                }(),
+            },
+        },
+    )
+}
+</code></pre>
+<p><strong>Сравнение DLX с C# MassTransit</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# MassTransit</th><th>Go (amqp091-go)</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Создание DLQ</strong></td><td>Автоматически</td><td>Ручная настройка топологии</td></tr>
+<tr><td><strong>Retry</strong></td><td><code>UseMessageRetry</code>, <code>UseDelayedRedelivery</code></td><td>DLX + TTL цепочки или ручной retry</td></tr>
+<tr><td><strong>Error metadata</strong></td><td>Автоматически (exception stack trace)</td><td>Headers с ручным добавлением</td></tr>
+<tr><td><strong>Reprocessing</strong></td><td>Move message из error queue</td><td>Читаем из DLQ, публикуем обратно</td></tr>
+<tr><td><strong>Delayed retry</strong></td><td><code>UseDelayedExchangeMessageScheduler</code></td><td>TTL очереди с DLX routing</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="nats-natsgo"><a class="header" href="#nats-natsgo">NATS (nats.go)</a></h2>
+<p>NATS — легковесная система обмена сообщениями с фокусом на простоту и низкую latency. NATS зародился в Cloud Foundry и стал де-факто стандартом для межсервисного общения в Go-микросервисах. NATS имеет два режима: <strong>Core NATS</strong> (fire-and-forget, как Redis Pub/Sub) и <strong>JetStream</strong> (персистентный обмен, аналог Kafka).</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: NATS менее популярен в .NET-мире (хотя <code>NATS.Client</code> существует), но очень распространён в Go-экосистеме. Если Kafka — это «тяжёлая артиллерия» для event streaming, а RabbitMQ — «рабочая лошадка» для task queues, то NATS — «спортивный болид» для low-latency коммуникации между сервисами.</p>
+</blockquote>
+<p>Установка:</p>
+<pre><code class="language-bash">go get github.com/nats-io/nats.go
+</code></pre>
+<h3 id="core-nats-pubsub-и-requestreply"><a class="header" href="#core-nats-pubsub-и-requestreply">Core NATS: Pub/Sub и Request/Reply</a></h3>
+<p>Core NATS — это at-most-once delivery: если subscriber не подключён в момент отправки, сообщение теряется (как Redis Pub/Sub).</p>
+<h4 id="pubsub"><a class="header" href="#pubsub">Pub/Sub</a></h4>
+<pre><code class="language-go">import "github.com/nats-io/nats.go"
+
+func coreNATSExample() error {
+    // Подключение
+    nc, err := nats.Connect(
+        "nats://localhost:4222",
+        nats.Name("order-service"),           // Имя клиента для мониторинга
+        nats.ReconnectWait(2*time.Second),    // Пауза между переподключениями
+        nats.MaxReconnects(60),               // Максимум попыток
+        nats.ReconnectHandler(func(nc *nats.Conn) {
+            log.Printf("переподключение к NATS: %s", nc.ConnectedUrl())
+        }),
+        nats.DisconnectErrHandler(func(nc *nats.Conn, err error) {
+            log.Printf("отключение от NATS: %v", err)
+        }),
+    )
+    if err != nil {
+        return fmt.Errorf("подключение к NATS: %w", err)
+    }
+    defer nc.Close()
+
+    // Подписка — получаем сообщения асинхронно через callback
+    sub, err := nc.Subscribe("orders.created", func(msg *nats.Msg) {
+        log.Printf("получен заказ: %s", string(msg.Data))
+
+        var order Order
+        if err := json.Unmarshal(msg.Data, &amp;order); err != nil {
+            log.Printf("невалидное сообщение: %v", err)
+            return
+        }
+
+        processOrder(context.Background(), order)
+    })
+    if err != nil {
+        return fmt.Errorf("подписка: %w", err)
+    }
+    defer sub.Unsubscribe()
+
+    // Публикация
+    order := Order{ID: "123", Total: 99.99}
+    data, _ := json.Marshal(order)
+    if err := nc.Publish("orders.created", data); err != nil {
+        return fmt.Errorf("публикация: %w", err)
+    }
+
+    // Wildcard подписки
+    // "orders.*" — orders.created, orders.updated (один уровень)
+    // "orders.&gt;" — orders.created, orders.payment.completed (все уровни)
+    nc.Subscribe("orders.*", func(msg *nats.Msg) {
+        log.Printf("событие заказа [%s]: %s", msg.Subject, string(msg.Data))
+    })
+
+    return nil
+}
+</code></pre>
+<h4 id="queue-groups-балансировка-нагрузки"><a class="header" href="#queue-groups-балансировка-нагрузки">Queue Groups (балансировка нагрузки)</a></h4>
+<pre><code class="language-go">// Queue groups — NATS распределяет сообщения между подписчиками в группе
+// Каждое сообщение доставляется ровно одному подписчику в группе
+func startWorker(nc *nats.Conn, workerID int) (*nats.Subscription, error) {
+    return nc.QueueSubscribe(
+        "tasks.process",    // Subject
+        "task-workers",     // Queue group name
+        func(msg *nats.Msg) {
+            log.Printf("[worker %d] обработка: %s", workerID, string(msg.Data))
+            // Все воркеры в группе "task-workers" делят нагрузку
+        },
+    )
+}
+
+// Запускаем 3 воркера — NATS распределит сообщения между ними
+func main() {
+    nc, _ := nats.Connect("nats://localhost:4222")
+    for i := 0; i &lt; 3; i++ {
+        startWorker(nc, i)
+    }
+    select {} // Блокируем main
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Queue groups — аналог competing consumers в RabbitMQ и consumer groups в Kafka. В MassTransit это происходит автоматически при нескольких инстансах одного consumer.</p>
+</blockquote>
+<h4 id="requestreply-синхронный-rpc"><a class="header" href="#requestreply-синхронный-rpc">Request/Reply (синхронный RPC)</a></h4>
+<pre><code class="language-go">// Сервер — обрабатывает запросы и отвечает
+func startRPCServer(nc *nats.Conn) (*nats.Subscription, error) {
+    return nc.Subscribe("users.get", func(msg *nats.Msg) {
+        var req GetUserRequest
+        if err := json.Unmarshal(msg.Data, &amp;req); err != nil {
+            msg.Respond([]byte(`{"error":"invalid request"}`))
+            return
+        }
+
+        user := User{ID: req.ID, Name: "John"}
+        data, _ := json.Marshal(user)
+        msg.Respond(data) // Ответ отправляется на msg.Reply
+    })
+}
+
+// Клиент — отправляет запрос и ждёт ответ
+func getUser(nc *nats.Conn, userID string) (*User, error) {
+    req := GetUserRequest{ID: userID}
+    data, _ := json.Marshal(req)
+
+    // Request блокирует до получения ответа или таймаута
+    msg, err := nc.Request("users.get", data, 5*time.Second)
+    if err != nil {
+        return nil, fmt.Errorf("RPC запрос: %w", err)
+    }
+
+    var user User
+    if err := json.Unmarshal(msg.Data, &amp;user); err != nil {
+        return nil, fmt.Errorf("десериализация ответа: %w", err)
+    }
+
+    return &amp;user, nil
+}
+</code></pre>
+<h3 id="jetstream-персистентный-обмен-сообщениями"><a class="header" href="#jetstream-персистентный-обмен-сообщениями">JetStream: персистентный обмен сообщениями</a></h3>
+<p>JetStream — надстройка над Core NATS, добавляющая персистентность, at-least-once/exactly-once delivery и возможность перечитывать сообщения. JetStream — это ответ NATS на Kafka.</p>
+<pre><code class="language-go">import (
+    "github.com/nats-io/nats.go"
+    "github.com/nats-io/nats.go/jetstream"
+)
+
+func jetStreamExample() error {
+    nc, err := nats.Connect("nats://localhost:4222")
+    if err != nil {
+        return err
+    }
+    defer nc.Close()
+
+    // Создаём JetStream context
+    js, err := jetstream.New(nc)
+    if err != nil {
+        return fmt.Errorf("JetStream: %w", err)
+    }
+
+    ctx := context.Background()
+
+    // Создаём или обновляем stream — хранилище сообщений
+    stream, err := js.CreateOrUpdateStream(ctx, jetstream.StreamConfig{
+        Name:     "ORDERS",
+        Subjects: []string{"orders.&gt;"},  // Все subjects, начинающиеся с "orders."
+
+        // Хранение
+        Storage:   jetstream.FileStorage,  // На диске (или MemoryStorage)
+        Retention: jetstream.LimitsPolicy, // Хранить до лимитов
+
+        // Лимиты
+        MaxMsgs:    1000000,              // Максимум сообщений
+        MaxBytes:   1 &lt;&lt; 30,              // Максимум 1 GB
+        MaxAge:     7 * 24 * time.Hour,   // Максимум 7 дней
+
+        // Репликация
+        Replicas: 3,                      // 3 реплики для HA
+
+        // Дедупликация
+        DuplicateWindow: 2 * time.Minute, // Окно дедупликации по Nats-Msg-Id
+    })
+    if err != nil {
+        return fmt.Errorf("создание stream: %w", err)
+    }
+    log.Printf("stream создан: %s", stream.CachedInfo().Config.Name)
+
+    // Публикация в JetStream — с подтверждением записи
+    ack, err := js.Publish(ctx, "orders.created", []byte(`{"id":"123","total":99.99}`),
+        jetstream.WithMsgID("order-123"), // ID для дедупликации
+    )
+    if err != nil {
+        return fmt.Errorf("publish: %w", err)
+    }
+    log.Printf("опубликовано: stream=%s seq=%d", ack.Stream, ack.Sequence)
+
+    return nil
+}
+</code></pre>
+<h4 id="consumer-получение-сообщений-из-jetstream"><a class="header" href="#consumer-получение-сообщений-из-jetstream">Consumer: получение сообщений из JetStream</a></h4>
+<pre><code class="language-go">func consumeJetStream(ctx context.Context, js jetstream.JetStream) error {
+    // Создаём durable consumer — сохраняет позицию между перезапусками
+    consumer, err := js.CreateOrUpdateConsumer(ctx, "ORDERS", jetstream.ConsumerConfig{
+        Name:          "order-processor",
+        Durable:       "order-processor",
+        FilterSubject: "orders.created",
+
+        // Delivery policy — откуда начать
+        DeliverPolicy: jetstream.DeliverAllPolicy, // С самого начала
+        // DeliverPolicy: jetstream.DeliverNewPolicy, // Только новые
+
+        // Ack policy
+        AckPolicy: jetstream.AckExplicitPolicy, // Ручное подтверждение
+        AckWait:   30 * time.Second,             // Таймаут подтверждения
+
+        // Retry — при отсутствии ack, сообщение будет повторно доставлено
+        MaxDeliver: 5, // Максимум 5 попыток доставки
+
+        // Backoff для retry
+        BackOff: []time.Duration{
+            5 * time.Second,
+            15 * time.Second,
+            30 * time.Second,
+            60 * time.Second,
+        },
+    })
+    if err != nil {
+        return fmt.Errorf("создание consumer: %w", err)
+    }
+
+    // Потребление сообщений
+    iter, err := consumer.Messages()
+    if err != nil {
+        return fmt.Errorf("messages: %w", err)
+    }
+    defer iter.Stop()
+
+    for {
+        msg, err := iter.Next()
+        if err != nil {
+            if errors.Is(err, jetstream.ErrMsgIteratorClosed) {
+                return nil
+            }
+            return fmt.Errorf("next: %w", err)
+        }
+
+        var order Order
+        if err := json.Unmarshal(msg.Data(), &amp;order); err != nil {
+            log.Printf("невалидное сообщение: %v", err)
+            // Term — навсегда отклонить (не retry)
+            msg.Term()
+            continue
+        }
+
+        if err := processOrder(ctx, order); err != nil {
+            log.Printf("ошибка обработки: %v", err)
+            // Nak — запросить повторную доставку (с backoff из конфигурации)
+            msg.Nak()
+            continue
+        }
+
+        // Ack — успешно обработано
+        msg.Ack()
+        log.Printf("обработан заказ %s (seq=%d)", order.ID, msg.Headers().Get("Nats-Sequence"))
+    }
+}
+</code></pre>
+<h3 id="push-vs-pull-consumers"><a class="header" href="#push-vs-pull-consumers">Push vs Pull Consumers</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>Push Consumer</th><th>Pull Consumer</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Доставка</strong></td><td>NATS отправляет сообщения consumer</td><td>Consumer запрашивает сообщения</td></tr>
+<tr><td><strong>Backpressure</strong></td><td>Ограничение через <code>MaxAckPending</code></td><td>Полный контроль через <code>Fetch(batch)</code></td></tr>
+<tr><td><strong>Масштабирование</strong></td><td>Через queue groups</td><td>Через горизонтальное масштабирование</td></tr>
+<tr><td><strong>Когда использовать</strong></td><td>Простые случаи, реальное время</td><td>Батчевая обработка, контроль нагрузки</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-go">// Pull consumer — явный запрос батча сообщений
+func pullConsumer(ctx context.Context, js jetstream.JetStream) error {
+    consumer, err := js.CreateOrUpdateConsumer(ctx, "ORDERS", jetstream.ConsumerConfig{
+        Name:    "batch-processor",
+        Durable: "batch-processor",
+    })
+    if err != nil {
+        return err
+    }
+
+    for {
+        // Fetch — запрашиваем до 10 сообщений, ждём до 5 секунд
+        batch, err := consumer.Fetch(10, jetstream.FetchMaxWait(5*time.Second))
+        if err != nil {
+            if errors.Is(err, context.Canceled) {
+                return nil
+            }
+            log.Printf("fetch ошибка: %v", err)
+            continue
+        }
+
+        for msg := range batch.Messages() {
+            if err := processMessage(ctx, msg); err != nil {
+                msg.Nak()
+            } else {
+                msg.Ack()
+            }
+        }
+
+        if batch.Error() != nil {
+            log.Printf("batch error: %v", batch.Error())
+        }
+    }
+}
+</code></pre>
+<h3 id="key-value-store-и-object-store"><a class="header" href="#key-value-store-и-object-store">Key-Value Store и Object Store</a></h3>
+<p>JetStream включает встроенное Key-Value хранилище — лёгкая альтернатива Redis для простых сценариев.</p>
+<pre><code class="language-go">func kvExample(ctx context.Context, js jetstream.JetStream) error {
+    // Создаём KV bucket
+    kv, err := js.CreateOrUpdateKeyValue(ctx, jetstream.KeyValueConfig{
+        Bucket:  "sessions",
+        TTL:     30 * time.Minute,  // Автоматическое удаление
+        History: 5,                  // Хранить 5 последних версий
+    })
+    if err != nil {
+        return fmt.Errorf("KV bucket: %w", err)
+    }
+
+    // Put
+    _, err = kv.Put(ctx, "user:123", []byte(`{"token":"abc","role":"admin"}`))
+    if err != nil {
+        return fmt.Errorf("put: %w", err)
+    }
+
+    // Get
+    entry, err := kv.Get(ctx, "user:123")
+    if err != nil {
+        if errors.Is(err, jetstream.ErrKeyNotFound) {
+            log.Println("ключ не найден")
+            return nil
+        }
+        return fmt.Errorf("get: %w", err)
+    }
+    log.Printf("значение: %s (revision=%d)", string(entry.Value()), entry.Revision())
+
+    // Watch — подписка на изменения (аналог Redis SUBSCRIBE, но для KV)
+    watcher, err := kv.Watch(ctx, "user.*")
+    if err != nil {
+        return err
+    }
+    defer watcher.Stop()
+
+    go func() {
+        for entry := range watcher.Updates() {
+            if entry == nil {
+                continue // Начальный nil при запуске watcher
+            }
+            log.Printf("изменение: key=%s op=%s", entry.Key(), entry.Operation())
+        }
+    }()
+
+    // Delete
+    err = kv.Delete(ctx, "user:123")
+    return err
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>NATS KV vs Redis</strong>: NATS KV удобен, если у вас уже есть NATS и нужен простой key-value без дополнительной инфраструктуры. Для сложных сценариев (sorted sets, Lua скрипты, Pub/Sub с паттернами) Redis остаётся лучшим выбором.</p>
+</blockquote>
+<hr>
+<h2 id="redis-streams"><a class="header" href="#redis-streams">Redis Streams</a></h2>
+<p>Redis Streams — встроенная в Redis структура данных для persistent messaging. Если вы уже используете Redis (см. <a href="./02_caching.html">раздел 4.2</a>), Redis Streams позволяет добавить очередь сообщений без дополнительной инфраструктуры.</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Redis Streams доступны через <code>StackExchange.Redis</code> (<code>StreamAdd</code>, <code>StreamRead</code>), но редко используются в .NET — обычно предпочитают MassTransit с RabbitMQ. В Go Redis Streams популярнее, особенно в проектах, где Redis уже есть для кэширования.</p>
+</blockquote>
+<h3 id="основные-операции-xadd-xread"><a class="header" href="#основные-операции-xadd-xread">Основные операции (XADD, XREAD)</a></h3>
+<pre><code class="language-go">import "github.com/redis/go-redis/v9"
+
+func redisStreamsBasic(ctx context.Context, rdb *redis.Client) error {
+    // XADD — добавить сообщение в stream
+    id, err := rdb.XAdd(ctx, &amp;redis.XAddArgs{
+        Stream: "events",
+        ID:     "*", // Автоматический ID (timestamp-sequence)
+        Values: map[string]interface{}{
+            "type":    "order.created",
+            "payload": `{"id":"123","total":99.99}`,
+            "source":  "order-service",
+        },
+    }).Result()
+    if err != nil {
+        return fmt.Errorf("XADD: %w", err)
+    }
+    log.Printf("добавлено сообщение: %s", id) // 1706000000000-0
+
+    // Ограничение размера stream
+    rdb.XAdd(ctx, &amp;redis.XAddArgs{
+        Stream: "events",
+        MaxLen: 100000,   // Максимум 100k записей
+        Approx: true,     // Приблизительное ограничение (эффективнее)
+        ID:     "*",
+        Values: map[string]interface{}{"type": "test"},
+    })
+
+    // XREAD — чтение сообщений (блокирующее)
+    streams, err := rdb.XRead(ctx, &amp;redis.XReadArgs{
+        Streams: []string{"events", "0"}, // stream name, start ID
+        Count:   10,                       // Максимум 10 сообщений
+        Block:   5 * time.Second,          // Блокировать до 5 секунд
+    }).Result()
+    if err != nil {
+        if err == redis.Nil {
+            log.Println("нет новых сообщений")
+            return nil
+        }
+        return fmt.Errorf("XREAD: %w", err)
+    }
+
+    for _, stream := range streams {
+        for _, msg := range stream.Messages {
+            log.Printf("ID=%s type=%s payload=%s",
+                msg.ID, msg.Values["type"], msg.Values["payload"])
+        }
+    }
+
+    return nil
+}
+</code></pre>
+<h3 id="consumer-groups-redis"><a class="header" href="#consumer-groups-redis">Consumer Groups (Redis)</a></h3>
+<p>Consumer groups в Redis Streams работают аналогично Kafka consumer groups: каждое сообщение доставляется одному consumer в группе.</p>
+<pre><code class="language-go">func redisStreamsConsumerGroup(ctx context.Context, rdb *redis.Client) error {
+    stream := "events"
+    group := "event-processors"
+    consumer := "worker-1"
+
+    // Создаём consumer group ($ = только новые сообщения, 0 = с начала)
+    err := rdb.XGroupCreateMkStream(ctx, stream, group, "$").Err()
+    if err != nil &amp;&amp; !strings.Contains(err.Error(), "BUSYGROUP") {
+        return fmt.Errorf("создание группы: %w", err)
+    }
+
+    for {
+        // XREADGROUP — читаем сообщения для нашего consumer
+        streams, err := rdb.XReadGroup(ctx, &amp;redis.XReadGroupArgs{
+            Group:    group,
+            Consumer: consumer,
+            Streams:  []string{stream, "&gt;"},  // "&gt;" = только новые
+            Count:    10,
+            Block:    5 * time.Second,
+        }).Result()
+        if err != nil {
+            if err == redis.Nil {
+                continue // Нет новых сообщений
+            }
+            if errors.Is(err, context.Canceled) {
+                return nil
+            }
+            log.Printf("XREADGROUP ошибка: %v", err)
+            time.Sleep(time.Second)
+            continue
+        }
+
+        for _, stream := range streams {
+            for _, msg := range stream.Messages {
+                // Обрабатываем сообщение
+                if err := processEvent(ctx, msg); err != nil {
+                    log.Printf("ошибка обработки %s: %v", msg.ID, err)
+                    continue // Не подтверждаем — сообщение останется pending
+                }
+
+                // XACK — подтверждаем обработку
+                rdb.XAck(ctx, stream.Stream, group, msg.ID)
+            }
+        }
+    }
+}
+</code></pre>
+<h3 id="acknowledgment-и-claiming"><a class="header" href="#acknowledgment-и-claiming">Acknowledgment и Claiming</a></h3>
+<pre><code class="language-go">// Обработка «застрявших» сообщений — если consumer упал,
+// другой consumer может забрать его pending сообщения
+func claimStaleMessages(ctx context.Context, rdb *redis.Client,
+    stream, group, consumer string) error {
+
+    // XPENDING — проверяем pending сообщения
+    pending, err := rdb.XPendingExt(ctx, &amp;redis.XPendingExtArgs{
+        Stream: stream,
+        Group:  group,
+        Start:  "-",
+        End:    "+",
+        Count:  100,
+    }).Result()
+    if err != nil {
+        return fmt.Errorf("XPENDING: %w", err)
+    }
+
+    var staleIDs []string
+    for _, p := range pending {
+        // Если сообщение не подтверждено более 5 минут — забираем
+        if p.Idle &gt; 5*time.Minute {
+            staleIDs = append(staleIDs, p.ID)
+            log.Printf("стагнирующее сообщение: ID=%s consumer=%s idle=%v retries=%d",
+                p.ID, p.Consumer, p.Idle, p.RetryCount)
+        }
+    }
+
+    if len(staleIDs) == 0 {
+        return nil
+    }
+
+    // XCLAIM — забираем сообщения себе
+    messages, err := rdb.XClaim(ctx, &amp;redis.XClaimArgs{
+        Stream:   stream,
+        Group:    group,
+        Consumer: consumer,
+        MinIdle:  5 * time.Minute,
+        Messages: staleIDs,
+    }).Result()
+    if err != nil {
+        return fmt.Errorf("XCLAIM: %w", err)
+    }
+
+    for _, msg := range messages {
+        if err := processEvent(ctx, msg); err != nil {
+            log.Printf("ошибка обработки claimed %s: %v", msg.ID, err)
+            continue
+        }
+        rdb.XAck(ctx, stream, group, msg.ID)
+    }
+
+    log.Printf("обработано %d стагнирующих сообщений", len(messages))
+    return nil
+}
+
+// XAUTOCLAIM (Redis 6.2+) — автоматически забирает stale сообщения
+func autoClaimMessages(ctx context.Context, rdb *redis.Client,
+    stream, group, consumer string) error {
+
+    messages, _, err := rdb.XAutoClaim(ctx, &amp;redis.XAutoClaimArgs{
+        Stream:   stream,
+        Group:    group,
+        Consumer: consumer,
+        MinIdle:  5 * time.Minute,
+        Start:    "0-0",
+        Count:    50,
+    }).Result()
+    if err != nil {
+        return fmt.Errorf("XAUTOCLAIM: %w", err)
+    }
+
+    for _, msg := range messages {
+        if err := processEvent(ctx, msg); err != nil {
+            log.Printf("ошибка: %v", err)
+            continue
+        }
+        rdb.XAck(ctx, stream, group, msg.ID)
+    }
+
+    return nil
+}
+</code></pre>
+<h3 id="когда-использовать-redis-streams"><a class="header" href="#когда-использовать-redis-streams">Когда использовать Redis Streams</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Критерий</th><th>Redis Streams</th><th>Рекомендация</th></tr>
+</thead>
+<tbody>
+<tr><td>Redis уже есть в инфраструктуре</td><td>✅</td><td>Отличный выбор — нет дополнительной зависимости</td></tr>
+<tr><td>Нужна высокая пропускная способность (&gt;100k msg/sec)</td><td>❌</td><td>Используйте Kafka</td></tr>
+<tr><td>Нужна сложная маршрутизация</td><td>❌</td><td>Используйте RabbitMQ</td></tr>
+<tr><td>Нужно долгосрочное хранение событий</td><td>❌</td><td>Используйте Kafka</td></tr>
+<tr><td>Нужна простая очередь задач</td><td>✅</td><td>Redis Streams + consumer groups</td></tr>
+<tr><td>Нужен lightweight event bus</td><td>✅</td><td>Подходит для небольших систем</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Совет</strong>: Redis Streams — отличный выбор для MVP и небольших систем. Когда нагрузка вырастет, вы сможете мигрировать на Kafka или RabbitMQ, сохранив ту же семантику consumer groups.</p>
+</blockquote>
+<hr>
+<h2 id="сравнение-технологий"><a class="header" href="#сравнение-технологий">Сравнение технологий</a></h2>
+<h3 id="сводная-таблица"><a class="header" href="#сводная-таблица">Сводная таблица</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>Kafka</th><th>RabbitMQ</th><th>NATS</th><th>Redis Streams</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Модель</strong></td><td>Распределённый лог</td><td>Очередь сообщений</td><td>Subject-based messaging</td><td>Append-only stream</td></tr>
+<tr><td><strong>Персистентность</strong></td><td>Да (диск, retention)</td><td>Да (опционально)</td><td>JetStream (да)</td><td>Да (AOF/RDB)</td></tr>
+<tr><td><strong>Порядок</strong></td><td>По партиции</td><td>По очереди</td><td>По subject</td><td>По stream</td></tr>
+<tr><td><strong>Consumer groups</strong></td><td>Да</td><td>Competing consumers</td><td>Queue groups / JetStream</td><td>Да (XREADGROUP)</td></tr>
+<tr><td><strong>Пропускная способность</strong></td><td>Очень высокая (млн/сек)</td><td>Средняя (десятки тыс/сек)</td><td>Очень высокая</td><td>Средне-высокая</td></tr>
+<tr><td><strong>Latency</strong></td><td>Средняя (батчинг)</td><td>Низкая</td><td>Очень низкая (&lt; 1 мс)</td><td>Низкая</td></tr>
+<tr><td><strong>Replay</strong></td><td>Да (offset)</td><td>Нет</td><td>JetStream (да)</td><td>Да (по ID)</td></tr>
+<tr><td><strong>Маршрутизация</strong></td><td>Topic / partition</td><td>Exchanges (гибкая)</td><td>Subject hierarchy</td><td>Нет</td></tr>
+<tr><td><strong>Протокол</strong></td><td>Custom TCP</td><td>AMQP 0.9.1</td><td>Custom TCP</td><td>RESP (Redis)</td></tr>
+<tr><td><strong>Сложность ops</strong></td><td>Высокая (ZooKeeper/KRaft)</td><td>Средняя</td><td>Низкая</td><td>Низкая (если Redis есть)</td></tr>
+<tr><td><strong>Go библиотека</strong></td><td>segmentio/kafka-go</td><td>amqp091-go</td><td>nats.go</td><td>go-redis</td></tr>
+<tr><td><strong>C# библиотека</strong></td><td>Confluent.Kafka</td><td>RabbitMQ.Client</td><td>NATS.Client</td><td>StackExchange.Redis</td></tr>
+<tr><td><strong>MassTransit</strong></td><td>Да (Rider)</td><td>Да (основной транспорт)</td><td>Нет</td><td>Нет</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="блок-схема-выбора"><a class="header" href="#блок-схема-выбора">Блок-схема выбора</a></h3>
+<pre><code>Нужна ли постоянная запись событий (event log)?
+├── Да → Kafka
+│   └── Event sourcing, CQRS, stream processing, audit log
+│
+└── Нет → Нужна сложная маршрутизация?
+    ├── Да → RabbitMQ
+    │   └── Topic routing, priority queues, delayed messages, DLX
+    │
+    └── Нет → Нужна минимальная latency?
+        ├── Да → NATS
+        │   └── Микросервисы, request/reply, real-time
+        │
+        └── Нет → Redis уже в инфраструктуре?
+            ├── Да → Redis Streams
+            │   └── Простые очереди, event bus для небольших систем
+            │
+            └── Нет → RabbitMQ (универсальный выбор)
+</code></pre>
+<hr>
+<h2 id="паттерны-и-best-practices"><a class="header" href="#паттерны-и-best-practices">Паттерны и Best Practices</a></h2>
+<h3 id="идемпотентность-exactly-once-processing"><a class="header" href="#идемпотентность-exactly-once-processing">Идемпотентность (Exactly-Once Processing)</a></h3>
+<p>At-least-once delivery означает, что сообщение может быть обработано <strong>повторно</strong> (crash между обработкой и ack). Идемпотентность гарантирует, что повторная обработка не приведёт к дублированию данных.</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: MassTransit предоставляет <code>InMemoryOutbox</code> и message deduplication. В Go вы реализуете идемпотентность самостоятельно — обычно через уникальный ключ в базе данных.</p>
+</blockquote>
+<pre><code class="language-go">// Идемпотентность через PostgreSQL — INSERT ... ON CONFLICT DO NOTHING
+type IdempotencyChecker struct {
+    db *pgxpool.Pool
+}
+
+func NewIdempotencyChecker(db *pgxpool.Pool) *IdempotencyChecker {
+    return &amp;IdempotencyChecker{db: db}
+}
+
+// Process — обрабатывает сообщение с гарантией идемпотентности
+func (c *IdempotencyChecker) Process(ctx context.Context, messageID string,
+    handler func(ctx context.Context) error) error {
+
+    // Начинаем транзакцию
+    tx, err := c.db.Begin(ctx)
+    if err != nil {
+        return fmt.Errorf("begin tx: %w", err)
+    }
+    defer tx.Rollback(ctx)
+
+    // Пытаемся записать ID сообщения — если уже есть, пропускаем
+    var inserted bool
+    err = tx.QueryRow(ctx,
+        `INSERT INTO processed_messages (message_id, processed_at)
+         VALUES ($1, NOW())
+         ON CONFLICT (message_id) DO NOTHING
+         RETURNING true`,
+        messageID,
+    ).Scan(&amp;inserted)
+
+    if err != nil {
+        if errors.Is(err, pgx.ErrNoRows) {
+            // Сообщение уже обработано — пропускаем
+            log.Printf("сообщение %s уже обработано, пропускаем", messageID)
+            return nil
+        }
+        return fmt.Errorf("idempotency check: %w", err)
+    }
+
+    // Выполняем бизнес-логику в той же транзакции
+    if err := handler(ctx); err != nil {
+        return err // Rollback — ID удалится, можно retry
+    }
+
+    return tx.Commit(ctx)
+}
+
+// SQL для создания таблицы:
+// CREATE TABLE processed_messages (
+//     message_id TEXT PRIMARY KEY,
+//     processed_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+// );
+// CREATE INDEX idx_processed_messages_at ON processed_messages(processed_at);
+// -- Очистка старых записей: DELETE FROM processed_messages WHERE processed_at &lt; NOW() - INTERVAL '7 days';
+</code></pre>
+<h3 id="graceful-shutdown"><a class="header" href="#graceful-shutdown">Graceful Shutdown</a></h3>
+<pre><code class="language-go">// Универсальный паттерн graceful shutdown для consumer-сервисов
+func runConsumer(ctx context.Context) error {
+    // Перехватываем системные сигналы
+    ctx, stop := signal.NotifyContext(ctx, syscall.SIGINT, syscall.SIGTERM)
+    defer stop()
+
+    reader := kafka.NewReader(kafka.ReaderConfig{
+        Brokers: []string{"localhost:9092"},
+        Topic:   "events",
+        GroupID: "processor",
+    })
+
+    var wg sync.WaitGroup
+
+    // Worker pool
+    jobs := make(chan kafka.Message, 10)
+
+    for i := 0; i &lt; 5; i++ {
+        wg.Add(1)
+        go func(id int) {
+            defer wg.Done()
+            for msg := range jobs {
+                processMessage(ctx, msg)
+                reader.CommitMessages(ctx, msg)
+            }
+        }(i)
+    }
+
+    // Читаем сообщения
+    go func() {
+        for {
+            msg, err := reader.FetchMessage(ctx)
+            if err != nil {
+                if errors.Is(err, context.Canceled) {
+                    return
+                }
+                log.Printf("fetch error: %v", err)
+                continue
+            }
+            jobs &lt;- msg
+        }
+    }()
+
+    // Ждём сигнал завершения
+    &lt;-ctx.Done()
+    log.Println("получен сигнал завершения, останавливаемся...")
+
+    // 1. Прекращаем чтение новых сообщений
+    close(jobs)
+
+    // 2. Ждём завершения обработки текущих сообщений
+    wg.Wait()
+
+    // 3. Закрываем reader (освобождаем партиции)
+    reader.Close()
+
+    log.Println("graceful shutdown завершён")
+    return nil
+}
+</code></pre>
+<p><strong>Сравнение с C#</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# (.NET)</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Сигнал</strong></td><td><code>IHostApplicationLifetime</code>, <code>CancellationToken</code></td><td><code>signal.NotifyContext</code>, <code>context.Context</code></td></tr>
+<tr><td><strong>Lifecycle</strong></td><td><code>BackgroundService.StopAsync()</code></td><td>Ручная реализация</td></tr>
+<tr><td><strong>In-flight</strong></td><td>MassTransit ждёт завершения consumers</td><td><code>sync.WaitGroup</code></td></tr>
+<tr><td><strong>Timeout</strong></td><td><code>HostOptions.ShutdownTimeout</code> (30s)</td><td>Ручной <code>context.WithTimeout</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="retry-с-exponential-backoff"><a class="header" href="#retry-с-exponential-backoff">Retry с Exponential Backoff</a></h3>
+<pre><code class="language-go">// Универсальная функция retry с exponential backoff и jitter
+func retryWithBackoff(ctx context.Context, maxRetries int,
+    fn func(ctx context.Context) error) error {
+
+    var lastErr error
+
+    for attempt := 0; attempt &lt;= maxRetries; attempt++ {
+        err := fn(ctx)
+        if err == nil {
+            return nil
+        }
+
+        // Permanent error — не retry
+        if isPermanent(err) {
+            return err
+        }
+
+        lastErr = err
+
+        if attempt &lt; maxRetries {
+            // Backoff: 100ms * 2^attempt, максимум 30 секунд
+            base := float64(100*time.Millisecond) * math.Pow(2, float64(attempt))
+            maxBackoff := float64(30 * time.Second)
+            backoff := time.Duration(math.Min(base, maxBackoff))
+
+            // Jitter: ±25%
+            jitter := time.Duration(rand.Int63n(int64(backoff) / 2))
+            backoff = backoff/2 + jitter
+
+            select {
+            case &lt;-time.After(backoff):
+            case &lt;-ctx.Done():
+                return ctx.Err()
+            }
+        }
+    }
+
+    return fmt.Errorf("исчерпано %d попыток: %w", maxRetries, lastErr)
+}
+</code></pre>
+<h3 id="dead-letter-queue"><a class="header" href="#dead-letter-queue">Dead Letter Queue</a></h3>
+<p>Общий паттерн DLQ, независимый от конкретного брокера:</p>
+<pre><code class="language-go">// DeadLetterSender — абстракция для отправки в DLQ
+type DeadLetterSender interface {
+    SendToDLQ(ctx context.Context, originalMsg []byte, err error, metadata map[string]string) error
+}
+
+// KafkaDLQ — реализация для Kafka
+type KafkaDLQ struct {
+    writer *kafka.Writer
+}
+
+func (d *KafkaDLQ) SendToDLQ(ctx context.Context, originalMsg []byte,
+    processingErr error, metadata map[string]string) error {
+
+    headers := []kafka.Header{
+        {Key: "dlq-error", Value: []byte(processingErr.Error())},
+        {Key: "dlq-timestamp", Value: []byte(time.Now().UTC().Format(time.RFC3339))},
+    }
+    for k, v := range metadata {
+        headers = append(headers, kafka.Header{Key: k, Value: []byte(v)})
+    }
+
+    return d.writer.WriteMessages(ctx, kafka.Message{
+        Value:   originalMsg,
+        Headers: headers,
+    })
+}
+</code></pre>
+<h3 id="сериализация-сообщений"><a class="header" href="#сериализация-сообщений">Сериализация сообщений</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Формат</th><th>Размер</th><th>Скорость</th><th>Schema</th><th>Человекочитаемый</th><th>Когда использовать</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>JSON</strong></td><td>Большой</td><td>Средняя</td><td>Нет</td><td>Да</td><td>MVP, отладка, внешние API</td></tr>
+<tr><td><strong>Protobuf</strong></td><td>Компактный</td><td>Высокая</td><td>Да (.proto)</td><td>Нет</td><td>Высокая нагрузка, микросервисы</td></tr>
+<tr><td><strong>Avro</strong></td><td>Компактный</td><td>Высокая</td><td>Да (Schema Registry)</td><td>Нет</td><td>Kafka + schema evolution</td></tr>
+<tr><td><strong>MessagePack</strong></td><td>Средний</td><td>Высокая</td><td>Нет</td><td>Нет</td><td>Компромисс JSON/binary</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-go">// JSON — просто и удобно
+data, _ := json.Marshal(order)
+writer.WriteMessages(ctx, kafka.Message{
+    Value: data,
+    Headers: []kafka.Header{
+        {Key: "content-type", Value: []byte("application/json")},
+    },
+})
+
+// Protobuf — компактно и быстро
+// (требуется сгенерировать код из .proto файла)
+data, _ := proto.Marshal(orderProto)
+writer.WriteMessages(ctx, kafka.Message{
+    Value: data,
+    Headers: []kafka.Header{
+        {Key: "content-type", Value: []byte("application/protobuf")},
+        {Key: "proto-type", Value: []byte("orders.v1.OrderCreated")},
+    },
+})
+</code></pre>
+<blockquote>
+<p>💡 <strong>Рекомендация</strong>: Начинайте с JSON — проще отлаживать и нет зависимости от codegen. Переходите на Protobuf, когда размер сообщений или скорость сериализации становятся узким местом, или когда команда растёт и нужна строгая типизация через <code>.proto</code> файлы.</p>
+</blockquote>
+<h3 id="outbox-pattern"><a class="header" href="#outbox-pattern">Outbox Pattern</a></h3>
+<p>Проблема <strong>dual write</strong>: нужно записать в базу И отправить сообщение. Если crash происходит между двумя операциями, данные рассинхронизируются.</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: MassTransit предоставляет <code>AddEntityFrameworkOutbox&lt;TDbContext&gt;()</code> — outbox встроен в EF Core транзакции. В Go этот паттерн реализуется вручную.</p>
+</blockquote>
+<pre><code class="language-go">// Outbox Pattern: записываем событие в ту же транзакцию, что и бизнес-данные
+
+// SQL: CREATE TABLE outbox (
+//     id BIGSERIAL PRIMARY KEY,
+//     topic TEXT NOT NULL,
+//     key TEXT,
+//     payload BYTEA NOT NULL,
+//     headers JSONB DEFAULT '{}',
+//     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+//     published_at TIMESTAMPTZ
+// );
+// CREATE INDEX idx_outbox_unpublished ON outbox(created_at) WHERE published_at IS NULL;
+
+type OutboxWriter struct {
+    db *pgxpool.Pool
+}
+
+// SaveWithEvent — сохраняем бизнес-данные и событие в одной транзакции
+func (o *OutboxWriter) SaveWithEvent(ctx context.Context,
+    businessFn func(tx pgx.Tx) error,
+    topic, key string, payload []byte) error {
+
+    tx, err := o.db.Begin(ctx)
+    if err != nil {
+        return fmt.Errorf("begin: %w", err)
+    }
+    defer tx.Rollback(ctx)
+
+    // 1. Бизнес-логика
+    if err := businessFn(tx); err != nil {
+        return err
+    }
+
+    // 2. Записываем событие в outbox (та же транзакция!)
+    _, err = tx.Exec(ctx,
+        `INSERT INTO outbox (topic, key, payload) VALUES ($1, $2, $3)`,
+        topic, key, payload,
+    )
+    if err != nil {
+        return fmt.Errorf("outbox insert: %w", err)
+    }
+
+    return tx.Commit(ctx)
+}
+
+// OutboxRelay — горутина, которая читает из outbox и отправляет в брокер
+type OutboxRelay struct {
+    db     *pgxpool.Pool
+    writer *kafka.Writer
+}
+
+func (r *OutboxRelay) Run(ctx context.Context) error {
+    ticker := time.NewTicker(500 * time.Millisecond) // Polling каждые 500ms
+    defer ticker.Stop()
+
+    for {
+        select {
+        case &lt;-ctx.Done():
+            return nil
+        case &lt;-ticker.C:
+            if err := r.publishBatch(ctx); err != nil {
+                log.Printf("outbox relay ошибка: %v", err)
+            }
+        }
+    }
+}
+
+func (r *OutboxRelay) publishBatch(ctx context.Context) error {
+    tx, err := r.db.Begin(ctx)
+    if err != nil {
+        return err
+    }
+    defer tx.Rollback(ctx)
+
+    // Читаем неопубликованные события (с блокировкой FOR UPDATE SKIP LOCKED)
+    rows, err := tx.Query(ctx,
+        `SELECT id, topic, key, payload
+         FROM outbox
+         WHERE published_at IS NULL
+         ORDER BY created_at
+         LIMIT 100
+         FOR UPDATE SKIP LOCKED`)
+    if err != nil {
+        return err
+    }
+    defer rows.Close()
+
+    var ids []int64
+    var messages []kafka.Message
+
+    for rows.Next() {
+        var id int64
+        var topic, key string
+        var payload []byte
+        if err := rows.Scan(&amp;id, &amp;topic, &amp;key, &amp;payload); err != nil {
+            return err
+        }
+        ids = append(ids, id)
+        messages = append(messages, kafka.Message{
+            Topic: topic,
+            Key:   []byte(key),
+            Value: payload,
+        })
+    }
+
+    if len(messages) == 0 {
+        return nil
+    }
+
+    // Публикуем в Kafka
+    if err := r.writer.WriteMessages(ctx, messages...); err != nil {
+        return fmt.Errorf("publish: %w", err)
+    }
+
+    // Помечаем как опубликованные
+    _, err = tx.Exec(ctx,
+        `UPDATE outbox SET published_at = NOW() WHERE id = ANY($1)`,
+        ids,
+    )
+    if err != nil {
+        return fmt.Errorf("update outbox: %w", err)
+    }
+
+    log.Printf("outbox: опубликовано %d событий", len(messages))
+    return tx.Commit(ctx)
+}
+</code></pre>
+<h3 id="saga-pattern"><a class="header" href="#saga-pattern">Saga Pattern</a></h3>
+<p>Saga — паттерн управления распределёнными транзакциями через последовательность локальных транзакций с компенсирующими действиями.</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: MassTransit предоставляет <code>MassTransitStateMachine&lt;T&gt;</code> (Automatonymous) — декларативное описание saga через состояния и события. В Go saga реализуется вручную — обычно через оркестратор или хореографию.</p>
+</blockquote>
+<p><strong>Два подхода</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Подход</th><th>Описание</th><th>Когда использовать</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Хореография</strong></td><td>Каждый сервис слушает события и реагирует</td><td>Простые саги (2-3 шага)</td></tr>
+<tr><td><strong>Оркестрация</strong></td><td>Центральный координатор управляет шагами</td><td>Сложные саги (4+ шагов)</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-go">// Пример хореографии: Order → Payment → Notification
+//
+// order-service:  OrderCreated  → (Kafka) → payment-service
+// payment-service: PaymentCompleted → (Kafka) → notification-service
+// payment-service: PaymentFailed → (Kafka) → order-service (компенсация)
+
+// Оркестрация — центральный координатор
+type SagaStep struct {
+    Name       string
+    Execute    func(ctx context.Context, data any) error
+    Compensate func(ctx context.Context, data any) error // Откат
+}
+
+type SagaOrchestrator struct {
+    steps []SagaStep
+}
+
+func (s *SagaOrchestrator) Run(ctx context.Context, data any) error {
+    var completedSteps []int
+
+    for i, step := range s.steps {
+        log.Printf("saga: выполняю шаг %d (%s)", i, step.Name)
+
+        if err := step.Execute(ctx, data); err != nil {
+            log.Printf("saga: шаг %d (%s) failed: %v", i, step.Name, err)
+
+            // Компенсация — откатываем выполненные шаги в обратном порядке
+            for j := len(completedSteps) - 1; j &gt;= 0; j-- {
+                stepIdx := completedSteps[j]
+                compStep := s.steps[stepIdx]
+                if compStep.Compensate != nil {
+                    log.Printf("saga: компенсация шага %d (%s)", stepIdx, compStep.Name)
+                    if compErr := compStep.Compensate(ctx, data); compErr != nil {
+                        log.Printf("saga: ОШИБКА компенсации шага %d: %v", stepIdx, compErr)
+                        // В production: записать в outbox для повторной компенсации
+                    }
+                }
+            }
+
+            return fmt.Errorf("saga failed на шаге %s: %w", step.Name, err)
+        }
+
+        completedSteps = append(completedSteps, i)
+    }
+
+    log.Println("saga: все шаги выполнены успешно")
+    return nil
+}
+</code></pre>
+<blockquote>
+<p>Детальная реализация saga с persistence и recovery будет рассмотрена в <a href="../part5-projects/">Части 5: Практические проекты</a> на примере E-commerce платформы.</p>
+</blockquote>
+<hr>
+<h2 id="production-concerns"><a class="header" href="#production-concerns">Production Concerns</a></h2>
+<h3 id="мониторинг-с-prometheus"><a class="header" href="#мониторинг-с-prometheus">Мониторинг с Prometheus</a></h3>
+<pre><code class="language-go">import "github.com/prometheus/client_golang/prometheus"
+
+var (
+    messagesProcessed = prometheus.NewCounterVec(
+        prometheus.CounterOpts{
+            Name: "messages_processed_total",
+            Help: "Количество обработанных сообщений",
+        },
+        []string{"topic", "status"}, // status: success, error, dlq
+    )
+
+    messageProcessingDuration = prometheus.NewHistogramVec(
+        prometheus.HistogramOpts{
+            Name:    "message_processing_duration_seconds",
+            Help:    "Время обработки сообщения",
+            Buckets: prometheus.DefBuckets,
+        },
+        []string{"topic"},
+    )
+
+    consumerLag = prometheus.NewGaugeVec(
+        prometheus.GaugeOpts{
+            Name: "consumer_lag",
+            Help: "Отставание consumer от последнего сообщения",
+        },
+        []string{"topic", "partition"},
+    )
+
+    dlqMessages = prometheus.NewCounterVec(
+        prometheus.CounterOpts{
+            Name: "dlq_messages_total",
+            Help: "Количество сообщений, отправленных в DLQ",
+        },
+        []string{"topic", "error_type"},
+    )
+)
+
+func init() {
+    prometheus.MustRegister(messagesProcessed, messageProcessingDuration, consumerLag, dlqMessages)
+}
+
+// Инструментированный consumer
+func processWithMetrics(ctx context.Context, topic string, msg []byte,
+    handler func(context.Context, []byte) error) error {
+
+    start := time.Now()
+
+    err := handler(ctx, msg)
+
+    duration := time.Since(start).Seconds()
+    messageProcessingDuration.WithLabelValues(topic).Observe(duration)
+
+    if err != nil {
+        messagesProcessed.WithLabelValues(topic, "error").Inc()
+        return err
+    }
+
+    messagesProcessed.WithLabelValues(topic, "success").Inc()
+    return nil
+}
+</code></pre>
+<h4 id="kafka-consumer-lag"><a class="header" href="#kafka-consumer-lag">Kafka Consumer Lag</a></h4>
+<pre><code class="language-go">// Мониторинг consumer lag — критичная метрика для Kafka
+func monitorConsumerLag(ctx context.Context, brokers []string, topic, groupID string) {
+    conn, err := kafka.Dial("tcp", brokers[0])
+    if err != nil {
+        log.Printf("ошибка подключения для мониторинга: %v", err)
+        return
+    }
+    defer conn.Close()
+
+    ticker := time.NewTicker(30 * time.Second)
+    defer ticker.Stop()
+
+    for {
+        select {
+        case &lt;-ctx.Done():
+            return
+        case &lt;-ticker.C:
+            partitions, err := conn.ReadPartitions(topic)
+            if err != nil {
+                log.Printf("ошибка чтения партиций: %v", err)
+                continue
+            }
+
+            for _, p := range partitions {
+                // Получаем last offset партиции
+                pConn, err := kafka.DialLeader(ctx, "tcp", brokers[0], topic, p.ID)
+                if err != nil {
+                    continue
+                }
+                lastOffset, _ := pConn.ReadLastOffset()
+                pConn.Close()
+
+                // Consumer lag = last offset - committed offset
+                // (committed offset можно получить через admin API)
+                consumerLag.WithLabelValues(topic, fmt.Sprintf("%d", p.ID)).Set(
+                    float64(lastOffset), // Упрощённо, в production нужен committed offset
+                )
+            }
+        }
+    }
+}
+</code></pre>
+<h3 id="opentelemetry-instrumentation"><a class="header" href="#opentelemetry-instrumentation">OpenTelemetry Instrumentation</a></h3>
+<pre><code class="language-go">import (
+    "go.opentelemetry.io/otel"
+    "go.opentelemetry.io/otel/attribute"
+    "go.opentelemetry.io/otel/propagation"
+    "go.opentelemetry.io/otel/trace"
+)
+
+var tracer = otel.Tracer("message-queue")
+
+// Producer — инжектируем trace context в headers сообщения
+func publishWithTracing(ctx context.Context, w *kafka.Writer, topic string, payload []byte) error {
+    ctx, span := tracer.Start(ctx, "kafka.publish",
+        trace.WithAttributes(
+            attribute.String("messaging.system", "kafka"),
+            attribute.String("messaging.destination", topic),
+            attribute.String("messaging.operation", "publish"),
+        ),
+    )
+    defer span.End()
+
+    // Инжектируем trace context в Kafka headers
+    headers := make([]kafka.Header, 0)
+    carrier := &amp;KafkaHeaderCarrier{headers: &amp;headers}
+    otel.GetTextMapPropagator().Inject(ctx, carrier)
+
+    return w.WriteMessages(ctx, kafka.Message{
+        Value:   payload,
+        Headers: headers,
+    })
+}
+
+// Consumer — извлекаем trace context из headers
+func consumeWithTracing(ctx context.Context, msg kafka.Message,
+    handler func(context.Context, kafka.Message) error) error {
+
+    // Извлекаем trace context из Kafka headers
+    carrier := &amp;KafkaHeaderCarrier{headers: &amp;msg.Headers}
+    ctx = otel.GetTextMapPropagator().Extract(ctx, carrier)
+
+    ctx, span := tracer.Start(ctx, "kafka.consume",
+        trace.WithAttributes(
+            attribute.String("messaging.system", "kafka"),
+            attribute.String("messaging.destination", msg.Topic),
+            attribute.String("messaging.operation", "receive"),
+            attribute.Int64("messaging.kafka.partition", int64(msg.Partition)),
+            attribute.Int64("messaging.kafka.offset", msg.Offset),
+        ),
+    )
+    defer span.End()
+
+    err := handler(ctx, msg)
+    if err != nil {
+        span.RecordError(err)
+    }
+    return err
+}
+
+// KafkaHeaderCarrier — адаптер для OTel propagation
+type KafkaHeaderCarrier struct {
+    headers *[]kafka.Header
+}
+
+func (c *KafkaHeaderCarrier) Get(key string) string {
+    for _, h := range *c.headers {
+        if h.Key == key {
+            return string(h.Value)
+        }
+    }
+    return ""
+}
+
+func (c *KafkaHeaderCarrier) Set(key, value string) {
+    *c.headers = append(*c.headers, kafka.Header{
+        Key:   key,
+        Value: []byte(value),
+    })
+}
+
+func (c *KafkaHeaderCarrier) Keys() []string {
+    keys := make([]string, len(*c.headers))
+    for i, h := range *c.headers {
+        keys[i] = h.Key
+    }
+    return keys
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В MassTransit tracing включается одной строкой: <code>cfg.UseOpenTelemetry()</code>. В Go вы вручную инжектируете и извлекаете trace context через headers. Результат тот же — связанные spans от producer к consumer в Jaeger/Tempo.</p>
+</blockquote>
+<h3 id="health-checks"><a class="header" href="#health-checks">Health Checks</a></h3>
+<pre><code class="language-go">// Health check для message queue consumers
+type MQHealthChecker struct {
+    kafkaReader  *kafka.Reader
+    rabbitClient *RabbitMQClient
+    natsConn     *nats.Conn
+    redisClient  *redis.Client
+}
+
+func (h *MQHealthChecker) CheckKafka(ctx context.Context) error {
+    // Проверяем, что reader подключён и читает
+    stats := h.kafkaReader.Stats()
+    if stats.Dials &gt; 0 &amp;&amp; stats.Errors &gt; stats.Dials/2 {
+        return fmt.Errorf("kafka: высокий уровень ошибок (%d/%d)", stats.Errors, stats.Dials)
+    }
+    return nil
+}
+
+func (h *MQHealthChecker) CheckRabbitMQ(ctx context.Context) error {
+    ch := h.rabbitClient.Channel()
+    if ch == nil || ch.IsClosed() {
+        return fmt.Errorf("rabbitmq: канал закрыт")
+    }
+    return nil
+}
+
+func (h *MQHealthChecker) CheckNATS(ctx context.Context) error {
+    if !h.natsConn.IsConnected() {
+        return fmt.Errorf("nats: не подключён (status=%v)", h.natsConn.Status())
+    }
+    return nil
+}
+
+func (h *MQHealthChecker) CheckRedisStreams(ctx context.Context) error {
+    return h.redisClient.Ping(ctx).Err()
+}
+</code></pre>
+<hr>
+<h2 id="практические-примеры"><a class="header" href="#практические-примеры">Практические примеры</a></h2>
+<h3 id="пример-1-event-driven-order-processing-kafka"><a class="header" href="#пример-1-event-driven-order-processing-kafka">Пример 1: Event-Driven Order Processing (Kafka)</a></h3>
+<p><strong>Задача</strong>: Сервис заказов публикует событие <code>OrderCreated</code> в Kafka. Сервис платежей потребляет событие, обрабатывает оплату и публикует <code>PaymentCompleted</code>. Реализуем идемпотентность и DLT.</p>
+<p><strong>C# с MassTransit</strong>:</p>
+<pre><code class="language-csharp">// В C# — всё декларативно:
+public class OrderCreatedConsumer : IConsumer&lt;OrderCreated&gt;
+{
+    public async Task Consume(ConsumeContext&lt;OrderCreated&gt; context)
+    {
+        await _paymentService.ProcessPayment(context.Message.OrderId);
+        await context.Publish(new PaymentCompleted(context.Message.OrderId));
+    }
+}
+// MassTransit автоматически: десериализация, retry, DLQ, tracing
+</code></pre>
+<p><strong>Go — полная реализация</strong>:</p>
+<pre><code class="language-go">package main
+
+import (
+    "context"
+    "encoding/json"
+    "fmt"
+    "log"
+    "os/signal"
+    "sync"
+    "syscall"
+    "time"
+
+    "github.com/jackc/pgx/v5/pgxpool"
+    "github.com/segmentio/kafka-go"
+)
+
+// --- Модели ---
+
+type OrderCreated struct {
+    OrderID    string  `json:"order_id"`
+    CustomerID string  `json:"customer_id"`
+    Total      float64 `json:"total"`
+    Currency   string  `json:"currency"`
+    CreatedAt  string  `json:"created_at"`
+}
+
+type PaymentCompleted struct {
+    OrderID       string  `json:"order_id"`
+    TransactionID string  `json:"transaction_id"`
+    Amount        float64 `json:"amount"`
+    ProcessedAt   string  `json:"processed_at"`
+}
+
+// --- Payment Processor ---
+
+type PaymentProcessor struct {
+    reader      *kafka.Reader
+    writer      *kafka.Writer    // Для публикации PaymentCompleted
+    dlqWriter   *kafka.Writer    // Dead Letter Topic
+    db          *pgxpool.Pool
+    idempotency *IdempotencyChecker
+}
+
+func NewPaymentProcessor(brokers []string, db *pgxpool.Pool) *PaymentProcessor {
+    return &amp;PaymentProcessor{
+        reader: kafka.NewReader(kafka.ReaderConfig{
+            Brokers:  brokers,
+            Topic:    "orders.created",
+            GroupID:  "payment-processor",
+            MaxBytes: 10e6,
+        }),
+        writer: &amp;kafka.Writer{
+            Addr:         kafka.TCP(brokers...),
+            Topic:        "payments.completed",
+            Balancer:     &amp;kafka.Hash{},
+            RequiredAcks: kafka.RequireAll,
+        },
+        dlqWriter: &amp;kafka.Writer{
+            Addr:  kafka.TCP(brokers...),
+            Topic: "orders.created.dlq",
+        },
+        db:          db,
+        idempotency: NewIdempotencyChecker(db),
+    }
+}
+
+func (p *PaymentProcessor) Run(ctx context.Context) error {
+    defer p.reader.Close()
+    defer p.writer.Close()
+    defer p.dlqWriter.Close()
+
+    log.Println("payment processor запущен")
+
+    for {
+        msg, err := p.reader.FetchMessage(ctx)
+        if err != nil {
+            if ctx.Err() != nil {
+                return nil
+            }
+            log.Printf("fetch ошибка: %v", err)
+            continue
+        }
+
+        if err := p.handleMessage(ctx, msg); err != nil {
+            log.Printf("обработка сообщения failed (offset=%d): %v", msg.Offset, err)
+        }
+
+        // Коммитим offset независимо от результата
+        // (ошибки ушли в DLQ или будут обработаны при retry)
+        if err := p.reader.CommitMessages(ctx, msg); err != nil {
+            log.Printf("commit ошибка: %v", err)
+        }
+    }
+}
+
+func (p *PaymentProcessor) handleMessage(ctx context.Context, msg kafka.Message) error {
+    var event OrderCreated
+    if err := json.Unmarshal(msg.Value, &amp;event); err != nil {
+        // Невалидный JSON — permanent error, сразу в DLQ
+        return p.sendToDLQ(ctx, msg, fmt.Errorf("невалидный JSON: %w", err))
+    }
+
+    // Идемпотентная обработка
+    messageID := getMessageID(msg)
+    err := p.idempotency.Process(ctx, messageID, func(ctx context.Context) error {
+        return p.processPayment(ctx, event)
+    })
+
+    if err != nil {
+        // Retry с backoff
+        retryErr := retryWithBackoff(ctx, 3, func(ctx context.Context) error {
+            return p.idempotency.Process(ctx, messageID, func(ctx context.Context) error {
+                return p.processPayment(ctx, event)
+            })
+        })
+
+        if retryErr != nil {
+            return p.sendToDLQ(ctx, msg, retryErr)
+        }
+    }
+
+    return nil
+}
+
+func (p *PaymentProcessor) processPayment(ctx context.Context, event OrderCreated) error {
+    // Бизнес-логика обработки платежа
+    log.Printf("обработка платежа для заказа %s: %.2f %s",
+        event.OrderID, event.Total, event.Currency)
+
+    // Публикуем событие PaymentCompleted
+    completed := PaymentCompleted{
+        OrderID:       event.OrderID,
+        TransactionID: fmt.Sprintf("txn_%s_%d", event.OrderID, time.Now().UnixNano()),
+        Amount:        event.Total,
+        ProcessedAt:   time.Now().UTC().Format(time.RFC3339),
+    }
+
+    data, err := json.Marshal(completed)
+    if err != nil {
+        return fmt.Errorf("сериализация PaymentCompleted: %w", err)
+    }
+
+    return p.writer.WriteMessages(ctx, kafka.Message{
+        Key:   []byte(event.OrderID),
+        Value: data,
+    })
+}
+
+func (p *PaymentProcessor) sendToDLQ(ctx context.Context, msg kafka.Message, processingErr error) error {
+    log.Printf("отправка в DLQ (offset=%d): %v", msg.Offset, processingErr)
+
+    headers := append(msg.Headers,
+        kafka.Header{Key: "dlq-error", Value: []byte(processingErr.Error())},
+        kafka.Header{Key: "dlq-timestamp", Value: []byte(time.Now().UTC().Format(time.RFC3339))},
+    )
+
+    return p.dlqWriter.WriteMessages(ctx, kafka.Message{
+        Key:     msg.Key,
+        Value:   msg.Value,
+        Headers: headers,
+    })
+}
+
+func getMessageID(msg kafka.Message) string {
+    for _, h := range msg.Headers {
+        if h.Key == "message-id" {
+            return string(h.Value)
+        }
+    }
+    return fmt.Sprintf("%s-%d-%d", msg.Topic, msg.Partition, msg.Offset)
+}
+
+func main() {
+    ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+    defer stop()
+
+    db, _ := pgxpool.New(ctx, "postgres://localhost:5432/payments")
+    defer db.Close()
+
+    processor := NewPaymentProcessor([]string{"localhost:9092"}, db)
+
+    if err := processor.Run(ctx); err != nil {
+        log.Fatal(err)
+    }
+}
+</code></pre>
+<hr>
+<h3 id="пример-2-task-queue-с-rabbitmq"><a class="header" href="#пример-2-task-queue-с-rabbitmq">Пример 2: Task Queue с RabbitMQ</a></h3>
+<p><strong>Задача</strong>: Фоновая обработка задач (отправка email, генерация отчётов). Worker pool с prefetch, publisher confirms и автоматическим переподключением.</p>
+<pre><code class="language-go">package main
+
+import (
+    "context"
+    "encoding/json"
+    "fmt"
+    "log"
+    "os/signal"
+    "sync"
+    "syscall"
+    "time"
+
+    amqp "github.com/rabbitmq/amqp091-go"
+)
+
+// --- Модели ---
+
+type Task struct {
+    ID      string          `json:"id"`
+    Type    string          `json:"type"`    // "send_email", "generate_report"
+    Payload json.RawMessage `json:"payload"`
+}
+
+type EmailPayload struct {
+    To      string `json:"to"`
+    Subject string `json:"subject"`
+    Body    string `json:"body"`
+}
+
+// --- Task Publisher ---
+
+type TaskPublisher struct {
+    client *RabbitMQClient // Обёртка с reconnection из раздела выше
+}
+
+func (p *TaskPublisher) PublishTask(ctx context.Context, task Task) error {
+    body, err := json.Marshal(task)
+    if err != nil {
+        return fmt.Errorf("сериализация: %w", err)
+    }
+
+    return p.client.Publish(ctx, "tasks", task.Type, amqp.Publishing{
+        ContentType:  "application/json",
+        DeliveryMode: amqp.Persistent,
+        MessageId:    task.ID,
+        Timestamp:    time.Now(),
+        Body:         body,
+    })
+}
+
+// --- Task Worker ---
+
+type TaskWorker struct {
+    url       string
+    queueName string
+    workers   int
+    handlers  map[string]func(context.Context, json.RawMessage) error
+}
+
+func NewTaskWorker(url, queueName string, workers int) *TaskWorker {
+    return &amp;TaskWorker{
+        url:       url,
+        queueName: queueName,
+        workers:   workers,
+        handlers:  make(map[string]func(context.Context, json.RawMessage) error),
+    }
+}
+
+func (w *TaskWorker) RegisterHandler(taskType string, handler func(context.Context, json.RawMessage) error) {
+    w.handlers[taskType] = handler
+}
+
+func (w *TaskWorker) Run(ctx context.Context) error {
+    for {
+        err := w.runOnce(ctx)
+        if ctx.Err() != nil {
+            return nil // Штатное завершение
+        }
+
+        // Переподключение при ошибке
+        log.Printf("worker ошибка: %v, переподключение...", err)
+        select {
+        case &lt;-time.After(5 * time.Second):
+        case &lt;-ctx.Done():
+            return nil
+        }
+    }
+}
+
+func (w *TaskWorker) runOnce(ctx context.Context) error {
+    conn, err := amqp.Dial(w.url)
+    if err != nil {
+        return fmt.Errorf("dial: %w", err)
+    }
+    defer conn.Close()
+
+    ch, err := conn.Channel()
+    if err != nil {
+        return fmt.Errorf("channel: %w", err)
+    }
+    defer ch.Close()
+
+    // Настраиваем топологию
+    if err := w.setupTopology(ch); err != nil {
+        return err
+    }
+
+    // Prefetch = 2 * workers
+    if err := ch.Qos(w.workers*2, 0, false); err != nil {
+        return fmt.Errorf("qos: %w", err)
+    }
+
+    deliveries, err := ch.Consume(w.queueName, "", false, false, false, false, nil)
+    if err != nil {
+        return fmt.Errorf("consume: %w", err)
+    }
+
+    // Следим за закрытием соединения
+    connClose := conn.NotifyClose(make(chan *amqp.Error, 1))
+
+    var wg sync.WaitGroup
+
+    for i := 0; i &lt; w.workers; i++ {
+        wg.Add(1)
+        go func(workerID int) {
+            defer wg.Done()
+            for {
+                select {
+                case d, ok := &lt;-deliveries:
+                    if !ok {
+                        return
+                    }
+                    w.processDelivery(ctx, workerID, ch, d)
+
+                case &lt;-ctx.Done():
+                    return
+                }
+            }
+        }(i)
+    }
+
+    // Ждём закрытия соединения или контекста
+    select {
+    case amqpErr := &lt;-connClose:
+        return fmt.Errorf("соединение закрыто: %v", amqpErr)
+    case &lt;-ctx.Done():
+        wg.Wait()
+        return nil
+    }
+}
+
+func (w *TaskWorker) setupTopology(ch *amqp.Channel) error {
+    // Exchange для задач
+    if err := ch.ExchangeDeclare("tasks", "direct", true, false, false, false, nil); err != nil {
+        return err
+    }
+
+    // DLX
+    if err := ch.ExchangeDeclare("tasks.dlx", "direct", true, false, false, false, nil); err != nil {
+        return err
+    }
+
+    // Основная очередь с DLX
+    _, err := ch.QueueDeclare(w.queueName, true, false, false, false, amqp.Table{
+        "x-dead-letter-exchange":    "tasks.dlx",
+        "x-dead-letter-routing-key": "dead",
+    })
+    if err != nil {
+        return err
+    }
+
+    // Привязываем все типы задач
+    for taskType := range w.handlers {
+        if err := ch.QueueBind(w.queueName, taskType, "tasks", false, nil); err != nil {
+            return err
+        }
+    }
+
+    // DLQ
+    ch.QueueDeclare("tasks.dlq", true, false, false, false, nil)
+    ch.QueueBind("tasks.dlq", "dead", "tasks.dlx", false, nil)
+
+    return nil
+}
+
+func (w *TaskWorker) processDelivery(ctx context.Context, workerID int, ch *amqp.Channel, d amqp.Delivery) {
+    var task Task
+    if err := json.Unmarshal(d.Body, &amp;task); err != nil {
+        log.Printf("[worker %d] невалидная задача: %v", workerID, err)
+        d.Reject(false) // В DLX
+        return
+    }
+
+    handler, ok := w.handlers[task.Type]
+    if !ok {
+        log.Printf("[worker %d] неизвестный тип задачи: %s", workerID, task.Type)
+        d.Reject(false) // В DLX
+        return
+    }
+
+    log.Printf("[worker %d] обработка задачи %s (тип: %s)", workerID, task.ID, task.Type)
+
+    if err := handler(ctx, task.Payload); err != nil {
+        // Проверяем количество попыток через x-death header
+        retryCount := getRetryCount(d)
+        if retryCount &gt;= 3 {
+            log.Printf("[worker %d] задача %s: исчерпаны попытки (%d), в DLQ", workerID, task.ID, retryCount)
+            d.Reject(false) // В DLX → DLQ
+        } else {
+            log.Printf("[worker %d] задача %s: ошибка (попытка %d): %v", workerID, task.ID, retryCount+1, err)
+            d.Nack(false, true) // Requeue для повтора
+        }
+        return
+    }
+
+    d.Ack(false)
+    log.Printf("[worker %d] задача %s обработана успешно", workerID, task.ID)
+}
+
+func getRetryCount(d amqp.Delivery) int {
+    if d.Headers == nil {
+        return 0
+    }
+    deaths, ok := d.Headers["x-death"].([]interface{})
+    if !ok || len(deaths) == 0 {
+        return 0
+    }
+    death, ok := deaths[0].(amqp.Table)
+    if !ok {
+        return 0
+    }
+    count, ok := death["count"].(int64)
+    if !ok {
+        return 0
+    }
+    return int(count)
+}
+
+func main() {
+    ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+    defer stop()
+
+    worker := NewTaskWorker("amqp://guest:guest@localhost:5672/", "task-queue", 5)
+
+    // Регистрируем обработчики
+    worker.RegisterHandler("send_email", func(ctx context.Context, payload json.RawMessage) error {
+        var email EmailPayload
+        if err := json.Unmarshal(payload, &amp;email); err != nil {
+            return err
+        }
+        log.Printf("отправка email: to=%s subject=%s", email.To, email.Subject)
+        // Здесь реальная отправка через SMTP
+        return nil
+    })
+
+    worker.RegisterHandler("generate_report", func(ctx context.Context, payload json.RawMessage) error {
+        log.Println("генерация отчёта...")
+        time.Sleep(2 * time.Second) // Имитация тяжёлой работы
+        return nil
+    })
+
+    log.Println("task worker запущен (5 воркеров)")
+    if err := worker.Run(ctx); err != nil {
+        log.Fatal(err)
+    }
+}
+</code></pre>
+<hr>
+<h3 id="пример-3-real-time-notifications-nats"><a class="header" href="#пример-3-real-time-notifications-nats">Пример 3: Real-Time Notifications (NATS)</a></h3>
+<p><strong>Задача</strong>: Сервис уведомлений получает события через NATS и пересылает подключённым клиентам через WebSocket. JetStream гарантирует, что уведомления не теряются.</p>
+<pre><code class="language-go">package main
+
+import (
+    "context"
+    "encoding/json"
+    "log"
+    "net/http"
+    "os/signal"
+    "sync"
+    "syscall"
+    "time"
+
+    "github.com/gorilla/websocket"
+    "github.com/nats-io/nats.go"
+    "github.com/nats-io/nats.go/jetstream"
+)
+
+// --- Модели ---
+
+type Notification struct {
+    ID        string `json:"id"`
+    UserID    string `json:"user_id"`
+    Type      string `json:"type"`    // "order_update", "payment", "system"
+    Title     string `json:"title"`
+    Message   string `json:"message"`
+    CreatedAt string `json:"created_at"`
+}
+
+// --- WebSocket Hub ---
+
+type Hub struct {
+    mu      sync.RWMutex
+    clients map[string]map[*websocket.Conn]struct{} // userID → connections
+}
+
+func NewHub() *Hub {
+    return &amp;Hub{
+        clients: make(map[string]map[*websocket.Conn]struct{}),
+    }
+}
+
+func (h *Hub) Register(userID string, conn *websocket.Conn) {
+    h.mu.Lock()
+    defer h.mu.Unlock()
+    if h.clients[userID] == nil {
+        h.clients[userID] = make(map[*websocket.Conn]struct{})
+    }
+    h.clients[userID][conn] = struct{}{}
+    log.Printf("WebSocket подключён: user=%s (всего: %d)", userID, len(h.clients[userID]))
+}
+
+func (h *Hub) Unregister(userID string, conn *websocket.Conn) {
+    h.mu.Lock()
+    defer h.mu.Unlock()
+    if conns, ok := h.clients[userID]; ok {
+        delete(conns, conn)
+        if len(conns) == 0 {
+            delete(h.clients, userID)
+        }
+    }
+    conn.Close()
+}
+
+func (h *Hub) SendToUser(userID string, data []byte) {
+    h.mu.RLock()
+    defer h.mu.RUnlock()
+
+    conns, ok := h.clients[userID]
+    if !ok {
+        return
+    }
+
+    for conn := range conns {
+        if err := conn.WriteMessage(websocket.TextMessage, data); err != nil {
+            log.Printf("ошибка отправки WebSocket: %v", err)
+            go h.Unregister(userID, conn)
+        }
+    }
+}
+
+// --- NATS Consumer ---
+
+type NotificationConsumer struct {
+    js  jetstream.JetStream
+    hub *Hub
+}
+
+func NewNotificationConsumer(nc *nats.Conn, hub *Hub) (*NotificationConsumer, error) {
+    js, err := jetstream.New(nc)
+    if err != nil {
+        return nil, err
+    }
+
+    return &amp;NotificationConsumer{js: js, hub: hub}, nil
+}
+
+func (c *NotificationConsumer) Setup(ctx context.Context) error {
+    // Создаём stream для уведомлений
+    _, err := c.js.CreateOrUpdateStream(ctx, jetstream.StreamConfig{
+        Name:      "NOTIFICATIONS",
+        Subjects:  []string{"notifications.&gt;"},
+        Storage:   jetstream.FileStorage,
+        Retention: jetstream.InterestPolicy, // Удалять после доставки всем consumers
+        MaxAge:    24 * time.Hour,
+    })
+    return err
+}
+
+func (c *NotificationConsumer) Run(ctx context.Context) error {
+    // Durable consumer — не потеряет сообщения при рестарте
+    consumer, err := c.js.CreateOrUpdateConsumer(ctx, "NOTIFICATIONS", jetstream.ConsumerConfig{
+        Name:          "ws-gateway",
+        Durable:       "ws-gateway",
+        DeliverPolicy: jetstream.DeliverNewPolicy,
+        AckPolicy:     jetstream.AckExplicitPolicy,
+        AckWait:       10 * time.Second,
+        MaxDeliver:    3,
+    })
+    if err != nil {
+        return err
+    }
+
+    iter, err := consumer.Messages()
+    if err != nil {
+        return err
+    }
+    defer iter.Stop()
+
+    for {
+        msg, err := iter.Next()
+        if err != nil {
+            if ctx.Err() != nil {
+                return nil
+            }
+            log.Printf("next ошибка: %v", err)
+            continue
+        }
+
+        var notif Notification
+        if err := json.Unmarshal(msg.Data(), &amp;notif); err != nil {
+            log.Printf("невалидное уведомление: %v", err)
+            msg.Term() // Не retry — данные невалидны
+            continue
+        }
+
+        // Отправляем в WebSocket
+        c.hub.SendToUser(notif.UserID, msg.Data())
+        msg.Ack()
+
+        log.Printf("уведомление доставлено: user=%s type=%s", notif.UserID, notif.Type)
+    }
+}
+
+// --- HTTP/WebSocket Server ---
+
+var upgrader = websocket.Upgrader{
+    CheckOrigin: func(r *http.Request) bool { return true }, // В production: проверяйте origin
+}
+
+func wsHandler(hub *Hub) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        userID := r.URL.Query().Get("user_id")
+        if userID == "" {
+            http.Error(w, "user_id обязателен", http.StatusBadRequest)
+            return
+        }
+
+        conn, err := upgrader.Upgrade(w, r, nil)
+        if err != nil {
+            log.Printf("WebSocket upgrade ошибка: %v", err)
+            return
+        }
+
+        hub.Register(userID, conn)
+        defer hub.Unregister(userID, conn)
+
+        // Читаем сообщения от клиента (ping/pong, close)
+        for {
+            _, _, err := conn.ReadMessage()
+            if err != nil {
+                break
+            }
+        }
+    }
+}
+
+// --- Публикация уведомлений (из других сервисов) ---
+
+func publishNotification(js jetstream.JetStream, notif Notification) error {
+    data, err := json.Marshal(notif)
+    if err != nil {
+        return err
+    }
+
+    _, err = js.Publish(context.Background(),
+        "notifications."+notif.UserID, // Subject = notifications.&lt;user_id&gt;
+        data,
+        jetstream.WithMsgID(notif.ID), // Дедупликация
+    )
+    return err
+}
+
+func main() {
+    ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+    defer stop()
+
+    // Подключаемся к NATS
+    nc, err := nats.Connect("nats://localhost:4222",
+        nats.ReconnectWait(2*time.Second),
+        nats.MaxReconnects(-1), // Бесконечные попытки
+    )
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer nc.Close()
+
+    hub := NewHub()
+
+    consumer, err := NewNotificationConsumer(nc, hub)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    if err := consumer.Setup(ctx); err != nil {
+        log.Fatal(err)
+    }
+
+    // Запускаем NATS consumer в горутине
+    go func() {
+        if err := consumer.Run(ctx); err != nil {
+            log.Printf("consumer ошибка: %v", err)
+        }
+    }()
+
+    // HTTP сервер
+    mux := http.NewServeMux()
+    mux.HandleFunc("/ws", wsHandler(hub))
+
+    server := &amp;http.Server{Addr: ":8080", Handler: mux}
+
+    go func() {
+        log.Println("WebSocket сервер запущен на :8080")
+        if err := server.ListenAndServe(); err != http.ErrServerClosed {
+            log.Fatal(err)
+        }
+    }()
+
+    &lt;-ctx.Done()
+    server.Shutdown(context.Background())
+    log.Println("сервер остановлен")
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Этот пример — аналог SignalR с backplane на Azure Service Bus. В C# вы бы использовали <code>IHubContext&lt;NotificationHub&gt;</code> для отправки сообщений клиентам. В Go — gorilla/websocket (или nhooyr.io/websocket) + NATS JetStream.</p>
+</blockquote>
+<hr><!-- AUTO: NAV -->
+<p><strong>Вопросы?</strong> Открой issue на <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/issues">GitHub</a></p>
+<p><a href="./02_caching.html">← Назад: Кэширование</a> | <a href="./04_grpc.html">Вперёд: gRPC →</a></p>
+<!-- /AUTO: NAV -->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part4-infrastructure/02_caching.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part4-infrastructure/04_grpc.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part4-infrastructure/02_caching.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part4-infrastructure/04_grpc.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

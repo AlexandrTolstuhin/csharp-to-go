@@ -1,0 +1,700 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Проект 2: E-Commerce Platform - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-e1a1ce5b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-c19b06e6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part5-project2-ecommerce/README.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="проект-2-e-commerce-platform"><a class="header" href="#проект-2-e-commerce-platform">Проект 2: E-commerce Platform</a></h1>
+<blockquote>
+<p>Практический проект: микросервисная архитектура на Go.
+Сложность: <strong>Intermediate</strong></p>
+</blockquote>
+<hr>
+<h2 id="что-мы-построим"><a class="header" href="#что-мы-построим">Что мы построим</a></h2>
+<p>Полноценная e-commerce платформа с микросервисной архитектурой:</p>
+<ul>
+<li><strong>API Gateway</strong> — единая точка входа, JWT-проверка, routing, circuit breaker</li>
+<li><strong>User Service</strong> — регистрация, login, JWT токены, профиль</li>
+<li><strong>Catalog Service</strong> — каталог товаров, категории, поиск (CQRS)</li>
+<li><strong>Order Service</strong> — создание заказов, управление состоянием (Saga)</li>
+<li><strong>Payment Service</strong> — эмуляция оплаты, идемпотентность</li>
+<li><strong>Notification Service</strong> — email/push уведомления через Kafka</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Аналог — набор ASP.NET Core Minimal API сервисов
+с MassTransit + RabbitMQ/Kafka. В Go всё делается явно: нет DI-контейнера,
+нет магии фреймворка — только явный код и чёткие интерфейсы.</p>
+</blockquote>
+<hr>
+<h2 id="архитектура"><a class="header" href="#архитектура">Архитектура</a></h2>
+<h3 id="общая-схема-сервисов"><a class="header" href="#общая-схема-сервисов">Общая схема сервисов</a></h3>
+<pre class="mermaid">graph TB
+    Client["Клиент&lt;br/&gt;(мобильный / браузер)"]
+    GW["API Gateway&lt;br/&gt;:8080&lt;br/&gt;(chi + JWT + Circuit Breaker)"]
+
+    subgraph "gRPC сервисы"
+        US["User Service&lt;br/&gt;:9001&lt;br/&gt;(JWT, bcrypt)"]
+        CS["Catalog Service&lt;br/&gt;:9002&lt;br/&gt;(CQRS, Redis)"]
+        OS["Order Service&lt;br/&gt;:9003&lt;br/&gt;(Saga, PostgreSQL)"]
+        PS["Payment Service&lt;br/&gt;:9004&lt;br/&gt;(идемпотентность)"]
+    end
+
+    subgraph "Инфраструктура"
+        KAFKA[("Kafka&lt;br/&gt;(события)")]
+        NS["Notification Service&lt;br/&gt;(consumer)"]
+        PG_U[("PostgreSQL&lt;br/&gt;users DB")]
+        PG_C[("PostgreSQL&lt;br/&gt;catalog DB")]
+        PG_O[("PostgreSQL&lt;br/&gt;orders DB")]
+        PG_P[("PostgreSQL&lt;br/&gt;payments DB")]
+        REDIS[("Redis&lt;br/&gt;(кэш каталога)")]
+        OTEL["OpenTelemetry&lt;br/&gt;Collector"]
+        JAEGER["Jaeger"]
+    end
+
+    Client --&gt;|"HTTP/REST"| GW
+    GW --&gt;|"gRPC"| US
+    GW --&gt;|"gRPC"| CS
+    GW --&gt;|"gRPC"| OS
+    US --- PG_U
+    CS --- PG_C
+    CS --- REDIS
+    OS --- PG_O
+    OS --&gt;|"order.created"| KAFKA
+    PS --- PG_P
+    PS --&gt;|"payment.completed"| KAFKA
+    KAFKA --&gt; NS
+    KAFKA --&gt; OS
+    GW --&gt; OTEL
+    US --&gt; OTEL
+    CS --&gt; OTEL
+    OS --&gt; OTEL
+    PS --&gt; OTEL
+    OTEL --&gt; JAEGER
+</pre>
+
+<h3 id="saga-pattern-оформление-заказа"><a class="header" href="#saga-pattern-оформление-заказа">Saga Pattern: оформление заказа</a></h3>
+<pre class="mermaid">sequenceDiagram
+    participant C as Клиент
+    participant GW as API Gateway
+    participant OS as Order Service
+    participant CS as Catalog Service
+    participant PS as Payment Service
+    participant K as Kafka
+    participant NS as Notification Service
+
+    C-&gt;&gt;GW: POST /orders
+    GW-&gt;&gt;OS: gRPC CreateOrder()
+
+    OS-&gt;&gt;CS: gRPC ReserveStock()
+    CS--&gt;&gt;OS: OK (stock reserved)
+
+    OS-&gt;&gt;K: publish order.created
+    OS--&gt;&gt;GW: OrderID (pending)
+    GW--&gt;&gt;C: 202 Accepted {order_id}
+
+    K-&gt;&gt;PS: consume order.created
+    PS-&gt;&gt;PS: Charge payment
+    alt Оплата успешна
+        PS-&gt;&gt;K: publish payment.completed
+        K-&gt;&gt;OS: consume payment.completed
+        OS-&gt;&gt;OS: status = confirmed
+        OS-&gt;&gt;K: publish order.confirmed
+        K-&gt;&gt;NS: send email "Заказ подтверждён"
+    else Оплата не прошла
+        PS-&gt;&gt;K: publish payment.failed
+        K-&gt;&gt;OS: consume payment.failed
+        OS-&gt;&gt;CS: gRPC ReleaseStock()
+        OS-&gt;&gt;OS: status = cancelled
+        K-&gt;&gt;NS: send email "Заказ отменён"
+    end
+</pre>
+
+<h3 id="cqrs-в-catalog-service"><a class="header" href="#cqrs-в-catalog-service">CQRS в Catalog Service</a></h3>
+<pre class="mermaid">graph LR
+    subgraph "Write Side (Commands)"
+        CMD["CreateProduct&lt;br/&gt;UpdatePrice&lt;br/&gt;UpdateStock"]
+        CW["Command Handler"]
+        PG_W[("PostgreSQL&lt;br/&gt;write model")]
+        KP["Kafka Producer&lt;br/&gt;product.updated"]
+    end
+
+    subgraph "Read Side (Queries)"
+        QRY["GetProduct&lt;br/&gt;ListProducts&lt;br/&gt;SearchProducts"]
+        QH["Query Handler"]
+        REDIS_R[("Redis&lt;br/&gt;read model")]
+        PG_R[("PostgreSQL&lt;br/&gt;read replica")]
+    end
+
+    CMD --&gt; CW
+    CW --&gt; PG_W
+    CW --&gt; KP
+    KP --&gt;|"invalidate cache"| REDIS_R
+    QRY --&gt; QH
+    QH --&gt; REDIS_R
+    REDIS_R --&gt;|"cache miss"| PG_R
+</pre>
+
+<hr>
+<h2 id="технологии"><a class="header" href="#технологии">Технологии</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Компонент</th><th>Go</th><th>C# аналог</th></tr>
+</thead>
+<tbody>
+<tr><td>HTTP сервер (Gateway)</td><td><code>net/http</code> + <code>chi</code></td><td>ASP.NET Core</td></tr>
+<tr><td>Межсервисный транспорт</td><td><code>google.golang.org/grpc</code></td><td>gRPC for .NET</td></tr>
+<tr><td>Proto контракты</td><td><code>buf</code> + <code>protoc-gen-go</code></td><td>Grpc.Tools</td></tr>
+<tr><td>Очереди сообщений</td><td><code>segmentio/kafka-go</code></td><td>MassTransit + Kafka</td></tr>
+<tr><td>PostgreSQL</td><td><code>pgx/v5</code> + <code>sqlc</code></td><td>EF Core / Npgsql</td></tr>
+<tr><td>Кэш</td><td><code>go-redis/v9</code></td><td>StackExchange.Redis</td></tr>
+<tr><td>JWT</td><td><code>golang-jwt/jwt/v5</code></td><td>System.IdentityModel.Tokens.Jwt</td></tr>
+<tr><td>Хэширование паролей</td><td><code>golang.org/x/crypto/bcrypt</code></td><td>ASP.NET Core Identity</td></tr>
+<tr><td>Трейсинг</td><td><code>go.opentelemetry.io/otel</code></td><td>OpenTelemetry .NET</td></tr>
+<tr><td>Circuit breaker</td><td><code>sony/gobreaker</code></td><td>Polly</td></tr>
+<tr><td>Тесты</td><td><code>testing</code> + <code>testify</code></td><td>xUnit + Moq</td></tr>
+<tr><td>Контейнеры для тестов</td><td><code>testcontainers-go</code></td><td>TestContainers.NET</td></tr>
+<tr><td>Логирование</td><td><code>log/slog</code></td><td>Serilog</td></tr>
+<tr><td>Конфигурация</td><td><code>caarlos0/env</code></td><td>Options pattern</td></tr>
+<tr><td>Деплой</td><td>Docker Compose + Kubernetes</td><td>Docker / Helm</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="gomod-каждый-сервис"><a class="header" href="#gomod-каждый-сервис">go.mod (каждый сервис)</a></h3>
+<pre><code class="language-go">module github.com/yourname/ecommerce/user-service
+
+go 1.26
+
+require (
+    google.golang.org/grpc v1.70.0
+    google.golang.org/protobuf v1.36.5
+    github.com/jackc/pgx/v5 v5.7.1
+    github.com/golang-jwt/jwt/v5 v5.2.1
+    golang.org/x/crypto v0.35.0
+    github.com/caarlos0/env/v11 v11.3.1
+    go.opentelemetry.io/otel v1.34.0
+    go.opentelemetry.io/otel/trace v1.34.0
+    github.com/stretchr/testify v1.10.0
+    github.com/testcontainers/testcontainers-go v0.35.0
+)
+</code></pre>
+<hr>
+<h2 id="структура-проекта"><a class="header" href="#структура-проекта">Структура проекта</a></h2>
+<pre><code>ecommerce/
+├── proto/                           # Protobuf контракты (общие)
+│   ├── buf.yaml
+│   ├── user/v1/
+│   │   └── user.proto
+│   ├── catalog/v1/
+│   │   └── catalog.proto
+│   ├── order/v1/
+│   │   └── order.proto
+│   └── payment/v1/
+│       └── payment.proto
+│
+├── shared/                          # Общий код
+│   ├── events/                      # Kafka события (Go struct)
+│   │   ├── order_events.go
+│   │   └── payment_events.go
+│   ├── middleware/                  # JWT parsing, trace propagation
+│   └── config/                     # Базовая структура конфига
+│
+├── services/
+│   ├── api-gateway/                 # HTTP → gRPC proxy
+│   │   ├── cmd/gateway/main.go
+│   │   ├── internal/
+│   │   │   ├── handler/             # chi хэндлеры
+│   │   │   ├── client/              # gRPC клиенты к сервисам
+│   │   │   └── middleware/          # JWT verify, circuit breaker
+│   │   ├── Dockerfile
+│   │   └── go.mod
+│   │
+│   ├── user-service/                # JWT auth
+│   │   ├── cmd/server/main.go
+│   │   ├── internal/
+│   │   │   ├── domain/              # User entity, errors
+│   │   │   ├── service/             # UserService (бизнес-логика)
+│   │   │   ├── storage/             # PostgreSQL repo
+│   │   │   └── grpc/                # gRPC server implementation
+│   │   ├── migrations/
+│   │   ├── Dockerfile
+│   │   └── go.mod
+│   │
+│   ├── catalog-service/             # CQRS: продукты и категории
+│   │   ├── cmd/server/main.go
+│   │   ├── internal/
+│   │   │   ├── domain/
+│   │   │   ├── command/             # Write side
+│   │   │   ├── query/               # Read side (Redis + PG)
+│   │   │   ├── storage/
+│   │   │   └── grpc/
+│   │   ├── migrations/
+│   │   ├── Dockerfile
+│   │   └── go.mod
+│   │
+│   ├── order-service/               # Saga orchestration
+│   │   ├── cmd/server/main.go
+│   │   ├── internal/
+│   │   │   ├── domain/
+│   │   │   ├── saga/                # Saga orchestrator
+│   │   │   ├── storage/
+│   │   │   ├── grpc/
+│   │   │   └── kafka/               # Producer + Consumer
+│   │   ├── migrations/
+│   │   ├── Dockerfile
+│   │   └── go.mod
+│   │
+│   ├── payment-service/             # Эмуляция оплаты
+│   │   ├── cmd/server/main.go
+│   │   ├── internal/
+│   │   │   ├── domain/
+│   │   │   ├── service/
+│   │   │   ├── storage/
+│   │   │   ├── grpc/
+│   │   │   └── kafka/
+│   │   ├── migrations/
+│   │   ├── Dockerfile
+│   │   └── go.mod
+│   │
+│   └── notification-service/        # Kafka consumer → email/push
+│       ├── cmd/worker/main.go
+│       ├── internal/
+│       │   ├── consumer/
+│       │   └── sender/
+│       ├── Dockerfile
+│       └── go.mod
+│
+├── docker-compose.yml               # Все сервисы + инфра
+├── docker-compose.dev.yml           # Только инфра (для разработки)
+├── Makefile                         # build, test, lint, proto
+└── README.md
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В .NET обычно используется монорепозиторий через Solution
+с проектами-сборками. В Go каждый микросервис — отдельный <code>go.mod</code> модуль,
+что даёт явный контроль зависимостей. Общий код выносится в <code>shared/</code> пакет.</p>
+</blockquote>
+<hr>
+<h2 id="паттерны"><a class="header" href="#паттерны">Паттерны</a></h2>
+<h3 id="saga-pattern-хореография"><a class="header" href="#saga-pattern-хореография">Saga Pattern (хореография)</a></h3>
+<p>Каждый сервис знает только о своих событиях. Оркестрации нет — только реакция на события:</p>
+<pre><code>order.created    → Payment Service обрабатывает оплату
+payment.done     → Order Service подтверждает заказ
+payment.failed   → Order Service отменяет, Catalog возвращает резерв
+order.confirmed  → Notification Service отправляет email
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Vs C# MassTransit</strong>: MassTransit Saga — state machine с явной персистентностью.
+В Go Saga реализуется вручную: Kafka consumer + explicit state transitions + идемпотентность через INSERT ON CONFLICT.</p>
+</blockquote>
+<h3 id="cqrs-catalog-service"><a class="header" href="#cqrs-catalog-service">CQRS (Catalog Service)</a></h3>
+<pre><code>Commands (Write): CreateProduct, UpdatePrice, UpdateStock
+    → PostgreSQL (source of truth) + Kafka event (cache invalidation)
+
+Queries (Read): GetProduct, ListProducts, SearchProducts
+    → Redis (cache) → PostgreSQL read replica (cache miss)
+</code></pre>
+<h3 id="circuit-breaker-api-gateway"><a class="header" href="#circuit-breaker-api-gateway">Circuit Breaker (API Gateway)</a></h3>
+<pre><code>Каждый gRPC клиент обёрнут в sony/gobreaker.
+Состояния: Closed → Open (5 ошибок за 10 сек) → Half-Open (1 пробный запрос)
+</code></pre>
+<h3 id="идемпотентность-payment-service"><a class="header" href="#идемпотентность-payment-service">Идемпотентность (Payment Service)</a></h3>
+<pre><code class="language-sql">CREATE TABLE payment_attempts (
+    idempotency_key UUID PRIMARY KEY,
+    order_id        UUID NOT NULL,
+    status          TEXT NOT NULL,
+    created_at      TIMESTAMPTZ DEFAULT NOW()
+);
+-- INSERT ON CONFLICT DO NOTHING → безопасный retry
+</code></pre>
+<hr><!-- AUTO: MATERIALS -->
+<h2 id="материалы"><a class="header" href="#материалы">Материалы</a></h2>
+<h3 id="1-доменная-модель-и-контракты"><a class="header" href="#1-доменная-модель-и-контракты">1. <a href="./01_domain.html">Доменная модель и контракты</a></a></h3>
+<ul>
+<li>Обзор доменов</li>
+<li>Protobuf контракты</li>
+<li>Go доменные модели</li>
+<li>Kafka события</li>
+<li>Shared пакеты</li>
+<li>Сравнение с C#</li>
+<li>Генерация кода</li>
+</ul>
+<h3 id="2-user-service"><a class="header" href="#2-user-service">2. <a href="./02_user_service.html">User Service</a></a></h3>
+<ul>
+<li>Обзор сервиса</li>
+<li>Конфигурация</li>
+<li>Доменный сервис</li>
+<li>JWT токены</li>
+<li>PostgreSQL репозиторий</li>
+<li>gRPC сервер</li>
+<li>Точка входа: main.go</li>
+<li>Миграции</li>
+<li>Тестирование</li>
+<li>Сравнение с C#</li>
+</ul>
+<h3 id="3-catalog-service-cqrs"><a class="header" href="#3-catalog-service-cqrs">3. <a href="./03_catalog_service.html">Catalog Service (CQRS)</a></a></h3>
+<ul>
+<li>Обзор и CQRS</li>
+<li>Доменная модель</li>
+<li>Command Side (Write)</li>
+<li>Query Side (Read)</li>
+<li>Резервирование склада</li>
+<li>gRPC сервер</li>
+<li>Kafka: инвалидация кэша</li>
+<li>Миграции</li>
+<li>Тестирование</li>
+<li>Сравнение с C#</li>
+</ul>
+<h3 id="4-order-service-saga-pattern"><a class="header" href="#4-order-service-saga-pattern">4. <a href="./04_order_service.html">Order Service (Saga Pattern)</a></a></h3>
+<ul>
+<li>Обзор и Saga Pattern</li>
+<li>State Machine заказа</li>
+<li>gRPC: создание заказа</li>
+<li>Kafka Consumer: обработка событий</li>
+<li>Kafka Producer: публикация событий</li>
+<li>PostgreSQL репозиторий</li>
+<li>gRPC сервер и клиент Catalog Service</li>
+<li>main.go — запуск сервиса</li>
+<li>Миграции</li>
+<li>Тестирование</li>
+<li>Сравнение с C#</li>
+</ul>
+<h3 id="5-payment-service-и-notification-service"><a class="header" href="#5-payment-service-и-notification-service">5. <a href="./05_payment_notification.html">Payment Service и Notification Service</a></a></h3>
+<ul>
+<li>Payment Service</li>
+<li>Notification Service</li>
+<li>Тестирование</li>
+<li>Сравнение с C#</li>
+</ul>
+<h3 id="6-api-gateway"><a class="header" href="#6-api-gateway">6. <a href="./06_api_gateway.html">API Gateway</a></a></h3>
+<ul>
+<li>Обзор</li>
+<li>Структура и routing</li>
+<li>JWT middleware</li>
+<li>gRPC клиенты с Circuit Breaker</li>
+<li>HTTP хэндлеры</li>
+<li>Rate limiting</li>
+<li>main.go</li>
+<li>Тестирование</li>
+<li>Сравнение с C#</li>
+</ul>
+<h3 id="7-деплой-и-наблюдаемость"><a class="header" href="#7-деплой-и-наблюдаемость">7. <a href="./07_deployment.html">Деплой и наблюдаемость</a></a></h3>
+<ul>
+<li>Docker Compose</li>
+<li>Dockerfiles</li>
+<li>Makefile</li>
+<li>OpenTelemetry</li>
+<li>Health Checks</li>
+<li>Kubernetes</li>
+<li>Итоги проекта</li>
+</ul>
+<!-- /AUTO: MATERIALS -->
+<hr>
+<h2 id="требования"><a class="header" href="#требования">Требования</a></h2>
+<ul>
+<li>Go 1.26+</li>
+<li>Docker + Docker Compose</li>
+<li><code>buf</code> CLI (для генерации proto): <code>go install github.com/bufbuild/buf/cmd/buf@latest</code></li>
+<li><code>sqlc</code> (для генерации SQL): <code>go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest</code></li>
+<li>Знание материалов Частей 1-4 курса:
+<ul>
+<li>Горутины и каналы (2.1)</li>
+<li>Обработка ошибок (2.5)</li>
+<li>HTTP сервер и структура проекта (3.1-3.2)</li>
+<li>PostgreSQL и кэширование (4.1-4.2)</li>
+<li>Kafka (4.3)</li>
+<li>gRPC (4.4)</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="быстрый-старт"><a class="header" href="#быстрый-старт">Быстрый старт</a></h2>
+<pre><code class="language-bash"># 1. Поднять инфраструктуру
+docker compose -f docker-compose.dev.yml up -d
+# PostgreSQL (x4), Redis, Kafka, Zookeeper, Jaeger
+
+# 2. Сгенерировать proto
+cd proto &amp;&amp; buf generate
+
+# 3. Применить миграции
+make migrate-all
+
+# 4. Запустить все сервисы (для разработки)
+make dev
+# Запускает: api-gateway, user-service, catalog-service,
+#            order-service, payment-service, notification-service
+
+# 5. Тестируем
+# Регистрация
+curl -X POST http://localhost:8080/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email": "user@example.com", "password": "secret123", "name": "Ivan"}'
+
+# Login → получаем JWT
+curl -X POST http://localhost:8080/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "user@example.com", "password": "secret123"}'
+# {"access_token": "eyJ...", "expires_in": 3600}
+
+# Создаём заказ
+curl -X POST http://localhost:8080/api/v1/orders \
+  -H "Authorization: Bearer eyJ..." \
+  -H "Content-Type: application/json" \
+  -d '{"items": [{"product_id": "uuid", "quantity": 2}]}'
+# {"order_id": "uuid", "status": "pending"}
+
+# Jaeger UI для трейсинга
+open http://localhost:16686
+</code></pre>
+<hr>
+<h2 id="что-изучим"><a class="header" href="#что-изучим">Что изучим</a></h2>
+<p>После завершения проекта вы будете уметь:</p>
+<ul>
+<li>Проектировать <strong>микросервисную архитектуру</strong> на Go</li>
+<li>Писать <strong>gRPC сервисы</strong> с protobuf контрактами</li>
+<li>Реализовывать <strong>Saga pattern</strong> через Kafka events</li>
+<li>Применять <strong>CQRS</strong> для разделения read/write нагрузки</li>
+<li>Добавлять <strong>Circuit Breaker</strong> на уровне API Gateway</li>
+<li>Обеспечивать <strong>идемпотентность</strong> операций</li>
+<li>Настраивать <strong>распределённый трейсинг</strong> через OpenTelemetry</li>
+<li>Деплоить <strong>многосервисное приложение</strong> в Docker Compose и Kubernetes</li>
+</ul>
+<hr><!-- AUTO: NAV -->
+<p><a href="../README.html">← Назад к оглавлению</a> | <a href="../part5-project1-url-shortener/">Предыдущая часть: Проект 1: URL Shortener</a> | <a href="../part6-best-practices/">Следующая часть: Часть 6: Best Practices Go →</a></p>
+<!-- /AUTO: NAV -->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part5-project1-url-shortener/05_deployment.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part5-project2-ecommerce/01_domain.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part5-project1-url-shortener/05_deployment.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part5-project2-ecommerce/01_domain.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

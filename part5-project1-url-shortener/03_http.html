@@ -1,0 +1,859 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>3. HTTP слой - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-e1a1ce5b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-c19b06e6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part5-project1-url-shortener/03_http.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="3-http-слой-nethttp-и-chi"><a class="header" href="#3-http-слой-nethttp-и-chi">3. HTTP слой: net/http и chi</a></h1>
+<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<ul>
+<li><a href="#%D0%B0%D1%80%D1%85%D0%B8%D1%82%D0%B5%D0%BA%D1%82%D1%83%D1%80%D0%B0-http-%D1%81%D0%BB%D0%BE%D1%8F">Архитектура HTTP слоя</a></li>
+<li><a href="#%D1%87%D0%B0%D1%81%D1%82%D1%8C-1-nethttp-go-122">Часть 1: net/http (Go 1.22+)</a>
+<ul>
+<li><a href="#%D1%85%D1%8D%D0%BD%D0%B4%D0%BB%D0%B5%D1%80%D1%8B">Хэндлеры</a>
+<ul>
+<li><a href="#c-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4-minimal-api">C# подход (Minimal API)</a></li>
+<li><a href="#go-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4-nethttp-%D1%85%D1%8D%D0%BD%D0%B4%D0%BB%D0%B5%D1%80%D1%8B">Go подход (net/http хэндлеры)</a></li>
+</ul>
+</li>
+<li><a href="#%D1%80%D0%BE%D1%83%D1%82%D0%B8%D0%BD%D0%B3-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-servemux">Роутинг через ServeMux</a></li>
+<li><a href="#middleware">Middleware</a></li>
+<li><a href="#rate-limiting">Rate limiting</a></li>
+<li><a href="#health-check">Health check</a></li>
+</ul>
+</li>
+<li><a href="#%D1%87%D0%B0%D1%81%D1%82%D1%8C-2-%D0%BC%D0%B8%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D0%BD%D0%B0-chi">Часть 2: Миграция на chi</a>
+<ul>
+<li><a href="#%D0%BF%D0%BE%D1%87%D0%B5%D0%BC%D1%83-chi">Почему chi</a></li>
+<li><a href="#%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F-%D0%B2-%D1%80%D0%BE%D1%83%D1%82%D0%B5%D1%80%D0%B5">Изменения в роутере</a></li>
+<li><a href="#middleware-%D0%B2-chi">Middleware в chi</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-c-minimal-api-vs-go-chi">Сравнение: C# Minimal API vs Go chi</a></li>
+</ul>
+</li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0">Сравнительная таблица</a></li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<hr>
+<h2 id="архитектура-http-слоя"><a class="header" href="#архитектура-http-слоя">Архитектура HTTP слоя</a></h2>
+<pre class="mermaid">graph LR
+    REQ["HTTP Request"] --&gt; MW["Middleware chain&lt;br/&gt;Logger → Recovery → RateLimit"]
+    MW --&gt; R["Router / Mux"]
+    R --&gt; H1["POST /api/urls&lt;br/&gt;CreateURL"]
+    R --&gt; H2["GET /{code}&lt;br/&gt;Redirect"]
+    R --&gt; H3["GET /api/stats/{code}&lt;br/&gt;GetStats"]
+    R --&gt; H4["GET /health&lt;br/&gt;HealthCheck"]
+    H1 &amp; H2 &amp; H3 &amp; H4 --&gt; SVC["URLService"]
+</pre>
+
+<p><strong>Интерфейс сервиса для хэндлеров</strong>:</p>
+<pre><code class="language-go">// internal/handler/handler.go
+package handler
+
+import "context"
+
+// URLService — интерфейс, который хэндлеры ожидают от сервисного слоя.
+// Определён в пакете handler (потребитель), не в domain (производитель).
+type URLService interface {
+    CreateURL(ctx context.Context, originalURL string) (URLResult, error)
+    Redirect(ctx context.Context, code string) (string, error)
+    GetStats(ctx context.Context, code string) (StatsResult, error)
+}
+
+// URLResult — DTO для ответа хэндлера создания URL.
+type URLResult struct {
+    Code        string
+    OriginalURL string
+    ShortURL    string
+}
+
+// StatsResult — DTO для ответа хэндлера статистики.
+type StatsResult struct {
+    Code        string
+    OriginalURL string
+    ClickCount  int64
+    CreatedAt   string // RFC3339 строка
+}
+</code></pre>
+<hr>
+<h2 id="часть-1-nethttp-go-122"><a class="header" href="#часть-1-nethttp-go-122">Часть 1: net/http (Go 1.22+)</a></h2>
+<h3 id="хэндлеры"><a class="header" href="#хэндлеры">Хэндлеры</a></h3>
+<h4 id="c-подход-minimal-api"><a class="header" href="#c-подход-minimal-api">C# подход (Minimal API)</a></h4>
+<pre><code class="language-csharp">// Program.cs
+app.MapPost("/api/urls", async (CreateUrlRequest req, IUrlService svc, CancellationToken ct) =&gt;
+{
+    try
+    {
+        var result = await svc.CreateAsync(req.Url, ct);
+        return Results.Ok(new { code = result.Code, shortUrl = result.ShortUrl });
+    }
+    catch (InvalidUrlException ex)
+    {
+        return Results.BadRequest(new { error = ex.Message });
+    }
+});
+
+app.MapGet("/{code}", async (string code, IUrlService svc, CancellationToken ct) =&gt;
+{
+    try
+    {
+        var url = await svc.GetOriginalUrlAsync(code, ct);
+        return Results.Redirect(url, permanent: false);
+    }
+    catch (UrlNotFoundException)
+    {
+        return Results.NotFound();
+    }
+});
+</code></pre>
+<h4 id="go-подход-nethttp-хэндлеры"><a class="header" href="#go-подход-nethttp-хэндлеры">Go подход (net/http хэндлеры)</a></h4>
+<pre><code class="language-go">// internal/handler/url.go
+package handler
+
+import (
+    "encoding/json"
+    "errors"
+    "log/slog"
+    "net/http"
+
+    "github.com/yourname/urlshortener/internal/domain"
+)
+
+// URLHandler содержит хэндлеры для работы с URL.
+// Зависимости — явные поля, не глобальные переменные.
+type URLHandler struct {
+    service URLService
+    baseURL string // например: "http://localhost:8080"
+}
+
+// NewURLHandler конструктор хэндлера.
+func NewURLHandler(service URLService, baseURL string) *URLHandler {
+    return &amp;URLHandler{service: service, baseURL: baseURL}
+}
+
+// createURLRequest — входящий JSON для создания URL.
+// json-теги задают имена полей в JSON (аналог [JsonPropertyName] в C#).
+type createURLRequest struct {
+    URL string `json:"url"`
+}
+
+// createURLResponse — исходящий JSON.
+type createURLResponse struct {
+    Code     string `json:"code"`
+    ShortURL string `json:"short_url"`
+}
+
+// CreateURL обрабатывает POST /api/urls.
+// Сигнатура http.HandlerFunc: func(ResponseWriter, *Request)
+func (h *URLHandler) CreateURL(w http.ResponseWriter, r *http.Request) {
+    // Декодируем JSON тело запроса
+    var req createURLRequest
+    if err := json.NewDecoder(r.Body).Decode(&amp;req); err != nil {
+        writeError(w, "невалидный JSON", http.StatusBadRequest)
+        return
+    }
+
+    if req.URL == "" {
+        writeError(w, "поле url обязательно", http.StatusBadRequest)
+        return
+    }
+
+    // Вызываем сервис
+    result, err := h.service.CreateURL(r.Context(), req.URL)
+    if err != nil {
+        if errors.Is(err, domain.ErrInvalidURL) {
+            writeError(w, err.Error(), http.StatusBadRequest)
+            return
+        }
+        slog.Error("CreateURL: ошибка сервиса", "err", err)
+        writeError(w, "внутренняя ошибка", http.StatusInternalServerError)
+        return
+    }
+
+    // Отправляем ответ 201 Created
+    writeJSON(w, http.StatusCreated, createURLResponse{
+        Code:     result.Code,
+        ShortURL: h.baseURL + "/" + result.Code,
+    })
+}
+
+// Redirect обрабатывает GET /{code} — перенаправляет на оригинальный URL.
+func (h *URLHandler) Redirect(w http.ResponseWriter, r *http.Request) {
+    // PathValue — новый метод Go 1.22 для получения path-параметра из ServeMux
+    code := r.PathValue("code")
+    if code == "" {
+        writeError(w, "код не указан", http.StatusBadRequest)
+        return
+    }
+
+    originalURL, err := h.service.Redirect(r.Context(), code)
+    if err != nil {
+        if errors.Is(err, domain.ErrNotFound) {
+            writeError(w, "ссылка не найдена", http.StatusNotFound)
+            return
+        }
+        slog.Error("Redirect: ошибка сервиса", "code", code, "err", err)
+        writeError(w, "внутренняя ошибка", http.StatusInternalServerError)
+        return
+    }
+
+    // 302 Found — временный редирект (браузер не кэширует)
+    // 301 Moved Permanently — браузер кэширует, сложнее инвалидировать
+    http.Redirect(w, r, originalURL, http.StatusFound)
+}
+
+// statsResponse — DTO статистики.
+type statsResponse struct {
+    Code        string `json:"code"`
+    OriginalURL string `json:"original_url"`
+    ClickCount  int64  `json:"click_count"`
+    CreatedAt   string `json:"created_at"` // RFC3339
+    ShortURL    string `json:"short_url"`
+}
+
+// GetStats обрабатывает GET /api/stats/{code}.
+func (h *URLHandler) GetStats(w http.ResponseWriter, r *http.Request) {
+    code := r.PathValue("code")
+    if code == "" {
+        writeError(w, "код не указан", http.StatusBadRequest)
+        return
+    }
+
+    stats, err := h.service.GetStats(r.Context(), code)
+    if err != nil {
+        if errors.Is(err, domain.ErrNotFound) {
+            writeError(w, "ссылка не найдена", http.StatusNotFound)
+            return
+        }
+        slog.Error("GetStats: ошибка сервиса", "code", code, "err", err)
+        writeError(w, "внутренняя ошибка", http.StatusInternalServerError)
+        return
+    }
+
+    writeJSON(w, http.StatusOK, statsResponse{
+        Code:        stats.Code,
+        OriginalURL: stats.OriginalURL,
+        ClickCount:  stats.ClickCount,
+        CreatedAt:   stats.CreatedAt,
+        ShortURL:    h.baseURL + "/" + stats.Code,
+    })
+}
+
+// --- вспомогательные функции ---
+
+// errorResponse — стандартный формат ошибки.
+type errorResponse struct {
+    Error string `json:"error"`
+}
+
+// writeJSON сериализует v в JSON и отправляет с заданным статусом.
+func writeJSON(w http.ResponseWriter, status int, v any) {
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(status)
+    if err := json.NewEncoder(w).Encode(v); err != nil {
+        slog.Error("writeJSON encode error", "err", err)
+    }
+}
+
+// writeError отправляет JSON-ошибку.
+func writeError(w http.ResponseWriter, msg string, status int) {
+    writeJSON(w, status, errorResponse{Error: msg})
+}
+</code></pre>
+<h3 id="роутинг-через-servemux"><a class="header" href="#роутинг-через-servemux">Роутинг через ServeMux</a></h3>
+<p><strong>Go 1.22</strong> значительно улучшил стандартный <code>http.ServeMux</code>: теперь он поддерживает
+path-параметры (<code>{code}</code>) и метод-специфичные паттерны (<code>GET /path</code>).</p>
+<pre><code class="language-go">// internal/handler/router.go
+package handler
+
+import (
+    "net/http"
+    "time"
+
+    "github.com/yourname/urlshortener/internal/domain"
+    "golang.org/x/time/rate"
+)
+
+// Config — конфигурация роутера.
+type Config struct {
+    BaseURL     string
+    RateLimit   float64 // запросов в секунду
+    RateBurst   int     // максимальный burst
+}
+
+// NewRouter собирает http.Handler из хэндлеров и middleware.
+func NewRouter(svc *domain.URLService, cfg Config) http.Handler {
+    h := NewURLHandler(svc, cfg.BaseURL)
+
+    mux := http.NewServeMux()
+
+    // Go 1.22+: паттерны с методом и path-параметрами
+    // Синтаксис: "METHOD /path/{param}"
+    mux.HandleFunc("POST /api/urls", h.CreateURL)
+    mux.HandleFunc("GET /api/stats/{code}", h.GetStats)
+    mux.HandleFunc("GET /{code}", h.Redirect)  // catch-all для редиректов
+    mux.HandleFunc("GET /health", healthCheck)
+
+    // Применяем middleware (цепочка обёрток)
+    // В Go middleware — это функция func(http.Handler) http.Handler
+    limiter := rate.NewLimiter(rate.Limit(cfg.RateLimit), cfg.RateBurst)
+
+    var handler http.Handler = mux
+    handler = rateLimitMiddleware(handler, limiter)  // применяется последним (снаружи)
+    handler = recoveryMiddleware(handler)
+    handler = loggingMiddleware(handler)              // применяется первым (снаружи)
+
+    return handler
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Go 1.22 ServeMux</strong>: До 1.22 ServeMux не поддерживал path-параметры и
+HTTP-методы в паттернах. Теперь <code>"GET /api/stats/{code}"</code> работает из коробки.
+Это сделало chi менее необходимым для простых случаев.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Порядок middleware</strong>: При оборачивании <code>handler = middleware(handler)</code> первый
+применённый middleware будет последним в цепочке выполнения. В примере выше:
+<code>logging → recovery → rateLimit → mux</code>. Читай снизу вверх при анализе.</p>
+</blockquote>
+<h3 id="middleware"><a class="header" href="#middleware">Middleware</a></h3>
+<pre><code class="language-go">// internal/handler/middleware.go
+package handler
+
+import (
+    "log/slog"
+    "net/http"
+    "runtime/debug"
+    "time"
+)
+
+// loggingMiddleware логирует метод, путь, статус и время выполнения запроса.
+// Аналог ILogger middleware в ASP.NET Core.
+func loggingMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        start := time.Now()
+
+        // responseWriter обёртка для перехвата статус-кода
+        // http.ResponseWriter не предоставляет доступ к записанному статусу
+        rw := &amp;responseWriter{ResponseWriter: w, status: http.StatusOK}
+
+        next.ServeHTTP(rw, r)
+
+        slog.Info("http request",
+            "method", r.Method,
+            "path", r.URL.Path,
+            "status", rw.status,
+            "duration_ms", time.Since(start).Milliseconds(),
+            "remote_addr", r.RemoteAddr,
+        )
+    })
+}
+
+// responseWriter перехватывает статус-код записанный хэндлером.
+type responseWriter struct {
+    http.ResponseWriter
+    status int
+}
+
+func (rw *responseWriter) WriteHeader(status int) {
+    rw.status = status
+    rw.ResponseWriter.WriteHeader(status)
+}
+
+// recoveryMiddleware восстанавливается после паники в хэндлере.
+// Аналог UseExceptionHandler в ASP.NET Core.
+func recoveryMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        defer func() {
+            if rec := recover(); rec != nil {
+                // Логируем stacktrace паники
+                slog.Error("паника в хэндлере",
+                    "panic", rec,
+                    "stack", string(debug.Stack()),
+                    "path", r.URL.Path,
+                )
+                http.Error(w, "внутренняя ошибка сервера", http.StatusInternalServerError)
+            }
+        }()
+        next.ServeHTTP(w, r)
+    })
+}
+</code></pre>
+<h3 id="rate-limiting"><a class="header" href="#rate-limiting">Rate limiting</a></h3>
+<p>Rate limiting через token bucket алгоритм — стандартный подход для защиты API.
+В Go стандартная реализация в <code>golang.org/x/time/rate</code>.</p>
+<pre><code class="language-go">// internal/handler/ratelimit.go
+package handler
+
+import (
+    "net/http"
+
+    "golang.org/x/time/rate"
+)
+
+// rateLimitMiddleware ограничивает количество запросов.
+// rate.Limiter — thread-safe token bucket.
+// Аналог AspNetCoreRateLimit или custom middleware в C#.
+func rateLimitMiddleware(next http.Handler, limiter *rate.Limiter) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        // Allow() не блокирует — сразу возвращает можно/нельзя
+        // Альтернатива: limiter.Wait(ctx) — ждёт токен (блокирует до доступности)
+        if !limiter.Allow() {
+            w.Header().Set("Retry-After", "1")
+            writeError(w, "слишком много запросов", http.StatusTooManyRequests)
+            return
+        }
+        next.ServeHTTP(w, r)
+    })
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Token bucket</strong>: Лимитер хранит токены (до <code>burst</code> штук). Каждый запрос
+потребляет токен. Токены пополняются со скоростью <code>rate</code> в секунду.
+При <code>rate.NewLimiter(rate.Limit(100), 10)</code>: 100 запросов/сек, burst до 10 запросов.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Ограничение</strong>: Этот rate limiter глобальный — на весь сервер, не per-IP.
+Для per-IP нужен map[string]*rate.Limiter с mutex или готовые библиотеки.
+Для production лучше использовать Redis для распределённого rate limiting.</p>
+</blockquote>
+<h3 id="health-check"><a class="header" href="#health-check">Health check</a></h3>
+<pre><code class="language-go">// internal/handler/health.go
+package handler
+
+import "net/http"
+
+// healthCheck отвечает 200 OK — для load balancer и Docker healthcheck.
+// Аналог IHealthCheck в ASP.NET Core.
+func healthCheck(w http.ResponseWriter, r *http.Request) {
+    writeJSON(w, http.StatusOK, map[string]string{
+        "status": "ok",
+    })
+}
+</code></pre>
+<hr>
+<h2 id="часть-2-миграция-на-chi"><a class="header" href="#часть-2-миграция-на-chi">Часть 2: Миграция на chi</a></h2>
+<h3 id="почему-chi"><a class="header" href="#почему-chi">Почему chi</a></h3>
+<p><code>net/http</code> в Go 1.22+ покрывает базовые потребности, но chi даёт:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Возможность</th><th>net/http 1.22+</th><th>chi</th></tr>
+</thead>
+<tbody>
+<tr><td>Path параметры</td><td><code>{name}</code></td><td><code>{name}</code></td></tr>
+<tr><td>Wildcards</td><td>Частично</td><td><code>{name:regex}</code>, <code>*</code></td></tr>
+<tr><td>Middleware группы</td><td>Нет</td><td><code>r.Group()</code>, <code>r.Route()</code></td></tr>
+<tr><td>Sub-router</td><td>Нет</td><td><code>r.Mount()</code></td></tr>
+<tr><td>Именованные роуты</td><td>Нет</td><td>Да</td></tr>
+<tr><td>Middleware per-route</td><td>Нет</td><td>Да</td></tr>
+<tr><td><code>chi.URLParam()</code></td><td><code>r.PathValue()</code></td><td><code>chi.URLParam(r, "name")</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>Для URL Shortener chi избыточен, но <strong>показателен как следующий шаг</strong> в реальных проектах.</p>
+<h3 id="изменения-в-роутере"><a class="header" href="#изменения-в-роутере">Изменения в роутере</a></h3>
+<p><strong>До (net/http)</strong>:</p>
+<pre><code class="language-go">mux := http.NewServeMux()
+mux.HandleFunc("POST /api/urls", h.CreateURL)
+mux.HandleFunc("GET /api/stats/{code}", h.GetStats)
+mux.HandleFunc("GET /{code}", h.Redirect)
+mux.HandleFunc("GET /health", healthCheck)
+</code></pre>
+<p><strong>После (chi)</strong>:</p>
+<pre><code class="language-go">// go get github.com/go-chi/chi/v5
+
+import "github.com/go-chi/chi/v5"
+
+r := chi.NewRouter()
+
+// Middleware применяются через r.Use() — декларативнее
+r.Use(chiMiddleware.Logger)    // встроенный logger chi
+r.Use(chiMiddleware.Recoverer) // встроенный recoverer chi
+
+// chi.NewLimiter — нет, используем свой (аналог net/http версии)
+r.Use(rateLimitMiddlewareChi(limiter))
+
+// Группы роутов — удобно для версионирования API
+r.Route("/api", func(r chi.Router) {
+    r.Post("/urls", h.CreateURL)
+    r.Get("/stats/{code}", h.GetStats)
+})
+
+r.Get("/health", healthCheck)
+r.Get("/{code}", h.Redirect) // catch-all последним
+</code></pre>
+<h3 id="middleware-в-chi"><a class="header" href="#middleware-в-chi">Middleware в chi</a></h3>
+<pre><code class="language-go">// internal/handler/router_chi.go
+package handler
+
+import (
+    "net/http"
+
+    "github.com/go-chi/chi/v5"
+    chiMiddleware "github.com/go-chi/chi/v5/middleware"
+    "golang.org/x/time/rate"
+)
+
+// NewChiRouter — альтернативный роутер на chi.
+func NewChiRouter(h *URLHandler, limiter *rate.Limiter) http.Handler {
+    r := chi.NewRouter()
+
+    // Встроенные middleware chi
+    r.Use(chiMiddleware.RequestID)  // добавляет X-Request-Id заголовок
+    r.Use(chiMiddleware.RealIP)     // берёт IP из X-Forwarded-For
+    r.Use(chiMiddleware.Logger)     // структурированное логирование
+    r.Use(chiMiddleware.Recoverer)  // recovery от паник
+
+    // Наш rate limiter (chi-совместимый middleware)
+    r.Use(rateLimitMiddlewareChi(limiter))
+
+    // API группа — общий префикс /api
+    r.Route("/api", func(r chi.Router) {
+        r.Post("/urls", h.CreateURL)
+        r.Get("/stats/{code}", h.GetStats)
+    })
+
+    r.Get("/health", healthCheck)
+
+    // Редирект — после всех специфичных роутов
+    r.Get("/{code}", h.Redirect)
+
+    return r
+}
+
+// rateLimitMiddlewareChi — middleware для chi (та же логика, chi-compatible сигнатура).
+func rateLimitMiddlewareChi(limiter *rate.Limiter) func(http.Handler) http.Handler {
+    return func(next http.Handler) http.Handler {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            if !limiter.Allow() {
+                w.Header().Set("Retry-After", "1")
+                writeError(w, "слишком много запросов", http.StatusTooManyRequests)
+                return
+            }
+            next.ServeHTTP(w, r)
+        })
+    }
+}
+</code></pre>
+<p><strong>Изменения в хэндлерах при переходе на chi</strong>:</p>
+<pre><code class="language-go">// net/http: r.PathValue("code") — метод *http.Request (Go 1.22+)
+code := r.PathValue("code")
+
+// chi: chi.URLParam(r, "code") — функция из пакета chi
+code := chi.URLParam(r, "code")
+</code></pre>
+<blockquote>
+<p>💡 <strong>Совместимость</strong>: <code>http.HandlerFunc(func(w http.ResponseWriter, r *http.Request))</code> —
+<strong>одинаковая сигнатура</strong> для net/http и chi. Хэндлеры не меняются при миграции.
+Меняется только роутер и способ получения path-параметров.</p>
+</blockquote>
+<h3 id="сравнение-c-minimal-api-vs-go-chi"><a class="header" href="#сравнение-c-minimal-api-vs-go-chi">Сравнение: C# Minimal API vs Go chi</a></h3>
+<p><strong>C# (Minimal API)</strong>:</p>
+<pre><code class="language-csharp">// Program.cs
+var app = builder.Build();
+
+app.UseExceptionHandler();
+app.UseRateLimiter();
+
+app.MapPost("/api/urls", async (CreateUrlRequest req, IUrlService svc) =&gt; {
+    var result = await svc.CreateAsync(req.Url);
+    return Results.Created($"/{result.Code}", new { result.Code, result.ShortUrl });
+});
+
+app.MapGet("/{code}", async (string code, IUrlService svc) =&gt; {
+    var url = await svc.GetOriginalUrlAsync(code);
+    return Results.Redirect(url);
+});
+
+app.Run();
+</code></pre>
+<p><strong>Go (chi)</strong>:</p>
+<pre><code class="language-go">// main.go + router.go
+r := chi.NewRouter()
+r.Use(chiMiddleware.Logger, chiMiddleware.Recoverer)
+r.Use(rateLimitMiddleware(limiter))
+
+r.Post("/api/urls", h.CreateURL)
+r.Get("/{code}", h.Redirect)
+
+http.ListenAndServe(cfg.Addr, r)
+</code></pre>
+<p><strong>Сравнение</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# Minimal API</th><th>Go chi</th></tr>
+</thead>
+<tbody>
+<tr><td>Роутер</td><td>Встроен в ASP.NET Core</td><td>Отдельная библиотека</td></tr>
+<tr><td>Middleware</td><td><code>app.Use...()</code></td><td><code>r.Use(...)</code></td></tr>
+<tr><td>DI в хэндлерах</td><td>Автоматически из контейнера</td><td>Явно через closure / struct</td></tr>
+<tr><td>Async</td><td><code>async Task&lt;IResult&gt;</code></td><td>Нет — синхронный возврат</td></tr>
+<tr><td>Path параметры</td><td><code>{code}</code> в MapGet</td><td><code>{code}</code> в router</td></tr>
+<tr><td>Доступ к параметру</td><td>Аргумент метода</td><td><code>chi.URLParam(r, "code")</code></td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="сравнительная-таблица"><a class="header" href="#сравнительная-таблица">Сравнительная таблица</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Концепция</th><th>C# ASP.NET Core</th><th>Go net/http</th><th>Go chi</th></tr>
+</thead>
+<tbody>
+<tr><td>Роутер</td><td>Встроен</td><td><code>http.ServeMux</code></td><td><code>chi.Router</code></td></tr>
+<tr><td>Регистрация маршрута</td><td><code>app.MapGet()</code></td><td><code>mux.HandleFunc()</code></td><td><code>r.Get()</code></td></tr>
+<tr><td>Path параметр</td><td>Аргумент метода</td><td><code>r.PathValue()</code></td><td><code>chi.URLParam()</code></td></tr>
+<tr><td>Middleware</td><td><code>app.Use()</code></td><td>Оборачивание: <code>mw(handler)</code></td><td><code>r.Use()</code></td></tr>
+<tr><td>Группы маршрутов</td><td><code>app.MapGroup()</code></td><td>Нет</td><td><code>r.Route()</code></td></tr>
+<tr><td>Sub-router</td><td><code>app.MapGroup()</code></td><td>Нет</td><td><code>r.Mount()</code></td></tr>
+<tr><td>Redirect</td><td><code>Results.Redirect()</code></td><td><code>http.Redirect()</code></td><td><code>http.Redirect()</code></td></tr>
+<tr><td>JSON ответ</td><td><code>Results.Ok(obj)</code></td><td><code>json.NewEncoder(w).Encode(v)</code></td><td>То же</td></tr>
+<tr><td>Статус код</td><td><code>Results.StatusCode()</code></td><td><code>w.WriteHeader(status)</code></td><td>То же</td></tr>
+<tr><td>DI в хэндлерах</td><td>Автоматически</td><td>Явно через struct поля</td><td>То же</td></tr>
+</tbody>
+</table>
+</div>
+<hr><!-- AUTO: NAV -->
+<p><strong>Вопросы?</strong> Открой issue на <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/issues">GitHub</a></p>
+<p><a href="./02_storage.html">← Назад: 2. Хранилище: PostgreSQL и Redis</a> | <a href="./04_testing.html">Вперёд: 4. Тестирование и бенчмарки →</a></p>
+<!-- /AUTO: NAV -->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part5-project1-url-shortener/02_storage.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part5-project1-url-shortener/04_testing.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part5-project1-url-shortener/02_storage.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part5-project1-url-shortener/04_testing.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

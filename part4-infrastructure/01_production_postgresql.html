@@ -1,0 +1,4272 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>4.1 Production PostgreSQL - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-e1a1ce5b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-c19b06e6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part4-infrastructure/01_production_postgresql.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="41-production-postgresql"><a class="header" href="#41-production-postgresql">4.1 Production PostgreSQL</a></h1>
+<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<ul>
+<li><a href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5">Введение</a>
+<ul>
+<li><a href="#%D1%87%D1%82%D0%BE-%D0%BE%D1%82%D0%BB%D0%B8%D1%87%D0%B0%D0%B5%D1%82-production-%D0%BE%D1%82-development">Что отличает production от development</a></li>
+<li><a href="#%D1%87%D1%82%D0%BE-%D0%B2%D1%8B-%D1%83%D0%B7%D0%BD%D0%B0%D0%B5%D1%82%D0%B5">Что вы узнаете</a></li>
+</ul>
+</li>
+<li><a href="#advanced-pgx-configuration">Advanced pgx Configuration</a>
+<ul>
+<li><a href="#%D0%B4%D0%B5%D1%82%D0%B0%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F-pgxpool">Детальная конфигурация pgxpool</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-adonet">Сравнение с ADO.NET</a></li>
+<li><a href="#runtime-parameters">Runtime Parameters</a></li>
+<li><a href="#custom-types-%D1%81-pgtype">Custom Types с pgtype</a></li>
+<li><a href="#nullable-%D1%82%D0%B8%D0%BF%D1%8B-%D0%B2-pgx-vs-c">Nullable типы в pgx vs C#</a></li>
+<li><a href="#query-tracing">Query Tracing</a></li>
+<li><a href="#opentelemetry-tracer">OpenTelemetry Tracer</a></li>
+<li><a href="#connection-hooks">Connection Hooks</a></li>
+<li><a href="#prepared-statement-cache">Prepared Statement Cache</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-hooks-%D1%81-c">Сравнение Hooks с C#</a></li>
+</ul>
+</li>
+<li><a href="#production-connection-pooling">Production Connection Pooling</a>
+<ul>
+<li><a href="#pgxpool-vs-pgbouncer">pgxpool vs PgBouncer</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%BD%D1%83%D0%B6%D0%B5%D0%BD-pgbouncer">Когда нужен PgBouncer</a></li>
+<li><a href="#%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0-pgbouncer">Настройка PgBouncer</a></li>
+<li><a href="#go-%D1%81-pgbouncer">Go с PgBouncer</a></li>
+<li><a href="#%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3-%D0%BF%D1%83%D0%BB%D0%B0">Мониторинг пула</a></li>
+<li><a href="#pool-statistics">Pool Statistics</a></li>
+<li><a href="#graceful-shutdown">Graceful Shutdown</a></li>
+<li><a href="#health-checks">Health Checks</a></li>
+<li><a href="#connection-warming">Connection Warming</a>
+<ul>
+<li><a href="#window-functions">Window Functions</a></li>
+<li><a href="#recursive-cte">Recursive CTE</a></li>
+</ul>
+</li>
+<li><a href="#dynamic-queries">Dynamic Queries</a>
+<ul>
+<li><a href="#optional-filters-%D1%81-sqlcnarg">Optional Filters с sqlc.narg()</a></li>
+<li><a href="#arrays-%D1%81-sqlcslice">Arrays с sqlc.slice()</a></li>
+</ul>
+</li>
+<li><a href="#%D1%82%D1%80%D0%B0%D0%BD%D0%B7%D0%B0%D0%BA%D1%86%D0%B8%D0%B8-%D0%B2-sqlc">Транзакции в sqlc</a>
+<ul>
+<li><a href="#transaction-manager">Transaction Manager</a></li>
+</ul>
+</li>
+<li><a href="#batch-operations-%D0%B2-sqlc">Batch Operations в sqlc</a></li>
+<li><a href="#custom-types-%D0%B8-overrides">Custom Types и Overrides</a></li>
+<li><a href="#sqlcembed-%D0%B4%D0%BB%D1%8F-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%B7%D0%B8%D1%86%D0%B8%D0%B8">sqlc.embed для композиции</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-sqlc-%D1%81-dapper-c">Сравнение sqlc с Dapper (C#)</a></li>
+</ul>
+</li>
+<li><a href="#zero-downtime-migrations">Zero-Downtime Migrations</a>
+<ul>
+<li><a href="#%D0%BE%D0%BF%D0%B0%D1%81%D0%BD%D1%8B%D0%B5-%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D0%B8">Опасные операции</a>
+<ul>
+<li><a href="#%D0%B1%D0%BB%D0%BE%D0%BA%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B8-%D0%B2-postgresql">Блокировки в PostgreSQL</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B1%D0%B5%D0%B7%D0%BE%D0%BF%D0%B0%D1%81%D0%BD%D1%8B%D0%B5-%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD%D1%8B">Безопасные паттерны</a>
+<ul>
+<li><a href="#1-%D0%B4%D0%BE%D0%B1%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-nullable-%D0%BA%D0%BE%D0%BB%D0%BE%D0%BD%D0%BA%D0%B8-%D0%B1%D0%B5%D0%B7%D0%BE%D0%BF%D0%B0%D1%81%D0%BD%D0%BE">1. Добавление nullable колонки (безопасно)</a></li>
+<li><a href="#2-%D0%B4%D0%BE%D0%B1%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-not-null-%D0%BA%D0%BE%D0%BB%D0%BE%D0%BD%D0%BA%D0%B8-3-step-pattern">2. Добавление NOT NULL колонки (3-step pattern)</a></li>
+<li><a href="#3-%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-%D0%B8%D0%BD%D0%B4%D0%B5%D0%BA%D1%81%D0%B0-%D0%B1%D0%B5%D0%B7-%D0%B1%D0%BB%D0%BE%D0%BA%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B8">3. Создание индекса без блокировки</a></li>
+<li><a href="#4-%D0%B1%D0%B5%D0%B7%D0%BE%D0%BF%D0%B0%D1%81%D0%BD%D0%BE%D0%B5-%D0%B4%D0%BE%D0%B1%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-foreign-key">4. Безопасное добавление Foreign Key</a></li>
+<li><a href="#5-%D0%BF%D0%B5%D1%80%D0%B5%D0%B8%D0%BC%D0%B5%D0%BD%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BA%D0%BE%D0%BB%D0%BE%D0%BD%D0%BA%D0%B8-expandcontract">5. Переименование колонки (Expand/Contract)</a></li>
+</ul>
+</li>
+<li><a href="#expandcontract-pattern">Expand/Contract Pattern</a></li>
+<li><a href="#atlas-declarative-migrations">Atlas: Declarative Migrations</a>
+<ul>
+<li><a href="#%D0%B4%D0%B5%D0%BA%D0%BB%D0%B0%D1%80%D0%B0%D1%82%D0%B8%D0%B2%D0%BD%D1%8B%D0%B9-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4">Декларативный подход</a></li>
+<li><a href="#atlas-%D1%81-go">Atlas с Go</a></li>
+</ul>
+</li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B8%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%BE%D0%B2-%D0%BC%D0%B8%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D0%B9">Сравнение инструментов миграций</a></li>
+</ul>
+</li>
+<li><a href="#query-performance">Query Performance</a>
+<ul>
+<li><a href="#explain-analyze-%D0%B8%D0%B7-go">EXPLAIN ANALYZE из Go</a></li>
+<li><a href="#%D1%87%D1%82%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BF%D0%BB%D0%B0%D0%BD%D0%BE%D0%B2-%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2">Чтение планов запросов</a></li>
+<li><a href="#%D1%82%D0%B8%D0%BF%D1%8B-%D0%B8%D0%BD%D0%B4%D0%B5%D0%BA%D1%81%D0%BE%D0%B2">Типы индексов</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B8%D0%BD%D0%B4%D0%B5%D0%BA%D1%81%D0%BE%D0%B2-%D1%81-sql-server-c">Сравнение индексов с SQL Server (C#)</a></li>
+<li><a href="#query-tuning">Query Tuning</a>
+<ul>
+<li><a href="#connection-level-settings">Connection-level settings</a></li>
+<li><a href="#%D0%BF%D0%B0%D1%80%D0%B0%D0%BB%D0%BB%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D1%8B-postgresql">Параллельные запросы PostgreSQL</a></li>
+</ul>
+</li>
+<li><a href="#pg_stat_statements">pg_stat_statements</a></li>
+<li><a href="#auto-explain">Auto EXPLAIN</a></li>
+</ul>
+</li>
+<li><a href="#high-availability">High Availability</a>
+<ul>
+<li><a href="#read-replicas">Read Replicas</a>
+<ul>
+<li><a href="#context-based-routing">Context-based routing</a></li>
+</ul>
+</li>
+<li><a href="#connection-string-%D0%B4%D0%BB%D1%8F-ha">Connection String для HA</a></li>
+<li><a href="#retry-strategies">Retry Strategies</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-polly-c">Сравнение с Polly (C#)</a></li>
+<li><a href="#circuit-breaker">Circuit Breaker</a></li>
+</ul>
+</li>
+<li><a href="#security">Security</a>
+<ul>
+<li><a href="#ssltls-connections">SSL/TLS Connections</a></li>
+<li><a href="#ssl-mode-%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5">SSL Mode сравнение</a></li>
+<li><a href="#row-level-security">Row-Level Security</a></li>
+<li><a href="#secrets-management">Secrets Management</a></li>
+<li><a href="#%D1%80%D0%BE%D1%82%D0%B0%D1%86%D0%B8%D1%8F-%D1%81%D0%B5%D0%BA%D1%80%D0%B5%D1%82%D0%BE%D0%B2">Ротация секретов</a></li>
+</ul>
+</li>
+<li><a href="#observability-%D0%B4%D0%BB%D1%8F-postgresql">Observability для PostgreSQL</a>
+<ul>
+<li><a href="#%D0%BC%D0%B5%D1%82%D1%80%D0%B8%D0%BA%D0%B8-pg_stat_">Метрики pg_stat_*</a></li>
+<li><a href="#prometheus-integration">Prometheus Integration</a></li>
+<li><a href="#%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5-%D0%BC%D0%B5%D1%82%D1%80%D0%B8%D0%BA%D0%B8-%D0%B4%D0%BB%D1%8F-%D0%B0%D0%BB%D0%B5%D1%80%D1%82%D0%BE%D0%B2">Ключевые метрики для алертов</a></li>
+<li><a href="#opentelemetry-instrumentation">OpenTelemetry Instrumentation</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B">Практические примеры</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-production-ready-connection-setup">Пример 1: Production-Ready Connection Setup</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-zero-downtime-migration">Пример 2: Zero-Downtime Migration</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-read-replica-routing">Пример 3: Read Replica Routing</a></li>
+</ul>
+</li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<p>В <a href="../part3-web-api/03_database.html">разделе 3.3</a> мы рассмотрели основы работы с PostgreSQL в Go: database/sql, pgx, sqlc, миграции и Repository pattern. Этот раздел углубляется в <strong>production-ready паттерны</strong> — то, что отличает прототип от системы, обслуживающей миллионы запросов.</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Если раздел 3.3 был аналогом “Getting Started with EF Core”, то этот раздел — “EF Core in Production”. Connection resilience, query optimization, zero-downtime deployments — всё это здесь.</p>
+</blockquote>
+<h3 id="что-отличает-production-от-development"><a class="header" href="#что-отличает-production-от-development">Что отличает production от development</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>Development</th><th>Production</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Connection Pool</strong></td><td>5-10 соединений</td><td>50-200 соединений, возможно PgBouncer</td></tr>
+<tr><td><strong>Миграции</strong></td><td><code>DROP TABLE</code>, <code>ALTER</code> без ограничений</td><td>Zero-downtime, backward-compatible</td></tr>
+<tr><td><strong>Ошибки</strong></td><td>Паника при ошибке</td><td>Graceful degradation, retry, fallback</td></tr>
+<tr><td><strong>Мониторинг</strong></td><td><code>log.Println</code></td><td>Structured logging, metrics, tracing</td></tr>
+<tr><td><strong>Безопасность</strong></td><td><code>sslmode=disable</code></td><td>TLS, certificate verification, RLS</td></tr>
+<tr><td><strong>Производительность</strong></td><td>“Работает и ладно”</td><td>EXPLAIN ANALYZE, индексы, partitioning</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="что-вы-узнаете"><a class="header" href="#что-вы-узнаете">Что вы узнаете</a></h3>
+<ul>
+<li>Продвинутая конфигурация pgx для production</li>
+<li>External connection pooling с PgBouncer</li>
+<li>Сложные запросы и dynamic queries в sqlc</li>
+<li>Zero-downtime миграции без блокировок</li>
+<li>Оптимизация производительности запросов</li>
+<li>High Availability: replicas, failover, retry</li>
+<li>Security: TLS, Row-Level Security</li>
+<li>Observability: метрики, трейсинг, логирование</li>
+</ul>
+<hr>
+<h2 id="advanced-pgx-configuration"><a class="header" href="#advanced-pgx-configuration">Advanced pgx Configuration</a></h2>
+<h3 id="детальная-конфигурация-pgxpool"><a class="header" href="#детальная-конфигурация-pgxpool">Детальная конфигурация pgxpool</a></h3>
+<p>В production <code>pgxpool.New(ctx, connString)</code> недостаточно. Нужна детальная настройка.</p>
+<pre><code class="language-go">package postgres
+
+import (
+    "context"
+    "fmt"
+    "time"
+
+    "github.com/jackc/pgx/v5"
+    "github.com/jackc/pgx/v5/pgxpool"
+)
+
+type Config struct {
+    // Connection
+    Host     string
+    Port     int
+    User     string
+    Password string
+    Database string
+    SSLMode  string
+
+    // Pool
+    MaxConns          int32
+    MinConns          int32
+    MaxConnLifetime   time.Duration
+    MaxConnIdleTime   time.Duration
+    HealthCheckPeriod time.Duration
+
+    // Timeouts
+    ConnectTimeout   time.Duration
+    QueryTimeout     time.Duration
+    StatementTimeout time.Duration
+}
+
+func DefaultConfig() Config {
+    return Config{
+        // Connection
+        Host:    "localhost",
+        Port:    5432,
+        SSLMode: "prefer",
+
+        // Pool — production values
+        MaxConns:          50,
+        MinConns:          10,
+        MaxConnLifetime:   time.Hour,
+        MaxConnIdleTime:   30 * time.Minute,
+        HealthCheckPeriod: time.Minute,
+
+        // Timeouts
+        ConnectTimeout:   10 * time.Second,
+        QueryTimeout:     30 * time.Second,
+        StatementTimeout: 30 * time.Second,
+    }
+}
+
+func NewPool(ctx context.Context, cfg Config) (*pgxpool.Pool, error) {
+    connString := fmt.Sprintf(
+        "postgres://%s:%s@%s:%d/%s?sslmode=%s",
+        cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Database, cfg.SSLMode,
+    )
+
+    poolConfig, err := pgxpool.ParseConfig(connString)
+    if err != nil {
+        return nil, fmt.Errorf("parse config: %w", err)
+    }
+
+    // Pool settings
+    poolConfig.MaxConns = cfg.MaxConns
+    poolConfig.MinConns = cfg.MinConns
+    poolConfig.MaxConnLifetime = cfg.MaxConnLifetime
+    poolConfig.MaxConnIdleTime = cfg.MaxConnIdleTime
+    poolConfig.HealthCheckPeriod = cfg.HealthCheckPeriod
+
+    // Connection settings
+    poolConfig.ConnConfig.ConnectTimeout = cfg.ConnectTimeout
+
+    // Runtime parameters — выполняются для каждого соединения
+    poolConfig.ConnConfig.RuntimeParams = map[string]string{
+        "application_name":  "myapp",
+        "statement_timeout": fmt.Sprintf("%dms", cfg.StatementTimeout.Milliseconds()),
+        "lock_timeout":      "10s",
+        "idle_in_transaction_session_timeout": "60s",
+    }
+
+    pool, err := pgxpool.NewWithConfig(ctx, poolConfig)
+    if err != nil {
+        return nil, fmt.Errorf("create pool: %w", err)
+    }
+
+    // Verify connection
+    if err := pool.Ping(ctx); err != nil {
+        pool.Close()
+        return nil, fmt.Errorf("ping: %w", err)
+    }
+
+    return pool, nil
+}
+</code></pre>
+<h3 id="сравнение-с-adonet"><a class="header" href="#сравнение-с-adonet">Сравнение с ADO.NET</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>pgx (Go)</th><th>ADO.NET/SqlClient (C#)</th></tr>
+</thead>
+<tbody>
+<tr><td><code>MaxConns</code></td><td><code>Max Pool Size</code></td></tr>
+<tr><td><code>MinConns</code></td><td><code>Min Pool Size</code></td></tr>
+<tr><td><code>MaxConnLifetime</code></td><td><code>Connection Lifetime</code></td></tr>
+<tr><td><code>MaxConnIdleTime</code></td><td>— (нет прямого аналога)</td></tr>
+<tr><td><code>HealthCheckPeriod</code></td><td>— (внутренняя валидация)</td></tr>
+<tr><td><code>RuntimeParams</code></td><td><code>Initial Catalog</code>, connection string options</td></tr>
+<tr><td><code>ConnectTimeout</code></td><td><code>Connect Timeout</code></td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Ключевое отличие</strong>: В ADO.NET многие параметры задаются в connection string. В pgx — программно через структуры конфигурации, что даёт больше контроля.</p>
+</blockquote>
+<h3 id="runtime-parameters"><a class="header" href="#runtime-parameters">Runtime Parameters</a></h3>
+<p>Runtime Parameters — это PostgreSQL session settings, применяемые к каждому соединению:</p>
+<pre><code class="language-go">poolConfig.ConnConfig.RuntimeParams = map[string]string{
+    // Имя приложения — видно в pg_stat_activity
+    "application_name": "order-service",
+
+    // Timeout для запросов (отменяет долгие запросы)
+    "statement_timeout": "30s",
+
+    // Timeout для получения блокировки
+    "lock_timeout": "10s",
+
+    // Timeout для idle транзакций
+    "idle_in_transaction_session_timeout": "60s",
+
+    // Timezone
+    "timezone": "UTC",
+
+    // Search path
+    "search_path": "public,extensions",
+
+    // Work memory для сортировок и хэш-таблиц
+    "work_mem": "64MB",
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: <code>statement_timeout</code> защищает от “убийственных” запросов. Без него один плохой запрос может заблокировать соединение навсегда.</p>
+</blockquote>
+<h3 id="custom-types-с-pgtype"><a class="header" href="#custom-types-с-pgtype">Custom Types с pgtype</a></h3>
+<p>pgx использует пакет <code>pgtype</code> для работы с PostgreSQL типами. Это эффективнее, чем <code>database/sql</code>, который всё конвертирует через строки.</p>
+<pre><code class="language-go">import (
+    "github.com/jackc/pgx/v5/pgtype"
+)
+
+// Модель с PostgreSQL-specific типами
+type Product struct {
+    ID          int64
+    Name        string
+    Price       pgtype.Numeric     // NUMERIC — точные деньги
+    Tags        []string           // TEXT[] — массив
+    Metadata    pgtype.JSONBCodec  // JSONB
+    ValidFrom   pgtype.Timestamptz // TIMESTAMP WITH TIME ZONE
+    ValidTo     pgtype.Timestamptz
+    Coordinates pgtype.Point       // POINT — геоданные
+}
+
+// Работа с Numeric
+func CreateProduct(ctx context.Context, pool *pgxpool.Pool) error {
+    price := pgtype.Numeric{}
+    // Установка значения 99.99
+    if err := price.Scan("99.99"); err != nil {
+        return err
+    }
+
+    _, err := pool.Exec(ctx,
+        `INSERT INTO products (name, price) VALUES ($1, $2)`,
+        "Widget", price,
+    )
+    return err
+}
+
+// Работа с массивами
+func GetProductsByTags(ctx context.Context, pool *pgxpool.Pool, tags []string) ([]Product, error) {
+    rows, err := pool.Query(ctx,
+        `SELECT id, name, tags FROM products WHERE tags &amp;&amp; $1`,
+        tags, // pgx автоматически конвертирует []string в TEXT[]
+    )
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    var products []Product
+    for rows.Next() {
+        var p Product
+        if err := rows.Scan(&amp;p.ID, &amp;p.Name, &amp;p.Tags); err != nil {
+            return nil, err
+        }
+        products = append(products, p)
+    }
+    return products, rows.Err()
+}
+</code></pre>
+<h3 id="nullable-типы-в-pgx-vs-c"><a class="header" href="#nullable-типы-в-pgx-vs-c">Nullable типы в pgx vs C#</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>PostgreSQL</th><th>pgx (Go)</th><th>C#</th></tr>
+</thead>
+<tbody>
+<tr><td><code>INTEGER NULL</code></td><td><code>pgtype.Int4</code> или <code>*int32</code></td><td><code>int?</code></td></tr>
+<tr><td><code>TEXT NULL</code></td><td><code>pgtype.Text</code> или <code>*string</code></td><td><code>string?</code></td></tr>
+<tr><td><code>TIMESTAMP NULL</code></td><td><code>pgtype.Timestamptz</code></td><td><code>DateTime?</code></td></tr>
+<tr><td><code>JSONB</code></td><td><code>pgtype.JSONBCodec</code> или <code>map[string]any</code></td><td><code>JsonDocument</code></td></tr>
+<tr><td><code>UUID</code></td><td><code>pgtype.UUID</code> или <code>[16]byte</code></td><td><code>Guid</code></td></tr>
+<tr><td><code>NUMERIC</code></td><td><code>pgtype.Numeric</code></td><td><code>decimal</code></td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-go">// Использование pgtype для nullable
+type User struct {
+    ID        int64
+    Email     string
+    Phone     pgtype.Text // NULL-able
+    DeletedAt pgtype.Timestamptz
+}
+
+func (u *User) GetPhone() string {
+    if u.Phone.Valid {
+        return u.Phone.String
+    }
+    return ""
+}
+
+func (u *User) IsDeleted() bool {
+    return u.DeletedAt.Valid
+}
+</code></pre>
+<h3 id="query-tracing"><a class="header" href="#query-tracing">Query Tracing</a></h3>
+<p>pgx поддерживает tracing через интерфейс <code>pgx.QueryTracer</code>. Это необходимо для интеграции с OpenTelemetry.</p>
+<pre><code class="language-go">import (
+    "context"
+    "log/slog"
+    "time"
+
+    "github.com/jackc/pgx/v5"
+)
+
+// Простой tracer для логирования
+type LoggingTracer struct {
+    logger *slog.Logger
+}
+
+func (t *LoggingTracer) TraceQueryStart(
+    ctx context.Context,
+    conn *pgx.Conn,
+    data pgx.TraceQueryStartData,
+) context.Context {
+    return context.WithValue(ctx, "query_start", time.Now())
+}
+
+func (t *LoggingTracer) TraceQueryEnd(
+    ctx context.Context,
+    conn *pgx.Conn,
+    data pgx.TraceQueryEndData,
+) {
+    start := ctx.Value("query_start").(time.Time)
+    duration := time.Since(start)
+
+    // Логируем медленные запросы
+    if duration &gt; 100*time.Millisecond {
+        t.logger.Warn("slow query",
+            slog.String("sql", data.SQL),
+            slog.Duration("duration", duration),
+            slog.Int64("rows", data.CommandTag.RowsAffected()),
+        )
+    } else {
+        t.logger.Debug("query executed",
+            slog.String("sql", data.SQL),
+            slog.Duration("duration", duration),
+        )
+    }
+
+    // Логируем ошибки
+    if data.Err != nil {
+        t.logger.Error("query failed",
+            slog.String("sql", data.SQL),
+            slog.String("error", data.Err.Error()),
+        )
+    }
+}
+
+// Применение tracer
+func NewPoolWithTracing(ctx context.Context, cfg Config, logger *slog.Logger) (*pgxpool.Pool, error) {
+    poolConfig, err := pgxpool.ParseConfig(cfg.ConnectionString())
+    if err != nil {
+        return nil, err
+    }
+
+    poolConfig.ConnConfig.Tracer = &amp;LoggingTracer{logger: logger}
+
+    return pgxpool.NewWithConfig(ctx, poolConfig)
+}
+</code></pre>
+<h3 id="opentelemetry-tracer"><a class="header" href="#opentelemetry-tracer">OpenTelemetry Tracer</a></h3>
+<p>Для production рекомендуется использовать OpenTelemetry:</p>
+<pre><code class="language-go">import (
+    "context"
+
+    "github.com/jackc/pgx/v5"
+    "go.opentelemetry.io/otel"
+    "go.opentelemetry.io/otel/attribute"
+    "go.opentelemetry.io/otel/codes"
+    "go.opentelemetry.io/otel/trace"
+)
+
+type OTelTracer struct {
+    tracer trace.Tracer
+}
+
+func NewOTelTracer() *OTelTracer {
+    return &amp;OTelTracer{
+        tracer: otel.Tracer("pgx"),
+    }
+}
+
+func (t *OTelTracer) TraceQueryStart(
+    ctx context.Context,
+    conn *pgx.Conn,
+    data pgx.TraceQueryStartData,
+) context.Context {
+    ctx, span := t.tracer.Start(ctx, "postgresql.query",
+        trace.WithAttributes(
+            attribute.String("db.system", "postgresql"),
+            attribute.String("db.statement", data.SQL),
+            attribute.String("db.name", conn.Config().Database),
+        ),
+    )
+    return ctx
+}
+
+func (t *OTelTracer) TraceQueryEnd(
+    ctx context.Context,
+    conn *pgx.Conn,
+    data pgx.TraceQueryEndData,
+) {
+    span := trace.SpanFromContext(ctx)
+    defer span.End()
+
+    span.SetAttributes(
+        attribute.Int64("db.rows_affected", data.CommandTag.RowsAffected()),
+    )
+
+    if data.Err != nil {
+        span.RecordError(data.Err)
+        span.SetStatus(codes.Error, data.Err.Error())
+    }
+}
+</code></pre>
+<h3 id="connection-hooks"><a class="header" href="#connection-hooks">Connection Hooks</a></h3>
+<p>pgx предоставляет hooks для выполнения кода при событиях жизненного цикла соединения.</p>
+<pre><code class="language-go">func NewPoolWithHooks(ctx context.Context, cfg Config) (*pgxpool.Pool, error) {
+    poolConfig, err := pgxpool.ParseConfig(cfg.ConnectionString())
+    if err != nil {
+        return nil, err
+    }
+
+    // AfterConnect — выполняется после установки соединения
+    poolConfig.AfterConnect = func(ctx context.Context, conn *pgx.Conn) error {
+        // Загрузка расширений
+        _, err := conn.Exec(ctx, "CREATE EXTENSION IF NOT EXISTS pg_trgm")
+        if err != nil {
+            return fmt.Errorf("create extension: %w", err)
+        }
+
+        // Установка search_path
+        _, err = conn.Exec(ctx, "SET search_path TO public, extensions")
+        if err != nil {
+            return fmt.Errorf("set search_path: %w", err)
+        }
+
+        // Регистрация custom types
+        // (если используете custom PostgreSQL types)
+
+        slog.Info("connection established",
+            slog.String("db", conn.Config().Database),
+        )
+        return nil
+    }
+
+    // BeforeAcquire — выполняется перед выдачей соединения из пула
+    poolConfig.BeforeAcquire = func(ctx context.Context, conn *pgx.Conn) bool {
+        // Проверяем, что соединение живое
+        // Возвращаем false, если соединение нужно закрыть
+        if conn.IsClosed() {
+            return false
+        }
+
+        // Можно проверить, что соединение не в broken state
+        // Например, если была отменена транзакция
+
+        return true
+    }
+
+    // AfterRelease — выполняется после возврата соединения в пул
+    poolConfig.AfterRelease = func(conn *pgx.Conn) bool {
+        // Очистка session state
+        // Возвращаем false, если соединение нужно закрыть
+
+        // Например, сбрасываем prepared statements
+        // (pgx кэширует их автоматически)
+
+        return true
+    }
+
+    return pgxpool.NewWithConfig(ctx, poolConfig)
+}
+</code></pre>
+<h3 id="prepared-statement-cache"><a class="header" href="#prepared-statement-cache">Prepared Statement Cache</a></h3>
+<p>pgx автоматически кэширует prepared statements. Это даёт значительный прирост производительности для повторяющихся запросов.</p>
+<pre><code class="language-go">// pgx автоматически делает это:
+// 1. Первый вызов Query("SELECT * FROM users WHERE id = $1", 1)
+//    - Отправляет Parse + Bind + Execute
+// 2. Второй вызов Query("SELECT * FROM users WHERE id = $1", 2)
+//    - Использует кэшированный prepared statement
+//    - Отправляет только Bind + Execute
+
+// Настройка кэша
+poolConfig.ConnConfig.DefaultQueryExecMode = pgx.QueryExecModeCacheStatement
+
+// Режимы выполнения запросов:
+// - QueryExecModeSimpleProtocol — простой протокол, без prepared statements
+// - QueryExecModeExec — Extended Query Protocol, без кэширования
+// - QueryExecModeCacheStatement — кэширование (default)
+// - QueryExecModeCacheDescribe — кэширование с describe
+// - QueryExecModeDescribeExec — describe перед каждым выполнением
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>PgBouncer и prepared statements</strong>: В transaction mode PgBouncer не поддерживает prepared statements. Используйте <code>QueryExecModeSimpleProtocol</code> или session mode.</p>
+</blockquote>
+<h3 id="сравнение-hooks-с-c"><a class="header" href="#сравнение-hooks-с-c">Сравнение Hooks с C#</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>pgx (Go)</th><th>ADO.NET (C#)</th></tr>
+</thead>
+<tbody>
+<tr><td><code>AfterConnect</code></td><td><code>SqlConnection.StateChange</code> event + manual setup</td></tr>
+<tr><td><code>BeforeAcquire</code></td><td>— (нет прямого аналога)</td></tr>
+<tr><td><code>AfterRelease</code></td><td><code>SqlConnection.StateChange</code> + <code>ClearPool</code></td></tr>
+<tr><td><code>QueryTracer</code></td><td><code>SqlClientEventSource</code> / DiagnosticSource</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-csharp">// C# аналог AfterConnect
+connection.StateChange += (sender, e) =&gt; {
+    if (e.CurrentState == ConnectionState.Open) {
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = "SET search_path TO public";
+        cmd.ExecuteNonQuery();
+    }
+};
+</code></pre>
+<pre><code class="language-go">// Go — чище и декларативнее
+poolConfig.AfterConnect = func(ctx context.Context, conn *pgx.Conn) error {
+    _, err := conn.Exec(ctx, "SET search_path TO public")
+    return err
+}
+</code></pre>
+<hr>
+<h2 id="production-connection-pooling"><a class="header" href="#production-connection-pooling">Production Connection Pooling</a></h2>
+<h3 id="pgxpool-vs-pgbouncer"><a class="header" href="#pgxpool-vs-pgbouncer">pgxpool vs PgBouncer</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>pgxpool (встроенный)</th><th>PgBouncer (внешний)</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Простота</strong></td><td>Включён в pgx</td><td>Отдельный процесс</td></tr>
+<tr><td><strong>Масштабирование</strong></td><td>Per-application</td><td>Shared across apps</td></tr>
+<tr><td><strong>Макс. соединений</strong></td><td>Ограничен памятью app</td><td>Десятки тысяч</td></tr>
+<tr><td><strong>Prepared statements</strong></td><td>Полная поддержка</td><td>Только в session mode</td></tr>
+<tr><td><strong>Overhead</strong></td><td>Минимальный</td><td>Небольшой</td></tr>
+<tr><td><strong>Failover</strong></td><td>Нет</td><td>Можно настроить</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="когда-нужен-pgbouncer"><a class="header" href="#когда-нужен-pgbouncer">Когда нужен PgBouncer</a></h3>
+<pre><code>✅ Используйте PgBouncer если:
+- Много сервисов (&gt;20) подключаются к одной БД
+- Serverless/Lambda функции (холодный старт)
+- PostgreSQL достиг max_connections
+- Нужен connection multiplexing
+
+❌ Достаточно pgxpool если:
+- Один-два сервиса
+- Стабильная нагрузка
+- Используете prepared statements
+- Не превышаете max_connections
+</code></pre>
+<h3 id="настройка-pgbouncer"><a class="header" href="#настройка-pgbouncer">Настройка PgBouncer</a></h3>
+<pre><code class="language-ini">; /etc/pgbouncer/pgbouncer.ini
+
+[databases]
+mydb = host=postgres.internal port=5432 dbname=mydb
+
+[pgbouncer]
+listen_addr = 0.0.0.0
+listen_port = 6432
+
+; Режим пула
+; session — соединение держится на время сессии клиента
+; transaction — соединение выдаётся на время транзакции
+; statement — соединение выдаётся на время запроса (ограничения!)
+pool_mode = transaction
+
+; Размер пула
+default_pool_size = 50
+max_client_conn = 1000
+min_pool_size = 10
+
+; Timeouts
+server_connect_timeout = 5
+server_idle_timeout = 600
+query_timeout = 30
+
+; Аутентификация
+auth_type = md5
+auth_file = /etc/pgbouncer/userlist.txt
+
+; Логирование
+log_connections = 1
+log_disconnections = 1
+log_pooler_errors = 1
+</code></pre>
+<h3 id="go-с-pgbouncer"><a class="header" href="#go-с-pgbouncer">Go с PgBouncer</a></h3>
+<pre><code class="language-go">func NewPoolWithPgBouncer(ctx context.Context) (*pgxpool.Pool, error) {
+    poolConfig, err := pgxpool.ParseConfig(
+        "postgres://user:pass@pgbouncer.internal:6432/mydb",
+    )
+    if err != nil {
+        return nil, err
+    }
+
+    // ⚠️ ВАЖНО: Отключаем prepared statement cache для transaction mode
+    poolConfig.ConnConfig.DefaultQueryExecMode = pgx.QueryExecModeSimpleProtocol
+
+    // Или используем ExecSimpleProtocol для каждого запроса
+    // poolConfig.ConnConfig.DefaultQueryExecMode = pgx.QueryExecModeExec
+
+    // Меньше соединений — PgBouncer управляет пулом
+    poolConfig.MaxConns = 10
+    poolConfig.MinConns = 2
+
+    return pgxpool.NewWithConfig(ctx, poolConfig)
+}
+</code></pre>
+<h3 id="мониторинг-пула"><a class="header" href="#мониторинг-пула">Мониторинг пула</a></h3>
+<pre><code class="language-go">import (
+    "context"
+    "log/slog"
+    "time"
+
+    "github.com/jackc/pgx/v5/pgxpool"
+    "github.com/prometheus/client_golang/prometheus"
+    "github.com/prometheus/client_golang/prometheus/promauto"
+)
+
+var (
+    poolConnsTotal = promauto.NewGaugeVec(
+        prometheus.GaugeOpts{
+            Name: "db_pool_connections_total",
+            Help: "Total number of connections in the pool",
+        },
+        []string{"state"}, // acquired, idle, max
+    )
+
+    poolWaitDuration = promauto.NewHistogram(
+        prometheus.HistogramOpts{
+            Name:    "db_pool_wait_duration_seconds",
+            Help:    "Time spent waiting for a connection",
+            Buckets: prometheus.ExponentialBuckets(0.001, 2, 10),
+        },
+    )
+)
+
+// PoolMonitor периодически собирает метрики пула
+type PoolMonitor struct {
+    pool   *pgxpool.Pool
+    logger *slog.Logger
+}
+
+func NewPoolMonitor(pool *pgxpool.Pool, logger *slog.Logger) *PoolMonitor {
+    return &amp;PoolMonitor{pool: pool, logger: logger}
+}
+
+func (m *PoolMonitor) Start(ctx context.Context) {
+    ticker := time.NewTicker(10 * time.Second)
+    defer ticker.Stop()
+
+    for {
+        select {
+        case &lt;-ctx.Done():
+            return
+        case &lt;-ticker.C:
+            m.collect()
+        }
+    }
+}
+
+func (m *PoolMonitor) collect() {
+    stat := m.pool.Stat()
+
+    // Prometheus метрики
+    poolConnsTotal.WithLabelValues("acquired").Set(float64(stat.AcquiredConns()))
+    poolConnsTotal.WithLabelValues("idle").Set(float64(stat.IdleConns()))
+    poolConnsTotal.WithLabelValues("max").Set(float64(stat.MaxConns()))
+    poolConnsTotal.WithLabelValues("total").Set(float64(stat.TotalConns()))
+
+    // Логирование для отладки
+    m.logger.Debug("pool stats",
+        slog.Int32("acquired", stat.AcquiredConns()),
+        slog.Int32("idle", stat.IdleConns()),
+        slog.Int32("total", stat.TotalConns()),
+        slog.Int32("max", stat.MaxConns()),
+        slog.Int64("acquire_count", stat.AcquireCount()),
+        slog.Duration("acquire_duration", stat.AcquireDuration()),
+        slog.Int64("canceled_acquire", stat.CanceledAcquireCount()),
+    )
+
+    // Алерт при высокой утилизации
+    utilization := float64(stat.AcquiredConns()) / float64(stat.MaxConns())
+    if utilization &gt; 0.8 {
+        m.logger.Warn("high pool utilization",
+            slog.Float64("utilization", utilization),
+        )
+    }
+}
+
+// Middleware для измерения времени ожидания
+func (m *PoolMonitor) AcquireWithMetrics(ctx context.Context) (*pgxpool.Conn, error) {
+    start := time.Now()
+    conn, err := m.pool.Acquire(ctx)
+    poolWaitDuration.Observe(time.Since(start).Seconds())
+    return conn, err
+}
+</code></pre>
+<h3 id="pool-statistics"><a class="header" href="#pool-statistics">Pool Statistics</a></h3>
+<p>pgxpool предоставляет богатую статистику:</p>
+<pre><code class="language-go">stat := pool.Stat()
+
+// Соединения
+stat.TotalConns()      // Всего соединений
+stat.AcquiredConns()   // Занятые соединения
+stat.IdleConns()       // Свободные соединения
+stat.MaxConns()        // Максимум соединений
+
+// Операции
+stat.AcquireCount()        // Сколько раз запрашивали соединение
+stat.AcquireDuration()     // Суммарное время ожидания
+stat.CanceledAcquireCount() // Отменённые запросы соединений
+stat.EmptyAcquireCount()   // Запросы, когда пул был пуст
+
+// Создание/закрытие
+stat.NewConnsCount()        // Сколько соединений создано
+stat.MaxLifetimeDestroyCount() // Закрыто по MaxConnLifetime
+stat.MaxIdleDestroyCount()    // Закрыто по MaxConnIdleTime
+</code></pre>
+<h3 id="graceful-shutdown"><a class="header" href="#graceful-shutdown">Graceful Shutdown</a></h3>
+<p>Правильное завершение работы критично для избежания прерванных транзакций.</p>
+<pre><code class="language-go">package main
+
+import (
+    "context"
+    "log/slog"
+    "os"
+    "os/signal"
+    "syscall"
+    "time"
+
+    "github.com/jackc/pgx/v5/pgxpool"
+)
+
+func main() {
+    ctx, cancel := context.WithCancel(context.Background())
+    defer cancel()
+
+    pool, err := NewPool(ctx, DefaultConfig())
+    if err != nil {
+        slog.Error("failed to create pool", slog.String("error", err.Error()))
+        os.Exit(1)
+    }
+
+    // Запуск сервера...
+    server := startServer(pool)
+
+    // Ожидание сигнала завершения
+    quit := make(chan os.Signal, 1)
+    signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+    &lt;-quit
+
+    slog.Info("shutting down...")
+
+    // 1. Прекращаем принимать новые запросы
+    shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 30*time.Second)
+    defer shutdownCancel()
+
+    if err := server.Shutdown(shutdownCtx); err != nil {
+        slog.Error("server shutdown failed", slog.String("error", err.Error()))
+    }
+
+    // 2. Закрываем пул соединений
+    // pool.Close() ждёт завершения всех acquired соединений
+    pool.Close()
+
+    slog.Info("shutdown complete")
+}
+
+// Альтернатива: drain connections с timeout
+func drainPool(pool *pgxpool.Pool, timeout time.Duration) error {
+    ctx, cancel := context.WithTimeout(context.Background(), timeout)
+    defer cancel()
+
+    // Ждём, пока все соединения освободятся
+    ticker := time.NewTicker(100 * time.Millisecond)
+    defer ticker.Stop()
+
+    for {
+        select {
+        case &lt;-ctx.Done():
+            pool.Close()
+            return ctx.Err()
+        case &lt;-ticker.C:
+            if pool.Stat().AcquiredConns() == 0 {
+                pool.Close()
+                return nil
+            }
+        }
+    }
+}
+</code></pre>
+<h3 id="health-checks"><a class="header" href="#health-checks">Health Checks</a></h3>
+<pre><code class="language-go">import (
+    "context"
+    "time"
+
+    "github.com/jackc/pgx/v5/pgxpool"
+)
+
+type HealthChecker struct {
+    pool *pgxpool.Pool
+}
+
+func NewHealthChecker(pool *pgxpool.Pool) *HealthChecker {
+    return &amp;HealthChecker{pool: pool}
+}
+
+// Simple ping check
+func (h *HealthChecker) Ping(ctx context.Context) error {
+    return h.pool.Ping(ctx)
+}
+
+// Detailed health check
+func (h *HealthChecker) Check(ctx context.Context) HealthStatus {
+    status := HealthStatus{
+        Healthy: true,
+        Details: make(map[string]any),
+    }
+
+    // Pool stats
+    stat := h.pool.Stat()
+    status.Details["pool"] = map[string]any{
+        "total":    stat.TotalConns(),
+        "acquired": stat.AcquiredConns(),
+        "idle":     stat.IdleConns(),
+        "max":      stat.MaxConns(),
+    }
+
+    // Check pool utilization
+    utilization := float64(stat.AcquiredConns()) / float64(stat.MaxConns())
+    if utilization &gt; 0.9 {
+        status.Healthy = false
+        status.Details["warning"] = "pool near capacity"
+    }
+
+    // Try to execute a query
+    start := time.Now()
+    ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+    defer cancel()
+
+    var result int
+    err := h.pool.QueryRow(ctx, "SELECT 1").Scan(&amp;result)
+    queryDuration := time.Since(start)
+
+    status.Details["query_latency_ms"] = queryDuration.Milliseconds()
+
+    if err != nil {
+        status.Healthy = false
+        status.Details["error"] = err.Error()
+    }
+
+    // Check for slow queries
+    if queryDuration &gt; time.Second {
+        status.Details["warning"] = "slow query response"
+    }
+
+    return status
+}
+
+type HealthStatus struct {
+    Healthy bool
+    Details map[string]any
+}
+
+// HTTP handler для health check
+func (h *HealthChecker) HTTPHandler(w http.ResponseWriter, r *http.Request) {
+    status := h.Check(r.Context())
+
+    w.Header().Set("Content-Type", "application/json")
+    if !status.Healthy {
+        w.WriteHeader(http.StatusServiceUnavailable)
+    }
+
+    json.NewEncoder(w).Encode(status)
+}
+</code></pre>
+<h3 id="connection-warming"><a class="header" href="#connection-warming">Connection Warming</a></h3>
+<p>При старте сервиса полезно “прогреть” пул соединений:</p>
+<pre><code class="language-go">func WarmPool(ctx context.Context, pool *pgxpool.Pool, minConns int) error {
+    // Захватываем соединения для инициализации
+    conns := make([]*pgxpool.Conn, 0, minConns)
+
+    for i := 0; i &lt; minConns; i++ {
+        conn, err := pool.Acquire(ctx)
+        if err != nil {
+            // Освобождаем уже захваченные
+            for _, c := range conns {
+                c.Release()
+            }
+            return fmt.Errorf("warm pool: %w", err)
+        }
+        conns = append(conns, conn)
+    }
+
+    // Освобождаем соединения обратно в пул
+    for _, conn := range conns {
+        conn.Release()
+    }
+
+    slog.Info("pool warmed", slog.Int("connections", len(conns)))
+    return nil
+}
+
+// Использование
+func main() {
+    pool, _ := NewPool(ctx, cfg)
+
+    // Прогреваем пул перед приёмом трафика
+    if err := WarmPool(ctx, pool, 10); err != nil {
+        slog.Warn("pool warming failed", slog.String("error", err.Error()))
+    }
+
+    // Теперь готовы принимать трафик
+    startServer(pool)
+}
+
+---
+
+## Продвинутый sqlc
+
+В [разделе 3.3](../part3-web-api/03_database.md) мы рассмотрели основы sqlc. Здесь — продвинутые паттерны для production.
+
+### Сложные запросы
+
+#### CTE (Common Table Expressions)
+
+```sql
+-- queries/analytics.sql
+
+-- name: GetUserOrderStats :many
+-- Статистика заказов пользователей с CTE
+WITH order_stats AS (
+    SELECT
+        user_id,
+        COUNT(*) as total_orders,
+        SUM(total_amount) as total_spent,
+        AVG(total_amount) as avg_order_value,
+        MAX(created_at) as last_order_at
+    FROM orders
+    WHERE status = 'completed'
+    GROUP BY user_id
+),
+user_rank AS (
+    SELECT
+        user_id,
+        total_spent,
+        RANK() OVER (ORDER BY total_spent DESC) as spending_rank
+    FROM order_stats
+)
+SELECT
+    u.id,
+    u.email,
+    u.name,
+    COALESCE(os.total_orders, 0)::int as total_orders,
+    COALESCE(os.total_spent, 0)::numeric as total_spent,
+    COALESCE(os.avg_order_value, 0)::numeric as avg_order_value,
+    os.last_order_at,
+    COALESCE(ur.spending_rank, 0)::int as spending_rank
+FROM users u
+LEFT JOIN order_stats os ON u.id = os.user_id
+LEFT JOIN user_rank ur ON u.id = ur.user_id
+WHERE u.deleted_at IS NULL
+ORDER BY os.total_spent DESC NULLS LAST
+LIMIT sqlc.arg(limit_count)::int;
+</code></pre>
+<h4 id="window-functions"><a class="header" href="#window-functions">Window Functions</a></h4>
+<pre><code class="language-sql">-- queries/reports.sql
+
+-- name: GetSalesReport :many
+-- Отчёт с накопительным итогом и скользящим средним
+SELECT
+    date_trunc('day', created_at)::date as order_date,
+    COUNT(*) as order_count,
+    SUM(total_amount) as daily_revenue,
+    -- Накопительный итог
+    SUM(SUM(total_amount)) OVER (
+        ORDER BY date_trunc('day', created_at)
+    ) as cumulative_revenue,
+    -- Скользящее среднее за 7 дней
+    AVG(SUM(total_amount)) OVER (
+        ORDER BY date_trunc('day', created_at)
+        ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
+    ) as moving_avg_7d
+FROM orders
+WHERE created_at &gt;= sqlc.arg(start_date)::timestamp
+  AND created_at &lt; sqlc.arg(end_date)::timestamp
+  AND status = 'completed'
+GROUP BY date_trunc('day', created_at)
+ORDER BY order_date;
+
+-- name: GetProductRankByCategory :many
+-- Ранжирование продуктов внутри категории
+SELECT
+    p.id,
+    p.name,
+    p.category_id,
+    c.name as category_name,
+    p.price,
+    p.sales_count,
+    ROW_NUMBER() OVER (
+        PARTITION BY p.category_id
+        ORDER BY p.sales_count DESC
+    ) as rank_in_category,
+    PERCENT_RANK() OVER (
+        PARTITION BY p.category_id
+        ORDER BY p.sales_count DESC
+    ) as percentile
+FROM products p
+JOIN categories c ON p.category_id = c.id
+WHERE p.active = true;
+</code></pre>
+<h4 id="recursive-cte"><a class="header" href="#recursive-cte">Recursive CTE</a></h4>
+<pre><code class="language-sql">-- queries/categories.sql
+
+-- name: GetCategoryTree :many
+-- Получение дерева категорий (иерархия)
+WITH RECURSIVE category_tree AS (
+    -- Базовый случай: корневые категории
+    SELECT
+        id,
+        name,
+        parent_id,
+        0 as depth,
+        ARRAY[id] as path,
+        name as full_path
+    FROM categories
+    WHERE parent_id IS NULL
+
+    UNION ALL
+
+    -- Рекурсивный случай: дочерние категории
+    SELECT
+        c.id,
+        c.name,
+        c.parent_id,
+        ct.depth + 1,
+        ct.path || c.id,
+        ct.full_path || ' &gt; ' || c.name
+    FROM categories c
+    JOIN category_tree ct ON c.parent_id = ct.id
+)
+SELECT
+    id,
+    name,
+    parent_id,
+    depth,
+    path,
+    full_path
+FROM category_tree
+ORDER BY path;
+
+-- name: GetCategoryDescendants :many
+-- Получение всех потомков категории
+WITH RECURSIVE descendants AS (
+    SELECT id, name, parent_id
+    FROM categories
+    WHERE id = sqlc.arg(category_id)
+
+    UNION ALL
+
+    SELECT c.id, c.name, c.parent_id
+    FROM categories c
+    JOIN descendants d ON c.parent_id = d.id
+)
+SELECT * FROM descendants
+WHERE id != sqlc.arg(category_id);
+</code></pre>
+<h3 id="dynamic-queries"><a class="header" href="#dynamic-queries">Dynamic Queries</a></h3>
+<p>sqlc поддерживает динамические запросы через <code>sqlc.narg()</code> и <code>sqlc.slice()</code>.</p>
+<h4 id="optional-filters-с-sqlcnarg"><a class="header" href="#optional-filters-с-sqlcnarg">Optional Filters с sqlc.narg()</a></h4>
+<pre><code class="language-sql">-- queries/users.sql
+
+-- name: SearchUsers :many
+-- Поиск с опциональными фильтрами
+SELECT id, email, name, role, created_at
+FROM users
+WHERE deleted_at IS NULL
+  AND (sqlc.narg(email)::text IS NULL OR email ILIKE sqlc.narg(email))
+  AND (sqlc.narg(name)::text IS NULL OR name ILIKE sqlc.narg(name))
+  AND (sqlc.narg(role)::text IS NULL OR role = sqlc.narg(role))
+  AND (sqlc.narg(created_after)::timestamp IS NULL OR created_at &gt;= sqlc.narg(created_after))
+  AND (sqlc.narg(created_before)::timestamp IS NULL OR created_at &lt; sqlc.narg(created_before))
+ORDER BY
+    CASE WHEN sqlc.narg(sort_by)::text = 'email' THEN email END,
+    CASE WHEN sqlc.narg(sort_by)::text = 'name' THEN name END,
+    CASE WHEN sqlc.narg(sort_by)::text = 'created_at' OR sqlc.narg(sort_by)::text IS NULL THEN created_at END DESC
+LIMIT sqlc.arg(limit_count)
+OFFSET sqlc.arg(offset_count);
+</code></pre>
+<pre><code class="language-go">// Сгенерированный код
+type SearchUsersParams struct {
+    Email         pgtype.Text      `json:"email"`
+    Name          pgtype.Text      `json:"name"`
+    Role          pgtype.Text      `json:"role"`
+    CreatedAfter  pgtype.Timestamp `json:"created_after"`
+    CreatedBefore pgtype.Timestamp `json:"created_before"`
+    SortBy        pgtype.Text      `json:"sort_by"`
+    LimitCount    int32            `json:"limit_count"`
+    OffsetCount   int32            `json:"offset_count"`
+}
+
+// Использование
+func (s *UserService) Search(ctx context.Context, filter UserFilter) ([]User, error) {
+    params := db.SearchUsersParams{
+        LimitCount:  int32(filter.Limit),
+        OffsetCount: int32(filter.Offset),
+    }
+
+    // Устанавливаем только заданные фильтры
+    if filter.Email != "" {
+        params.Email = pgtype.Text{String: "%" + filter.Email + "%", Valid: true}
+    }
+    if filter.Name != "" {
+        params.Name = pgtype.Text{String: "%" + filter.Name + "%", Valid: true}
+    }
+    if filter.Role != "" {
+        params.Role = pgtype.Text{String: filter.Role, Valid: true}
+    }
+    if !filter.CreatedAfter.IsZero() {
+        params.CreatedAfter = pgtype.Timestamp{Time: filter.CreatedAfter, Valid: true}
+    }
+
+    return s.queries.SearchUsers(ctx, params)
+}
+</code></pre>
+<h4 id="arrays-с-sqlcslice"><a class="header" href="#arrays-с-sqlcslice">Arrays с sqlc.slice()</a></h4>
+<pre><code class="language-sql">-- queries/products.sql
+
+-- name: GetProductsByIDs :many
+-- Получение продуктов по списку ID
+SELECT * FROM products
+WHERE id = ANY(sqlc.slice(ids)::int[])
+ORDER BY array_position(sqlc.slice(ids)::int[], id);
+
+-- name: GetProductsByTags :many
+-- Продукты с любым из указанных тегов
+SELECT DISTINCT p.*
+FROM products p
+WHERE p.tags &amp;&amp; sqlc.slice(tags)::text[]
+  AND p.active = true;
+
+-- name: GetProductsWithAllTags :many
+-- Продукты со ВСЕМИ указанными тегами
+SELECT * FROM products
+WHERE tags @&gt; sqlc.slice(tags)::text[]
+  AND active = true;
+</code></pre>
+<pre><code class="language-go">// Использование
+products, err := queries.GetProductsByIDs(ctx, []int32{1, 2, 3, 4, 5})
+
+products, err = queries.GetProductsByTags(ctx, []string{"electronics", "sale"})
+</code></pre>
+<h3 id="транзакции-в-sqlc"><a class="header" href="#транзакции-в-sqlc">Транзакции в sqlc</a></h3>
+<p>sqlc генерирует метод <code>WithTx</code> для работы с транзакциями.</p>
+<pre><code class="language-go">// Паттерн: транзакции с sqlc
+func (s *OrderService) CreateOrder(ctx context.Context, order CreateOrderRequest) (*Order, error) {
+    // Начинаем транзакцию
+    tx, err := s.pool.Begin(ctx)
+    if err != nil {
+        return nil, fmt.Errorf("begin tx: %w", err)
+    }
+    defer tx.Rollback(ctx)
+
+    // Создаём queries с транзакцией
+    qtx := s.queries.WithTx(tx)
+
+    // 1. Создаём заказ
+    dbOrder, err := qtx.CreateOrder(ctx, db.CreateOrderParams{
+        UserID:      order.UserID,
+        TotalAmount: order.Total,
+        Status:      "pending",
+    })
+    if err != nil {
+        return nil, fmt.Errorf("create order: %w", err)
+    }
+
+    // 2. Добавляем позиции заказа
+    for _, item := range order.Items {
+        _, err := qtx.CreateOrderItem(ctx, db.CreateOrderItemParams{
+            OrderID:   dbOrder.ID,
+            ProductID: item.ProductID,
+            Quantity:  item.Quantity,
+            Price:     item.Price,
+        })
+        if err != nil {
+            return nil, fmt.Errorf("create order item: %w", err)
+        }
+
+        // 3. Уменьшаем остатки
+        err = qtx.DecrementStock(ctx, db.DecrementStockParams{
+            ProductID: item.ProductID,
+            Quantity:  item.Quantity,
+        })
+        if err != nil {
+            return nil, fmt.Errorf("decrement stock: %w", err)
+        }
+    }
+
+    // Коммитим транзакцию
+    if err := tx.Commit(ctx); err != nil {
+        return nil, fmt.Errorf("commit: %w", err)
+    }
+
+    return mapOrder(dbOrder), nil
+}
+</code></pre>
+<h4 id="transaction-manager"><a class="header" href="#transaction-manager">Transaction Manager</a></h4>
+<p>Для переиспользования логики транзакций:</p>
+<pre><code class="language-go">// internal/database/txmanager.go
+package database
+
+import (
+    "context"
+    "fmt"
+
+    "github.com/jackc/pgx/v5"
+    "github.com/jackc/pgx/v5/pgxpool"
+    "myapp/internal/db"
+)
+
+type TxManager struct {
+    pool *pgxpool.Pool
+}
+
+func NewTxManager(pool *pgxpool.Pool) *TxManager {
+    return &amp;TxManager{pool: pool}
+}
+
+// TxFunc — функция, выполняемая в транзакции
+type TxFunc func(ctx context.Context, q *db.Queries) error
+
+// WithTx выполняет функцию в транзакции
+func (m *TxManager) WithTx(ctx context.Context, fn TxFunc) error {
+    tx, err := m.pool.Begin(ctx)
+    if err != nil {
+        return fmt.Errorf("begin: %w", err)
+    }
+    defer tx.Rollback(ctx)
+
+    q := db.New(tx)
+    if err := fn(ctx, q); err != nil {
+        return err
+    }
+
+    return tx.Commit(ctx)
+}
+
+// WithTxResult — с возвратом результата
+func WithTxResult[T any](
+    m *TxManager,
+    ctx context.Context,
+    fn func(ctx context.Context, q *db.Queries) (T, error),
+) (T, error) {
+    var result T
+
+    tx, err := m.pool.Begin(ctx)
+    if err != nil {
+        return result, fmt.Errorf("begin: %w", err)
+    }
+    defer tx.Rollback(ctx)
+
+    q := db.New(tx)
+    result, err = fn(ctx, q)
+    if err != nil {
+        return result, err
+    }
+
+    if err := tx.Commit(ctx); err != nil {
+        return result, fmt.Errorf("commit: %w", err)
+    }
+
+    return result, nil
+}
+
+// Использование
+func (s *OrderService) CreateOrder(ctx context.Context, req CreateOrderRequest) (*Order, error) {
+    return WithTxResult(s.txManager, ctx, func(ctx context.Context, q *db.Queries) (*Order, error) {
+        order, err := q.CreateOrder(ctx, db.CreateOrderParams{...})
+        if err != nil {
+            return nil, err
+        }
+        // ... остальная логика
+        return mapOrder(order), nil
+    })
+}
+</code></pre>
+<h3 id="batch-operations-в-sqlc"><a class="header" href="#batch-operations-в-sqlc">Batch Operations в sqlc</a></h3>
+<p>sqlc поддерживает batch queries через <code>pgx.Batch</code>.</p>
+<pre><code class="language-sql">-- queries/users.sql
+
+-- name: CreateUser :one
+INSERT INTO users (email, name, role)
+VALUES ($1, $2, $3)
+RETURNING *;
+
+-- name: CreateUsersBatch :batchone
+INSERT INTO users (email, name, role)
+VALUES ($1, $2, $3)
+RETURNING *;
+</code></pre>
+<pre><code class="language-go">// Сгенерированный batch код
+type CreateUsersBatchParams struct {
+    Email string
+    Name  string
+    Role  string
+}
+
+func (q *Queries) CreateUsersBatch(ctx context.Context, arg []CreateUsersBatchParams) *CreateUsersBatchResults {
+    batch := &amp;pgx.Batch{}
+    for _, a := range arg {
+        batch.Queue(createUsersBatch, a.Email, a.Name, a.Role)
+    }
+    return &amp;CreateUsersBatchResults{br: q.db.SendBatch(ctx, batch), ind: -1}
+}
+
+// Использование
+func (s *UserService) BulkCreate(ctx context.Context, users []CreateUserRequest) ([]User, error) {
+    params := make([]db.CreateUsersBatchParams, len(users))
+    for i, u := range users {
+        params[i] = db.CreateUsersBatchParams{
+            Email: u.Email,
+            Name:  u.Name,
+            Role:  u.Role,
+        }
+    }
+
+    results := s.queries.CreateUsersBatch(ctx, params)
+    defer results.Close()
+
+    var created []User
+    for results.Next() {
+        user, err := results.One()
+        if err != nil {
+            return nil, fmt.Errorf("batch result: %w", err)
+        }
+        created = append(created, mapUser(user))
+    }
+
+    return created, nil
+}
+</code></pre>
+<h3 id="custom-types-и-overrides"><a class="header" href="#custom-types-и-overrides">Custom Types и Overrides</a></h3>
+<p>sqlc позволяет переопределять типы Go для колонок.</p>
+<pre><code class="language-yaml"># sqlc.yaml
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "queries/"
+    schema: "schema/"
+    gen:
+      go:
+        package: "db"
+        out: "internal/db"
+        sql_package: "pgx/v5"
+        emit_json_tags: true
+        overrides:
+          # UUID → google/uuid
+          - db_type: "uuid"
+            go_type:
+              import: "github.com/google/uuid"
+              type: "UUID"
+
+          # NUMERIC → shopspring/decimal
+          - db_type: "numeric"
+            go_type:
+              import: "github.com/shopspring/decimal"
+              type: "Decimal"
+
+          # JSONB → custom type
+          - column: "users.metadata"
+            go_type:
+              import: "myapp/internal/types"
+              type: "UserMetadata"
+
+          # Custom enum
+          - db_type: "pg_catalog.varchar"
+            column: "orders.status"
+            go_type:
+              import: "myapp/internal/types"
+              type: "OrderStatus"
+
+          # Nullable override
+          - db_type: "text"
+            nullable: true
+            go_type:
+              type: "string"
+              pointer: true
+</code></pre>
+<pre><code class="language-go">// internal/types/types.go
+package types
+
+import (
+    "database/sql/driver"
+    "encoding/json"
+    "fmt"
+)
+
+// UserMetadata — структурированные метаданные пользователя
+type UserMetadata struct {
+    Timezone   string            `json:"timezone"`
+    Locale     string            `json:"locale"`
+    Preferences map[string]any   `json:"preferences"`
+}
+
+// Scan реализует sql.Scanner
+func (m *UserMetadata) Scan(src any) error {
+    if src == nil {
+        return nil
+    }
+
+    switch v := src.(type) {
+    case []byte:
+        return json.Unmarshal(v, m)
+    case string:
+        return json.Unmarshal([]byte(v), m)
+    default:
+        return fmt.Errorf("cannot scan %T into UserMetadata", src)
+    }
+}
+
+// Value реализует driver.Valuer
+func (m UserMetadata) Value() (driver.Value, error) {
+    return json.Marshal(m)
+}
+
+// OrderStatus — enum для статуса заказа
+type OrderStatus string
+
+const (
+    OrderStatusPending   OrderStatus = "pending"
+    OrderStatusPaid      OrderStatus = "paid"
+    OrderStatusShipped   OrderStatus = "shipped"
+    OrderStatusDelivered OrderStatus = "delivered"
+    OrderStatusCancelled OrderStatus = "cancelled"
+)
+
+func (s OrderStatus) IsValid() bool {
+    switch s {
+    case OrderStatusPending, OrderStatusPaid, OrderStatusShipped,
+         OrderStatusDelivered, OrderStatusCancelled:
+        return true
+    }
+    return false
+}
+</code></pre>
+<h3 id="sqlcembed-для-композиции"><a class="header" href="#sqlcembed-для-композиции">sqlc.embed для композиции</a></h3>
+<pre><code class="language-sql">-- queries/orders.sql
+
+-- name: GetOrderWithUser :one
+SELECT
+    sqlc.embed(orders),
+    sqlc.embed(users)
+FROM orders
+JOIN users ON orders.user_id = users.id
+WHERE orders.id = $1;
+</code></pre>
+<pre><code class="language-go">// Сгенерированная структура
+type GetOrderWithUserRow struct {
+    Order Order // Встроенная структура Order
+    User  User  // Встроенная структура User
+}
+
+// Использование
+row, err := queries.GetOrderWithUser(ctx, orderID)
+fmt.Println(row.Order.ID, row.User.Email)
+</code></pre>
+<h3 id="сравнение-sqlc-с-dapper-c"><a class="header" href="#сравнение-sqlc-с-dapper-c">Сравнение sqlc с Dapper (C#)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>sqlc (Go)</th><th>Dapper (C#)</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Время проверки</strong></td><td>Compile-time</td><td>Runtime</td></tr>
+<tr><td><strong>SQL</strong></td><td>В .sql файлах</td><td>В строках C#</td></tr>
+<tr><td><strong>Type safety</strong></td><td>Полная</td><td>Частичная</td></tr>
+<tr><td><strong>Генерация</strong></td><td>Да (go generate)</td><td>Нет</td></tr>
+<tr><td><strong>Dynamic queries</strong></td><td>sqlc.narg, sqlc.slice</td><td>Анонимные объекты</td></tr>
+<tr><td><strong>Transactions</strong></td><td>WithTx</td><td>connection.BeginTransaction</td></tr>
+<tr><td><strong>Batch</strong></td><td>Встроенный</td><td>Через Dapper Plus</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-csharp">// Dapper — runtime SQL, reflection для маппинга
+var users = connection.Query&lt;User&gt;(
+    "SELECT * FROM users WHERE role = @Role",
+    new { Role = "admin" }
+);
+
+// Ошибки типов — только в runtime
+var users = connection.Query&lt;User&gt;(
+    "SELECT * FROM users WHERE role = @Roe", // Typo!
+    new { Role = "admin" } // Несоответствие имён!
+);
+</code></pre>
+<pre><code class="language-go">// sqlc — compile-time SQL, генерация кода
+users, err := queries.ListUsersByRole(ctx, "admin")
+
+// Ошибки типов — при компиляции
+// Если SQL некорректный — sqlc generate упадёт с ошибкой
+</code></pre>
+<hr>
+<h2 id="zero-downtime-migrations"><a class="header" href="#zero-downtime-migrations">Zero-Downtime Migrations</a></h2>
+<h3 id="опасные-операции"><a class="header" href="#опасные-операции">Опасные операции</a></h3>
+<p>При работе с production БД многие операции, которые безобидны в development, могут вызвать даунтайм.</p>
+<h4 id="блокировки-в-postgresql"><a class="header" href="#блокировки-в-postgresql">Блокировки в PostgreSQL</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Операция</th><th>Блокировка</th><th>Влияние</th></tr>
+</thead>
+<tbody>
+<tr><td><code>ALTER TABLE ... ADD COLUMN</code> (nullable, без default)</td><td><code>AccessExclusiveLock</code> (мгновенно)</td><td>Минимальное</td></tr>
+<tr><td><code>ALTER TABLE ... ADD COLUMN ... DEFAULT</code> (PG &lt; 11)</td><td><code>AccessExclusiveLock</code> + перезапись</td><td><strong>Долгая блокировка</strong></td></tr>
+<tr><td><code>ALTER TABLE ... ADD COLUMN ... DEFAULT</code> (PG &gt;= 11)</td><td><code>AccessExclusiveLock</code> (мгновенно)</td><td>Минимальное</td></tr>
+<tr><td><code>ALTER TABLE ... ALTER COLUMN SET NOT NULL</code></td><td><code>AccessExclusiveLock</code> (scan)</td><td><strong>Блокирует чтение и запись</strong></td></tr>
+<tr><td><code>ALTER TABLE ... DROP COLUMN</code></td><td><code>AccessExclusiveLock</code> (мгновенно)</td><td>Ломает старый код</td></tr>
+<tr><td><code>CREATE INDEX</code></td><td><code>ShareLock</code></td><td><strong>Блокирует запись</strong></td></tr>
+<tr><td><code>CREATE INDEX CONCURRENTLY</code></td><td>Без блокировки</td><td>Безопасно</td></tr>
+<tr><td><code>ALTER TABLE ... ADD CONSTRAINT</code> (CHECK, FK)</td><td><code>AccessExclusiveLock</code> (scan)</td><td><strong>Долгая блокировка</strong></td></tr>
+<tr><td><code>DROP TABLE</code></td><td><code>AccessExclusiveLock</code></td><td>Мгновенно, но необратимо</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>⚠️ <strong>Критично</strong>: <code>AccessExclusiveLock</code> блокирует <strong>все</strong> операции с таблицей — даже <code>SELECT</code>. На таблице с миллионами строк это может занять минуты.</p>
+</blockquote>
+<p><strong>C# аналогия</strong>:</p>
+<pre><code class="language-csharp">// EF Core миграция — может блокировать таблицу
+migrationBuilder.AddColumn&lt;string&gt;(
+    name: "Phone",
+    table: "Users",
+    nullable: false,
+    defaultValue: ""); // ⚠️ Перезаписывает все строки в PG &lt; 11!
+</code></pre>
+<h3 id="безопасные-паттерны"><a class="header" href="#безопасные-паттерны">Безопасные паттерны</a></h3>
+<h4 id="1-добавление-nullable-колонки-безопасно"><a class="header" href="#1-добавление-nullable-колонки-безопасно">1. Добавление nullable колонки (безопасно)</a></h4>
+<pre><code class="language-sql">-- ✅ Мгновенная операция, не перезаписывает данные
+ALTER TABLE users ADD COLUMN phone TEXT;
+</code></pre>
+<pre><code class="language-go">// migrations/000010_add_users_phone.up.sql
+ALTER TABLE users ADD COLUMN phone TEXT;
+
+// migrations/000010_add_users_phone.down.sql
+ALTER TABLE users DROP COLUMN phone;
+</code></pre>
+<h4 id="2-добавление-not-null-колонки-3-step-pattern"><a class="header" href="#2-добавление-not-null-колонки-3-step-pattern">2. Добавление NOT NULL колонки (3-step pattern)</a></h4>
+<pre><code class="language-sql">-- ❌ ОПАСНО: блокирует таблицу на большой таблице
+ALTER TABLE users ADD COLUMN status TEXT NOT NULL DEFAULT 'active';
+
+-- ✅ БЕЗОПАСНО: 3 шага
+</code></pre>
+<p><strong>Шаг 1: Добавить nullable колонку</strong></p>
+<pre><code class="language-sql">-- migrations/000011_add_status_nullable.up.sql
+ALTER TABLE users ADD COLUMN status TEXT;
+</code></pre>
+<p><strong>Шаг 2: Заполнить данные батчами</strong></p>
+<pre><code class="language-go">// Заполнение данных батчами (не в миграции!)
+func BackfillUserStatus(ctx context.Context, pool *pgxpool.Pool) error {
+    const batchSize = 10000
+
+    for {
+        result, err := pool.Exec(ctx, `
+            UPDATE users
+            SET status = 'active'
+            WHERE id IN (
+                SELECT id FROM users
+                WHERE status IS NULL
+                LIMIT $1
+                FOR UPDATE SKIP LOCKED
+            )
+        `, batchSize)
+        if err != nil {
+            return fmt.Errorf("backfill: %w", err)
+        }
+
+        rowsAffected := result.RowsAffected()
+        slog.Info("backfill progress",
+            slog.Int64("rows_updated", rowsAffected),
+        )
+
+        if rowsAffected == 0 {
+            break // Все строки обновлены
+        }
+
+        // Небольшая пауза, чтобы не перегружать БД
+        time.Sleep(100 * time.Millisecond)
+    }
+
+    return nil
+}
+</code></pre>
+<p><strong>Шаг 3: Добавить NOT NULL constraint</strong></p>
+<pre><code class="language-sql">-- migrations/000012_add_status_not_null.up.sql
+-- Используем CHECK constraint — валидируется без полной блокировки
+ALTER TABLE users ADD CONSTRAINT users_status_not_null
+    CHECK (status IS NOT NULL) NOT VALID;
+
+-- Затем валидируем (берёт ShareUpdateExclusiveLock, не блокирует записи)
+ALTER TABLE users VALIDATE CONSTRAINT users_status_not_null;
+
+-- Опционально: заменяем CHECK на настоящий NOT NULL
+-- (требует AccessExclusiveLock, но мгновенно если CHECK уже validated)
+ALTER TABLE users ALTER COLUMN status SET NOT NULL;
+ALTER TABLE users DROP CONSTRAINT users_status_not_null;
+</code></pre>
+<h4 id="3-создание-индекса-без-блокировки"><a class="header" href="#3-создание-индекса-без-блокировки">3. Создание индекса без блокировки</a></h4>
+<pre><code class="language-sql">-- ❌ ОПАСНО: ShareLock блокирует INSERT/UPDATE/DELETE
+CREATE INDEX idx_users_email ON users(email);
+
+-- ✅ БЕЗОПАСНО: не блокирует DML
+CREATE INDEX CONCURRENTLY idx_users_email ON users(email);
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: <code>CREATE INDEX CONCURRENTLY</code> нельзя выполнять внутри транзакции. Большинство migration tools выполняют каждую миграцию в транзакции, поэтому нужна специальная обработка.</p>
+</blockquote>
+<pre><code class="language-go">// golang-migrate: используем отдельный файл без транзакции
+// migrations/000013_add_users_email_index.up.sql
+
+-- +migrate StatementBegin
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_users_email ON users(email);
+-- +migrate StatementEnd
+</code></pre>
+<pre><code class="language-go">// goose: используем аннотацию для отключения транзакции
+// migrations/000013_add_users_email_index.sql
+
+-- +goose Up
+-- +goose NO TRANSACTION
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_users_email ON users(email);
+
+-- +goose Down
+DROP INDEX IF EXISTS idx_users_email;
+</code></pre>
+<h4 id="4-безопасное-добавление-foreign-key"><a class="header" href="#4-безопасное-добавление-foreign-key">4. Безопасное добавление Foreign Key</a></h4>
+<pre><code class="language-sql">-- ❌ ОПАСНО: AccessExclusiveLock + scan всех строк
+ALTER TABLE orders ADD CONSTRAINT fk_orders_user
+    FOREIGN KEY (user_id) REFERENCES users(id);
+
+-- ✅ БЕЗОПАСНО: два шага
+-- Шаг 1: Добавить constraint без валидации (мгновенно)
+ALTER TABLE orders ADD CONSTRAINT fk_orders_user
+    FOREIGN KEY (user_id) REFERENCES users(id) NOT VALID;
+
+-- Шаг 2: Валидировать (ShareUpdateExclusiveLock — не блокирует записи)
+ALTER TABLE orders VALIDATE CONSTRAINT fk_orders_user;
+</code></pre>
+<h4 id="5-переименование-колонки-expandcontract"><a class="header" href="#5-переименование-колонки-expandcontract">5. Переименование колонки (Expand/Contract)</a></h4>
+<pre><code class="language-sql">-- ❌ ОПАСНО: ломает работающее приложение
+ALTER TABLE users RENAME COLUMN name TO full_name;
+</code></pre>
+<h3 id="expandcontract-pattern"><a class="header" href="#expandcontract-pattern">Expand/Contract Pattern</a></h3>
+<p>Безопасное изменение схемы в 4 фазы:</p>
+<pre><code>Phase 1: Expand      — Добавить новую структуру
+Phase 2: Migrate     — Перенести данные
+Phase 3: Code Switch — Переключить код
+Phase 4: Contract    — Удалить старую структуру
+</code></pre>
+<p><strong>Пример: переименование колонки <code>name</code> → <code>full_name</code></strong></p>
+<pre><code class="language-sql">-- Phase 1: Expand (Deploy 1)
+ALTER TABLE users ADD COLUMN full_name TEXT;
+
+-- Триггер для синхронизации данных
+CREATE OR REPLACE FUNCTION sync_user_name() RETURNS trigger AS $$
+BEGIN
+    IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+        IF NEW.full_name IS NULL AND NEW.name IS NOT NULL THEN
+            NEW.full_name := NEW.name;
+        ELSIF NEW.name IS NULL AND NEW.full_name IS NOT NULL THEN
+            NEW.name := NEW.full_name;
+        END IF;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_sync_user_name
+    BEFORE INSERT OR UPDATE ON users
+    FOR EACH ROW EXECUTE FUNCTION sync_user_name();
+</code></pre>
+<pre><code class="language-sql">-- Phase 2: Migrate (между Deploy 1 и Deploy 2)
+UPDATE users SET full_name = name WHERE full_name IS NULL;
+</code></pre>
+<pre><code class="language-go">// Phase 3: Code Switch (Deploy 2)
+// Код начинает использовать full_name вместо name
+type User struct {
+    ID       int64
+    FullName string `db:"full_name"` // Было: Name string `db:"name"`
+}
+</code></pre>
+<pre><code class="language-sql">-- Phase 4: Contract (Deploy 3 — через несколько дней)
+DROP TRIGGER trg_sync_user_name ON users;
+DROP FUNCTION sync_user_name;
+ALTER TABLE users DROP COLUMN name;
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Этот паттерн аналогичен тому, что делает EF Core с “Two-phase migration” — только вручную и с полным контролем.</p>
+</blockquote>
+<h3 id="atlas-declarative-migrations"><a class="header" href="#atlas-declarative-migrations">Atlas: Declarative Migrations</a></h3>
+<p>Atlas — современный инструмент для declarative (а не imperative) миграций.</p>
+<pre><code class="language-bash"># Установка
+curl -sSf https://atlasgo.sh | sh
+</code></pre>
+<h4 id="декларативный-подход"><a class="header" href="#декларативный-подход">Декларативный подход</a></h4>
+<pre><code class="language-hcl"># schema.hcl — описываем желаемое состояние
+schema "public" {
+  table "users" {
+    column "id" {
+      type = serial
+    }
+    column "email" {
+      type = text
+      null = false
+    }
+    column "name" {
+      type = text
+      null = false
+    }
+    column "status" {
+      type = text
+      null = false
+      default = "active"
+    }
+    column "created_at" {
+      type    = timestamptz
+      null    = false
+      default = sql("now()")
+    }
+
+    primary_key {
+      columns = [column.id]
+    }
+
+    index "idx_users_email" {
+      unique  = true
+      columns = [column.email]
+    }
+
+    index "idx_users_status" {
+      columns = [column.status]
+    }
+  }
+
+  table "orders" {
+    column "id" {
+      type = serial
+    }
+    column "user_id" {
+      type = integer
+      null = false
+    }
+    column "total_amount" {
+      type = numeric
+      null = false
+    }
+    column "status" {
+      type = text
+      null = false
+    }
+    column "created_at" {
+      type    = timestamptz
+      null    = false
+      default = sql("now()")
+    }
+
+    primary_key {
+      columns = [column.id]
+    }
+
+    foreign_key "fk_orders_user" {
+      columns     = [column.user_id]
+      ref_columns = [table.users.column.id]
+      on_delete   = CASCADE
+    }
+  }
+}
+</code></pre>
+<pre><code class="language-bash"># Atlas вычисляет разницу и генерирует SQL
+atlas schema diff \
+  --from "postgres://localhost:5432/mydb?sslmode=disable" \
+  --to "file://schema.hcl" \
+  --dev-url "docker://postgres/15"
+
+# Применяет миграцию
+atlas schema apply \
+  --url "postgres://localhost:5432/mydb?sslmode=disable" \
+  --to "file://schema.hcl" \
+  --dev-url "docker://postgres/15"
+</code></pre>
+<h4 id="atlas-с-go"><a class="header" href="#atlas-с-go">Atlas с Go</a></h4>
+<pre><code class="language-go">// atlas.hcl — конфигурация
+variable "db_url" {
+  type    = string
+  default = getenv("DATABASE_URL")
+}
+
+env "production" {
+  url = var.db_url
+  migration {
+    dir = "file://migrations"
+  }
+  lint {
+    destructive {
+      error = true
+    }
+    // Предупреждать об опасных операциях
+    data_depend {
+      error = true
+    }
+  }
+}
+</code></pre>
+<pre><code class="language-bash"># Lint миграций перед применением
+atlas migrate lint --env production
+
+# Проверка: найдёт опасные операции
+# Error: destructive change detected:
+#   Dropping column "name" from table "users"
+</code></pre>
+<h3 id="сравнение-инструментов-миграций"><a class="header" href="#сравнение-инструментов-миграций">Сравнение инструментов миграций</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>golang-migrate</th><th>goose</th><th>Atlas</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Подход</strong></td><td>Imperative</td><td>Imperative</td><td>Declarative</td></tr>
+<tr><td><strong>SQL файлы</strong></td><td>Отдельные up/down</td><td>Один файл</td><td>HCL или SQL</td></tr>
+<tr><td><strong>Go миграции</strong></td><td>Нет</td><td>Да</td><td>Да</td></tr>
+<tr><td><strong>Lint</strong></td><td>Нет</td><td>Нет</td><td>Да (опасные операции)</td></tr>
+<tr><td><strong>Diff</strong></td><td>Нет</td><td>Нет</td><td>Автоматический</td></tr>
+<tr><td><strong>CONCURRENTLY</strong></td><td>Сложно</td><td><code>NO TRANSACTION</code></td><td>Встроено</td></tr>
+<tr><td><strong>C# аналог</strong></td><td>DbUp</td><td>FluentMigrator</td><td>EF Core</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="query-performance"><a class="header" href="#query-performance">Query Performance</a></h2>
+<h3 id="explain-analyze-из-go"><a class="header" href="#explain-analyze-из-go">EXPLAIN ANALYZE из Go</a></h3>
+<p>Анализ производительности запросов — ключевой навык для production.</p>
+<pre><code class="language-go">package pgutil
+
+import (
+    "context"
+    "encoding/json"
+    "fmt"
+    "log/slog"
+    "strings"
+
+    "github.com/jackc/pgx/v5/pgxpool"
+)
+
+// QueryPlan представляет план запроса PostgreSQL
+type QueryPlan struct {
+    Plan              PlanNode `json:"Plan"`
+    PlanningTime      float64  `json:"Planning Time"`
+    ExecutionTime     float64  `json:"Execution Time"`
+    // Triggers
+    Triggers          []any    `json:"Triggers"`
+}
+
+type PlanNode struct {
+    NodeType          string     `json:"Node Type"`
+    RelationName      string     `json:"Relation Name"`
+    Alias             string     `json:"Alias"`
+    StartupCost       float64    `json:"Startup Cost"`
+    TotalCost         float64    `json:"Total Cost"`
+    PlanRows          int64      `json:"Plan Rows"`
+    PlanWidth         int        `json:"Plan Width"`
+    ActualStartupTime float64    `json:"Actual Startup Time"`
+    ActualTotalTime   float64    `json:"Actual Total Time"`
+    ActualRows        int64      `json:"Actual Rows"`
+    ActualLoops       int        `json:"Actual Loops"`
+    SharedHitBlocks   int64      `json:"Shared Hit Blocks"`
+    SharedReadBlocks  int64      `json:"Shared Read Blocks"`
+    Plans             []PlanNode `json:"Plans"`
+}
+
+// ExplainAnalyze выполняет EXPLAIN ANALYZE и возвращает план
+func ExplainAnalyze(ctx context.Context, pool *pgxpool.Pool, query string, args ...any) (*QueryPlan, error) {
+    explainQuery := fmt.Sprintf(
+        "EXPLAIN (ANALYZE, FORMAT JSON, BUFFERS, TIMING) %s",
+        query,
+    )
+
+    var planJSON string
+    err := pool.QueryRow(ctx, explainQuery, args...).Scan(&amp;planJSON)
+    if err != nil {
+        return nil, fmt.Errorf("explain: %w", err)
+    }
+
+    var plans []QueryPlan
+    if err := json.Unmarshal([]byte(planJSON), &amp;plans); err != nil {
+        return nil, fmt.Errorf("parse plan: %w", err)
+    }
+
+    if len(plans) == 0 {
+        return nil, fmt.Errorf("empty plan")
+    }
+
+    return &amp;plans[0], nil
+}
+
+// LogSlowQuery анализирует и логирует медленные запросы
+func LogSlowQuery(ctx context.Context, pool *pgxpool.Pool, logger *slog.Logger,
+    query string, threshold float64, args ...any) {
+
+    plan, err := ExplainAnalyze(ctx, pool, query, args...)
+    if err != nil {
+        logger.Error("explain failed", slog.String("error", err.Error()))
+        return
+    }
+
+    if plan.ExecutionTime &gt; threshold {
+        logger.Warn("slow query detected",
+            slog.String("query", query),
+            slog.Float64("execution_time_ms", plan.ExecutionTime),
+            slog.Float64("planning_time_ms", plan.PlanningTime),
+            slog.String("node_type", plan.Plan.NodeType),
+            slog.Int64("actual_rows", plan.Plan.ActualRows),
+            slog.Int64("planned_rows", plan.Plan.PlanRows),
+        )
+
+        // Проверяем проблемные паттерны
+        checkPlanIssues(logger, &amp;plan.Plan, 0)
+    }
+}
+
+func checkPlanIssues(logger *slog.Logger, node *PlanNode, depth int) {
+    // Seq Scan на большой таблице
+    if node.NodeType == "Seq Scan" &amp;&amp; node.ActualRows &gt; 10000 {
+        logger.Warn("sequential scan on large table",
+            slog.String("table", node.RelationName),
+            slog.Int64("rows", node.ActualRows),
+            slog.String("suggestion", "consider adding an index"),
+        )
+    }
+
+    // Большая разница между planned и actual rows (плохая статистика)
+    if node.PlanRows &gt; 0 &amp;&amp; node.ActualRows &gt; 0 {
+        ratio := float64(node.ActualRows) / float64(node.PlanRows)
+        if ratio &gt; 10 || ratio &lt; 0.1 {
+            logger.Warn("row estimate mismatch",
+                slog.Int64("planned", node.PlanRows),
+                slog.Int64("actual", node.ActualRows),
+                slog.Float64("ratio", ratio),
+                slog.String("suggestion", "run ANALYZE on the table"),
+            )
+        }
+    }
+
+    // Много disk reads (buffer cache miss)
+    if node.SharedReadBlocks &gt; 0 {
+        hitRatio := float64(node.SharedHitBlocks) /
+            float64(node.SharedHitBlocks+node.SharedReadBlocks)
+        if hitRatio &lt; 0.95 {
+            logger.Warn("low buffer cache hit ratio",
+                slog.Float64("hit_ratio", hitRatio),
+                slog.Int64("read_blocks", node.SharedReadBlocks),
+                slog.String("suggestion", "increase shared_buffers or check query"),
+            )
+        }
+    }
+
+    // Рекурсивно проверяем дочерние узлы
+    for i := range node.Plans {
+        checkPlanIssues(logger, &amp;node.Plans[i], depth+1)
+    }
+}
+</code></pre>
+<h3 id="чтение-планов-запросов"><a class="header" href="#чтение-планов-запросов">Чтение планов запросов</a></h3>
+<pre><code>-- Типы сканирования (от лучшего к худшему)
+Index Only Scan  → Данные читаются из индекса (лучший)
+Index Scan       → Индекс + heap lookup
+Bitmap Scan      → Индекс + bitmap + heap
+Seq Scan         → Полное сканирование (худший для больших таблиц)
+
+-- Типы соединений
+Nested Loop      → O(n*m) — хорошо для малых таблиц / индексного доступа
+Hash Join        → O(n+m) — хорошо для больших таблиц
+Merge Join       → O(n+m) — хорошо для отсортированных данных
+</code></pre>
+<pre><code class="language-sql">-- Пример: плохой план
+EXPLAIN ANALYZE
+SELECT * FROM orders o
+JOIN users u ON o.user_id = u.id
+WHERE u.email = 'user@example.com';
+
+-- Результат:
+-- Nested Loop (cost=0.56..16.61 rows=1 width=...)
+--   -&gt; Index Scan using idx_users_email on users u (cost=0.28..8.30 rows=1 width=...)
+--        Index Cond: (email = 'user@example.com')
+--   -&gt; Index Scan using idx_orders_user_id on orders o (cost=0.28..8.30 rows=1 width=...)
+--        Index Cond: (user_id = u.id)
+-- Planning Time: 0.182 ms
+-- Execution Time: 0.045 ms   ✅ Быстро
+</code></pre>
+<pre><code class="language-sql">-- Пример: плохой план (без индекса)
+EXPLAIN ANALYZE
+SELECT * FROM orders WHERE status = 'pending';
+
+-- Результат:
+-- Seq Scan on orders (cost=0.00..25000.00 rows=50000 width=...)
+--   Filter: (status = 'pending')
+--   Rows Removed by Filter: 950000
+-- Planning Time: 0.100 ms
+-- Execution Time: 1250.000 ms   ❌ Медленно — Seq Scan на 1M строк
+</code></pre>
+<h3 id="типы-индексов"><a class="header" href="#типы-индексов">Типы индексов</a></h3>
+<pre><code class="language-sql">-- B-tree (default) — для операторов =, &lt;, &gt;, &lt;=, &gt;=, BETWEEN, IN, LIKE 'prefix%'
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_orders_created ON orders(created_at DESC);
+
+-- Composite index — порядок важен!
+CREATE INDEX idx_orders_user_status ON orders(user_id, status);
+-- ✅ Работает для: WHERE user_id = 1
+-- ✅ Работает для: WHERE user_id = 1 AND status = 'pending'
+-- ❌ НЕ работает для: WHERE status = 'pending' (нужен отдельный индекс)
+
+-- Partial index — индексирует только часть строк
+CREATE INDEX idx_orders_pending ON orders(created_at)
+    WHERE status = 'pending';
+-- Меньший размер, быстрее обновляется
+
+-- Covering index (INCLUDE) — PG 11+
+CREATE INDEX idx_orders_user_covering ON orders(user_id)
+    INCLUDE (status, total_amount);
+-- Index Only Scan — не нужно обращаться к heap
+
+-- GIN (Generalized Inverted Index) — для массивов, JSONB, full-text
+CREATE INDEX idx_products_tags ON products USING GIN(tags);
+CREATE INDEX idx_products_metadata ON products USING GIN(metadata jsonb_path_ops);
+
+-- GiST — для геоданных, диапазонов
+CREATE INDEX idx_events_period ON events USING GiST(
+    tstzrange(start_time, end_time)
+);
+
+-- BRIN (Block Range Index) — для больших таблиц с естественной сортировкой
+CREATE INDEX idx_logs_created ON logs USING BRIN(created_at);
+-- Очень маленький индекс, хорош для append-only таблиц
+</code></pre>
+<h3 id="сравнение-индексов-с-sql-server-c"><a class="header" href="#сравнение-индексов-с-sql-server-c">Сравнение индексов с SQL Server (C#)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>PostgreSQL</th><th>SQL Server</th><th>Использование</th></tr>
+</thead>
+<tbody>
+<tr><td>B-tree</td><td>Clustered/Non-clustered</td><td>Основной тип</td></tr>
+<tr><td>Partial Index</td><td>Filtered Index</td><td>WHERE condition</td></tr>
+<tr><td>Covering (INCLUDE)</td><td>Covering Index (INCLUDE)</td><td>Index Only Scan</td></tr>
+<tr><td>GIN</td><td>Full-Text Index</td><td>Массивы, JSONB, FTS</td></tr>
+<tr><td>GiST</td><td>Spatial Index</td><td>Геоданные</td></tr>
+<tr><td>BRIN</td><td>— (нет аналога)</td><td>Append-only таблицы</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="query-tuning"><a class="header" href="#query-tuning">Query Tuning</a></h3>
+<h4 id="connection-level-settings"><a class="header" href="#connection-level-settings">Connection-level settings</a></h4>
+<pre><code class="language-go">// Настройки на уровне соединения для тяжёлых запросов
+func ExecuteHeavyQuery(ctx context.Context, pool *pgxpool.Pool) error {
+    conn, err := pool.Acquire(ctx)
+    if err != nil {
+        return err
+    }
+    defer conn.Release()
+
+    // Увеличиваем work_mem для этого запроса
+    // (используется для сортировок и хэш-таблиц)
+    _, err = conn.Exec(ctx, "SET LOCAL work_mem = '256MB'")
+    if err != nil {
+        return err
+    }
+
+    // Увеличиваем таймаут
+    _, err = conn.Exec(ctx, "SET LOCAL statement_timeout = '120s'")
+    if err != nil {
+        return err
+    }
+
+    // Выполняем тяжёлый запрос
+    rows, err := conn.Query(ctx, `
+        SELECT ...
+        FROM large_table
+        ORDER BY complex_expression
+    `)
+    // ...
+
+    return nil
+}
+</code></pre>
+<h4 id="параллельные-запросы-postgresql"><a class="header" href="#параллельные-запросы-postgresql">Параллельные запросы PostgreSQL</a></h4>
+<pre><code class="language-go">// PostgreSQL может выполнять запрос параллельно (PG 9.6+)
+// Настройки контролируют это поведение
+
+func ConfigureParallelQueries(ctx context.Context, pool *pgxpool.Pool) {
+    // Runtime params для всех соединений
+    poolConfig.ConnConfig.RuntimeParams = map[string]string{
+        // Максимум воркеров на запрос
+        "max_parallel_workers_per_gather": "4",
+
+        // Минимальный размер таблицы для параллельного сканирования
+        "min_parallel_table_scan_size": "8MB",
+
+        // Минимальный размер индекса для параллельного сканирования
+        "min_parallel_index_scan_size": "512kB",
+    }
+}
+</code></pre>
+<h3 id="pg_stat_statements"><a class="header" href="#pg_stat_statements">pg_stat_statements</a></h3>
+<p>Расширение для мониторинга всех запросов к БД.</p>
+<pre><code class="language-sql">-- Включение расширения
+CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+</code></pre>
+<pre><code class="language-go">// Получение Top-N медленных запросов
+type SlowQuery struct {
+    Query          string
+    Calls          int64
+    TotalTimeMs    float64
+    MeanTimeMs     float64
+    MaxTimeMs      float64
+    Rows           int64
+    SharedBlksHit  int64
+    SharedBlksRead int64
+}
+
+func GetSlowQueries(ctx context.Context, pool *pgxpool.Pool, limit int) ([]SlowQuery, error) {
+    rows, err := pool.Query(ctx, `
+        SELECT
+            query,
+            calls,
+            total_exec_time as total_time_ms,
+            mean_exec_time as mean_time_ms,
+            max_exec_time as max_time_ms,
+            rows,
+            shared_blks_hit,
+            shared_blks_read
+        FROM pg_stat_statements
+        WHERE query NOT LIKE '%pg_stat_statements%'
+        ORDER BY total_exec_time DESC
+        LIMIT $1
+    `, limit)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    var queries []SlowQuery
+    for rows.Next() {
+        var q SlowQuery
+        err := rows.Scan(
+            &amp;q.Query, &amp;q.Calls, &amp;q.TotalTimeMs,
+            &amp;q.MeanTimeMs, &amp;q.MaxTimeMs, &amp;q.Rows,
+            &amp;q.SharedBlksHit, &amp;q.SharedBlksRead,
+        )
+        if err != nil {
+            return nil, err
+        }
+        queries = append(queries, q)
+    }
+
+    return queries, rows.Err()
+}
+
+// Утилита для анализа
+func AnalyzeSlowQueries(ctx context.Context, pool *pgxpool.Pool, logger *slog.Logger) {
+    queries, err := GetSlowQueries(ctx, pool, 20)
+    if err != nil {
+        logger.Error("failed to get slow queries", slog.String("error", err.Error()))
+        return
+    }
+
+    for _, q := range queries {
+        // Buffer cache hit ratio
+        totalBlocks := q.SharedBlksHit + q.SharedBlksRead
+        var hitRatio float64
+        if totalBlocks &gt; 0 {
+            hitRatio = float64(q.SharedBlksHit) / float64(totalBlocks) * 100
+        }
+
+        logger.Info("slow query",
+            slog.String("query", truncate(q.Query, 100)),
+            slog.Int64("calls", q.Calls),
+            slog.Float64("total_time_ms", q.TotalTimeMs),
+            slog.Float64("mean_time_ms", q.MeanTimeMs),
+            slog.Float64("max_time_ms", q.MaxTimeMs),
+            slog.Float64("cache_hit_ratio", hitRatio),
+        )
+    }
+}
+
+func truncate(s string, maxLen int) string {
+    if len(s) &lt;= maxLen {
+        return s
+    }
+    return s[:maxLen] + "..."
+}
+</code></pre>
+<h3 id="auto-explain"><a class="header" href="#auto-explain">Auto EXPLAIN</a></h3>
+<p>Автоматическое логирование планов медленных запросов:</p>
+<pre><code class="language-sql">-- postgresql.conf
+shared_preload_libraries = 'auto_explain'
+auto_explain.log_min_duration = '100ms'  -- Логировать запросы &gt; 100ms
+auto_explain.log_analyze = true          -- Включить ANALYZE
+auto_explain.log_buffers = true          -- Включить buffer stats
+auto_explain.log_format = 'json'         -- JSON формат
+auto_explain.log_nested_statements = true
+</code></pre>
+<pre><code class="language-go">// Программная активация для конкретного соединения
+func EnableAutoExplain(ctx context.Context, conn *pgx.Conn) error {
+    _, err := conn.Exec(ctx, `
+        LOAD 'auto_explain';
+        SET auto_explain.log_min_duration = '50ms';
+        SET auto_explain.log_analyze = true;
+    `)
+    return err
+}
+</code></pre>
+<hr>
+<h2 id="high-availability"><a class="header" href="#high-availability">High Availability</a></h2>
+<h3 id="read-replicas"><a class="header" href="#read-replicas">Read Replicas</a></h3>
+<p>В production часто используют read replicas для масштабирования чтения. В Go это реализуется через маршрутизацию запросов.</p>
+<pre><code class="language-go">package postgres
+
+import (
+    "context"
+    "fmt"
+    "math/rand"
+    "sync/atomic"
+
+    "github.com/jackc/pgx/v5/pgxpool"
+)
+
+// DBCluster управляет primary и replica соединениями
+type DBCluster struct {
+    primary  *pgxpool.Pool
+    replicas []*pgxpool.Pool
+    counter  atomic.Uint64 // для round-robin
+}
+
+func NewDBCluster(ctx context.Context, primaryDSN string, replicaDSNs []string) (*DBCluster, error) {
+    primary, err := pgxpool.New(ctx, primaryDSN)
+    if err != nil {
+        return nil, fmt.Errorf("connect primary: %w", err)
+    }
+
+    replicas := make([]*pgxpool.Pool, 0, len(replicaDSNs))
+    for _, dsn := range replicaDSNs {
+        replica, err := pgxpool.New(ctx, dsn)
+        if err != nil {
+            // Закрываем уже открытые соединения
+            primary.Close()
+            for _, r := range replicas {
+                r.Close()
+            }
+            return nil, fmt.Errorf("connect replica: %w", err)
+        }
+        replicas = append(replicas, replica)
+    }
+
+    return &amp;DBCluster{
+        primary:  primary,
+        replicas: replicas,
+    }, nil
+}
+
+// Primary возвращает пул для записи
+func (c *DBCluster) Primary() *pgxpool.Pool {
+    return c.primary
+}
+
+// Replica возвращает пул для чтения (round-robin)
+func (c *DBCluster) Replica() *pgxpool.Pool {
+    if len(c.replicas) == 0 {
+        return c.primary // Fallback на primary
+    }
+
+    idx := c.counter.Add(1) % uint64(len(c.replicas))
+    return c.replicas[idx]
+}
+
+// ReplicaRandom возвращает случайную реплику
+func (c *DBCluster) ReplicaRandom() *pgxpool.Pool {
+    if len(c.replicas) == 0 {
+        return c.primary
+    }
+    return c.replicas[rand.Intn(len(c.replicas))]
+}
+
+// Close закрывает все соединения
+func (c *DBCluster) Close() {
+    c.primary.Close()
+    for _, r := range c.replicas {
+        r.Close()
+    }
+}
+</code></pre>
+<h4 id="context-based-routing"><a class="header" href="#context-based-routing">Context-based routing</a></h4>
+<pre><code class="language-go">// Маршрутизация через context
+type ctxKey string
+
+const readOnlyKey ctxKey = "read_only"
+
+// WithReadOnly помечает запрос как read-only
+func WithReadOnly(ctx context.Context) context.Context {
+    return context.WithValue(ctx, readOnlyKey, true)
+}
+
+func IsReadOnly(ctx context.Context) bool {
+    v, ok := ctx.Value(readOnlyKey).(bool)
+    return ok &amp;&amp; v
+}
+
+// Repository с автоматической маршрутизацией
+type UserRepository struct {
+    cluster *DBCluster
+}
+
+func (r *UserRepository) pool(ctx context.Context) *pgxpool.Pool {
+    if IsReadOnly(ctx) {
+        return r.cluster.Replica()
+    }
+    return r.cluster.Primary()
+}
+
+func (r *UserRepository) GetByID(ctx context.Context, id int64) (*User, error) {
+    // Чтение → используем реплику
+    ctx = WithReadOnly(ctx)
+
+    var u User
+    err := r.pool(ctx).QueryRow(ctx,
+        "SELECT id, email, name FROM users WHERE id = $1", id,
+    ).Scan(&amp;u.ID, &amp;u.Email, &amp;u.Name)
+
+    return &amp;u, err
+}
+
+func (r *UserRepository) Create(ctx context.Context, user *User) error {
+    // Запись → используем primary (по умолчанию)
+    _, err := r.pool(ctx).Exec(ctx,
+        "INSERT INTO users (email, name) VALUES ($1, $2)",
+        user.Email, user.Name,
+    )
+    return err
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Аналог в EF Core — это <code>context.Database.UseTransaction()</code> с read-only connection, или split read/write DbContext. В Go подход более явный.</p>
+</blockquote>
+<h3 id="connection-string-для-ha"><a class="header" href="#connection-string-для-ha">Connection String для HA</a></h3>
+<p>PostgreSQL поддерживает multi-host connection strings:</p>
+<pre><code class="language-go">// Multi-host connection string — pgx попробует каждый хост
+primaryDSN := "postgres://user:pass@host1:5432,host2:5432/mydb?target_session_attrs=read-write"
+
+// Для реплик
+replicaDSN := "postgres://user:pass@replica1:5432,replica2:5432/mydb?target_session_attrs=read-only"
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Параметр</th><th>Значение</th><th>Описание</th></tr>
+</thead>
+<tbody>
+<tr><td><code>target_session_attrs</code></td><td><code>read-write</code></td><td>Primary (для записи)</td></tr>
+<tr><td><code>target_session_attrs</code></td><td><code>read-only</code></td><td>Replica (для чтения)</td></tr>
+<tr><td><code>target_session_attrs</code></td><td><code>any</code></td><td>Любой доступный</td></tr>
+<tr><td><code>target_session_attrs</code></td><td><code>primary</code></td><td>Только primary</td></tr>
+<tr><td><code>target_session_attrs</code></td><td><code>standby</code></td><td>Только standby</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="retry-strategies"><a class="header" href="#retry-strategies">Retry Strategies</a></h3>
+<p>Транзиентные ошибки — нормальная часть production. Нужна стратегия повторных попыток.</p>
+<pre><code class="language-go">package pgutil
+
+import (
+    "context"
+    "errors"
+    "math"
+    "math/rand"
+    "time"
+
+    "github.com/jackc/pgx/v5/pgconn"
+)
+
+// RetryConfig настройки повторных попыток
+type RetryConfig struct {
+    MaxRetries     int
+    InitialBackoff time.Duration
+    MaxBackoff     time.Duration
+    Multiplier     float64
+    Jitter         bool
+}
+
+func DefaultRetryConfig() RetryConfig {
+    return RetryConfig{
+        MaxRetries:     3,
+        InitialBackoff: 100 * time.Millisecond,
+        MaxBackoff:     5 * time.Second,
+        Multiplier:     2.0,
+        Jitter:         true,
+    }
+}
+
+// WithRetry выполняет функцию с повторными попытками
+func WithRetry[T any](
+    ctx context.Context,
+    cfg RetryConfig,
+    fn func(ctx context.Context) (T, error),
+) (T, error) {
+    var result T
+    var lastErr error
+
+    for attempt := 0; attempt &lt;= cfg.MaxRetries; attempt++ {
+        result, lastErr = fn(ctx)
+        if lastErr == nil {
+            return result, nil
+        }
+
+        // Проверяем, можно ли повторить
+        if !IsRetryable(lastErr) {
+            return result, lastErr
+        }
+
+        // Не ждём после последней попытки
+        if attempt == cfg.MaxRetries {
+            break
+        }
+
+        // Exponential backoff
+        backoff := cfg.InitialBackoff * time.Duration(math.Pow(cfg.Multiplier, float64(attempt)))
+        if backoff &gt; cfg.MaxBackoff {
+            backoff = cfg.MaxBackoff
+        }
+
+        // Jitter (случайный разброс для избежания thundering herd)
+        if cfg.Jitter {
+            backoff = time.Duration(rand.Int63n(int64(backoff)))
+        }
+
+        select {
+        case &lt;-ctx.Done():
+            return result, ctx.Err()
+        case &lt;-time.After(backoff):
+            // Продолжаем
+        }
+    }
+
+    return result, fmt.Errorf("max retries exceeded: %w", lastErr)
+}
+
+// IsRetryable определяет, можно ли повторить ошибку
+func IsRetryable(err error) bool {
+    if err == nil {
+        return false
+    }
+
+    // Context cancelled — не повторяем
+    if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
+        return false
+    }
+
+    // PostgreSQL error codes
+    var pgErr *pgconn.PgError
+    if errors.As(err, &amp;pgErr) {
+        switch pgErr.Code {
+        case "40001": // serialization_failure
+            return true
+        case "40P01": // deadlock_detected
+            return true
+        case "08000", "08003", "08006": // connection errors
+            return true
+        case "57P01": // admin_shutdown
+            return true
+        case "57P03": // cannot_connect_now
+            return true
+        default:
+            return false
+        }
+    }
+
+    // Ошибки соединения
+    if isConnectionError(err) {
+        return true
+    }
+
+    return false
+}
+
+func isConnectionError(err error) bool {
+    msg := err.Error()
+    connectionErrors := []string{
+        "connection refused",
+        "connection reset",
+        "broken pipe",
+        "no such host",
+        "connection timed out",
+        "EOF",
+    }
+    for _, ce := range connectionErrors {
+        if strings.Contains(msg, ce) {
+            return true
+        }
+    }
+    return false
+}
+
+// Использование
+func (r *OrderRepository) GetByID(ctx context.Context, id int64) (*Order, error) {
+    return WithRetry(ctx, DefaultRetryConfig(), func(ctx context.Context) (*Order, error) {
+        var o Order
+        err := r.pool.QueryRow(ctx,
+            "SELECT id, user_id, total_amount FROM orders WHERE id = $1", id,
+        ).Scan(&amp;o.ID, &amp;o.UserID, &amp;o.TotalAmount)
+        return &amp;o, err
+    })
+}
+</code></pre>
+<h3 id="сравнение-с-polly-c"><a class="header" href="#сравнение-с-polly-c">Сравнение с Polly (C#)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>Go (ручная реализация)</th><th>C# (Polly)</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>API</strong></td><td><code>WithRetry(ctx, cfg, fn)</code></td><td><code>Policy.Handle&lt;&gt;().WaitAndRetry()</code></td></tr>
+<tr><td><strong>Jitter</strong></td><td>Ручной</td><td><code>Backoff.DecorrelatedJitterBackoffV2</code></td></tr>
+<tr><td><strong>Circuit Breaker</strong></td><td>Ручной или go-circuitbreaker</td><td><code>Policy.CircuitBreaker()</code></td></tr>
+<tr><td><strong>Комбинирование</strong></td><td>Вложенные вызовы</td><td><code>Policy.Wrap()</code></td></tr>
+<tr><td><strong>Dependency</strong></td><td>Нет</td><td>NuGet пакет</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-csharp">// C# Polly
+var retryPolicy = Policy
+    .Handle&lt;SqlException&gt;(ex =&gt; ex.IsTransient)
+    .WaitAndRetryAsync(3, attempt =&gt;
+        TimeSpan.FromMilliseconds(100 * Math.Pow(2, attempt)));
+
+var result = await retryPolicy.ExecuteAsync(async () =&gt;
+    await connection.QueryFirstAsync&lt;Order&gt;(sql, new { Id = id })
+);
+</code></pre>
+<h3 id="circuit-breaker"><a class="header" href="#circuit-breaker">Circuit Breaker</a></h3>
+<p>Circuit Breaker предотвращает перегрузку БД при проблемах.</p>
+<pre><code class="language-go">package pgutil
+
+import (
+    "context"
+    "errors"
+    "sync"
+    "time"
+)
+
+type CircuitState int
+
+const (
+    CircuitClosed   CircuitState = iota // Нормальная работа
+    CircuitOpen                          // Все запросы отклоняются
+    CircuitHalfOpen                      // Пробный запрос
+)
+
+var ErrCircuitOpen = errors.New("circuit breaker is open")
+
+type CircuitBreaker struct {
+    mu              sync.RWMutex
+    state           CircuitState
+    failures        int
+    successes       int
+    threshold       int           // Порог ошибок для открытия
+    halfOpenMax     int           // Макс. пробных запросов
+    resetTimeout    time.Duration // Время до перехода в half-open
+    lastFailureTime time.Time
+}
+
+func NewCircuitBreaker(threshold int, resetTimeout time.Duration) *CircuitBreaker {
+    return &amp;CircuitBreaker{
+        state:        CircuitClosed,
+        threshold:    threshold,
+        halfOpenMax:  3,
+        resetTimeout: resetTimeout,
+    }
+}
+
+func (cb *CircuitBreaker) Execute(ctx context.Context, fn func(ctx context.Context) error) error {
+    if !cb.allowRequest() {
+        return ErrCircuitOpen
+    }
+
+    err := fn(ctx)
+
+    if err != nil {
+        cb.recordFailure()
+    } else {
+        cb.recordSuccess()
+    }
+
+    return err
+}
+
+func (cb *CircuitBreaker) allowRequest() bool {
+    cb.mu.RLock()
+    defer cb.mu.RUnlock()
+
+    switch cb.state {
+    case CircuitClosed:
+        return true
+    case CircuitOpen:
+        // Проверяем, прошло ли время для перехода в half-open
+        if time.Since(cb.lastFailureTime) &gt; cb.resetTimeout {
+            cb.mu.RUnlock()
+            cb.mu.Lock()
+            cb.state = CircuitHalfOpen
+            cb.successes = 0
+            cb.mu.Unlock()
+            cb.mu.RLock()
+            return true
+        }
+        return false
+    case CircuitHalfOpen:
+        return cb.successes &lt; cb.halfOpenMax
+    }
+
+    return false
+}
+
+func (cb *CircuitBreaker) recordFailure() {
+    cb.mu.Lock()
+    defer cb.mu.Unlock()
+
+    cb.failures++
+    cb.lastFailureTime = time.Now()
+
+    if cb.failures &gt;= cb.threshold {
+        cb.state = CircuitOpen
+    }
+}
+
+func (cb *CircuitBreaker) recordSuccess() {
+    cb.mu.Lock()
+    defer cb.mu.Unlock()
+
+    if cb.state == CircuitHalfOpen {
+        cb.successes++
+        if cb.successes &gt;= cb.halfOpenMax {
+            cb.state = CircuitClosed
+            cb.failures = 0
+        }
+    } else {
+        cb.failures = 0
+    }
+}
+
+func (cb *CircuitBreaker) State() CircuitState {
+    cb.mu.RLock()
+    defer cb.mu.RUnlock()
+    return cb.state
+}
+</code></pre>
+<pre><code class="language-go">// Использование с пулом
+type ResilientPool struct {
+    pool    *pgxpool.Pool
+    breaker *CircuitBreaker
+    retry   RetryConfig
+}
+
+func (p *ResilientPool) QueryRow(ctx context.Context, sql string, args ...any) pgx.Row {
+    // Circuit breaker + retry
+    var row pgx.Row
+    err := p.breaker.Execute(ctx, func(ctx context.Context) error {
+        _, retryErr := WithRetry(ctx, p.retry, func(ctx context.Context) (struct{}, error) {
+            row = p.pool.QueryRow(ctx, sql, args...)
+            // QueryRow не возвращает ошибку сразу — проверяем при Scan
+            return struct{}{}, nil
+        })
+        return retryErr
+    })
+    if err != nil {
+        // Возвращаем row, который при Scan вернёт ошибку
+        return &amp;errorRow{err: err}
+    }
+    return row
+}
+</code></pre>
+<hr>
+<h2 id="security"><a class="header" href="#security">Security</a></h2>
+<h3 id="ssltls-connections"><a class="header" href="#ssltls-connections">SSL/TLS Connections</a></h3>
+<p>В production <strong>обязательно</strong> используйте TLS для соединения с PostgreSQL.</p>
+<pre><code class="language-go">import (
+    "crypto/tls"
+    "crypto/x509"
+    "os"
+
+    "github.com/jackc/pgx/v5/pgxpool"
+)
+
+func NewSecurePool(ctx context.Context, cfg Config) (*pgxpool.Pool, error) {
+    poolConfig, err := pgxpool.ParseConfig(cfg.ConnectionString())
+    if err != nil {
+        return nil, err
+    }
+
+    // Вариант 1: Verify-full (рекомендуется)
+    // Проверяет сертификат сервера и hostname
+    certPool := x509.NewCertPool()
+    caCert, err := os.ReadFile(cfg.CACertFile)
+    if err != nil {
+        return nil, fmt.Errorf("read CA cert: %w", err)
+    }
+    certPool.AppendCertsFromPEM(caCert)
+
+    poolConfig.ConnConfig.TLSConfig = &amp;tls.Config{
+        ServerName: cfg.Host,
+        RootCAs:    certPool,
+        MinVersion: tls.VersionTLS12,
+    }
+
+    // Вариант 2: Client certificate authentication (mTLS)
+    if cfg.ClientCertFile != "" &amp;&amp; cfg.ClientKeyFile != "" {
+        clientCert, err := tls.LoadX509KeyPair(cfg.ClientCertFile, cfg.ClientKeyFile)
+        if err != nil {
+            return nil, fmt.Errorf("load client cert: %w", err)
+        }
+        poolConfig.ConnConfig.TLSConfig.Certificates = []tls.Certificate{clientCert}
+    }
+
+    return pgxpool.NewWithConfig(ctx, poolConfig)
+}
+</code></pre>
+<h3 id="ssl-mode-сравнение"><a class="header" href="#ssl-mode-сравнение">SSL Mode сравнение</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>sslmode</th><th>Защита</th><th>Production</th></tr>
+</thead>
+<tbody>
+<tr><td><code>disable</code></td><td>Нет шифрования</td><td>❌ Никогда</td></tr>
+<tr><td><code>allow</code></td><td>Опциональное</td><td>❌ Ненадёжно</td></tr>
+<tr><td><code>prefer</code></td><td>Предпочтительное (default)</td><td>⚠️ Не гарантирует</td></tr>
+<tr><td><code>require</code></td><td>Обязательное, без проверки</td><td>⚠️ Man-in-the-middle</td></tr>
+<tr><td><code>verify-ca</code></td><td>Проверка CA</td><td>✅ Хорошо</td></tr>
+<tr><td><code>verify-full</code></td><td>Проверка CA + hostname</td><td>✅ Лучший вариант</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>⚠️ <strong>Критично</strong>: В production всегда используйте <code>verify-ca</code> или <code>verify-full</code>. <code>prefer</code> и <code>require</code> не защищают от man-in-the-middle атак.</p>
+</blockquote>
+<h3 id="row-level-security"><a class="header" href="#row-level-security">Row-Level Security</a></h3>
+<p>RLS позволяет ограничить доступ к строкам на уровне БД — идеально для multi-tenant приложений.</p>
+<pre><code class="language-sql">-- Включаем RLS на таблице
+ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
+
+-- Политика: пользователи видят только свои заказы
+CREATE POLICY user_orders ON orders
+    USING (user_id = current_setting('app.current_user_id')::int);
+
+-- Политика: tenant isolation
+CREATE POLICY tenant_isolation ON orders
+    USING (tenant_id = current_setting('app.tenant_id')::int);
+
+-- Применяется даже к owner (по умолчанию owner обходит RLS)
+ALTER TABLE orders FORCE ROW LEVEL SECURITY;
+</code></pre>
+<pre><code class="language-go">// Middleware для установки tenant_id
+type TenantMiddleware struct {
+    pool *pgxpool.Pool
+}
+
+func (m *TenantMiddleware) WithTenant(ctx context.Context, tenantID int64) *pgxpool.Pool {
+    // ⚠️ Нельзя использовать SET для pool — он shared!
+    // Используем AfterConnect или per-connection setup
+    return m.pool
+}
+
+// Правильный подход: устанавливаем tenant_id для каждого запроса
+func (r *OrderRepository) ListForTenant(ctx context.Context, tenantID int64) ([]Order, error) {
+    conn, err := r.pool.Acquire(ctx)
+    if err != nil {
+        return nil, err
+    }
+    defer conn.Release()
+
+    // Устанавливаем tenant_id для этого соединения
+    _, err = conn.Exec(ctx,
+        fmt.Sprintf("SET LOCAL app.tenant_id = '%d'", tenantID),
+    )
+    if err != nil {
+        return nil, fmt.Errorf("set tenant: %w", err)
+    }
+
+    // Теперь RLS автоматически фильтрует данные
+    rows, err := conn.Query(ctx, "SELECT * FROM orders ORDER BY created_at DESC")
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    var orders []Order
+    for rows.Next() {
+        var o Order
+        if err := rows.Scan(&amp;o.ID, &amp;o.TenantID, &amp;o.UserID, &amp;o.TotalAmount); err != nil {
+            return nil, err
+        }
+        orders = append(orders, o)
+    }
+    return orders, rows.Err()
+}
+
+// Лучший подход: через транзакцию
+func (r *OrderRepository) WithTenant(ctx context.Context, tenantID int64,
+    fn func(ctx context.Context, conn *pgxpool.Conn) error) error {
+
+    conn, err := r.pool.Acquire(ctx)
+    if err != nil {
+        return err
+    }
+    defer conn.Release()
+
+    tx, err := conn.Begin(ctx)
+    if err != nil {
+        return err
+    }
+    defer tx.Rollback(ctx)
+
+    // SET LOCAL работает в рамках транзакции
+    _, err = tx.Exec(ctx,
+        fmt.Sprintf("SET LOCAL app.tenant_id = '%d'", tenantID),
+    )
+    if err != nil {
+        return fmt.Errorf("set tenant: %w", err)
+    }
+
+    if err := fn(ctx, conn); err != nil {
+        return err
+    }
+
+    return tx.Commit(ctx)
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: RLS — аналог глобального query filter в EF Core (<code>HasQueryFilter</code>), но реализованный на уровне БД. Невозможно обойти из приложения.</p>
+</blockquote>
+<pre><code class="language-csharp">// EF Core — query filter (application-level)
+modelBuilder.Entity&lt;Order&gt;()
+    .HasQueryFilter(o =&gt; o.TenantId == _tenantService.TenantId);
+// ⚠️ Можно обойти с IgnoreQueryFilters()
+
+// PostgreSQL RLS — database-level
+// ✅ Невозможно обойти из приложения
+</code></pre>
+<h3 id="secrets-management"><a class="header" href="#secrets-management">Secrets Management</a></h3>
+<p>Не храните пароли БД в коде или ENV переменных в открытом виде.</p>
+<pre><code class="language-go">package config
+
+import (
+    "context"
+    "encoding/json"
+    "fmt"
+    "os"
+    "time"
+
+    "github.com/aws/aws-sdk-go-v2/service/secretsmanager"
+)
+
+// DatabaseSecret — структура секрета из AWS Secrets Manager / Vault
+type DatabaseSecret struct {
+    Host     string `json:"host"`
+    Port     int    `json:"port"`
+    Username string `json:"username"`
+    Password string `json:"password"`
+    Database string `json:"dbname"`
+}
+
+// Вариант 1: AWS Secrets Manager
+func GetDBSecretAWS(ctx context.Context, client *secretsmanager.Client, secretID string) (*DatabaseSecret, error) {
+    result, err := client.GetSecretValue(ctx, &amp;secretsmanager.GetSecretValueInput{
+        SecretId: &amp;secretID,
+    })
+    if err != nil {
+        return nil, fmt.Errorf("get secret: %w", err)
+    }
+
+    var secret DatabaseSecret
+    if err := json.Unmarshal([]byte(*result.SecretString), &amp;secret); err != nil {
+        return nil, fmt.Errorf("parse secret: %w", err)
+    }
+
+    return &amp;secret, nil
+}
+
+// Вариант 2: HashiCorp Vault
+func GetDBSecretVault(ctx context.Context, vaultAddr, token, path string) (*DatabaseSecret, error) {
+    // Используем vault API
+    client, err := vault.New(
+        vault.WithAddress(vaultAddr),
+        vault.WithRequestTimeout(10*time.Second),
+    )
+    if err != nil {
+        return nil, err
+    }
+
+    if err := client.SetToken(token); err != nil {
+        return nil, err
+    }
+
+    s, err := client.Secrets.KvV2Read(ctx, path, vault.WithMountPath("secret"))
+    if err != nil {
+        return nil, err
+    }
+
+    return &amp;DatabaseSecret{
+        Host:     s.Data.Data["host"].(string),
+        Port:     int(s.Data.Data["port"].(float64)),
+        Username: s.Data.Data["username"].(string),
+        Password: s.Data.Data["password"].(string),
+        Database: s.Data.Data["dbname"].(string),
+    }, nil
+}
+
+// Вариант 3: Kubernetes Secrets (самый простой)
+func GetDBSecretK8s() (*DatabaseSecret, error) {
+    // K8s монтирует секреты как файлы или ENV
+    return &amp;DatabaseSecret{
+        Host:     os.Getenv("DB_HOST"),
+        Port:     5432,
+        Username: os.Getenv("DB_USER"),
+        Password: readFileOrEnv("/run/secrets/db-password", "DB_PASSWORD"),
+        Database: os.Getenv("DB_NAME"),
+    }, nil
+}
+
+func readFileOrEnv(filePath, envKey string) string {
+    data, err := os.ReadFile(filePath)
+    if err == nil {
+        return strings.TrimSpace(string(data))
+    }
+    return os.Getenv(envKey)
+}
+</code></pre>
+<h3 id="ротация-секретов"><a class="header" href="#ротация-секретов">Ротация секретов</a></h3>
+<pre><code class="language-go">// Пул с автоматическим обновлением credentials
+type RotatingPool struct {
+    mu          sync.RWMutex
+    pool        *pgxpool.Pool
+    secretFunc  func(ctx context.Context) (*DatabaseSecret, error)
+    refreshEvery time.Duration
+}
+
+func NewRotatingPool(ctx context.Context,
+    secretFunc func(ctx context.Context) (*DatabaseSecret, error),
+    refreshEvery time.Duration,
+) (*RotatingPool, error) {
+    rp := &amp;RotatingPool{
+        secretFunc:   secretFunc,
+        refreshEvery: refreshEvery,
+    }
+
+    // Создаём начальный пул
+    if err := rp.refresh(ctx); err != nil {
+        return nil, err
+    }
+
+    // Запускаем фоновое обновление
+    go rp.rotateLoop(ctx)
+
+    return rp, nil
+}
+
+func (rp *RotatingPool) Pool() *pgxpool.Pool {
+    rp.mu.RLock()
+    defer rp.mu.RUnlock()
+    return rp.pool
+}
+
+func (rp *RotatingPool) refresh(ctx context.Context) error {
+    secret, err := rp.secretFunc(ctx)
+    if err != nil {
+        return err
+    }
+
+    dsn := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=verify-ca",
+        secret.Username, secret.Password, secret.Host, secret.Port, secret.Database)
+
+    newPool, err := pgxpool.New(ctx, dsn)
+    if err != nil {
+        return err
+    }
+
+    rp.mu.Lock()
+    oldPool := rp.pool
+    rp.pool = newPool
+    rp.mu.Unlock()
+
+    // Закрываем старый пул после перехода
+    if oldPool != nil {
+        go func() {
+            time.Sleep(30 * time.Second) // Ждём завершения активных запросов
+            oldPool.Close()
+        }()
+    }
+
+    return nil
+}
+
+func (rp *RotatingPool) rotateLoop(ctx context.Context) {
+    ticker := time.NewTicker(rp.refreshEvery)
+    defer ticker.Stop()
+
+    for {
+        select {
+        case &lt;-ctx.Done():
+            return
+        case &lt;-ticker.C:
+            if err := rp.refresh(ctx); err != nil {
+                slog.Error("failed to rotate DB credentials",
+                    slog.String("error", err.Error()),
+                )
+            }
+        }
+    }
+}
+</code></pre>
+<hr>
+<h2 id="observability-для-postgresql"><a class="header" href="#observability-для-postgresql">Observability для PostgreSQL</a></h2>
+<h3 id="метрики-pg_stat_"><a class="header" href="#метрики-pg_stat_">Метрики pg_stat_*</a></h3>
+<p>PostgreSQL предоставляет системные представления для мониторинга.</p>
+<pre><code class="language-go">package pgmetrics
+
+import (
+    "context"
+
+    "github.com/jackc/pgx/v5/pgxpool"
+    "github.com/prometheus/client_golang/prometheus"
+    "github.com/prometheus/client_golang/prometheus/promauto"
+)
+
+var (
+    dbSize = promauto.NewGauge(prometheus.GaugeOpts{
+        Name: "postgresql_database_size_bytes",
+        Help: "Database size in bytes",
+    })
+
+    tableRows = promauto.NewGaugeVec(prometheus.GaugeOpts{
+        Name: "postgresql_table_rows_estimate",
+        Help: "Estimated number of rows in table",
+    }, []string{"table"})
+
+    cacheHitRatio = promauto.NewGauge(prometheus.GaugeOpts{
+        Name: "postgresql_cache_hit_ratio",
+        Help: "Buffer cache hit ratio",
+    })
+
+    activeConnections = promauto.NewGauge(prometheus.GaugeOpts{
+        Name: "postgresql_active_connections",
+        Help: "Number of active connections",
+    })
+
+    deadTuples = promauto.NewGaugeVec(prometheus.GaugeOpts{
+        Name: "postgresql_dead_tuples",
+        Help: "Number of dead tuples (need VACUUM)",
+    }, []string{"table"})
+
+    replicationLag = promauto.NewGauge(prometheus.GaugeOpts{
+        Name: "postgresql_replication_lag_seconds",
+        Help: "Replication lag in seconds",
+    })
+
+    longRunningQueries = promauto.NewGauge(prometheus.GaugeOpts{
+        Name: "postgresql_long_running_queries",
+        Help: "Number of queries running longer than 30 seconds",
+    })
+)
+
+// PGCollector собирает метрики из PostgreSQL
+type PGCollector struct {
+    pool *pgxpool.Pool
+}
+
+func NewPGCollector(pool *pgxpool.Pool) *PGCollector {
+    return &amp;PGCollector{pool: pool}
+}
+
+func (c *PGCollector) Collect(ctx context.Context) error {
+    // Database size
+    var size int64
+    if err := c.pool.QueryRow(ctx,
+        "SELECT pg_database_size(current_database())").Scan(&amp;size); err != nil {
+        return err
+    }
+    dbSize.Set(float64(size))
+
+    // Cache hit ratio
+    var ratio float64
+    if err := c.pool.QueryRow(ctx, `
+        SELECT
+            CASE WHEN (blks_hit + blks_read) = 0 THEN 0
+            ELSE blks_hit::float / (blks_hit + blks_read)
+            END
+        FROM pg_stat_database
+        WHERE datname = current_database()
+    `).Scan(&amp;ratio); err != nil {
+        return err
+    }
+    cacheHitRatio.Set(ratio)
+
+    // Active connections
+    var active int
+    if err := c.pool.QueryRow(ctx, `
+        SELECT count(*) FROM pg_stat_activity
+        WHERE state = 'active' AND pid != pg_backend_pid()
+    `).Scan(&amp;active); err != nil {
+        return err
+    }
+    activeConnections.Set(float64(active))
+
+    // Table stats
+    rows, err := c.pool.Query(ctx, `
+        SELECT
+            schemaname || '.' || relname as table_name,
+            n_live_tup,
+            n_dead_tup
+        FROM pg_stat_user_tables
+        ORDER BY n_dead_tup DESC
+        LIMIT 50
+    `)
+    if err != nil {
+        return err
+    }
+    defer rows.Close()
+
+    for rows.Next() {
+        var tableName string
+        var liveTup, deadTup int64
+        if err := rows.Scan(&amp;tableName, &amp;liveTup, &amp;deadTup); err != nil {
+            return err
+        }
+        tableRows.WithLabelValues(tableName).Set(float64(liveTup))
+        deadTuples.WithLabelValues(tableName).Set(float64(deadTup))
+    }
+
+    // Long running queries
+    var longQueries int
+    if err := c.pool.QueryRow(ctx, `
+        SELECT count(*) FROM pg_stat_activity
+        WHERE state = 'active'
+          AND now() - query_start &gt; interval '30 seconds'
+          AND pid != pg_backend_pid()
+    `).Scan(&amp;longQueries); err != nil {
+        return err
+    }
+    longRunningQueries.Set(float64(longQueries))
+
+    // Replication lag (если есть реплики)
+    var lag *float64
+    _ = c.pool.QueryRow(ctx, `
+        SELECT EXTRACT(EPOCH FROM replay_lag)
+        FROM pg_stat_replication
+        LIMIT 1
+    `).Scan(&amp;lag)
+    if lag != nil {
+        replicationLag.Set(*lag)
+    }
+
+    return nil
+}
+
+// StartCollector запускает периодический сбор метрик
+func StartCollector(ctx context.Context, pool *pgxpool.Pool, interval time.Duration) {
+    collector := NewPGCollector(pool)
+    ticker := time.NewTicker(interval)
+    defer ticker.Stop()
+
+    for {
+        select {
+        case &lt;-ctx.Done():
+            return
+        case &lt;-ticker.C:
+            if err := collector.Collect(ctx); err != nil {
+                slog.Error("metrics collection failed",
+                    slog.String("error", err.Error()),
+                )
+            }
+        }
+    }
+}
+</code></pre>
+<h3 id="prometheus-integration"><a class="header" href="#prometheus-integration">Prometheus Integration</a></h3>
+<pre><code class="language-go">// Полный пример с HTTP endpoint
+package main
+
+import (
+    "net/http"
+
+    "github.com/prometheus/client_golang/prometheus/promhttp"
+)
+
+func main() {
+    pool, _ := NewPool(ctx, cfg)
+
+    // Запуск сбора метрик
+    go StartCollector(ctx, pool, 15*time.Second)
+
+    // Запуск pool monitor
+    monitor := NewPoolMonitor(pool, slog.Default())
+    go monitor.Start(ctx)
+
+    // Prometheus endpoint
+    http.Handle("/metrics", promhttp.Handler())
+    http.ListenAndServe(":9090", nil)
+}
+</code></pre>
+<h3 id="ключевые-метрики-для-алертов"><a class="header" href="#ключевые-метрики-для-алертов">Ключевые метрики для алертов</a></h3>
+<pre><code class="language-yaml"># Prometheus alerting rules
+groups:
+  - name: postgresql
+    rules:
+      # Низкий cache hit ratio
+      - alert: PostgreSQLLowCacheHitRatio
+        expr: postgresql_cache_hit_ratio &lt; 0.95
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low buffer cache hit ratio"
+
+      # Много dead tuples (нужен VACUUM)
+      - alert: PostgreSQLHighDeadTuples
+        expr: postgresql_dead_tuples &gt; 100000
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Table {{ $labels.table }} needs VACUUM"
+
+      # Долгие запросы
+      - alert: PostgreSQLLongRunningQueries
+        expr: postgresql_long_running_queries &gt; 0
+        for: 1m
+        labels:
+          severity: critical
+
+      # Высокая утилизация пула
+      - alert: PostgreSQLPoolNearCapacity
+        expr: db_pool_connections_total{state="acquired"} / db_pool_connections_total{state="max"} &gt; 0.8
+        for: 5m
+        labels:
+          severity: warning
+
+      # Replication lag
+      - alert: PostgreSQLReplicationLag
+        expr: postgresql_replication_lag_seconds &gt; 10
+        for: 2m
+        labels:
+          severity: critical
+</code></pre>
+<h3 id="opentelemetry-instrumentation"><a class="header" href="#opentelemetry-instrumentation">OpenTelemetry Instrumentation</a></h3>
+<p>Полная интеграция pgx с OpenTelemetry для distributed tracing.</p>
+<pre><code class="language-go">package otel
+
+import (
+    "context"
+
+    "github.com/jackc/pgx/v5"
+    "github.com/jackc/pgx/v5/pgxpool"
+    "go.opentelemetry.io/otel"
+    "go.opentelemetry.io/otel/attribute"
+    "go.opentelemetry.io/otel/codes"
+    semconv "go.opentelemetry.io/otel/semconv/v1.21.0"
+    "go.opentelemetry.io/otel/trace"
+)
+
+// PgxTracer реализует полный OpenTelemetry instrumentation для pgx
+type PgxTracer struct {
+    tracer trace.Tracer
+    dbName string
+}
+
+func NewPgxTracer(dbName string) *PgxTracer {
+    return &amp;PgxTracer{
+        tracer: otel.Tracer("github.com/myapp/pgx"),
+        dbName: dbName,
+    }
+}
+
+// TraceQueryStart — начало запроса
+func (t *PgxTracer) TraceQueryStart(
+    ctx context.Context,
+    conn *pgx.Conn,
+    data pgx.TraceQueryStartData,
+) context.Context {
+    attrs := []attribute.KeyValue{
+        semconv.DBSystemPostgreSQL,
+        semconv.DBName(t.dbName),
+        semconv.DBStatement(data.SQL),
+        semconv.DBUser(conn.Config().User),
+        attribute.String("db.postgresql.host", conn.Config().Host),
+        attribute.Int("db.postgresql.port", int(conn.Config().Port)),
+    }
+
+    ctx, _ = t.tracer.Start(ctx, "postgresql.query",
+        trace.WithSpanKind(trace.SpanKindClient),
+        trace.WithAttributes(attrs...),
+    )
+
+    return ctx
+}
+
+// TraceQueryEnd — завершение запроса
+func (t *PgxTracer) TraceQueryEnd(
+    ctx context.Context,
+    conn *pgx.Conn,
+    data pgx.TraceQueryEndData,
+) {
+    span := trace.SpanFromContext(ctx)
+    defer span.End()
+
+    span.SetAttributes(
+        attribute.Int64("db.rows_affected", data.CommandTag.RowsAffected()),
+        attribute.String("db.command_tag", data.CommandTag.String()),
+    )
+
+    if data.Err != nil {
+        span.RecordError(data.Err)
+        span.SetStatus(codes.Error, data.Err.Error())
+    } else {
+        span.SetStatus(codes.Ok, "")
+    }
+}
+
+// TraceBatchStart — начало batch
+func (t *PgxTracer) TraceBatchStart(
+    ctx context.Context,
+    conn *pgx.Conn,
+    data pgx.TraceBatchStartData,
+) context.Context {
+    ctx, _ = t.tracer.Start(ctx, "postgresql.batch",
+        trace.WithSpanKind(trace.SpanKindClient),
+        trace.WithAttributes(
+            semconv.DBSystemPostgreSQL,
+            attribute.Int("db.batch.size", data.Batch.Len()),
+        ),
+    )
+    return ctx
+}
+
+// TraceBatchEnd — завершение batch
+func (t *PgxTracer) TraceBatchEnd(
+    ctx context.Context,
+    conn *pgx.Conn,
+    data pgx.TraceBatchEndData,
+) {
+    span := trace.SpanFromContext(ctx)
+    defer span.End()
+
+    if data.Err != nil {
+        span.RecordError(data.Err)
+        span.SetStatus(codes.Error, data.Err.Error())
+    }
+}
+
+// Применение к пулу
+func NewInstrumentedPool(ctx context.Context, dsn, dbName string) (*pgxpool.Pool, error) {
+    poolConfig, err := pgxpool.ParseConfig(dsn)
+    if err != nil {
+        return nil, err
+    }
+
+    poolConfig.ConnConfig.Tracer = NewPgxTracer(dbName)
+
+    return pgxpool.NewWithConfig(ctx, poolConfig)
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В .NET используется <code>DiagnosticSource</code> и <code>Activity</code> (System.Diagnostics) для трейсинга SQL. В Go — явный tracer interface, что даёт полный контроль над тем, какие данные собираются.</p>
+</blockquote>
+<hr>
+<h2 id="практические-примеры"><a class="header" href="#практические-примеры">Практические примеры</a></h2>
+<h3 id="пример-1-production-ready-connection-setup"><a class="header" href="#пример-1-production-ready-connection-setup">Пример 1: Production-Ready Connection Setup</a></h3>
+<p>Полная настройка подключения к PostgreSQL для production сервиса.</p>
+<pre><code class="language-go">package main
+
+import (
+    "context"
+    "crypto/tls"
+    "crypto/x509"
+    "fmt"
+    "log/slog"
+    "os"
+    "strconv"
+    "time"
+
+    "github.com/jackc/pgx/v5"
+    "github.com/jackc/pgx/v5/pgxpool"
+)
+
+// AppConfig — конфигурация приложения
+type AppConfig struct {
+    DB DBConfig
+}
+
+type DBConfig struct {
+    Host     string
+    Port     int
+    User     string
+    Password string
+    Database string
+
+    // Pool
+    MaxConns        int32
+    MinConns        int32
+    MaxConnLifetime time.Duration
+    MaxConnIdleTime time.Duration
+
+    // SSL
+    SSLMode    string
+    CACertPath string
+
+    // Timeouts
+    ConnectTimeout   time.Duration
+    StatementTimeout time.Duration
+}
+
+func LoadDBConfig() DBConfig {
+    return DBConfig{
+        Host:     getEnv("DB_HOST", "localhost"),
+        Port:     getEnvInt("DB_PORT", 5432),
+        User:     getEnv("DB_USER", "app"),
+        Password: getEnv("DB_PASSWORD", ""),
+        Database: getEnv("DB_NAME", "myapp"),
+
+        MaxConns:        int32(getEnvInt("DB_MAX_CONNS", 50)),
+        MinConns:        int32(getEnvInt("DB_MIN_CONNS", 10)),
+        MaxConnLifetime: time.Hour,
+        MaxConnIdleTime: 30 * time.Minute,
+
+        SSLMode:    getEnv("DB_SSL_MODE", "verify-ca"),
+        CACertPath: getEnv("DB_CA_CERT", ""),
+
+        ConnectTimeout:   10 * time.Second,
+        StatementTimeout: 30 * time.Second,
+    }
+}
+
+func NewProductionPool(ctx context.Context, cfg DBConfig, logger *slog.Logger) (*pgxpool.Pool, error) {
+    dsn := fmt.Sprintf(
+        "postgres://%s:%s@%s:%d/%s?sslmode=%s",
+        cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Database, cfg.SSLMode,
+    )
+
+    poolConfig, err := pgxpool.ParseConfig(dsn)
+    if err != nil {
+        return nil, fmt.Errorf("parse config: %w", err)
+    }
+
+    // --- Pool settings ---
+    poolConfig.MaxConns = cfg.MaxConns
+    poolConfig.MinConns = cfg.MinConns
+    poolConfig.MaxConnLifetime = cfg.MaxConnLifetime
+    poolConfig.MaxConnIdleTime = cfg.MaxConnIdleTime
+    poolConfig.HealthCheckPeriod = time.Minute
+
+    // --- Connection settings ---
+    poolConfig.ConnConfig.ConnectTimeout = cfg.ConnectTimeout
+    poolConfig.ConnConfig.RuntimeParams = map[string]string{
+        "application_name":  "myapp",
+        "statement_timeout": fmt.Sprintf("%dms", cfg.StatementTimeout.Milliseconds()),
+        "lock_timeout":      "10s",
+        "idle_in_transaction_session_timeout": "60s",
+        "timezone": "UTC",
+    }
+
+    // --- TLS ---
+    if cfg.CACertPath != "" {
+        certPool := x509.NewCertPool()
+        caCert, err := os.ReadFile(cfg.CACertPath)
+        if err != nil {
+            return nil, fmt.Errorf("read CA cert: %w", err)
+        }
+        certPool.AppendCertsFromPEM(caCert)
+
+        poolConfig.ConnConfig.TLSConfig = &amp;tls.Config{
+            ServerName: cfg.Host,
+            RootCAs:    certPool,
+            MinVersion: tls.VersionTLS12,
+        }
+    }
+
+    // --- Tracing ---
+    poolConfig.ConnConfig.Tracer = &amp;LoggingTracer{logger: logger}
+
+    // --- Hooks ---
+    poolConfig.AfterConnect = func(ctx context.Context, conn *pgx.Conn) error {
+        logger.Info("new db connection established")
+        return nil
+    }
+
+    poolConfig.BeforeAcquire = func(ctx context.Context, conn *pgx.Conn) bool {
+        return !conn.IsClosed()
+    }
+
+    // --- Create pool ---
+    pool, err := pgxpool.NewWithConfig(ctx, poolConfig)
+    if err != nil {
+        return nil, fmt.Errorf("create pool: %w", err)
+    }
+
+    // --- Verify ---
+    if err := pool.Ping(ctx); err != nil {
+        pool.Close()
+        return nil, fmt.Errorf("ping: %w", err)
+    }
+
+    // --- Warm pool ---
+    warmConns := min(5, int(cfg.MinConns))
+    conns := make([]*pgxpool.Conn, 0, warmConns)
+    for i := 0; i &lt; warmConns; i++ {
+        c, err := pool.Acquire(ctx)
+        if err != nil {
+            break
+        }
+        conns = append(conns, c)
+    }
+    for _, c := range conns {
+        c.Release()
+    }
+
+    logger.Info("database pool ready",
+        slog.Int("warm_connections", len(conns)),
+        slog.Int32("max_connections", cfg.MaxConns),
+    )
+
+    return pool, nil
+}
+
+func getEnv(key, fallback string) string {
+    if v := os.Getenv(key); v != "" {
+        return v
+    }
+    return fallback
+}
+
+func getEnvInt(key string, fallback int) int {
+    if v := os.Getenv(key); v != "" {
+        if i, err := strconv.Atoi(v); err == nil {
+            return i
+        }
+    }
+    return fallback
+}
+</code></pre>
+<h3 id="пример-2-zero-downtime-migration"><a class="header" href="#пример-2-zero-downtime-migration">Пример 2: Zero-Downtime Migration</a></h3>
+<p>Добавление нового поля к таблице с миллионами записей без даунтайма.</p>
+<pre><code class="language-go">// cmd/migrate/add_user_preferences.go
+//
+// Задача: добавить колонку preferences JSONB NOT NULL с default значением
+// к таблице users (5 млн записей)
+//
+// Стратегия: 3-step migration
+
+package main
+
+import (
+    "context"
+    "fmt"
+    "log/slog"
+    "time"
+
+    "github.com/jackc/pgx/v5/pgxpool"
+)
+
+func main() {
+    ctx := context.Background()
+    pool, _ := pgxpool.New(ctx, os.Getenv("DATABASE_URL"))
+    defer pool.Close()
+
+    logger := slog.Default()
+
+    // Шаг 1: Добавить nullable колонку (мгновенно)
+    logger.Info("Step 1: Adding nullable column")
+    _, err := pool.Exec(ctx, `
+        ALTER TABLE users ADD COLUMN IF NOT EXISTS preferences JSONB;
+    `)
+    if err != nil {
+        logger.Error("step 1 failed", slog.String("error", err.Error()))
+        return
+    }
+    logger.Info("Step 1 complete")
+
+    // Шаг 2: Backfill данных батчами
+    logger.Info("Step 2: Backfilling data")
+    defaultPrefs := `{"theme": "light", "notifications": true, "locale": "en"}`
+
+    totalUpdated := int64(0)
+    batchSize := 5000
+
+    for {
+        result, err := pool.Exec(ctx, `
+            UPDATE users
+            SET preferences = $1::jsonb
+            WHERE id IN (
+                SELECT id FROM users
+                WHERE preferences IS NULL
+                LIMIT $2
+                FOR UPDATE SKIP LOCKED
+            )
+        `, defaultPrefs, batchSize)
+        if err != nil {
+            logger.Error("backfill batch failed", slog.String("error", err.Error()))
+            return
+        }
+
+        rowsAffected := result.RowsAffected()
+        totalUpdated += rowsAffected
+
+        logger.Info("backfill progress",
+            slog.Int64("batch_rows", rowsAffected),
+            slog.Int64("total_updated", totalUpdated),
+        )
+
+        if rowsAffected == 0 {
+            break
+        }
+
+        // Пауза, чтобы не перегружать БД
+        time.Sleep(50 * time.Millisecond)
+    }
+    logger.Info("Step 2 complete", slog.Int64("total_rows", totalUpdated))
+
+    // Шаг 3: Добавить NOT NULL constraint
+    logger.Info("Step 3: Adding NOT NULL constraint")
+
+    // 3a. Добавляем CHECK constraint (NOT VALID — без скана)
+    _, err = pool.Exec(ctx, `
+        ALTER TABLE users ADD CONSTRAINT users_preferences_not_null
+            CHECK (preferences IS NOT NULL) NOT VALID;
+    `)
+    if err != nil {
+        logger.Error("step 3a failed", slog.String("error", err.Error()))
+        return
+    }
+
+    // 3b. Валидируем constraint (ShareUpdateExclusiveLock — не блокирует запись)
+    _, err = pool.Exec(ctx, `
+        ALTER TABLE users VALIDATE CONSTRAINT users_preferences_not_null;
+    `)
+    if err != nil {
+        logger.Error("step 3b failed", slog.String("error", err.Error()))
+        return
+    }
+
+    // 3c. Устанавливаем реальный NOT NULL и удаляем CHECK
+    _, err = pool.Exec(ctx, `
+        ALTER TABLE users ALTER COLUMN preferences SET NOT NULL;
+        ALTER TABLE users DROP CONSTRAINT users_preferences_not_null;
+    `)
+    if err != nil {
+        logger.Error("step 3c failed", slog.String("error", err.Error()))
+        return
+    }
+
+    // 3d. Добавляем DEFAULT для новых строк
+    _, err = pool.Exec(ctx, fmt.Sprintf(`
+        ALTER TABLE users ALTER COLUMN preferences SET DEFAULT '%s'::jsonb;
+    `, defaultPrefs))
+    if err != nil {
+        logger.Error("step 3d failed", slog.String("error", err.Error()))
+        return
+    }
+
+    logger.Info("Migration complete! Column 'preferences' is now NOT NULL with default")
+}
+</code></pre>
+<h3 id="пример-3-read-replica-routing"><a class="header" href="#пример-3-read-replica-routing">Пример 3: Read Replica Routing</a></h3>
+<p>Полная реализация маршрутизации запросов между primary и replicas.</p>
+<pre><code class="language-go">package postgres
+
+import (
+    "context"
+    "fmt"
+    "log/slog"
+    "sync/atomic"
+    "time"
+
+    "github.com/jackc/pgx/v5/pgxpool"
+)
+
+// ClusterConfig — конфигурация кластера
+type ClusterConfig struct {
+    PrimaryDSN   string
+    ReplicaDSNs  []string
+    MaxConns     int32
+    MinConns     int32
+    HealthCheck  time.Duration
+}
+
+// Cluster управляет primary и replica пулами
+type Cluster struct {
+    primary  *pgxpool.Pool
+    replicas []*pgxpool.Pool
+    healthy  []atomic.Bool
+    counter  atomic.Uint64
+    logger   *slog.Logger
+}
+
+func NewCluster(ctx context.Context, cfg ClusterConfig, logger *slog.Logger) (*Cluster, error) {
+    // Primary
+    primaryCfg, err := pgxpool.ParseConfig(cfg.PrimaryDSN)
+    if err != nil {
+        return nil, fmt.Errorf("parse primary config: %w", err)
+    }
+    primaryCfg.MaxConns = cfg.MaxConns
+    primaryCfg.MinConns = cfg.MinConns
+
+    primary, err := pgxpool.NewWithConfig(ctx, primaryCfg)
+    if err != nil {
+        return nil, fmt.Errorf("connect primary: %w", err)
+    }
+
+    // Replicas
+    replicas := make([]*pgxpool.Pool, 0, len(cfg.ReplicaDSNs))
+    healthy := make([]atomic.Bool, len(cfg.ReplicaDSNs))
+
+    for i, dsn := range cfg.ReplicaDSNs {
+        repCfg, err := pgxpool.ParseConfig(dsn)
+        if err != nil {
+            closeAll(primary, replicas)
+            return nil, fmt.Errorf("parse replica config: %w", err)
+        }
+        repCfg.MaxConns = cfg.MaxConns / 2 // Реплики — меньше соединений
+        repCfg.MinConns = cfg.MinConns / 2
+
+        replica, err := pgxpool.NewWithConfig(ctx, repCfg)
+        if err != nil {
+            closeAll(primary, replicas)
+            return nil, fmt.Errorf("connect replica %d: %w", i, err)
+        }
+        replicas = append(replicas, replica)
+        healthy[i].Store(true)
+    }
+
+    c := &amp;Cluster{
+        primary:  primary,
+        replicas: replicas,
+        healthy:  healthy,
+        logger:   logger,
+    }
+
+    // Запускаем health checks для реплик
+    if cfg.HealthCheck &gt; 0 {
+        go c.healthCheckLoop(ctx, cfg.HealthCheck)
+    }
+
+    return c, nil
+}
+
+// Writer возвращает primary pool (для INSERT/UPDATE/DELETE)
+func (c *Cluster) Writer() *pgxpool.Pool {
+    return c.primary
+}
+
+// Reader возвращает здоровую реплику (round-robin) или primary как fallback
+func (c *Cluster) Reader() *pgxpool.Pool {
+    if len(c.replicas) == 0 {
+        return c.primary
+    }
+
+    // Round-robin по здоровым репликам
+    attempts := len(c.replicas)
+    for i := 0; i &lt; attempts; i++ {
+        idx := c.counter.Add(1) % uint64(len(c.replicas))
+        if c.healthy[idx].Load() {
+            return c.replicas[idx]
+        }
+    }
+
+    // Все реплики нездоровы — fallback на primary
+    c.logger.Warn("all replicas unhealthy, falling back to primary")
+    return c.primary
+}
+
+func (c *Cluster) healthCheckLoop(ctx context.Context, interval time.Duration) {
+    ticker := time.NewTicker(interval)
+    defer ticker.Stop()
+
+    for {
+        select {
+        case &lt;-ctx.Done():
+            return
+        case &lt;-ticker.C:
+            c.checkReplicas(ctx)
+        }
+    }
+}
+
+func (c *Cluster) checkReplicas(ctx context.Context) {
+    for i, replica := range c.replicas {
+        checkCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
+
+        err := replica.Ping(checkCtx)
+        cancel()
+
+        wasHealthy := c.healthy[i].Load()
+        isHealthy := err == nil
+
+        c.healthy[i].Store(isHealthy)
+
+        // Логируем изменения состояния
+        if wasHealthy &amp;&amp; !isHealthy {
+            c.logger.Warn("replica became unhealthy",
+                slog.Int("replica", i),
+                slog.String("error", err.Error()),
+            )
+        } else if !wasHealthy &amp;&amp; isHealthy {
+            c.logger.Info("replica recovered", slog.Int("replica", i))
+        }
+    }
+}
+
+func (c *Cluster) Close() {
+    c.primary.Close()
+    for _, r := range c.replicas {
+        r.Close()
+    }
+}
+
+func closeAll(primary *pgxpool.Pool, replicas []*pgxpool.Pool) {
+    if primary != nil {
+        primary.Close()
+    }
+    for _, r := range replicas {
+        r.Close()
+    }
+}
+
+// --- Использование в сервисе ---
+
+type OrderService struct {
+    cluster *Cluster
+}
+
+func NewOrderService(cluster *Cluster) *OrderService {
+    return &amp;OrderService{cluster: cluster}
+}
+
+func (s *OrderService) Create(ctx context.Context, order Order) (int64, error) {
+    // Запись → primary
+    var id int64
+    err := s.cluster.Writer().QueryRow(ctx,
+        "INSERT INTO orders (user_id, total_amount, status) VALUES ($1, $2, $3) RETURNING id",
+        order.UserID, order.TotalAmount, "pending",
+    ).Scan(&amp;id)
+    return id, err
+}
+
+func (s *OrderService) GetByID(ctx context.Context, id int64) (*Order, error) {
+    // Чтение → replica (с возможным отставанием)
+    var o Order
+    err := s.cluster.Reader().QueryRow(ctx,
+        "SELECT id, user_id, total_amount, status, created_at FROM orders WHERE id = $1",
+        id,
+    ).Scan(&amp;o.ID, &amp;o.UserID, &amp;o.TotalAmount, &amp;o.Status, &amp;o.CreatedAt)
+    if err != nil {
+        return nil, err
+    }
+    return &amp;o, nil
+}
+
+func (s *OrderService) GetByIDConsistent(ctx context.Context, id int64) (*Order, error) {
+    // Консистентное чтение → primary (когда нужны свежие данные)
+    var o Order
+    err := s.cluster.Writer().QueryRow(ctx,
+        "SELECT id, user_id, total_amount, status, created_at FROM orders WHERE id = $1",
+        id,
+    ).Scan(&amp;o.ID, &amp;o.UserID, &amp;o.TotalAmount, &amp;o.Status, &amp;o.CreatedAt)
+    if err != nil {
+        return nil, err
+    }
+    return &amp;o, nil
+}
+
+func (s *OrderService) List(ctx context.Context, limit, offset int) ([]Order, error) {
+    // Список → replica
+    rows, err := s.cluster.Reader().Query(ctx,
+        "SELECT id, user_id, total_amount, status, created_at FROM orders ORDER BY created_at DESC LIMIT $1 OFFSET $2",
+        limit, offset,
+    )
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    var orders []Order
+    for rows.Next() {
+        var o Order
+        if err := rows.Scan(&amp;o.ID, &amp;o.UserID, &amp;o.TotalAmount, &amp;o.Status, &amp;o.CreatedAt); err != nil {
+            return nil, err
+        }
+        orders = append(orders, o)
+    }
+    return orders, rows.Err()
+}
+</code></pre>
+<hr><!-- AUTO: NAV -->
+<p><strong>Вопросы?</strong> Открой issue на <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/issues">GitHub</a></p>
+<p><a href="./README.html">← Назад к оглавлению</a> | <a href="./02_caching.html">Вперёд: Кэширование →</a></p>
+<!-- /AUTO: NAV -->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part3-web-api/05_api_documentation.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part4-infrastructure/02_caching.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part3-web-api/05_api_documentation.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part4-infrastructure/02_caching.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

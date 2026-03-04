@@ -1,0 +1,2327 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>1.2 Синтаксис и базовые концепции - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-e1a1ce5b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-c19b06e6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part1-basics/02_syntax_basics.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="12-синтаксис-и-базовые-концепции-сравнение-с-c"><a class="header" href="#12-синтаксис-и-базовые-концепции-сравнение-с-c">1.2 Синтаксис и базовые концепции (сравнение с C#)</a></h1>
+<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<ul>
+<li><a href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5">Введение</a></li>
+<li><a href="#1-%D0%B1%D0%B0%D0%B7%D0%BE%D0%B2%D1%8B%D0%B9-%D1%81%D0%B8%D0%BD%D1%82%D0%B0%D0%BA%D1%81%D0%B8%D1%81">1. Базовый синтаксис</a>
+<ul>
+<li><a href="#%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%B0-%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D1%8B">Структура программы</a></li>
+<li><a href="#%D0%BE%D0%B1%D1%8A%D1%8F%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BF%D0%B5%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D1%8B%D1%85">Объявление переменных</a>
+<ul>
+<li><a href="#%D0%BF%D0%BE%D0%BB%D0%BD%D0%BE%D0%B5-%D0%BE%D0%B1%D1%8A%D1%8F%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5">Полное объявление</a></li>
+<li><a href="#%D0%BA%D1%80%D0%B0%D1%82%D0%BA%D0%BE%D0%B5-%D0%BE%D0%B1%D1%8A%D1%8F%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D1%82%D0%B8%D0%BF-%D0%B2%D1%8B%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D1%81%D1%8F-%D0%B0%D0%B2%D1%82%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8">Краткое объявление (тип выводится автоматически)</a></li>
+<li><a href="#%D0%BC%D0%BD%D0%BE%D0%B6%D0%B5%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D0%BE%D0%B5-%D0%BE%D0%B1%D1%8A%D1%8F%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5">Множественное объявление</a></li>
+<li><a href="#zero-values-%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D1%8F-%D0%BF%D0%BE-%D1%83%D0%BC%D0%BE%D0%BB%D1%87%D0%B0%D0%BD%D0%B8%D1%8E">Zero values (значения по умолчанию)</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BA%D0%BE%D0%BD%D1%81%D1%82%D0%B0%D0%BD%D1%82%D1%8B">Константы</a></li>
+</ul>
+</li>
+<li><a href="#2-%D1%82%D0%B8%D0%BF%D1%8B-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85">2. Типы данных</a>
+<ul>
+<li><a href="#%D0%B1%D0%B0%D0%B7%D0%BE%D0%B2%D1%8B%D0%B5-%D1%82%D0%B8%D0%BF%D1%8B">Базовые типы</a>
+<ul>
+<li><a href="#%D0%B2%D0%B0%D0%B6%D0%BD%D0%BE-%D0%BF%D1%80%D0%BE-int-%D0%B8-uint">Важно про <code>int</code> и <code>uint</code></a></li>
+</ul>
+</li>
+<li><a href="#%D1%81%D1%82%D1%80%D0%BE%D0%BA%D0%B8">Строки</a></li>
+<li><a href="#%D0%BC%D0%B0%D1%81%D1%81%D0%B8%D0%B2%D1%8B">Массивы</a></li>
+<li><a href="#%D1%81%D0%BB%D0%B0%D0%B9%D1%81%D1%8B-slices--%D0%B4%D0%B8%D0%BD%D0%B0%D0%BC%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BC%D0%B0%D1%81%D1%81%D0%B8%D0%B2%D1%8B">Слайсы (Slices) — динамические массивы</a></li>
+<li><a href="#%D1%81%D0%BB%D0%B0%D0%B9%D1%81%D1%8B-%D0%B8-%D0%BF%D1%80%D0%BE%D0%B8%D0%B7%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D1%8C-gc-%D0%B0%D0%BB%D0%BB%D0%BE%D0%BA%D0%B0%D1%86%D0%B8%D0%B8-capacity">Слайсы и производительность: GC, аллокации, capacity</a>
+<ul>
+<li><a href="#%D0%B2%D0%BD%D1%83%D1%82%D1%80%D0%B5%D0%BD%D0%BD%D0%B5%D0%B5-%D1%83%D1%81%D1%82%D1%80%D0%BE%D0%B9%D1%81%D1%82%D0%B2%D0%BE-%D1%81%D0%BB%D0%B0%D0%B9%D1%81%D0%B0">Внутреннее устройство слайса</a></li>
+<li><a href="#%D0%B0%D0%BB%D0%BB%D0%BE%D0%BA%D0%B0%D1%86%D0%B8%D0%B8-%D0%B8-%D1%80%D0%BE%D1%81%D1%82-%D1%81%D0%BB%D0%B0%D0%B9%D1%81%D0%B0">Аллокации и рост слайса</a></li>
+<li><a href="#%D1%83%D1%82%D0%B5%D1%87%D0%BA%D0%B8-%D0%BF%D0%B0%D0%BC%D1%8F%D1%82%D0%B8-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-%D1%81%D0%BB%D0%B0%D0%B9%D1%81%D1%8B">Утечки памяти через слайсы</a></li>
+<li><a href="#stack-vs-heap-allocation-escape-analysis">Stack vs Heap allocation (Escape Analysis)</a></li>
+<li><a href="#%D1%81%D0%BE%D0%B2%D0%B5%D1%82%D1%8B-%D0%BF%D0%BE-%D0%BE%D0%BF%D1%82%D0%B8%D0%BC%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8-%D1%81%D0%BB%D0%B0%D0%B9%D1%81%D0%BE%D0%B2">Советы по оптимизации слайсов</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BC%D0%B0%D0%BF%D1%8B-maps--%D1%81%D0%BB%D0%BE%D0%B2%D0%B0%D1%80%D0%B8">Мапы (Maps) — словари</a></li>
+<li><a href="#%D0%BC%D0%B0%D0%BF%D1%8B-%D0%B8-%D0%BF%D1%80%D0%BE%D0%B8%D0%B7%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D1%8C-gc-%D0%B0%D0%BB%D0%BB%D0%BE%D0%BA%D0%B0%D1%86%D0%B8%D0%B8-%D0%BE%D0%BF%D1%82%D0%B8%D0%BC%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F">Мапы и производительность: GC, аллокации, оптимизация</a>
+<ul>
+<li><a href="#%D0%B2%D0%BD%D1%83%D1%82%D1%80%D0%B5%D0%BD%D0%BD%D0%B5%D0%B5-%D1%83%D1%81%D1%82%D1%80%D0%BE%D0%B9%D1%81%D1%82%D0%B2%D0%BE-%D0%BC%D0%B0%D0%BF%D1%8B">Внутреннее устройство мапы</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B5%D0%B4%D0%B2%D1%8B%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-capacity-%D0%B4%D0%BB%D1%8F-%D0%BC%D0%B0%D0%BF">Предвыделение capacity для мап</a></li>
+<li><a href="#%D1%83%D0%B4%D0%B0%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B8-%D0%BF%D0%B0%D0%BC%D1%8F%D1%82%D1%8C">Удаление и память</a></li>
+<li><a href="#%D0%BA%D0%BB%D1%8E%D1%87%D0%B8-%D0%B8-%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D1%8F-%D0%B2%D0%BB%D0%B8%D1%8F%D0%BD%D0%B8%D0%B5-%D0%BD%D0%B0-%D0%BF%D1%80%D0%BE%D0%B8%D0%B7%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D1%8C">Ключи и значения: влияние на производительность</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%BD%D0%BA%D1%83%D1%80%D0%B5%D0%BD%D1%82%D0%BD%D1%8B%D0%B9-%D0%B4%D0%BE%D1%81%D1%82%D1%83%D0%BF-%D0%BA-%D0%BC%D0%B0%D0%BF%D0%B0%D0%BC">Конкурентный доступ к мапам</a></li>
+<li><a href="#%D1%81%D0%BE%D0%B2%D0%B5%D1%82%D1%8B-%D0%BF%D0%BE-%D0%BE%D0%BF%D1%82%D0%B8%D0%BC%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8-%D0%BC%D0%B0%D0%BF">Советы по оптимизации мап</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BF%D0%B0%D0%BA%D0%B5%D1%82%D1%8B-slices-maps-%D0%B8-cmp-go-121">Пакеты slices, maps и cmp (Go 1.21+)</a>
+<ul>
+<li><a href="#%D0%BF%D0%B0%D0%BA%D0%B5%D1%82-slices">Пакет slices</a></li>
+<li><a href="#%D0%BF%D0%B0%D0%BA%D0%B5%D1%82-maps">Пакет maps</a></li>
+<li><a href="#%D0%BF%D0%B0%D0%BA%D0%B5%D1%82-cmp">Пакет cmp</a></li>
+</ul>
+</li>
+<li><a href="#%D1%81%D0%BE%D0%B2%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5-%D0%B2%D1%81%D1%82%D1%80%D0%BE%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5-%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8-go-121">Современные встроенные функции (Go 1.21+)</a>
+<ul>
+<li><a href="#clear--%D0%BE%D1%87%D0%B8%D1%81%D1%82%D0%BA%D0%B0-%D0%BA%D0%BE%D0%BB%D0%BB%D0%B5%D0%BA%D1%86%D0%B8%D0%B9">clear() — очистка коллекций</a></li>
+<li><a href="#minmax--%D0%B2%D1%81%D1%82%D1%80%D0%BE%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5-generic-%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8">min/max — встроенные generic функции</a></li>
+</ul>
+</li>
+<li><a href="#iterators-go-123">Iterators (Go 1.23)</a></li>
+<li><a href="#generic-type-aliases-go-124">Generic type aliases (Go 1.24)</a></li>
+<li><a href="#stringslines-%D0%B8-stringssplitseq-go-124">strings.Lines и strings.SplitSeq (Go 1.24)</a></li>
+<li><a href="#%D1%81%D1%82%D1%80%D0%BE%D0%BA%D0%B8-%D0%B8-%D0%BF%D1%80%D0%BE%D0%B8%D0%B7%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D1%8C">Строки и производительность</a>
+<ul>
+<li><a href="#%D1%81%D1%82%D1%80%D0%BE%D0%BA%D0%B8-%D0%B8%D0%BC%D0%BC%D1%83%D1%82%D0%B0%D0%B1%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B-%D0%BD%D0%BE-%D1%8D%D1%82%D0%BE-%D0%BD%D0%B5-%D0%B2%D1%81%D0%B5%D0%B3%D0%B4%D0%B0-%D0%B4%D0%B5%D1%88%D0%B5%D0%B2%D0%BE">Строки иммутабельны, но это не всегда дешево</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%BD%D0%B2%D0%B5%D1%80%D1%82%D0%B0%D1%86%D0%B8%D1%8F-byte--string">Конвертация []byte ↔ string</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#3-%D1%83%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D1%8F%D1%8E%D1%89%D0%B8%D0%B5-%D0%BA%D0%BE%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%86%D0%B8%D0%B8">3. Управляющие конструкции</a>
+<ul>
+<li><a href="#ifelse">If/Else</a></li>
+<li><a href="#switch">Switch</a></li>
+<li><a href="#%D1%86%D0%B8%D0%BA%D0%BB%D1%8B">Циклы</a>
+<ul>
+<li><a href="#%D0%BA%D0%BB%D0%B0%D1%81%D1%81%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9-%D1%86%D0%B8%D0%BA%D0%BB">Классический цикл</a></li>
+<li><a href="#while-%D0%BF%D0%BE%D0%B4%D0%BE%D0%B1%D0%BD%D1%8B%D0%B9-%D1%86%D0%B8%D0%BA%D0%BB">While-подобный цикл</a></li>
+<li><a href="#%D0%B1%D0%B5%D1%81%D0%BA%D0%BE%D0%BD%D0%B5%D1%87%D0%BD%D1%8B%D0%B9-%D1%86%D0%B8%D0%BA%D0%BB">Бесконечный цикл</a></li>
+<li><a href="#foreach-%D0%BF%D0%BE%D0%B4%D0%BE%D0%B1%D0%BD%D1%8B%D0%B9-%D1%86%D0%B8%D0%BA%D0%BB-range">Foreach-подобный цикл (range)</a></li>
+<li><a href="#range-over-integers-go-122">Range over integers (Go 1.22)</a></li>
+<li><a href="#break-continue">Break, Continue</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#4-%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8">4. Функции</a>
+<ul>
+<li><a href="#%D0%BE%D0%B1%D1%8A%D1%8F%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8">Объявление функции</a></li>
+<li><a href="#%D0%BC%D0%BD%D0%BE%D0%B6%D0%B5%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5-%D0%B2%D0%BE%D0%B7%D0%B2%D1%80%D0%B0%D1%89%D0%B0%D0%B5%D0%BC%D1%8B%D0%B5-%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D1%8F">Множественные возвращаемые значения</a></li>
+<li><a href="#%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0-%D0%BE%D1%88%D0%B8%D0%B1%D0%BE%D0%BA-error-handling">Обработка ошибок (Error handling)</a></li>
+<li><a href="#variadic-%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8-%D0%BF%D0%B5%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D0%BE%D0%B5-%D0%BA%D0%BE%D0%BB%D0%B8%D1%87%D0%B5%D1%81%D1%82%D0%B2%D0%BE-%D0%B0%D1%80%D0%B3%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%BE%D0%B2">Variadic функции (переменное количество аргументов)</a></li>
+<li><a href="#%D0%B0%D0%BD%D0%BE%D0%BD%D0%B8%D0%BC%D0%BD%D1%8B%D0%B5-%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8-%D0%B8-%D0%B7%D0%B0%D0%BC%D1%8B%D0%BA%D0%B0%D0%BD%D0%B8%D1%8F">Анонимные функции и замыкания</a></li>
+<li><a href="#%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8-%D0%BA%D0%B0%D0%BA-%D0%BF%D0%B0%D1%80%D0%B0%D0%BC%D0%B5%D1%82%D1%80%D1%8B">Функции как параметры</a></li>
+</ul>
+</li>
+<li><a href="#5-defer-%D0%BE%D1%82%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%BD%D0%BE%D0%B5-%D0%B2%D1%8B%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5">5. Defer (отложенное выполнение)</a></li>
+<li><a href="#6-%D1%83%D0%BA%D0%B0%D0%B7%D0%B0%D1%82%D0%B5%D0%BB%D0%B8">6. Указатели</a>
+<ul>
+<li><a href="#%D0%BE%D0%B1%D1%8A%D1%8F%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B8-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5">Объявление и использование</a></li>
+<li><a href="#%D1%83%D0%BA%D0%B0%D0%B7%D0%B0%D1%82%D0%B5%D0%BB%D0%B8-%D0%B2-%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D1%8F%D1%85">Указатели в функциях</a></li>
+<li><a href="#%D1%83%D0%BA%D0%B0%D0%B7%D0%B0%D1%82%D0%B5%D0%BB%D0%B8-vs-%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D1%8F-%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D1%87%D1%82%D0%BE-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C">Указатели vs значения: когда что использовать?</a></li>
+</ul>
+</li>
+<li><a href="#7-%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D1%8B-structs">7. Структуры (Structs)</a>
+<ul>
+<li><a href="#%D0%BC%D0%B5%D1%82%D0%BE%D0%B4%D1%8B-%D0%BD%D0%B0-%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%B0%D1%85">Методы на структурах</a></li>
+<li><a href="#%D0%B2%D1%81%D1%82%D1%80%D0%B0%D0%B8%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-embedding--%D0%B7%D0%B0%D0%BC%D0%B5%D0%BD%D0%B0-%D0%BD%D0%B0%D1%81%D0%BB%D0%B5%D0%B4%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F">Встраивание (Embedding) — замена наследования</a></li>
+</ul>
+</li>
+<li><a href="#8-%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D1%84%D0%B5%D0%B9%D1%81%D1%8B">8. Интерфейсы</a>
+<ul>
+<li><a href="#%D0%BF%D1%83%D1%81%D1%82%D0%BE%D0%B9-%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D1%84%D0%B5%D0%B9%D1%81-interface">Пустой интерфейс (interface{})</a></li>
+<li><a href="#type-assertion-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%BA%D0%B0-%D1%82%D0%B8%D0%BF%D0%B0">Type assertion (проверка типа)</a></li>
+</ul>
+</li>
+<li><a href="#9-%D0%BF%D0%B0%D0%BA%D0%B5%D1%82%D1%8B-%D0%B8-%D0%B8%D0%BC%D0%BF%D0%BE%D1%80%D1%82%D1%8B">9. Пакеты и импорты</a>
+<ul>
+<li><a href="#%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BF%D0%B0%D0%BA%D0%B5%D1%82%D0%B0">Создание пакета</a></li>
+<li><a href="#%D0%B8%D0%BC%D0%BF%D0%BE%D1%80%D1%82%D1%8B">Импорты</a></li>
+</ul>
+</li>
+<li><a href="#10-%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-c-%D1%87%D0%B5%D0%B3%D0%BE-%D0%BD%D0%B5%D1%82-%D0%B2-go">10. Сравнение с C#: Чего НЕТ в Go</a></li>
+<li><a href="#11-%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B">11. Практические примеры</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0-%D1%81-json">Пример 1: Работа с JSON</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-%D1%87%D1%82%D0%B5%D0%BD%D0%B8%D0%B5-%D1%84%D0%B0%D0%B9%D0%BB%D0%B0">Пример 2: Чтение файла</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D1%8F-%D0%B4%D0%BB%D1%8F-%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D0%BA%D0%B8">Задания для практики</a></li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<p>Go — минималистичный язык с простым синтаксисом. Если вы приходите из C#, многие концепции покажутся знакомыми, но есть фундаментальные отличия в философии и подходах.</p>
+<p><strong>Философия Go</strong>:</p>
+<ul>
+<li>Простота &gt; Сложность</li>
+<li>Explicit &gt; Implicit</li>
+<li>Composition &gt; Inheritance</li>
+<li>Меньше магии, больше ясности</li>
+</ul>
+<blockquote>
+<p><strong>📌 Важно для производительности</strong>: В этом разделе вы найдете подробное описание работы коллекций (слайсы, мапы, строки) в контексте GC и производительности. Для быстрого справочника по оптимизации см. <a href="02a_collections_performance_cheatsheet.html">02a_collections_performance_cheatsheet.md</a></p>
+</blockquote>
+<hr>
+<h2 id="1-базовый-синтаксис"><a class="header" href="#1-базовый-синтаксис">1. Базовый синтаксис</a></h2>
+<h3 id="структура-программы"><a class="header" href="#структура-программы">Структура программы</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">using System;
+
+namespace MyApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Hello, World!");
+        }
+    }
+}
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, World!")
+}
+</code></pre>
+<p><strong>Ключевые отличия</strong>:</p>
+<ul>
+<li>В Go нет <code>namespace</code> — используются <strong>пакеты</strong> (packages)</li>
+<li>Точка входа — функция <code>main</code> в пакете <code>main</code></li>
+<li>Нет классов — только функции и структуры</li>
+<li>Фигурные скобки <code>{</code> должны быть на той же строке</li>
+<li>Нет точки с запятой <code>;</code> в конце строк (добавляется автоматически)</li>
+</ul>
+<hr>
+<h3 id="объявление-переменных"><a class="header" href="#объявление-переменных">Объявление переменных</a></h3>
+<h4 id="полное-объявление"><a class="header" href="#полное-объявление">Полное объявление</a></h4>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">int age = 30;
+string name = "Alice";
+bool isActive = true;
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">var age int = 30
+var name string = "Alice"
+var isActive bool = true
+</code></pre>
+<h4 id="краткое-объявление-тип-выводится-автоматически"><a class="header" href="#краткое-объявление-тип-выводится-автоматически">Краткое объявление (тип выводится автоматически)</a></h4>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">var age = 30;
+var name = "Alice";
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">age := 30
+name := "Alice"
+</code></pre>
+<p><strong>Важно</strong>: <code>:=</code> работает <strong>только внутри функций</strong>, не на уровне пакета.</p>
+<h4 id="множественное-объявление"><a class="header" href="#множественное-объявление">Множественное объявление</a></h4>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">int x = 1, y = 2, z = 3;
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">var x, y, z int = 1, 2, 3
+
+// Или короче
+x, y, z := 1, 2, 3
+
+// Разные типы
+var (
+    age  int    = 30
+    name string = "Bob"
+    rate float64 = 99.5
+)
+</code></pre>
+<h4 id="zero-values-значения-по-умолчанию"><a class="header" href="#zero-values-значения-по-умолчанию">Zero values (значения по умолчанию)</a></h4>
+<p>В Go все переменные инициализируются “нулевыми” значениями, в отличие от C# где могут быть неинициализированы.</p>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">var i int       // 0
+var f float64   // 0.0
+var b bool      // false
+var s string    // "" (пустая строка)
+var p *int      // nil
+</code></pre>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">int i;          // Ошибка компиляции, если использовать без инициализации
+int i = default; // 0
+</code></pre>
+<hr>
+<h3 id="константы"><a class="header" href="#константы">Константы</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">const int MaxUsers = 100;
+const string AppName = "MyApp";
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">const MaxUsers = 100
+const AppName = "MyApp"
+
+// Группировка констант
+const (
+    StatusOK       = 200
+    StatusNotFound = 404
+    StatusError    = 500
+)
+</code></pre>
+<p><strong>Особенность Go</strong>: константы вычисляются на этапе компиляции и могут быть типизированными или нетипизированными.</p>
+<pre><code class="language-go">const Pi = 3.14159 // Нетипизированная (может использоваться как float32 или float64)
+
+const TypedPi float64 = 3.14159 // Типизированная
+</code></pre>
+<hr>
+<h2 id="2-типы-данных"><a class="header" href="#2-типы-данных">2. Типы данных</a></h2>
+<h3 id="базовые-типы"><a class="header" href="#базовые-типы">Базовые типы</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Категория</th><th>C#</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Целые числа</strong></td><td><code>byte</code>, <code>int</code>, <code>long</code>, <code>uint</code></td><td><code>int8</code>, <code>int16</code>, <code>int32</code>, <code>int64</code>, <code>uint8</code>, <code>uint16</code>, <code>uint32</code>, <code>uint64</code>, <code>int</code>, <code>uint</code></td></tr>
+<tr><td><strong>Вещественные</strong></td><td><code>float</code>, <code>double</code>, <code>decimal</code></td><td><code>float32</code>, <code>float64</code></td></tr>
+<tr><td><strong>Логические</strong></td><td><code>bool</code></td><td><code>bool</code></td></tr>
+<tr><td><strong>Строки</strong></td><td><code>string</code></td><td><code>string</code></td></tr>
+<tr><td><strong>Символы</strong></td><td><code>char</code></td><td><code>rune</code> (alias для <code>int32</code>, Unicode code point)</td></tr>
+<tr><td><strong>Байт</strong></td><td><code>byte</code></td><td><code>byte</code> (alias для <code>uint8</code>)</td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="важно-про-int-и-uint"><a class="header" href="#важно-про-int-и-uint">Важно про <code>int</code> и <code>uint</code></a></h4>
+<p>В Go <code>int</code> и <code>uint</code> имеют размер <strong>зависящий от платформы</strong>:</p>
+<ul>
+<li>32-битная система: <code>int</code> = <code>int32</code></li>
+<li>64-битная система: <code>int</code> = <code>int64</code></li>
+</ul>
+<p><strong>Рекомендация</strong>: Используйте <code>int</code>, если нет явных требований к размеру.</p>
+<hr>
+<h3 id="строки"><a class="header" href="#строки">Строки</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">string name = "Alice";
+string multiline = @"Line 1
+Line 2";
+string interpolated = $"Hello, {name}!";
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">name := "Alice"
+
+// Многострочная строка (raw string literal)
+multiline := `Line 1
+Line 2`
+
+// Интерполяция через fmt.Sprintf
+greeting := fmt.Sprintf("Hello, %s!", name)
+</code></pre>
+<p><strong>Особенности Go строк</strong>:</p>
+<ul>
+<li>Строки <strong>иммутабельны</strong> (как в C#)</li>
+<li>Строки — это <strong>последовательность байтов</strong> (UTF-8)</li>
+<li>Для работы с Unicode используйте <strong>rune</strong></li>
+</ul>
+<pre><code class="language-go">s := "Hello, 世界"
+fmt.Println(len(s))          // 13 (количество байтов, не символов!)
+
+// Для подсчета символов
+fmt.Println(utf8.RuneCountInString(s)) // 9
+
+// Итерация по рунам
+for i, r := range s {
+    fmt.Printf("%d: %c\n", i, r)
+}
+</code></pre>
+<hr>
+<h3 id="массивы"><a class="header" href="#массивы">Массивы</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">int[] numbers = new int[5];
+int[] values = { 1, 2, 3, 4, 5 };
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">var numbers [5]int              // [0 0 0 0 0]
+values := [5]int{1, 2, 3, 4, 5}
+
+// Размер выводится автоматически
+auto := [...]int{1, 2, 3} // [3]int
+</code></pre>
+<p><strong>Важно</strong>: В Go размер массива — <strong>часть типа</strong>!</p>
+<pre><code class="language-go">var a [5]int
+var b [10]int
+
+// a и b — РАЗНЫЕ типы! Нельзя присвоить друг другу
+</code></pre>
+<p><strong>Практический вывод</strong>: Массивы в Go используются редко. Чаще используются <strong>слайсы</strong>.</p>
+<hr>
+<h3 id="слайсы-slices--динамические-массивы"><a class="header" href="#слайсы-slices--динамические-массивы">Слайсы (Slices) — динамические массивы</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">List&lt;int&gt; numbers = new List&lt;int&gt; { 1, 2, 3 };
+numbers.Add(4);
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">numbers := []int{1, 2, 3}
+numbers = append(numbers, 4)
+</code></pre>
+<p><strong>Создание слайсов</strong>:</p>
+<pre><code class="language-go">// Литерал
+s1 := []int{1, 2, 3}
+
+// С помощью make (заданная длина и capacity)
+s2 := make([]int, 5)      // len=5, cap=5, [0 0 0 0 0]
+s3 := make([]int, 3, 10)  // len=3, cap=10, [0 0 0]
+
+// Из массива
+arr := [5]int{1, 2, 3, 4, 5}
+s4 := arr[1:4] // [2 3 4] — срез от индекса 1 до 4 (не включая)
+</code></pre>
+<p><strong>Важные операции</strong>:</p>
+<pre><code class="language-go">s := []int{1, 2, 3, 4, 5}
+
+// Длина и вместимость
+fmt.Println(len(s)) // 5
+fmt.Println(cap(s)) // 5
+
+// Добавление элементов
+s = append(s, 6, 7, 8)
+
+// Копирование
+dest := make([]int, len(s))
+copy(dest, s)
+
+// Слайсинг
+sub := s[1:3]  // [2 3]
+first := s[:2] // [1 2]
+last := s[3:]  // [4 5]
+</code></pre>
+<p><strong>Внимание</strong>: Слайсы — это <strong>ссылки</strong> на массив!</p>
+<pre><code class="language-go">arr := [5]int{1, 2, 3, 4, 5}
+s1 := arr[0:3] // [1 2 3]
+s2 := arr[2:5] // [3 4 5]
+
+s1[2] = 99 // Изменяет arr[2]!
+
+fmt.Println(arr) // [1 2 99 4 5]
+fmt.Println(s2)  // [99 4 5]
+</code></pre>
+<hr>
+<h3 id="слайсы-и-производительность-gc-аллокации-capacity"><a class="header" href="#слайсы-и-производительность-gc-аллокации-capacity">Слайсы и производительность: GC, аллокации, capacity</a></h3>
+<h4 id="внутреннее-устройство-слайса"><a class="header" href="#внутреннее-устройство-слайса">Внутреннее устройство слайса</a></h4>
+<p>Слайс — это <strong>дескриптор</strong>, содержащий 3 поля:</p>
+<pre><code class="language-go">type slice struct {
+    ptr    *array  // Указатель на базовый массив
+    len    int     // Длина (количество элементов)
+    cap    int     // Вместимость (capacity)
+}
+</code></pre>
+<p><strong>Визуализация</strong>:</p>
+<pre><code>Слайс: s := make([]int, 3, 5)
+
+s.ptr  ──&gt;  [10][20][30][0][0]  (базовый массив)
+s.len  = 3  (можем обращаться к s[0], s[1], s[2])
+s.cap  = 5  (можем расширить до 5 без реаллокации)
+</code></pre>
+<h4 id="аллокации-и-рост-слайса"><a class="header" href="#аллокации-и-рост-слайса">Аллокации и рост слайса</a></h4>
+<p><strong>Проблема</strong>: <code>append</code> может вызывать аллокации на heap!</p>
+<pre><code class="language-go">// Плохо: множественные аллокации
+s := []int{}
+for i := 0; i &lt; 1000; i++ {
+    s = append(s, i) // Реаллокация при каждом превышении capacity!
+}
+</code></pre>
+<p><strong>Как растет capacity</strong>:</p>
+<ul>
+<li>Если <code>len &lt; 256</code>: capacity удваивается</li>
+<li>Если <code>len &gt;= 256</code>: capacity растет примерно на 25%</li>
+</ul>
+<p><strong>Хорошо</strong>: Предварительное выделение capacity</p>
+<pre><code class="language-go">// Если знаем размер заранее
+s := make([]int, 0, 1000) // len=0, cap=1000
+for i := 0; i &lt; 1000; i++ {
+    s = append(s, i) // Без реаллокаций!
+}
+
+// Или, если знаем точный размер
+s := make([]int, 1000) // len=1000, cap=1000
+for i := 0; i &lt; 1000; i++ {
+    s[i] = i // Прямое присваивание, нет append
+}
+</code></pre>
+<p><strong>Сравнение производительности</strong>:</p>
+<pre><code class="language-go">// Benchmark: без предвыделения
+func BenchmarkWithoutCapacity(b *testing.B) {
+    for i := 0; i &lt; b.N; i++ {
+        s := []int{}
+        for j := 0; j &lt; 10000; j++ {
+            s = append(s, j) // Много аллокаций
+        }
+    }
+}
+
+// Benchmark: с предвыделением
+func BenchmarkWithCapacity(b *testing.B) {
+    for i := 0; i &lt; b.N; i++ {
+        s := make([]int, 0, 10000)
+        for j := 0; j &lt; 10000; j++ {
+            s = append(s, j) // Одна аллокация
+        }
+    }
+}
+
+// Результат: разница ~10x в производительности!
+</code></pre>
+<h4 id="утечки-памяти-через-слайсы"><a class="header" href="#утечки-памяти-через-слайсы">Утечки памяти через слайсы</a></h4>
+<p><strong>Проблема 1</strong>: Подслайсы удерживают весь базовый массив</p>
+<pre><code class="language-go">func processData() []byte {
+    data := make([]byte, 1_000_000) // 1MB
+    // ... заполнение данных ...
+
+    // Возвращаем только первые 100 байт
+    return data[:100] // ❌ УТЕЧКА: 1MB остается в памяти!
+}
+</code></pre>
+<p><strong>Решение</strong>: Копировать нужную часть</p>
+<pre><code class="language-go">func processData() []byte {
+    data := make([]byte, 1_000_000)
+    // ... заполнение данных ...
+
+    result := make([]byte, 100)
+    copy(result, data[:100]) // ✅ Копируем, data может быть освобожден GC
+    return result
+}
+</code></pre>
+<p><strong>Проблема 2</strong>: “Мертвые” элементы в слайсе</p>
+<pre><code class="language-go">type BigStruct struct {
+    Data [1024]byte
+}
+
+func removeElement(slice []*BigStruct, index int) []*BigStruct {
+    // ❌ Плохо: последний элемент остается в памяти
+    return append(slice[:index], slice[index+1:]...)
+}
+
+func removeElementCorrectly(slice []*BigStruct, index int) []*BigStruct {
+    // ✅ Хорошо: очищаем ссылку
+    copy(slice[index:], slice[index+1:])
+    slice[len(slice)-1] = nil // Освобождаем ссылку для GC
+    return slice[:len(slice)-1]
+}
+</code></pre>
+<h4 id="stack-vs-heap-allocation-escape-analysis"><a class="header" href="#stack-vs-heap-allocation-escape-analysis">Stack vs Heap allocation (Escape Analysis)</a></h4>
+<p><strong>Критически важно</strong>: Не все слайсы живут на heap!</p>
+<pre><code class="language-go">// Слайс на стеке (если компилятор определит, что он не "убегает")
+func localSlice() {
+    s := []int{1, 2, 3} // Может быть на стеке
+    _ = s // простое использование
+}
+
+// Слайс на heap (возвращается из функции)
+func heapSlice() []int {
+    s := []int{1, 2, 3} // ТОЧНО на heap
+    return s             // "Убегает" из функции
+}
+</code></pre>
+<p><strong>Как проверить</strong>:</p>
+<pre><code class="language-bash">go build -gcflags="-m -l" main.go
+
+# Вывод:
+# ./main.go:11:12: []int{...} does not escape
+# ./main.go:17:12: []int{...} escapes to heap
+</code></pre>
+<blockquote>
+<p>-m
+Включает вывод диагностик оптимизатора, в том числе escape analysis (сообщения вида []int{…} escapes to heap / does not escape), инлайнинг и т.п.</p>
+</blockquote>
+<blockquote>
+<p>-l
+Отключает инлайнинг функций, чтобы анализ был «чистым»: компилятор смотрит на функции как написано в исходнике, а не на заинлайненный код.</p>
+</blockquote>
+<p><strong>Правила</strong>:</p>
+<ul>
+<li>Если слайс возвращается из функции → heap</li>
+<li>Если слайс передается в другую горутину → heap</li>
+<li>Если слайс присваивается в структуру на heap → heap</li>
+<li>Иначе → может быть на стеке (быстрее, нет GC давления)</li>
+</ul>
+<h4 id="советы-по-оптимизации-слайсов"><a class="header" href="#советы-по-оптимизации-слайсов">Советы по оптимизации слайсов</a></h4>
+<ol>
+<li>
+<p><strong>Предвыделяйте capacity</strong>, если знаете размер:</p>
+<pre><code class="language-go">s := make([]int, 0, expectedSize)
+</code></pre>
+</li>
+<li>
+<p><strong>Переиспользуйте слайсы</strong> вместо создания новых:</p>
+<pre><code class="language-go">// Плохо
+for _, item := range items {
+    temp := []int{} // Новая аллокация каждую итерацию!
+    // ...
+}
+
+// Хорошо
+temp := make([]int, 0, maxSize)
+for _, item := range items {
+    temp = temp[:0] // Переиспользуем
+    // ...
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Копируйте, когда нужен маленький подслайс</strong> большого массива</p>
+</li>
+<li>
+<p><strong>Очищайте ссылки</strong> при удалении элементов с указателями</p>
+</li>
+<li>
+<p><strong>Используйте массивы</strong> для фиксированных размеров (если размер известен):</p>
+<pre><code class="language-go">var buffer [4096]byte // На стеке, нет GC
+</code></pre>
+</li>
+</ol>
+<hr>
+<h3 id="мапы-maps--словари"><a class="header" href="#мапы-maps--словари">Мапы (Maps) — словари</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">Dictionary&lt;string, int&gt; ages = new Dictionary&lt;string, int&gt;
+{
+    { "Alice", 30 },
+    { "Bob", 25 }
+};
+
+ages["Charlie"] = 35;
+int age = ages["Alice"];
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">// Создание
+ages := map[string]int{
+    "Alice": 30,
+    "Bob":   25,
+}
+
+// Или через make
+ages := make(map[string]int)
+
+// Добавление/обновление
+ages["Charlie"] = 35
+
+// Чтение
+age := ages["Alice"]
+</code></pre>
+<p><strong>Проверка существования ключа</strong>:</p>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">if (ages.TryGetValue("Alice", out int age))
+{
+    Console.WriteLine(age);
+}
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">age, exists := ages["Alice"]
+if exists {
+    fmt.Println(age)
+}
+
+// Или короче (идиоматично)
+if age, ok := ages["Alice"]; ok {
+    fmt.Println(age)
+}
+</code></pre>
+<p><strong>Удаление</strong>:</p>
+<pre><code class="language-go">delete(ages, "Bob")
+</code></pre>
+<p><strong>Итерация</strong>:</p>
+<pre><code class="language-go">for name, age := range ages {
+    fmt.Printf("%s is %d years old\n", name, age)
+}
+
+// Только ключи
+for name := range ages {
+    fmt.Println(name)
+}
+</code></pre>
+<p><strong>Важно</strong>:</p>
+<ul>
+<li>Мапы — <strong>ссылочный тип</strong> (как слайсы)</li>
+<li>Порядок итерации <strong>не гарантирован</strong> (рандомизирован специально!)</li>
+<li><strong>Не потокобезопасны</strong> (используйте <code>sync.Map</code> для concurrent доступа)</li>
+</ul>
+<hr>
+<h3 id="мапы-и-производительность-gc-аллокации-оптимизация"><a class="header" href="#мапы-и-производительность-gc-аллокации-оптимизация">Мапы и производительность: GC, аллокации, оптимизация</a></h3>
+<h4 id="внутреннее-устройство-мапы"><a class="header" href="#внутреннее-устройство-мапы">Внутреннее устройство мапы</a></h4>
+<p>Мапа в Go реализована как <strong>hash table</strong> с buckets:</p>
+<pre><code class="language-go">type hmap struct {
+    count     int    // Количество элементов
+    B         uint8  // log₂ количества buckets
+    buckets   *[]bucket
+    // ... другие поля
+}
+</code></pre>
+<p><strong>Важно</strong>: Мапа аллоцируется на <strong>heap</strong> (всегда!).</p>
+<h4 id="предвыделение-capacity-для-мап"><a class="header" href="#предвыделение-capacity-для-мап">Предвыделение capacity для мап</a></h4>
+<p>Как и слайсы, мапы можно создавать с предварительным размером:</p>
+<pre><code class="language-go">// Плохо: множественные реаллокации
+m := make(map[string]int)
+for i := 0; i &lt; 10000; i++ {
+    m[fmt.Sprintf("key%d", i)] = i
+}
+
+// Хорошо: одна аллокация
+m := make(map[string]int, 10000)
+for i := 0; i &lt; 10000; i++ {
+    m[fmt.Sprintf("key%d", i)] = i
+}
+</code></pre>
+<p><strong>Рост мапы</strong>:</p>
+<ul>
+<li>Начальный размер: 8 buckets</li>
+<li>При заполнении ~6.5 элементов на bucket → удваивание buckets</li>
+<li>Процесс роста — <strong>дорогая операция</strong> (rehashing)</li>
+</ul>
+<h4 id="удаление-и-память"><a class="header" href="#удаление-и-память">Удаление и память</a></h4>
+<p><strong>Проблема</strong>: <code>delete</code> не освобождает память сразу!</p>
+<pre><code class="language-go">m := make(map[string]*BigStruct)
+for i := 0; i &lt; 1_000_000; i++ {
+    m[fmt.Sprintf("key%d", i)] = &amp;BigStruct{...}
+}
+
+// Удаляем все элементы
+for k := range m {
+    delete(m, k) // Buckets остаются аллоцированы!
+}
+
+// Мапа пустая, но память не освобождена полностью
+</code></pre>
+<p><strong>Решение</strong>: Создать новую мапу</p>
+<pre><code class="language-go">// Если нужно очистить и переиспользовать
+m = make(map[string]*BigStruct) // Старая мапа будет собрана GC
+</code></pre>
+<p><strong>Или</strong> использовать <code>clear</code> (Go 1.21+):</p>
+<pre><code class="language-go">clear(m) // Очищает мапу, но сохраняет buckets
+</code></pre>
+<h4 id="ключи-и-значения-влияние-на-производительность"><a class="header" href="#ключи-и-значения-влияние-на-производительность">Ключи и значения: влияние на производительность</a></h4>
+<p><strong>Ключи мапы</strong>:</p>
+<ul>
+<li>Должны быть <strong>comparable</strong> (int, string, struct без слайсов/мап/функций)</li>
+<li>String keys — дешевле, если строки уже интернированы</li>
+<li>Struct keys — можно, но каждое поле участвует в хешировании</li>
+</ul>
+<pre><code class="language-go">// Плохо: составной ключ через строку (аллокация!)
+key := fmt.Sprintf("%d:%s", id, name) // Создает новую строку каждый раз
+m[key] = value
+
+// Хорошо: struct ключ (без аллокаций)
+type Key struct {
+    ID   int
+    Name string
+}
+m[Key{id, name}] = value // Struct остается на стеке
+</code></pre>
+<p><strong>Значения мапы с указателями</strong>:</p>
+<pre><code class="language-go">// Вариант 1: Мапа значений
+m := make(map[int]BigStruct) // Копирование при вставке/извлечении
+
+// Вариант 2: Мапа указателей
+m := make(map[int]*BigStruct) // Хранение указателей (меньше копирований)
+</code></pre>
+<p><strong>Когда использовать указатели</strong>:</p>
+<ul>
+<li>Большие структуры (&gt; 100 байт)</li>
+<li>Нужна мутация значений в мапе</li>
+<li>Значения используются за пределами мапы</li>
+</ul>
+<p><strong>Но</strong>: Больше указателей = больше работы для GC (scan фаза)</p>
+<h4 id="конкурентный-доступ-к-мапам"><a class="header" href="#конкурентный-доступ-к-мапам">Конкурентный доступ к мапам</a></h4>
+<p><strong>Проблема</strong>: Обычные мапы <strong>не потокобезопасны</strong>!</p>
+<pre><code class="language-go">m := make(map[string]int)
+
+// ❌ Race condition!
+go func() {
+    m["key"] = 1
+}()
+go func() {
+    m["key"] = 2
+}()
+</code></pre>
+<p><strong>Решение 1</strong>: <code>sync.Mutex</code></p>
+<pre><code class="language-go">type SafeMap struct {
+    mu sync.RWMutex
+    m  map[string]int
+}
+
+func (sm *SafeMap) Set(key string, value int) {
+    sm.mu.Lock()
+    defer sm.mu.Unlock()
+    sm.m[key] = value
+}
+
+func (sm *SafeMap) Get(key string) (int, bool) {
+    sm.mu.RLock()
+    defer sm.mu.RUnlock()
+    val, ok := sm.m[key]
+    return val, ok
+}
+</code></pre>
+<p><strong>Решение 2</strong>: <code>sync.Map</code> (для специфичных случаев)</p>
+<pre><code class="language-go">var m sync.Map
+
+m.Store("key", 42)
+value, ok := m.Load("key")
+m.Delete("key")
+
+m.Range(func(key, value interface{}) bool {
+    fmt.Println(key, value)
+    return true // continue iteration
+})
+</code></pre>
+<p><strong>Когда использовать <code>sync.Map</code></strong>:</p>
+<ul>
+<li>Ключи записываются раз, читаются много раз</li>
+<li>Множество горутин читают/пишут разные ключи</li>
+<li>Нет нужды в типобезопасности (interface{})</li>
+</ul>
+<p><strong>Когда НЕ использовать <code>sync.Map</code></strong>:</p>
+<ul>
+<li>Частые записи одних и тех же ключей</li>
+<li>Нужна типобезопасность</li>
+<li>Большинство операций — чтение (используйте RWMutex)</li>
+</ul>
+<h4 id="советы-по-оптимизации-мап"><a class="header" href="#советы-по-оптимизации-мап">Советы по оптимизации мап</a></h4>
+<ol>
+<li>
+<p><strong>Предвыделяйте размер</strong>, если известен:</p>
+<pre><code class="language-go">m := make(map[string]int, expectedSize)
+</code></pre>
+</li>
+<li>
+<p><strong>Используйте примитивные ключи</strong> (int, string) вместо составных:</p>
+<pre><code class="language-go">// Вместо map[string]T используйте числовой ID
+m := make(map[int]T)
+</code></pre>
+</li>
+<li>
+<p><strong>Минимизируйте аллокации строковых ключей</strong>:</p>
+<pre><code class="language-go">// Плохо
+for i := 0; i &lt; n; i++ {
+    key := fmt.Sprintf("key%d", i) // Новая строка каждый раз
+    m[key] = i
+}
+
+// Лучше
+var buf strings.Builder
+for i := 0; i &lt; n; i++ {
+    buf.Reset()
+    buf.WriteString("key")
+    buf.WriteString(strconv.Itoa(i))
+    m[buf.String()] = i
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Очищайте большие мапы</strong> созданием новых:</p>
+<pre><code class="language-go">m = make(map[K]V) // Вместо множественных delete
+</code></pre>
+</li>
+<li>
+<p><strong>Для read-heavy workload</strong> используйте <code>sync.RWMutex</code> вместо <code>sync.Map</code></p>
+</li>
+<li>
+<p><strong>Переиспользуйте мапы</strong> в пулах (<code>sync.Pool</code>) для hot paths:</p>
+<pre><code class="language-go">var mapPool = sync.Pool{
+    New: func() interface{} {
+        return make(map[string]int)
+    },
+}
+
+m := mapPool.Get().(map[string]int)
+// ... использование ...
+clear(m) // Go 1.21+
+mapPool.Put(m)
+</code></pre>
+</li>
+</ol>
+<hr>
+<h3 id="пакеты-slices-maps-и-cmp-go-121"><a class="header" href="#пакеты-slices-maps-и-cmp-go-121">Пакеты slices, maps и cmp (Go 1.21+)</a></h3>
+<p>До Go 1.21 любая операция с коллекциями требовала ручных циклов. Для C# разработчиков, привыкших к LINQ, это было болезненно. Пакеты <code>slices</code> и <code>maps</code> решают эту проблему.</p>
+<h4 id="пакет-slices"><a class="header" href="#пакет-slices">Пакет slices</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C# LINQ</th><th>Go slices</th><th>Описание</th></tr>
+</thead>
+<tbody>
+<tr><td><code>.Contains(x)</code></td><td><code>slices.Contains(s, x)</code></td><td>Проверка наличия элемента</td></tr>
+<tr><td><code>.Any(predicate)</code></td><td><code>slices.ContainsFunc(s, fn)</code></td><td>Есть ли элемент по условию</td></tr>
+<tr><td><code>.OrderBy()</code></td><td><code>slices.Sort(s)</code></td><td>Сортировка (in-place!)</td></tr>
+<tr><td><code>.OrderByDescending()</code></td><td><code>slices.SortFunc(s, cmp)</code></td><td>Сортировка с компаратором</td></tr>
+<tr><td><code>.Reverse()</code></td><td><code>slices.Reverse(s)</code></td><td>Разворот (in-place!)</td></tr>
+<tr><td><code>.Distinct()</code></td><td><code>slices.Compact(s)</code></td><td>Удаление последовательных дублей</td></tr>
+<tr><td>Clone()</td><td><code>slices.Clone(s)</code></td><td>Копирование slice</td></tr>
+<tr><td><code>.Max()</code></td><td><code>slices.Max(s)</code></td><td>Максимальный элемент</td></tr>
+<tr><td><code>.Min()</code></td><td><code>slices.Min(s)</code></td><td>Минимальный элемент</td></tr>
+<tr><td><code>.SequenceEqual()</code></td><td><code>slices.Equal(s1, s2)</code></td><td>Сравнение slices</td></tr>
+<tr><td><code>.Take(n)</code></td><td><code>s[:n]</code></td><td>Взять первые N (нативный синтаксис)</td></tr>
+<tr><td><code>.Skip(n)</code></td><td><code>s[n:]</code></td><td>Пропустить первые N</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: Многие функции <code>slices</code> работают <strong>in-place</strong> (изменяют исходный slice). В LINQ методы всегда возвращают новую коллекцию.</p>
+</blockquote>
+<pre><code class="language-go">import "slices"
+
+numbers := []int{3, 1, 4, 1, 5, 9, 2, 6}
+
+// Поиск
+slices.Contains(numbers, 5)                    // true
+slices.Index(numbers, 4)                       // 2
+slices.IndexFunc(numbers, func(n int) bool {   // индекс первого &gt; 4
+    return n &gt; 4
+})
+
+// Сортировка (in-place!)
+slices.Sort(numbers)                           // [1, 1, 2, 3, 4, 5, 6, 9]
+slices.SortFunc(numbers, func(a, b int) int {
+    return b - a  // По убыванию
+})
+
+// Бинарный поиск (для отсортированных!)
+idx, found := slices.BinarySearch(numbers, 5)
+
+// Модификация
+slices.Reverse(numbers)                        // In-place разворот
+numbers = slices.Insert(numbers, 2, 100)       // Вставить 100 на позицию 2
+numbers = slices.Delete(numbers, 2, 4)         // Удалить элементы [2:4)
+
+// Удаление последовательных дубликатов (требует сортировки!)
+sorted := []int{1, 1, 2, 2, 2, 3}
+unique := slices.Compact(sorted)               // [1, 2, 3]
+
+// Копия и сравнение
+copy2 := slices.Clone(numbers)
+slices.Equal(slice1, slice2)                   // Поэлементное сравнение
+
+// Min/Max
+slices.Min(numbers)
+slices.Max(numbers)
+</code></pre>
+<blockquote>
+<p>💡 <strong>Совет</strong>: Для Filter, Map, Reduce — напишите свои generic-функции или используйте библиотеку <code>samber/lo</code>.</p>
+</blockquote>
+<h4 id="пакет-maps"><a class="header" href="#пакет-maps">Пакет maps</a></h4>
+<pre><code class="language-go">import "maps"
+
+users := map[string]User{
+    "alice": {Name: "Alice", Age: 30},
+    "bob":   {Name: "Bob", Age: 25},
+}
+
+// Clone — полная копия map
+usersCopy := maps.Clone(users)
+
+// Copy — копирование в существующую map
+target := make(map[string]User)
+maps.Copy(target, users)
+
+// Equal — сравнение maps
+maps.Equal(map1, map2)
+
+// DeleteFunc — удаление по условию
+maps.DeleteFunc(users, func(key string, user User) bool {
+    return user.Age &lt; 18
+})
+
+// Go 1.23+: итераторы для map
+for key := range maps.Keys(users) {
+    fmt.Println(key)
+}
+
+// Преобразование iterator в slice
+keys := slices.Collect(maps.Keys(users))
+values := slices.Collect(maps.Values(users))
+
+// Сортированные ключи
+keys = slices.Sorted(maps.Keys(users))
+</code></pre>
+<h4 id="пакет-cmp"><a class="header" href="#пакет-cmp">Пакет cmp</a></h4>
+<pre><code class="language-go">import "cmp"
+
+// cmp.Less — безопасное сравнение (обрабатывает NaN для float)
+cmp.Less(1, 2)        // true
+cmp.Compare(1, 2)     // -1, Compare(2, 2)=0, Compare(3, 2)=1
+
+// cmp.Or — первое ненулевое значение (Go 1.22+)
+// Аналог: name ?? config.Name ?? "default" в C#
+name := cmp.Or(os.Getenv("NAME"), config.Name, "default")
+port := cmp.Or(os.Getenv("PORT"), "8080")
+</code></pre>
+<blockquote>
+<p>💡 <strong>Важно</strong>: <code>cmp.Or</code> оценивает все аргументы сразу (не lazy). Если нужна lazy evaluation — используйте обычные if-цепочки.</p>
+</blockquote>
+<hr>
+<h3 id="современные-встроенные-функции-go-121"><a class="header" href="#современные-встроенные-функции-go-121">Современные встроенные функции (Go 1.21+)</a></h3>
+<h4 id="clear--очистка-коллекций"><a class="header" href="#clear--очистка-коллекций">clear() — очистка коллекций</a></h4>
+<pre><code class="language-go">// Очистка map (очищает, но сохраняет buckets для переиспользования)
+m := map[string]int{"a": 1, "b": 2, "c": 3}
+clear(m)
+fmt.Println(len(m))  // 0
+
+// Очистка slice (заполняет zero values, длина не меняется!)
+s := []int{1, 2, 3, 4, 5}
+clear(s)
+fmt.Println(s)    // [0 0 0 0 0]
+fmt.Println(len(s))  // 5 — длина сохраняется!
+
+// Для полной очистки slice используйте s[:0]
+s = s[:0]
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Внимание</strong>: <code>clear(slice)</code> не меняет длину — только обнуляет элементы. Для очистки slice с нулевой длиной используйте <code>s = s[:0]</code>.</p>
+</blockquote>
+<h4 id="minmax--встроенные-generic-функции"><a class="header" href="#minmax--встроенные-generic-функции">min/max — встроенные generic функции</a></h4>
+<pre><code class="language-go">// Go 1.21+: встроенные generic функции
+x := max(10, 20)             // 20
+y := min(3.14, 2.71)         // 2.71
+z := max("apple", "banana")  // "banana" (лексикографически)
+
+// Множество аргументов
+biggest := max(1, 5, 3, 9, 2)   // 9
+smallest := min(1, 5, 3, 9, 2)  // 1
+
+// Работают с любыми cmp.Ordered типами
+type MyInt int
+a, b := MyInt(10), MyInt(20)
+result := max(a, b)  // MyInt(20)
+</code></pre>
+<p><strong>Сравнение с C#</strong>:</p>
+<pre><code class="language-csharp">// C#: Math.Max, Math.Min (только один тип за раз)
+int x = Math.Max(10, 20);
+// C# 9+: Math.Clamp, но нет multi-arg max
+</code></pre>
+<hr>
+<h3 id="iterators-go-123"><a class="header" href="#iterators-go-123">Iterators (Go 1.23)</a></h3>
+<p>Go 1.23 добавил поддержку user-defined iterators через <code>range over functions</code>:</p>
+<pre><code class="language-go">import "iter"
+
+// Iterator — функция специального вида:
+// iter.Seq[V]   = func(yield func(V) bool)
+// iter.Seq2[K,V] = func(yield func(K, V) bool)
+
+// Пример: итератор по числам Фибоначчи
+func Fibonacci(n int) iter.Seq[int] {
+    return func(yield func(int) bool) {
+        a, b := 0, 1
+        for i := 0; i &lt; n; i++ {
+            if !yield(a) {
+                return  // break в range-цикле
+            }
+            a, b = b, a+b
+        }
+    }
+}
+
+// Использование — как обычный range
+for num := range Fibonacci(10) {
+    fmt.Println(num)  // 0, 1, 1, 2, 3, 5, 8, 13, 21, 34
+}
+
+// Преобразование в slice
+fibs := slices.Collect(Fibonacci(10))
+</code></pre>
+<p><strong>Сравнение с C# IEnumerable:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C#</th><th>Go 1.23</th></tr>
+</thead>
+<tbody>
+<tr><td><code>IEnumerable&lt;T&gt;</code></td><td><code>iter.Seq[T]</code></td></tr>
+<tr><td><code>IEnumerator&lt;T&gt;</code></td><td><code>func(yield func(T) bool)</code></td></tr>
+<tr><td><code>yield return x</code></td><td><code>yield(x)</code></td></tr>
+<tr><td><code>yield break</code></td><td><code>return</code></td></tr>
+<tr><td><code>break</code> в foreach</td><td><code>yield</code> вернул <code>false</code></td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-csharp">// C# iterator
+public static IEnumerable&lt;int&gt; Fibonacci(int n)
+{
+    int a = 0, b = 1;
+    for (int i = 0; i &lt; n; i++)
+    {
+        yield return a;
+        (a, b) = (b, a + b);
+    }
+}
+</code></pre>
+<hr>
+<h3 id="generic-type-aliases-go-124"><a class="header" href="#generic-type-aliases-go-124">Generic type aliases (Go 1.24)</a></h3>
+<p>Go 1.24 добавил <strong>полноценные generic type aliases</strong> — псевдонимы для параметризованных типов. Аналог <code>using</code> с дженериками в C#.</p>
+<p><strong>C#:</strong></p>
+<pre><code class="language-csharp">// C# — using alias directive (C# 12)
+using StringMap&lt;V&gt; = Dictionary&lt;string, V&gt;;
+using Point = (int X, int Y);  // tuple alias
+
+var m = new StringMap&lt;int&gt;();
+m["key"] = 42;
+</code></pre>
+<p><strong>Go 1.24:</strong></p>
+<pre><code class="language-go">// Обычный alias (Go 1.0+)
+type MyString = string // Просто псевдоним, не новый тип
+
+// Generic alias (Go 1.24) — псевдоним для параметризованного типа
+type StringMap[V any] = map[string]V
+
+// Использование
+var m StringMap[int]
+m = make(StringMap[int])
+m["key"] = 42
+
+// Alias для сложного generic типа
+type Result[T any] = struct {
+    Value T
+    Err   error
+}
+
+// Псевдоним без указания параметров — создаёт конкретный тип
+type StringIntMap = map[string]int // Эквивалентно Go 1.0 alias
+</code></pre>
+<p><strong>Практическое применение:</strong></p>
+<pre><code class="language-go">// Упрощение сигнатур функций
+type Predicate[T any] = func(T) bool
+type Transform[T, U any] = func(T) U
+
+func Filter[T any](slice []T, pred Predicate[T]) []T {
+    var result []T
+    for _, v := range slice {
+        if pred(v) {
+            result = append(result, v)
+        }
+    }
+    return result
+}
+
+func Map[T, U any](slice []T, transform Transform[T, U]) []U {
+    result := make([]U, len(slice))
+    for i, v := range slice {
+        result[i] = transform(v)
+    }
+    return result
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Generic type aliases в Go 1.24 позволяют создавать «читаемые» псевдонимы для сложных типов, как <code>using</code> directive в C# 12. Важно: <code>type MyMap[K, V any] = map[K]V</code> — это alias (тот же тип), а не новый тип.</p>
+</blockquote>
+<hr>
+<h3 id="stringslines-и-stringssplitseq-go-124"><a class="header" href="#stringslines-и-stringssplitseq-go-124">strings.Lines и strings.SplitSeq (Go 1.24)</a></h3>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Аналог <code>string.Split()</code> и ленивых LINQ методов — возвращают итератор вместо среза.</p>
+</blockquote>
+<p>Go 1.24 добавил <strong>ленивые итераторы</strong> для работы со строками — возвращают <code>iter.Seq[string]</code> вместо <code>[]string</code>:</p>
+<pre><code class="language-go">import (
+    "strings"
+    "fmt"
+)
+
+// strings.Lines — итерирует строки текста (lazy evaluation)
+text := "первая строка\nвторая строка\nтретья строка"
+
+for line := range strings.Lines(text) {
+    fmt.Println(line)
+}
+// → "первая строка\n"
+// → "вторая строка\n"
+// → "третья строка"
+
+// strings.SplitSeq — lazy версия strings.Split
+csv := "alice,bob,charlie,dave"
+
+for name := range strings.SplitSeq(csv, ",") {
+    fmt.Println(name)
+}
+// → "alice"
+// → "bob"
+// → "charlie"
+// → "dave"
+</code></pre>
+<p><strong>Преимущество над strings.Split:</strong> нет аллокации промежуточного среза:</p>
+<pre><code class="language-go">// До Go 1.24: всегда аллоцирует []string
+parts := strings.Split(bigText, "\n") // Аллокация!
+for _, line := range parts {
+    process(line)
+}
+
+// Go 1.24: ленивая обработка, нет промежуточного среза
+for line := range strings.Lines(bigText) { // Нет аллокации!
+    process(line)
+}
+// Особенно важно для больших файлов/строк
+</code></pre>
+<p><strong>Сравнение с C# LINQ:</strong></p>
+<pre><code class="language-csharp">// C# — ленивая обработка строк с LINQ
+var lines = File.ReadLines("data.txt") // IEnumerable&lt;string&gt;, lazy
+    .Where(l =&gt; l.StartsWith("ERROR"))
+    .Take(10);
+
+foreach (var line in lines) { /* ... */ }
+</code></pre>
+<pre><code class="language-go">// Go 1.24 — аналогичная ленивая обработка
+for line := range strings.Lines(bigText) {
+    if strings.HasPrefix(line, "ERROR") {
+        process(line)
+    }
+}
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Функция</th><th>Возвращает</th><th>Аллокация</th><th>Применение</th></tr>
+</thead>
+<tbody>
+<tr><td><code>strings.Split()</code></td><td><code>[]string</code></td><td>Да (весь срез)</td><td>Когда нужен произвольный доступ</td></tr>
+<tr><td><code>strings.SplitSeq()</code></td><td><code>iter.Seq[string]</code></td><td>Нет</td><td>Последовательная обработка</td></tr>
+<tr><td><code>strings.Lines()</code></td><td><code>iter.Seq[string]</code></td><td>Нет</td><td>Построчная обработка текста</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h3 id="строки-и-производительность"><a class="header" href="#строки-и-производительность">Строки и производительность</a></h3>
+<h4 id="строки-иммутабельны-но-это-не-всегда-дешево"><a class="header" href="#строки-иммутабельны-но-это-не-всегда-дешево">Строки иммутабельны, но это не всегда дешево</a></h4>
+<pre><code class="language-go">// ❌ Плохо: O(n²) сложность из-за аллокаций
+result := ""
+for i := 0; i &lt; 1000; i++ {
+    result += "x" // Каждый раз создается новая строка!
+}
+
+// ✅ Хорошо: O(n) с strings.Builder
+var builder strings.Builder
+builder.Grow(1000) // Предвыделяем capacity
+for i := 0; i &lt; 1000; i++ {
+    builder.WriteString("x")
+}
+result := builder.String()
+</code></pre>
+<p><strong>strings.Builder</strong> — аналог <code>StringBuilder</code> в C#:</p>
+<ul>
+<li>Минимизирует аллокации</li>
+<li>Можно предвыделить capacity через <code>Grow()</code></li>
+<li><strong>Не потокобезопасен</strong></li>
+</ul>
+<h4 id="конвертация-byte--string"><a class="header" href="#конвертация-byte--string">Конвертация []byte ↔ string</a></h4>
+<p><strong>Проблема</strong>: Конвертация создает копию!</p>
+<pre><code class="language-go">data := []byte("Hello, World!")
+s := string(data) // Копирование всех байт!
+
+str := "Hello"
+b := []byte(str) // Снова копирование!
+</code></pre>
+<p><strong>Оптимизация</strong> (небезопасная, используйте с осторожностью):</p>
+<pre><code class="language-go">import "unsafe"
+
+// []byte -&gt; string без копирования (read-only!)
+func BytesToString(b []byte) string {
+    return unsafe.String(unsafe.SliceData(b), len(b))
+}
+
+// string -&gt; []byte без копирования (НЕ модифицируйте!)
+func StringToBytes(s string) []byte {
+    return unsafe.Slice(unsafe.StringData(s), len(s))
+}
+</code></pre>
+<p><strong>Когда использовать</strong>: Hot paths с гарантией immutability.</p>
+<hr>
+<h2 id="3-управляющие-конструкции"><a class="header" href="#3-управляющие-конструкции">3. Управляющие конструкции</a></h2>
+<h3 id="ifelse"><a class="header" href="#ifelse">If/Else</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">if (x &gt; 0)
+{
+    Console.WriteLine("Positive");
+}
+else if (x &lt; 0)
+{
+    Console.WriteLine("Negative");
+}
+else
+{
+    Console.WriteLine("Zero");
+}
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">if x &gt; 0 {
+    fmt.Println("Positive")
+} else if x &lt; 0 {
+    fmt.Println("Negative")
+} else {
+    fmt.Println("Zero")
+}
+</code></pre>
+<p><strong>Особенность Go</strong>: можно инициализировать переменную прямо в <code>if</code>:</p>
+<pre><code class="language-go">if age, ok := ages["Alice"]; ok {
+    fmt.Printf("Alice is %d years old\n", age)
+}
+// age доступна только внутри if-блока
+</code></pre>
+<p><strong>Важно</strong>: Скобки вокруг условия <strong>не нужны</strong> (и не рекомендуются).</p>
+<hr>
+<h3 id="switch"><a class="header" href="#switch">Switch</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">switch (day)
+{
+    case "Monday":
+        Console.WriteLine("Start of week");
+        break;
+    case "Friday":
+        Console.WriteLine("End of week");
+        break;
+    default:
+        Console.WriteLine("Midweek");
+        break;
+}
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">switch day {
+case "Monday":
+    fmt.Println("Start of week")
+case "Friday":
+    fmt.Println("End of week")
+default:
+    fmt.Println("Midweek")
+}
+</code></pre>
+<p><strong>Ключевые отличия</strong>:</p>
+<ul>
+<li><strong>Нет <code>break</code></strong> — автоматический выход из case (!)</li>
+<li>Для продолжения используйте <code>fallthrough</code></li>
+<li>Можно использовать без переменной (как цепочка if-else)</li>
+</ul>
+<p><strong>Продвинутые примеры</strong>:</p>
+<pre><code class="language-go">// Множественные значения в case
+switch day {
+case "Saturday", "Sunday":
+    fmt.Println("Weekend!")
+}
+
+// Switch без переменной
+switch {
+case age &lt; 18:
+    fmt.Println("Minor")
+case age &lt; 65:
+    fmt.Println("Adult")
+default:
+    fmt.Println("Senior")
+}
+
+// С инициализацией
+switch age := getAge(); {
+case age &lt; 18:
+    fmt.Println("Minor")
+default:
+    fmt.Println("Adult")
+}
+
+// Type switch (проверка типа интерфейса)
+switch v := i.(type) {
+case int:
+    fmt.Printf("Integer: %d\n", v)
+case string:
+    fmt.Printf("String: %s\n", v)
+default:
+    fmt.Println("Unknown type")
+}
+</code></pre>
+<hr>
+<h3 id="циклы"><a class="header" href="#циклы">Циклы</a></h3>
+<p><strong>В Go есть только <code>for</code>!</strong> Нет <code>while</code>, <code>do-while</code>, <code>foreach</code>.</p>
+<h4 id="классический-цикл"><a class="header" href="#классический-цикл">Классический цикл</a></h4>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">for (int i = 0; i &lt; 10; i++)
+{
+    Console.WriteLine(i);
+}
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">for i := 0; i &lt; 10; i++ {
+    fmt.Println(i)
+}
+</code></pre>
+<h4 id="while-подобный-цикл"><a class="header" href="#while-подобный-цикл">While-подобный цикл</a></h4>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">while (condition)
+{
+    // code
+}
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">for condition {
+    // code
+}
+</code></pre>
+<h4 id="бесконечный-цикл"><a class="header" href="#бесконечный-цикл">Бесконечный цикл</a></h4>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">while (true)
+{
+    // code
+}
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">for {
+    // code
+}
+</code></pre>
+<h4 id="foreach-подобный-цикл-range"><a class="header" href="#foreach-подобный-цикл-range">Foreach-подобный цикл (range)</a></h4>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">foreach (var item in items)
+{
+    Console.WriteLine(item);
+}
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">for index, value := range items {
+    fmt.Println(index, value)
+}
+
+// Если индекс не нужен
+for _, value := range items {
+    fmt.Println(value)
+}
+
+// Если нужен только индекс
+for index := range items {
+    fmt.Println(index)
+}
+</code></pre>
+<p><strong>Range для разных типов</strong>:</p>
+<pre><code class="language-go">// Слайс/массив
+nums := []int{10, 20, 30}
+for i, v := range nums {
+    fmt.Printf("Index: %d, Value: %d\n", i, v)
+}
+
+// Мапа
+ages := map[string]int{"Alice": 30, "Bob": 25}
+for name, age := range ages {
+    fmt.Printf("%s: %d\n", name, age)
+}
+
+// Строка (итерация по рунам!)
+for i, r := range "Hello" {
+    fmt.Printf("%d: %c\n", i, r)
+}
+
+// Канал (будем изучать позже)
+for value := range channel {
+    fmt.Println(value)
+}
+</code></pre>
+<h4 id="range-over-integers-go-122"><a class="header" href="#range-over-integers-go-122">Range over integers (Go 1.22)</a></h4>
+<p>Одна из самых простых, но долгожданных возможностей:</p>
+<pre><code class="language-go">// До Go 1.22 — классический C-style цикл
+for i := 0; i &lt; 10; i++ {
+    fmt.Println(i)
+}
+
+// Go 1.22+
+for i := range 10 {
+    fmt.Println(i)  // 0, 1, 2, ..., 9
+}
+
+// Когда индекс не нужен
+for range 5 {
+    doSomething()  // Выполнится 5 раз
+}
+</code></pre>
+<p><strong>Сравнение с C#</strong>:</p>
+<pre><code class="language-csharp">// C#: Enumerable.Range(0, 10)
+foreach (var i in Enumerable.Range(0, 10))
+    Console.WriteLine(i);
+</code></pre>
+<p><strong>Ограничения</strong>: <code>range N</code> всегда начинается с 0. Для произвольного диапазона используйте классический цикл: <code>for i := 5; i &lt; 10; i++</code>.</p>
+<p><strong>Типичные use cases:</strong></p>
+<pre><code class="language-go">// Повторить действие N раз
+for range 3 {
+    retry()
+}
+
+// Инициализация slice
+items := make([]Item, 10)
+for i := range 10 {
+    items[i] = Item{ID: i}
+}
+
+// Генерация тестовых данных
+var testUsers []User
+for i := range 100 {
+    testUsers = append(testUsers, User{ID: i, Name: fmt.Sprintf("User %d", i)})
+}
+</code></pre>
+<h4 id="break-continue"><a class="header" href="#break-continue">Break, Continue</a></h4>
+<p>Работают так же, как в C#:</p>
+<pre><code class="language-go">for i := 0; i &lt; 10; i++ {
+    if i == 5 {
+        break // Выход из цикла
+    }
+    if i%2 == 0 {
+        continue // Переход к следующей итерации
+    }
+    fmt.Println(i)
+}
+</code></pre>
+<p><strong>Метки</strong> (для вложенных циклов):</p>
+<pre><code class="language-go">outer:
+for i := 0; i &lt; 3; i++ {
+    for j := 0; j &lt; 3; j++ {
+        if i == j {
+            break outer // Выход из ВНЕШНЕГО цикла
+        }
+        fmt.Println(i, j)
+    }
+}
+</code></pre>
+<hr>
+<h2 id="4-функции"><a class="header" href="#4-функции">4. Функции</a></h2>
+<h3 id="объявление-функции"><a class="header" href="#объявление-функции">Объявление функции</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">public int Add(int a, int b)
+{
+    return a + b;
+}
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">func Add(a int, b int) int {
+    return a + b
+}
+
+// Если параметры одного типа, можно сократить
+func Add(a, b int) int {
+    return a + b
+}
+</code></pre>
+<p><strong>Видимость</strong> в Go:</p>
+<ul>
+<li>Заглавная буква = <strong>public</strong> (экспортируется из пакета)</li>
+<li>Строчная буква = <strong>private</strong> (доступна только внутри пакета)</li>
+</ul>
+<pre><code class="language-go">func Add(a, b int) int { ... }       // Public
+func calculateSum(a, b int) int { ... } // Private
+</code></pre>
+<hr>
+<h3 id="множественные-возвращаемые-значения"><a class="header" href="#множественные-возвращаемые-значения">Множественные возвращаемые значения</a></h3>
+<p><strong>C# (через Tuple)</strong>:</p>
+<pre><code class="language-csharp">public (int sum, int product) Calculate(int a, int b)
+{
+    return (a + b, a * b);
+}
+
+var (sum, product) = Calculate(3, 4);
+</code></pre>
+<p><strong>Go</strong> (идиоматично!):</p>
+<pre><code class="language-go">func Calculate(a, b int) (int, int) {
+    return a + b, a * b
+}
+
+sum, product := Calculate(3, 4)
+</code></pre>
+<p><strong>Именованные возвращаемые значения</strong>:</p>
+<pre><code class="language-go">func Calculate(a, b int) (sum int, product int) {
+    sum = a + b
+    product = a * b
+    return // "Naked return" — возвращает sum и product
+}
+</code></pre>
+<p><strong>Предупреждение</strong>: Naked return ухудшает читаемость, используйте с осторожностью.</p>
+<hr>
+<h3 id="обработка-ошибок-error-handling"><a class="header" href="#обработка-ошибок-error-handling">Обработка ошибок (Error handling)</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">public int Divide(int a, int b)
+{
+    if (b == 0)
+        throw new DivideByZeroException();
+    return a / b;
+}
+
+try
+{
+    int result = Divide(10, 0);
+}
+catch (DivideByZeroException ex)
+{
+    Console.WriteLine(ex.Message);
+}
+</code></pre>
+<p><strong>Go</strong> (error как значение):</p>
+<pre><code class="language-go">func Divide(a, b int) (int, error) {
+    if b == 0 {
+        return 0, errors.New("division by zero")
+    }
+    return a / b, nil
+}
+
+result, err := Divide(10, 0)
+if err != nil {
+    fmt.Println("Error:", err)
+    return
+}
+fmt.Println(result)
+</code></pre>
+<p><strong>Идиома Go</strong>: Проверять ошибки сразу после вызова функции.</p>
+<pre><code class="language-go">result, err := SomeFunction()
+if err != nil {
+    // Обработка ошибки
+    return err
+}
+// Работа с result
+</code></pre>
+<p><strong>Подробнее об ошибках</strong> — в следующих разделах.</p>
+<hr>
+<h3 id="variadic-функции-переменное-количество-аргументов"><a class="header" href="#variadic-функции-переменное-количество-аргументов">Variadic функции (переменное количество аргументов)</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">public int Sum(params int[] numbers)
+{
+    return numbers.Sum();
+}
+
+int total = Sum(1, 2, 3, 4, 5);
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">func Sum(numbers ...int) int {
+    total := 0
+    for _, num := range numbers {
+        total += num
+    }
+    return total
+}
+
+total := Sum(1, 2, 3, 4, 5)
+
+// Или передать слайс
+nums := []int{1, 2, 3, 4, 5}
+total := Sum(nums...) // ... "распаковывает" слайс
+</code></pre>
+<hr>
+<h3 id="анонимные-функции-и-замыкания"><a class="header" href="#анонимные-функции-и-замыкания">Анонимные функции и замыкания</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">Func&lt;int, int&gt; double = x =&gt; x * 2;
+Console.WriteLine(double(5)); // 10
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">double := func(x int) int {
+    return x * 2
+}
+fmt.Println(double(5)) // 10
+</code></pre>
+<p><strong>Замыкания</strong>:</p>
+<pre><code class="language-go">func counter() func() int {
+    count := 0
+    return func() int {
+        count++
+        return count
+    }
+}
+
+c := counter()
+fmt.Println(c()) // 1
+fmt.Println(c()) // 2
+fmt.Println(c()) // 3
+</code></pre>
+<hr>
+<h3 id="функции-как-параметры"><a class="header" href="#функции-как-параметры">Функции как параметры</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">public void Apply(int[] numbers, Func&lt;int, int&gt; transform)
+{
+    for (int i = 0; i &lt; numbers.Length; i++)
+    {
+        numbers[i] = transform(numbers[i]);
+    }
+}
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">func Apply(numbers []int, transform func(int) int) {
+    for i, num := range numbers {
+        numbers[i] = transform(num)
+    }
+}
+
+// Использование
+nums := []int{1, 2, 3, 4}
+Apply(nums, func(x int) int {
+    return x * 2
+})
+fmt.Println(nums) // [2 4 6 8]
+</code></pre>
+<hr>
+<h2 id="5-defer-отложенное-выполнение"><a class="header" href="#5-defer-отложенное-выполнение">5. Defer (отложенное выполнение)</a></h2>
+<p><strong>Нет аналога в C#</strong> (ближайшее — <code>using</code> или <code>finally</code>).</p>
+<p><strong>Defer</strong> откладывает выполнение функции до момента выхода из текущей функции.</p>
+<pre><code class="language-go">func ReadFile(filename string) {
+    file, err := os.Open(filename)
+    if err != nil {
+        return
+    }
+    defer file.Close() // Закроется в конце функции
+
+    // Работа с файлом
+    // ...
+}
+</code></pre>
+<p><strong>C# эквивалент</strong>:</p>
+<pre><code class="language-csharp">using (var file = File.Open(filename, FileMode.Open))
+{
+    // Работа с файлом
+} // file.Dispose() вызывается автоматически
+</code></pre>
+<p><strong>Множественные defer</strong> выполняются в <strong>обратном порядке</strong> (LIFO):</p>
+<pre><code class="language-go">func example() {
+    defer fmt.Println("1")
+    defer fmt.Println("2")
+    defer fmt.Println("3")
+    fmt.Println("Function body")
+}
+// Вывод:
+// Function body
+// 3
+// 2
+// 1
+</code></pre>
+<p><strong>Практическое применение</strong>:</p>
+<ul>
+<li>Закрытие файлов, соединений с БД</li>
+<li>Разблокировка мьютексов</li>
+<li>Логирование окончания функции</li>
+<li>Восстановление после panic (аналог catch)</li>
+</ul>
+<pre><code class="language-go">func SafeFunction() {
+    defer func() {
+        if r := recover(); r != nil {
+            fmt.Println("Recovered from panic:", r)
+        }
+    }()
+
+    // Код, который может вызвать panic
+    panic("something went wrong")
+}
+</code></pre>
+<hr>
+<h2 id="6-указатели"><a class="header" href="#6-указатели">6. Указатели</a></h2>
+<p><strong>C#</strong>: Указатели есть, но используются редко (только в <code>unsafe</code> контексте).</p>
+<p><strong>Go</strong>: Указатели — обычная часть языка, но <strong>без арифметики</strong> (как в C/C++).</p>
+<h3 id="объявление-и-использование"><a class="header" href="#объявление-и-использование">Объявление и использование</a></h3>
+<pre><code class="language-go">x := 10
+p := &amp;x     // p — указатель на x (тип *int)
+fmt.Println(*p) // 10 (разыменование)
+
+*p = 20     // Изменение значения x через указатель
+fmt.Println(x)  // 20
+</code></pre>
+<p><strong>Синтаксис</strong>:</p>
+<ul>
+<li><code>&amp;</code> — взятие адреса (“address of”)</li>
+<li><code>*</code> — разыменование (“dereference”)</li>
+</ul>
+<h3 id="указатели-в-функциях"><a class="header" href="#указатели-в-функциях">Указатели в функциях</a></h3>
+<p><strong>Передача по значению</strong>:</p>
+<pre><code class="language-go">func increment(x int) {
+    x++
+}
+
+a := 5
+increment(a)
+fmt.Println(a) // 5 (не изменилось)
+</code></pre>
+<p><strong>Передача по указателю</strong>:</p>
+<pre><code class="language-go">func increment(x *int) {
+    *x++
+}
+
+a := 5
+increment(&amp;a)
+fmt.Println(a) // 6
+</code></pre>
+<p><strong>Важно</strong>: В Go <strong>нет</strong> автоматической конвертации значения ↔ указатель (как <code>ref</code> в C#).</p>
+<p><strong>C# ref/out</strong>:</p>
+<pre><code class="language-csharp">void Increment(ref int x)
+{
+    x++;
+}
+
+int a = 5;
+Increment(ref a);
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">func Increment(x *int) {
+    *x++
+}
+
+a := 5
+Increment(&amp;a)
+</code></pre>
+<h3 id="указатели-vs-значения-когда-что-использовать"><a class="header" href="#указатели-vs-значения-когда-что-использовать">Указатели vs значения: когда что использовать?</a></h3>
+<p><strong>Используйте указатели</strong>:</p>
+<ul>
+<li>Когда нужно изменить переменную внутри функции</li>
+<li>Для больших структур (избежание копирования)</li>
+<li>Для опциональных значений (<code>nil</code> = отсутствие значения)</li>
+</ul>
+<p><strong>Используйте значения</strong>:</p>
+<ul>
+<li>Для маленьких типов (примитивы)</li>
+<li>Когда не нужно изменять данные</li>
+<li>Для иммутабельности</li>
+</ul>
+<pre><code class="language-go">// Плохо (лишнее копирование большой структуры)
+func ProcessUser(u User) { ... }
+
+// Хорошо
+func ProcessUser(u *User) { ... }
+</code></pre>
+<hr>
+<h2 id="7-структуры-structs"><a class="header" href="#7-структуры-structs">7. Структуры (Structs)</a></h2>
+<p><strong>C# класс</strong>:</p>
+<pre><code class="language-csharp">public class Person
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+}
+
+var person = new Person { Name = "Alice", Age = 30 };
+</code></pre>
+<p><strong>Go структура</strong>:</p>
+<pre><code class="language-go">type Person struct {
+    Name string
+    Age  int
+}
+
+person := Person{Name: "Alice", Age: 30}
+
+// Или короче (по порядку полей)
+person := Person{"Alice", 30}
+</code></pre>
+<h3 id="методы-на-структурах"><a class="header" href="#методы-на-структурах">Методы на структурах</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">public class Person
+{
+    public string Name { get; set; }
+
+    public void Greet()
+    {
+        Console.WriteLine($"Hello, I'm {Name}");
+    }
+}
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">type Person struct {
+    Name string
+}
+
+func (p Person) Greet() {
+    fmt.Printf("Hello, I'm %s\n", p.Name)
+}
+
+// Использование
+person := Person{Name: "Alice"}
+person.Greet()
+</code></pre>
+<p><strong>Методы с указателем</strong> (для изменения структуры):</p>
+<pre><code class="language-go">type Counter struct {
+    Value int
+}
+
+// Метод с receiver по значению (НЕ изменяет структуру)
+func (c Counter) IncrementWrong() {
+    c.Value++ // Изменяет КОПИЮ
+}
+
+// Метод с receiver по указателю (изменяет структуру)
+func (c *Counter) Increment() {
+    c.Value++
+}
+
+// Использование
+counter := Counter{Value: 0}
+counter.IncrementWrong()
+fmt.Println(counter.Value) // 0
+
+counter.Increment()
+fmt.Println(counter.Value) // 1
+</code></pre>
+<p><strong>Рекомендация</strong>: Если хотя бы один метод использует pointer receiver, используйте pointer receiver для <strong>всех</strong> методов этого типа (консистентность).</p>
+<hr>
+<h3 id="встраивание-embedding--замена-наследования"><a class="header" href="#встраивание-embedding--замена-наследования">Встраивание (Embedding) — замена наследования</a></h3>
+<p><strong>C# наследование</strong>:</p>
+<pre><code class="language-csharp">public class Animal
+{
+    public void Eat() { }
+}
+
+public class Dog : Animal
+{
+    public void Bark() { }
+}
+</code></pre>
+<p><strong>Go композиция (embedding)</strong>:</p>
+<pre><code class="language-go">type Animal struct {
+    Name string
+}
+
+func (a Animal) Eat() {
+    fmt.Println(a.Name, "is eating")
+}
+
+type Dog struct {
+    Animal // Встраивание (анонимное поле)
+    Breed  string
+}
+
+func (d Dog) Bark() {
+    fmt.Println("Woof!")
+}
+
+// Использование
+dog := Dog{
+    Animal: Animal{Name: "Buddy"},
+    Breed:  "Labrador",
+}
+
+dog.Eat()  // Вызов метода встроенного типа
+dog.Bark()
+fmt.Println(dog.Name) // Доступ к полю встроенного типа
+</code></pre>
+<p><strong>Ключевое отличие</strong>: Это <strong>не наследование</strong>, а <strong>композиция</strong>. <code>Dog</code> — это не <code>Animal</code>, но имеет доступ к его полям и методам.</p>
+<hr>
+<h2 id="8-интерфейсы"><a class="header" href="#8-интерфейсы">8. Интерфейсы</a></h2>
+<p><strong>C# интерфейс</strong> (явная реализация):</p>
+<pre><code class="language-csharp">public interface IWriter
+{
+    void Write(string text);
+}
+
+public class ConsoleWriter : IWriter
+{
+    public void Write(string text)
+    {
+        Console.WriteLine(text);
+    }
+}
+</code></pre>
+<p><strong>Go интерфейс</strong> (неявная реализация — <strong>duck typing</strong>):</p>
+<pre><code class="language-go">type Writer interface {
+    Write(text string)
+}
+
+type ConsoleWriter struct{}
+
+func (cw ConsoleWriter) Write(text string) {
+    fmt.Println(text)
+}
+
+// Использование
+var w Writer = ConsoleWriter{} // Автоматически удовлетворяет интерфейсу!
+w.Write("Hello")
+</code></pre>
+<p><strong>Важно</strong>: В Go <strong>не нужно</strong> явно указывать, что тип реализует интерфейс. Если у типа есть все нужные методы — он автоматически удовлетворяет интерфейсу.</p>
+<h3 id="пустой-интерфейс-interface"><a class="header" href="#пустой-интерфейс-interface">Пустой интерфейс (interface{})</a></h3>
+<p><strong>C# object</strong>:</p>
+<pre><code class="language-csharp">object value = 42;
+object value2 = "Hello";
+</code></pre>
+<p><strong>Go interface{}</strong> (с Go 1.18+ можно использовать <code>any</code>):</p>
+<pre><code class="language-go">var value interface{} = 42
+var value2 any = "Hello" // any — alias для interface{}
+</code></pre>
+<p><code>interface{}</code> / <code>any</code> — может хранить <strong>любое</strong> значение.</p>
+<h3 id="type-assertion-проверка-типа"><a class="header" href="#type-assertion-проверка-типа">Type assertion (проверка типа)</a></h3>
+<pre><code class="language-go">var i interface{} = "Hello"
+
+// Type assertion
+s := i.(string)
+fmt.Println(s) // "Hello"
+
+// Безопасная проверка
+s, ok := i.(string)
+if ok {
+    fmt.Println("It's a string:", s)
+}
+
+// Type switch
+switch v := i.(type) {
+case string:
+    fmt.Println("String:", v)
+case int:
+    fmt.Println("Int:", v)
+default:
+    fmt.Println("Unknown type")
+}
+</code></pre>
+<hr>
+<h2 id="9-пакеты-и-импорты"><a class="header" href="#9-пакеты-и-импорты">9. Пакеты и импорты</a></h2>
+<h3 id="создание-пакета"><a class="header" href="#создание-пакета">Создание пакета</a></h3>
+<p><strong>Структура проекта</strong>:</p>
+<pre><code>myapp/
+├── main.go
+├── utils/
+│   └── helper.go
+</code></pre>
+<p><strong>utils/helper.go</strong>:</p>
+<pre><code class="language-go">package utils
+
+// Экспортируемая функция (заглавная буква)
+func Add(a, b int) int {
+    return a + b
+}
+
+// Приватная функция
+func subtract(a, b int) int {
+    return a - b
+}
+</code></pre>
+<p><strong>main.go</strong>:</p>
+<pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "myapp/utils"
+)
+
+func main() {
+    result := utils.Add(5, 3)
+    fmt.Println(result)
+}
+</code></pre>
+<h3 id="импорты"><a class="header" href="#импорты">Импорты</a></h3>
+<pre><code class="language-go">import "fmt"                    // Стандартная библиотека
+import "github.com/pkg/errors"  // Внешний пакет
+
+// Группированный импорт
+import (
+    "fmt"
+    "os"
+    "github.com/gin-gonic/gin"
+)
+
+// Алиас
+import f "fmt"
+f.Println("Hello")
+
+// Импорт только для side-effects (init функции)
+import _ "github.com/lib/pq"
+
+// Импорт всех экспортируемых имен (НЕ рекомендуется!)
+import . "fmt"
+Println("No prefix needed")
+</code></pre>
+<hr>
+<h2 id="10-сравнение-с-c-чего-нет-в-go"><a class="header" href="#10-сравнение-с-c-чего-нет-в-go">10. Сравнение с C#: Чего НЕТ в Go</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Фича C#</th><th>Есть в Go?</th><th>Альтернатива</th></tr>
+</thead>
+<tbody>
+<tr><td>Классы</td><td>❌</td><td>Структуры + методы</td></tr>
+<tr><td>Наследование</td><td>❌</td><td>Композиция (embedding)</td></tr>
+<tr><td>Перегрузка методов</td><td>❌</td><td>Разные имена функций</td></tr>
+<tr><td>Исключения (try/catch)</td><td>❌</td><td><code>error</code> как значение</td></tr>
+<tr><td>LINQ</td><td>❌</td><td>Циклы или библиотеки (не идиоматично)</td></tr>
+<tr><td>Nullable types (<code>int?</code>)</td><td>❌</td><td>Указатели (<code>*int</code>)</td></tr>
+<tr><td>Properties</td><td>❌</td><td>Getter/Setter методы</td></tr>
+<tr><td>Async/await</td><td>❌</td><td>Горутины и каналы</td></tr>
+<tr><td>Attributes</td><td>❌</td><td>Struct tags (ограниченно)</td></tr>
+<tr><td>Generics</td><td>✅ (с Go 1.18)</td><td>Ограниченная версия</td></tr>
+<tr><td><code>null</code></td><td>❌</td><td><code>nil</code> (только для указателей, интерфейсов, слайсов, мап, каналов)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="11-практические-примеры"><a class="header" href="#11-практические-примеры">11. Практические примеры</a></h2>
+<h3 id="пример-1-работа-с-json"><a class="header" href="#пример-1-работа-с-json">Пример 1: Работа с JSON</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">using System.Text.Json;
+
+public class User
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+}
+
+var user = new User { Name = "Alice", Age = 30 };
+string json = JsonSerializer.Serialize(user);
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">import "encoding/json"
+
+type User struct {
+    Name string `json:"name"`
+    Age  int    `json:"age"`
+}
+
+user := User{Name: "Alice", Age: 30}
+jsonData, err := json.Marshal(user)
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Println(string(jsonData))
+
+// Десериализация
+var user2 User
+err = json.Unmarshal(jsonData, &amp;user2)
+if err != nil {
+    log.Fatal(err)
+}
+</code></pre>
+<p><strong>Struct tags</strong>: Метаданные для полей структуры.</p>
+<hr>
+<h3 id="пример-2-чтение-файла"><a class="header" href="#пример-2-чтение-файла">Пример 2: Чтение файла</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">string content = File.ReadAllText("file.txt");
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">import (
+    "os"
+    "io"
+)
+
+// Способ 1: Весь файл
+content, err := os.ReadFile("file.txt")
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Println(string(content))
+
+// Способ 2: С defer
+file, err := os.Open("file.txt")
+if err != nil {
+    log.Fatal(err)
+}
+defer file.Close()
+
+data, err := io.ReadAll(file)
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Println(string(data))
+</code></pre>
+<hr><!-- AUTO: NAV -->
+<p><strong>Вопросы?</strong> Открой issue на <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/issues">GitHub</a></p>
+<p><a href="./01_setup_environment.html">← Назад: Установка и настройка окружения Go</a> | <a href="./02a_collections_performance_cheatsheet.html">Вперёд: Коллекции и производительность: Шпаргалка для C# разработчика →</a></p>
+<!-- /AUTO: NAV -->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part1-basics/01_setup_environment.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part1-basics/02a_collections_performance_cheatsheet.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part1-basics/01_setup_environment.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part1-basics/02a_collections_performance_cheatsheet.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,1209 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>2.2 Go Runtime и планировщик - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-e1a1ce5b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-c19b06e6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part2-advanced/02_runtime_scheduler.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="22-go-runtime-и-планировщик"><a class="header" href="#22-go-runtime-и-планировщик">2.2 Go Runtime и планировщик</a></h1>
+<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<ul>
+<li><a href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5">Введение</a>
+<ul>
+<li><a href="#%D0%BF%D0%BE%D1%87%D0%B5%D0%BC%D1%83-%D1%8D%D1%82%D0%BE-%D0%B2%D0%B0%D0%B6%D0%BD%D0%BE">Почему это важно?</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B0%D1%80%D1%85%D0%B8%D1%82%D0%B5%D0%BA%D1%82%D1%83%D1%80%D0%B0-gmp">Архитектура GMP</a>
+<ul>
+<li><a href="#%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B">Компоненты</a>
+<ul>
+<li><a href="#g---goroutine">G - Goroutine</a></li>
+<li><a href="#m---machine-os-thread">M - Machine (OS Thread)</a></li>
+<li><a href="#p---processor-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BA%D1%81%D1%82-%D0%B2%D1%8B%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F">P - Processor (контекст выполнения)</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B2%D0%B7%D0%B0%D0%B8%D0%BC%D0%BE%D0%B4%D0%B5%D0%B9%D1%81%D1%82%D0%B2%D0%B8%D0%B5-gmp">Взаимодействие GMP</a></li>
+<li><a href="#%D0%B6%D0%B8%D0%B7%D0%BD%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9-%D1%86%D0%B8%D0%BA%D0%BB">Жизненный цикл</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-net-threadpool">Сравнение с .NET ThreadPool</a></li>
+</ul>
+</li>
+<li><a href="#work-stealing-%D0%B0%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC">Work-Stealing алгоритм</a>
+<ul>
+<li><a href="#%D0%BA%D0%B0%D0%BA-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82">Как работает</a></li>
+<li><a href="#%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F">Реализация</a></li>
+<li><a href="#c-%D0%B0%D0%BD%D0%B0%D0%BB%D0%BE%D0%B3">C# аналог</a></li>
+<li><a href="#%D0%BE%D0%BF%D1%82%D0%B8%D0%BC%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%B4%D0%BB%D1%8F-work-stealing">Оптимизация для work-stealing</a></li>
+</ul>
+</li>
+<li><a href="#preemption-%D0%B2%D1%8B%D1%82%D0%B5%D1%81%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5">Preemption (вытеснение)</a>
+<ul>
+<li><a href="#%D0%B8%D1%81%D1%82%D0%BE%D1%80%D0%B8%D1%8F">История</a></li>
+<li><a href="#%D0%BA%D0%B0%D0%BA-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82-preemption">Как работает preemption</a></li>
+<li><a href="#cooperative-vs-preemptive">Cooperative vs Preemptive</a></li>
+<li><a href="#safe-points">Safe points</a></li>
+</ul>
+</li>
+<li><a href="#gomaxprocs">GOMAXPROCS</a>
+<ul>
+<li><a href="#%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BF%D0%BE-%D1%83%D0%BC%D0%BE%D0%BB%D1%87%D0%B0%D0%BD%D0%B8%D1%8E">Значение по умолчанию</a></li>
+<li><a href="#%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0">Настройка</a></li>
+<li><a href="#%D0%B2%D0%BB%D0%B8%D1%8F%D0%BD%D0%B8%D0%B5-%D0%BD%D0%B0-%D0%BF%D1%80%D0%BE%D0%B8%D0%B7%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D1%8C">Влияние на производительность</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-net">Сравнение с .NET</a></li>
+<li><a href="#%D1%80%D0%B5%D0%BA%D0%BE%D0%BC%D0%B5%D0%BD%D0%B4%D0%B0%D1%86%D0%B8%D0%B8">Рекомендации</a></li>
+</ul>
+</li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-net-threadpool-1">Сравнение с .NET ThreadPool</a>
+<ul>
+<li><a href="#%D0%B0%D1%80%D1%85%D0%B8%D1%82%D0%B5%D0%BA%D1%82%D1%83%D1%80%D0%B0">Архитектура</a></li>
+<li><a href="#%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5-%D1%80%D0%B0%D0%B7%D0%BB%D0%B8%D1%87%D0%B8%D1%8F">Ключевые различия</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-%D0%B1%D0%BB%D0%BE%D0%BA%D0%B8%D1%80%D1%83%D1%8E%D1%89%D0%B8%D0%B9-syscall">Пример: блокирующий syscall</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B5%D0%B8%D0%BC%D1%83%D1%89%D0%B5%D1%81%D1%82%D0%B2%D0%B0-go">Преимущества Go</a></li>
+</ul>
+</li>
+<li><a href="#%D1%82%D1%80%D0%B0%D1%81%D1%81%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%B4%D0%B8%D0%B0%D0%B3%D0%BD%D0%BE%D1%81%D1%82%D0%B8%D0%BA%D0%B0">Трассировка и диагностика</a>
+<ul>
+<li><a href="#go-tool-trace">go tool trace</a></li>
+<li><a href="#godebugschedtrace">GODEBUG=schedtrace</a></li>
+<li><a href="#runtimenumgoroutine">runtime.NumGoroutine()</a></li>
+<li><a href="#pprof-goroutine-profile">pprof goroutine profile</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BE%D0%BF%D1%82%D0%B8%D0%BC%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%BF%D0%BE%D0%B4-%D0%BF%D0%BB%D0%B0%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D1%89%D0%B8%D0%BA">Оптимизация под планировщик</a>
+<ul>
+<li><a href="#1-%D0%B8%D0%B7%D0%B1%D0%B5%D0%B3%D0%B0%D0%B9%D1%82%D0%B5-%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D1%8F-%D1%81%D0%BB%D0%B8%D1%88%D0%BA%D0%BE%D0%BC-%D0%BC%D0%BD%D0%BE%D0%B3%D0%B8%D1%85-%D0%B3%D0%BE%D1%80%D1%83%D1%82%D0%B8%D0%BD">1. Избегайте создания слишком многих горутин</a></li>
+<li><a href="#2-%D0%BC%D0%B8%D0%BD%D0%B8%D0%BC%D0%B8%D0%B7%D0%B8%D1%80%D1%83%D0%B9%D1%82%D0%B5-%D0%B1%D0%BB%D0%BE%D0%BA%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B8">2. Минимизируйте блокировки</a></li>
+<li><a href="#3-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D1%83%D0%B9%D1%82%D0%B5-buffered-channels-%D0%BF%D1%80%D0%B0%D0%B2%D0%B8%D0%BB%D1%8C%D0%BD%D0%BE">3. Используйте buffered channels правильно</a></li>
+<li><a href="#4-%D0%B8%D0%B7%D0%B1%D0%B5%D0%B3%D0%B0%D0%B9%D1%82%D0%B5-%D0%B4%D0%BE%D0%BB%D0%B3%D0%B8%D1%85-%D0%B2%D1%8B%D1%87%D0%B8%D1%81%D0%BB%D0%B5%D0%BD%D0%B8%D0%B9-%D0%B1%D0%B5%D0%B7-yield">4. Избегайте долгих вычислений без yield</a></li>
+<li><a href="#5-gomaxprocs-%D0%B4%D0%BB%D1%8F-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80%D0%BE%D0%B2">5. GOMAXPROCS для контейнеров</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B">Практические примеры</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3-%D0%BF%D0%BB%D0%B0%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D1%89%D0%B8%D0%BA%D0%B0">Пример 1: Мониторинг планировщика</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-%D0%BE%D0%BF%D1%82%D0%B8%D0%BC%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D1%81-worker-pool">Пример 2: Оптимизация с worker pool</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-gomaxprocs">Пример 3: Сравнение GOMAXPROCS</a></li>
+</ul>
+</li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<p>Go runtime включает в себя <strong>планировщик горутин</strong> (goroutine scheduler), который эффективно мультиплексирует миллионы горутин на ограниченное количество OS threads.</p>
+<h3 id="почему-это-важно"><a class="header" href="#почему-это-важно">Почему это важно?</a></h3>
+<p><strong>C# разработчики</strong> привыкли к тому, что:</p>
+<ul>
+<li>Task работает на ThreadPool</li>
+<li>ThreadPool управляет OS threads</li>
+<li>Async/await - это синтаксический сахар над callbacks</li>
+</ul>
+<p><strong>В Go</strong>:</p>
+<ul>
+<li>Горутины НЕ равны OS threads</li>
+<li>Go runtime сам управляет маппингом горутин на threads</li>
+<li>Понимание планировщика критично для производительности</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Ключевое отличие</strong>: В C# вы работаете с ThreadPool напрямую, в Go - через runtime планировщик, который намного эффективнее.</p>
+</blockquote>
+<hr>
+<h2 id="архитектура-gmp"><a class="header" href="#архитектура-gmp">Архитектура GMP</a></h2>
+<p>GMP - это модель планировщика Go:</p>
+<ul>
+<li><strong>G</strong> (Goroutine) - горутина</li>
+<li><strong>M</strong> (Machine) - OS thread</li>
+<li><strong>P</strong> (Processor) - контекст выполнения</li>
+</ul>
+<h3 id="компоненты"><a class="header" href="#компоненты">Компоненты</a></h3>
+<h4 id="g---goroutine"><a class="header" href="#g---goroutine">G - Goroutine</a></h4>
+<p>Горутина - это легковесный поток выполнения.</p>
+<p><strong>Характеристики</strong>:</p>
+<ul>
+<li>Стек: начинается с 2KB (динамически растёт до 1GB)</li>
+<li>Состояние: running, runnable, waiting, dead</li>
+<li>Хранит: SP (stack pointer), PC (program counter), регистры</li>
+</ul>
+<pre><code class="language-go">type g struct {
+    stack       stack   // Стек горутины
+    stackguard0 uintptr // Защита от переполнения
+    m           *m      // Текущий M (thread)
+    sched       gobuf   // Контекст (SP, PC, регистры)
+    // ... другие поля
+}
+</code></pre>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">// Task - это NOT thread, но высокоуровневая абстракция
+var task = Task.Run(() =&gt; DoWork());
+
+// Thread - это OS thread
+var thread = new Thread(() =&gt; DoWork());
+</code></pre>
+<h4 id="m---machine-os-thread"><a class="header" href="#m---machine-os-thread">M - Machine (OS Thread)</a></h4>
+<p>Machine представляет реальный OS thread.</p>
+<p><strong>Характеристики</strong>:</p>
+<ul>
+<li>Соответствует OS thread (pthread на Linux, thread на Windows)</li>
+<li>Выполняет горутины</li>
+<li>Может блокироваться (syscall, cgo)</li>
+<li>Максимум: 10000 (ограничение runtime)</li>
+</ul>
+<pre><code class="language-go">type m struct {
+    g0      *g    // Горутина для планировщика
+    curg    *g    // Текущая выполняющаяся горутина
+    p       *p    // Привязанный P
+    nextp   *p    // P для следующего запуска
+    // ... другие поля
+}
+</code></pre>
+<p><strong>Важно</strong>: M может существовать без P (заблокирован), но не может выполнять Go код.</p>
+<h4 id="p---processor-контекст-выполнения"><a class="header" href="#p---processor-контекст-выполнения">P - Processor (контекст выполнения)</a></h4>
+<p>P представляет <strong>логический процессор</strong> - ресурс, необходимый для выполнения Go кода.</p>
+<p><strong>Характеристики</strong>:</p>
+<ul>
+<li>Количество: <code>GOMAXPROCS</code> (по умолчанию = количество CPU cores)</li>
+<li>Содержит local run queue горутин</li>
+<li>Кеш для аллокаций (mcache)</li>
+<li>Может быть передан между M</li>
+</ul>
+<pre><code class="language-go">type p struct {
+    m           *m       // Текущий M
+    runqhead    uint32   // Голова local run queue
+    runqtail    uint32   // Хвост local run queue
+    runq        [256]guintptr // Local run queue
+    runnext     guintptr // Следующая горутина (приоритет)
+    // ... другие поля
+}
+</code></pre>
+<h3 id="взаимодействие-gmp"><a class="header" href="#взаимодействие-gmp">Взаимодействие GMP</a></h3>
+<pre><code>┌─────────────────────────────────────────────────┐
+│              Global Run Queue                    │
+│  (горутины, ожидающие выполнения)               │
+└─────────────────────────────────────────────────┘
+              ↓          ↓          ↓
+    ┌─────────┐   ┌─────────┐   ┌─────────┐
+    │    P0   │   │    P1   │   │    P2   │
+    │ ┌─────┐ │   │ ┌─────┐ │   │ ┌─────┐ │
+    │ │ LRQ │ │   │ │ LRQ │ │   │ │ LRQ │ │  Local Run Queues
+    │ └─────┘ │   │ └─────┘ │   │ └─────┘ │
+    └────┬────┘   └────┬────┘   └────┬────┘
+         │             │             │
+    ┌────▼────┐   ┌────▼────┐   ┌────▼────┐
+    │    M0   │   │    M1   │   │    M2   │  OS Threads
+    └─────────┘   └─────────┘   └─────────┘
+         │             │             │
+    ┌────▼────┐   ┌────▼────┐   ┌────▼────┐
+    │    G1   │   │    G5   │   │    G9   │  Горутины
+    │    G2   │   │    G6   │   │   G10   │
+    │    G3   │   │    G7   │   │   G11   │
+    │    G4   │   │    G8   │   │   G12   │
+    └─────────┘   └─────────┘   └─────────┘
+</code></pre>
+<h3 id="жизненный-цикл"><a class="header" href="#жизненный-цикл">Жизненный цикл</a></h3>
+<ol>
+<li>
+<p><strong>Создание горутины</strong> (<code>go func()</code>)</p>
+<ul>
+<li>Создаётся структура G</li>
+<li>Добавляется в run queue</li>
+</ul>
+</li>
+<li>
+<p><strong>Планирование</strong></p>
+<ul>
+<li>M берёт G из local run queue своего P</li>
+<li>Если пусто - пытается украсть из других P (work-stealing)</li>
+<li>Если везде пусто - берёт из global run queue</li>
+</ul>
+</li>
+<li>
+<p><strong>Выполнение</strong></p>
+<ul>
+<li>M выполняет G</li>
+<li>При блокировке (channel, syscall) - G снимается с M</li>
+</ul>
+</li>
+<li>
+<p><strong>Завершение</strong></p>
+<ul>
+<li>G возвращается в pool для переиспользования</li>
+<li>M ищет следующую G</li>
+</ul>
+</li>
+</ol>
+<h3 id="сравнение-с-net-threadpool"><a class="header" href="#сравнение-с-net-threadpool">Сравнение с .NET ThreadPool</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>.NET ThreadPool</th><th>Go Scheduler</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Единица работы</strong></td><td>Task</td><td>Goroutine (G)</td></tr>
+<tr><td><strong>Worker</strong></td><td>OS Thread</td><td>M (OS Thread) + P</td></tr>
+<tr><td><strong>Очередь</strong></td><td>Global queue</td><td>Local (P) + Global</td></tr>
+<tr><td><strong>Stealing</strong></td><td>Да (ограниченный)</td><td>Да (агрессивный)</td></tr>
+<tr><td><strong>Контекст</strong></td><td>Нет</td><td>P (процессор)</td></tr>
+<tr><td><strong>Preemption</strong></td><td>Cooperative (.NET &lt; 6)</td><td>Cooperative + Signal-based</td></tr>
+<tr><td><strong>Max workers</strong></td><td>~1000-2000 threads</td><td>10000 M, unlimited G</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="work-stealing-алгоритм"><a class="header" href="#work-stealing-алгоритм">Work-Stealing алгоритм</a></h2>
+<p>Work-stealing - это механизм балансировки нагрузки между P.</p>
+<h3 id="как-работает"><a class="header" href="#как-работает">Как работает</a></h3>
+<pre><code>P0 (занят)          P1 (простаивает)
+┌────────┐          ┌────────┐
+│ G1     │          │        │
+│ G2     │   steal │        │
+│ G3     │  ───────&gt;  G3    │
+│ G4     │          │        │
+└────────┘          └────────┘
+</code></pre>
+<p><strong>Алгоритм</strong>:</p>
+<ol>
+<li>P проверяет свой local run queue</li>
+<li>Если пусто → проверяет global run queue</li>
+<li>Если пусто → <strong>крадёт</strong> половину горутин из другого P</li>
+<li>Если везде пусто → переходит в режим ожидания</li>
+</ol>
+<h3 id="реализация"><a class="header" href="#реализация">Реализация</a></h3>
+<pre><code class="language-go">// Упрощённая версия
+func findrunnable() *g {
+    // 1. Проверяем local run queue
+    if gp := runqget(_p_); gp != nil {
+        return gp
+    }
+
+    // 2. Проверяем global run queue
+    if gp := globrunqget(_p_); gp != nil {
+        return gp
+    }
+
+    // 3. Work-stealing: пробуем украсть из других P
+    for i := 0; i &lt; len(allp); i++ {
+        p := allp[(i+offset)%len(allp)]
+        if gp := runqsteal(_p_, p); gp != nil {
+            return gp
+        }
+    }
+
+    // 4. Ничего не нашли - засыпаем
+    stopm()
+}
+</code></pre>
+<h3 id="c-аналог"><a class="header" href="#c-аналог">C# аналог</a></h3>
+<p><strong>.NET 6+ ThreadPool</strong> также использует work-stealing, но:</p>
+<pre><code class="language-csharp">// .NET ThreadPool (упрощённо)
+// - Каждый thread имеет local queue
+// - Stealing происходит реже
+// - Global queue имеет более высокий приоритет
+
+ThreadPool.QueueUserWorkItem(_ =&gt; DoWork());
+</code></pre>
+<p><strong>Отличия</strong>:</p>
+<ul>
+<li>Go stealing более агрессивный</li>
+<li>Go проверяет local queue чаще</li>
+<li>Go имеет два уровня: local (P) и global</li>
+</ul>
+<h3 id="оптимизация-для-work-stealing"><a class="header" href="#оптимизация-для-work-stealing">Оптимизация для work-stealing</a></h3>
+<pre><code class="language-go">// ❌ Плохо: создаём дисбаланс
+func bad() {
+    for i := 0; i &lt; 1000000; i++ {
+        go func() {
+            // Очень короткая работа
+            _ = i * 2
+        }()
+    }
+}
+
+// ✅ Хорошо: используем worker pool
+func good() {
+    const numWorkers = 10
+    jobs := make(chan int, 1000)
+
+    for w := 0; w &lt; numWorkers; w++ {
+        go func() {
+            for job := range jobs {
+                _ = job * 2
+            }
+        }()
+    }
+
+    for i := 0; i &lt; 1000000; i++ {
+        jobs &lt;- i
+    }
+    close(jobs)
+}
+</code></pre>
+<hr>
+<h2 id="preemption-вытеснение"><a class="header" href="#preemption-вытеснение">Preemption (вытеснение)</a></h2>
+<p>Preemption - это механизм, позволяющий планировщику <strong>прерывать</strong> выполняющуюся горутину.</p>
+<h3 id="история"><a class="header" href="#история">История</a></h3>
+<p><strong>Go 1.0-1.13</strong>: Cooperative preemption</p>
+<ul>
+<li>Горутина вытеснялась только в safe points (function calls)</li>
+<li>Проблема: бесконечный цикл без вызовов функций блокировал P</li>
+</ul>
+<pre><code class="language-go">// Проблема в Go &lt; 1.14
+func loop() {
+    for {
+        // Нет function calls - не вытесняется
+        i := 0
+        i++
+    }
+}
+</code></pre>
+<p><strong>Go 1.14+</strong>: Signal-based preemption (асинхронный)</p>
+<ul>
+<li>Runtime может прервать горутину в любой момент</li>
+<li>Использует OS signals (SIGURG на Unix)</li>
+</ul>
+<h3 id="как-работает-preemption"><a class="header" href="#как-работает-preemption">Как работает preemption</a></h3>
+<pre><code>G выполняется &gt; 10ms
+         ↓
+Планировщик отправляет signal
+         ↓
+G сохраняет контекст
+         ↓
+G перемещается в run queue
+         ↓
+M выполняет другую G
+</code></pre>
+<p><strong>Код планировщика</strong>:</p>
+<pre><code class="language-go">// Упрощённо
+const preemptionInterval = 10 * time.Millisecond
+
+func sysmon() {
+    for {
+        // Проверяем все P
+        for _, pp := range allp {
+            if pp.m != nil &amp;&amp; pp.m.curg != nil {
+                gp := pp.m.curg
+
+                // Если G выполняется &gt; 10ms - вытесняем
+                if now - gp.schedtime &gt; preemptionInterval {
+                    preemptone(pp)
+                }
+            }
+        }
+
+        time.Sleep(sysmonInterval)
+    }
+}
+</code></pre>
+<h3 id="cooperative-vs-preemptive"><a class="header" href="#cooperative-vs-preemptive">Cooperative vs Preemptive</a></h3>
+<p><strong>C# (до .NET 6)</strong>:</p>
+<pre><code class="language-csharp">// Cooperative - задача должна сама yield
+async Task LongRunning()
+{
+    for (int i = 0; i &lt; 1000000; i++)
+    {
+        // Явный yield
+        if (i % 1000 == 0)
+            await Task.Yield(); // Даём ThreadPool переключиться
+    }
+}
+</code></pre>
+<p><strong>Go (1.14+)</strong>:</p>
+<pre><code class="language-go">// Планировщик сам прервёт через 10ms
+func longRunning() {
+    for i := 0; i &lt; 1000000; i++ {
+        // Не нужен явный yield
+        _ = i * 2
+    }
+}
+</code></pre>
+<h3 id="safe-points"><a class="header" href="#safe-points">Safe points</a></h3>
+<p>Несмотря на signal-based preemption, есть места, где вытеснение безопаснее:</p>
+<pre><code class="language-go">// Safe points:
+// 1. Function calls
+func work() {
+    doSomething() // Safe point
+}
+
+// 2. Channel operations
+ch := make(chan int)
+ch &lt;- 42 // Safe point
+val := &lt;-ch // Safe point
+
+// 3. Memory allocations
+data := make([]int, 1000) // Safe point
+</code></pre>
+<hr>
+<h2 id="gomaxprocs"><a class="header" href="#gomaxprocs">GOMAXPROCS</a></h2>
+<p><code>GOMAXPROCS</code> определяет количество P (логических процессоров).</p>
+<h3 id="значение-по-умолчанию"><a class="header" href="#значение-по-умолчанию">Значение по умолчанию</a></h3>
+<pre><code class="language-go">import "runtime"
+
+func main() {
+    // По умолчанию = количество CPU cores
+    fmt.Println(runtime.GOMAXPROCS(0)) // 8 (на 8-core машине)
+}
+</code></pre>
+<h3 id="настройка"><a class="header" href="#настройка">Настройка</a></h3>
+<pre><code class="language-go">// Программно
+runtime.GOMAXPROCS(4) // Установить 4 P
+
+// Через переменную окружения
+// GOMAXPROCS=4 go run main.go
+</code></pre>
+<h3 id="влияние-на-производительность"><a class="header" href="#влияние-на-производительность">Влияние на производительность</a></h3>
+<p><strong>CPU-bound задачи</strong>:</p>
+<pre><code class="language-go">// GOMAXPROCS = количество cores - оптимально
+func cpuBound() {
+    for i := 0; i &lt; 1e9; i++ {
+        _ = i * i
+    }
+}
+</code></pre>
+<p><strong>I/O-bound задачи</strong>:</p>
+<pre><code class="language-go">// GOMAXPROCS может быть &gt; cores
+// Горутины блокируются на I/O, освобождая M
+func ioBound() {
+    resp, _ := http.Get("https://example.com")
+    defer resp.Body.Close()
+}
+</code></pre>
+<h3 id="сравнение-с-net"><a class="header" href="#сравнение-с-net">Сравнение с .NET</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">// .NET ThreadPool
+ThreadPool.SetMinThreads(minWorker, minIO);
+ThreadPool.SetMaxThreads(maxWorker, maxIO);
+
+// По умолчанию:
+// Min = количество cores
+// Max = 32767 (теоретически)
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">// GOMAXPROCS - количество параллельных исполнителей
+// Не ограничивает количество M (threads)
+// M создаются по необходимости (до 10000)
+</code></pre>
+<h3 id="рекомендации"><a class="header" href="#рекомендации">Рекомендации</a></h3>
+<p>✅ <strong>Оставьте по умолчанию</strong> (= cores) для большинства случаев</p>
+<p>⚠️ <strong>Увеличьте</strong>, если:</p>
+<ul>
+<li>Много I/O-bound операций</li>
+<li>Используете cgo (блокирует M)</li>
+<li>Запускаете в контейнере с CPU throttling</li>
+</ul>
+<p>❌ <strong>Не уменьшайте</strong> без причины:</p>
+<pre><code class="language-go">// ❌ Плохо
+runtime.GOMAXPROCS(1) // Только 1 P - нет параллелизма
+</code></pre>
+<hr>
+<h2 id="сравнение-с-net-threadpool-1"><a class="header" href="#сравнение-с-net-threadpool-1">Сравнение с .NET ThreadPool</a></h2>
+<h3 id="архитектура"><a class="header" href="#архитектура">Архитектура</a></h3>
+<p><strong>.NET ThreadPool</strong> (упрощённо):</p>
+<pre><code>                Global Queue
+                     ↓
+    ┌────────────────┴────────────────┐
+    ↓                ↓                ↓
+Worker Thread 1  Worker Thread 2  Worker Thread N
+    ↓                ↓                ↓
+Local Queue      Local Queue      Local Queue
+</code></pre>
+<p><strong>Go Scheduler</strong>:</p>
+<pre><code>                Global Queue
+                     ↓
+    ┌────────────────┴────────────────┐
+    ↓                ↓                ↓
+    P0               P1               P2
+    ↓                ↓                ↓
+    M0               M1               M2
+    ↓                ↓                ↓
+ Goroutines      Goroutines      Goroutines
+</code></pre>
+<h3 id="ключевые-различия"><a class="header" href="#ключевые-различия">Ключевые различия</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>.NET ThreadPool</th><th>Go Scheduler</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Модель</strong></td><td>Thread Pool</td><td>M:N scheduler</td></tr>
+<tr><td><strong>Единица</strong></td><td>Task на Thread</td><td>Goroutine на M через P</td></tr>
+<tr><td><strong>Контекст</strong></td><td>Нет явного</td><td>P (процессор)</td></tr>
+<tr><td><strong>Work-stealing</strong></td><td>Да (с .NET 4)</td><td>Да (агрессивный)</td></tr>
+<tr><td><strong>Количество threads</strong></td><td>~cores * 2-4</td><td>Динамическое (до 10000 M)</td></tr>
+<tr><td><strong>Блокировка</strong></td><td>Блокирует thread</td><td>M отсоединяется от P</td></tr>
+<tr><td><strong>Preemption</strong></td><td>Cooperative</td><td>Signal-based (1.14+)</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="пример-блокирующий-syscall"><a class="header" href="#пример-блокирующий-syscall">Пример: блокирующий syscall</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">// Syscall блокирует worker thread
+await Task.Run(() =&gt;
+{
+    // Блокирующий I/O
+    using var file = File.OpenRead("large.dat");
+    var buffer = new byte[1024];
+    file.Read(buffer, 0, buffer.Length); // Блокирует thread
+
+    // ThreadPool создаст новый thread если нужно
+});
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">// Syscall блокирует M, но не P
+go func() {
+    // Блокирующий I/O
+    file, _ := os.Open("large.dat")
+    defer file.Close()
+
+    buffer := make([]byte, 1024)
+    file.Read(buffer) // Блокирует M
+
+    // Runtime отсоединяет M от P
+    // P берёт другой M и продолжает работу
+}()
+</code></pre>
+<h3 id="преимущества-go"><a class="header" href="#преимущества-go">Преимущества Go</a></h3>
+<ol>
+<li><strong>Лёгкость</strong>: Горутины легче Task (нет boxing, меньше накладных расходов)</li>
+<li><strong>Масштабируемость</strong>: Миллионы горутин vs тысячи threads</li>
+<li><strong>Контекст P</strong>: Кеширование аллокаций, лучшая locality</li>
+<li><strong>Адаптивность</strong>: M создаются/уничтожаются по необходимости</li>
+</ol>
+<hr>
+<h2 id="трассировка-и-диагностика"><a class="header" href="#трассировка-и-диагностика">Трассировка и диагностика</a></h2>
+<h3 id="go-tool-trace"><a class="header" href="#go-tool-trace">go tool trace</a></h3>
+<p>Визуализация работы планировщика.</p>
+<pre><code class="language-bash"># Запись trace
+go test -trace=trace.out
+
+# Или в коде
+import "runtime/trace"
+
+func main() {
+    f, _ := os.Create("trace.out")
+    defer f.Close()
+
+    trace.Start(f)
+    defer trace.Stop()
+
+    // Ваш код
+}
+
+# Просмотр trace
+go tool trace trace.out
+</code></pre>
+<p><strong>Что показывает trace</strong>:</p>
+<ul>
+<li>Горутины по времени</li>
+<li>Переключения между G</li>
+<li>Блокировки на каналах</li>
+<li>GC события</li>
+<li>Syscalls</li>
+</ul>
+<p><strong>Пример вывода</strong>:</p>
+<pre><code>Goroutine analysis:
+  Running: 4
+  Runnable: 120
+  Blocked: 0
+
+Processor utilization:
+  P0: 98%
+  P1: 95%
+  P2: 12%  ← Проблема: простаивает
+  P3: 97%
+</code></pre>
+<h3 id="godebugschedtrace"><a class="header" href="#godebugschedtrace">GODEBUG=schedtrace</a></h3>
+<p>Периодическая печать статистики планировщика.</p>
+<pre><code class="language-bash">GODEBUG=schedtrace=1000 ./myapp
+</code></pre>
+<p><strong>Вывод</strong>:</p>
+<pre><code>SCHED 1000ms: gomaxprocs=4 idleprocs=0 threads=6 spinningthreads=0 idlethreads=1 runqueue=0 [0 0 0 0]
+       ↑         ↑           ↑           ↑           ↑               ↑            ↑        ↑
+     время   GOMAXPROCS   простаивающих  всего M   spinning M    idle M    global RQ  local RQ (по P)
+</code></pre>
+<p><strong>Расшифровка</strong>:</p>
+<ul>
+<li><code>gomaxprocs=4</code>: 4 процессора (P)</li>
+<li><code>idleprocs=0</code>: все P заняты (хорошо)</li>
+<li><code>threads=6</code>: 6 OS threads (M)</li>
+<li><code>runqueue=0</code>: global run queue пуста</li>
+<li><code>[0 0 0 0]</code>: local run queues (все пусты - хорошо)</li>
+</ul>
+<h3 id="runtimenumgoroutine"><a class="header" href="#runtimenumgoroutine">runtime.NumGoroutine()</a></h3>
+<pre><code class="language-go">import "runtime"
+
+func main() {
+    // Количество активных горутин
+    fmt.Println("Goroutines:", runtime.NumGoroutine())
+
+    for i := 0; i &lt; 1000; i++ {
+        go func() {
+            time.Sleep(time.Hour)
+        }()
+    }
+
+    fmt.Println("Goroutines:", runtime.NumGoroutine()) // ~1001
+}
+</code></pre>
+<h3 id="pprof-goroutine-profile"><a class="header" href="#pprof-goroutine-profile">pprof goroutine profile</a></h3>
+<pre><code class="language-go">import _ "net/http/pprof"
+
+func main() {
+    go func() {
+        http.ListenAndServe("localhost:6060", nil)
+    }()
+
+    // Ваш код
+}
+</code></pre>
+<pre><code class="language-bash"># Просмотр горутин
+go tool pprof http://localhost:6060/debug/pprof/goroutine
+
+# В интерактивном режиме
+(pprof) top
+Showing nodes accounting for 1000, 100% of 1000 total
+      flat  flat%   sum%        cum   cum%
+      500 50.00% 50.00%       500 50.00%  main.worker
+      300 30.00% 80.00%       300 30.00%  net/http.(*conn).serve
+      200 20.00% 100.00%      200 20.00%  time.Sleep
+</code></pre>
+<hr>
+<h2 id="оптимизация-под-планировщик"><a class="header" href="#оптимизация-под-планировщик">Оптимизация под планировщик</a></h2>
+<h3 id="1-избегайте-создания-слишком-многих-горутин"><a class="header" href="#1-избегайте-создания-слишком-многих-горутин">1. Избегайте создания слишком многих горутин</a></h3>
+<pre><code class="language-go">// ❌ Плохо: 1 миллион горутин для trivial работы
+func bad() {
+    for i := 0; i &lt; 1_000_000; i++ {
+        go func(n int) {
+            fmt.Println(n)
+        }(i)
+    }
+}
+
+// ✅ Хорошо: worker pool
+func good() {
+    const workers = 100
+    jobs := make(chan int, 1000)
+
+    var wg sync.WaitGroup
+    for w := 0; w &lt; workers; w++ {
+        wg.Add(1)
+        go func() {
+            defer wg.Done()
+            for job := range jobs {
+                fmt.Println(job)
+            }
+        }()
+    }
+
+    for i := 0; i &lt; 1_000_000; i++ {
+        jobs &lt;- i
+    }
+    close(jobs)
+    wg.Wait()
+}
+</code></pre>
+<h3 id="2-минимизируйте-блокировки"><a class="header" href="#2-минимизируйте-блокировки">2. Минимизируйте блокировки</a></h3>
+<pre><code class="language-go">// ❌ Плохо: частые блокировки на mutex
+type Counter struct {
+    mu sync.Mutex
+    value int
+}
+
+func (c *Counter) Inc() {
+    c.mu.Lock()
+    c.value++
+    c.mu.Unlock() // Блокирует горутину, снимает с M
+}
+
+// ✅ Лучше: atomic операции
+type Counter struct {
+    value int64
+}
+
+func (c *Counter) Inc() {
+    atomic.AddInt64(&amp;c.value, 1) // Не блокирует
+}
+</code></pre>
+<h3 id="3-используйте-buffered-channels-правильно"><a class="header" href="#3-используйте-buffered-channels-правильно">3. Используйте buffered channels правильно</a></h3>
+<pre><code class="language-go">// ❌ Плохо: небуферизированный = блокировки
+ch := make(chan int)
+
+go func() {
+    for i := 0; i &lt; 1000; i++ {
+        ch &lt;- i // Блокируется на каждой отправке
+    }
+}()
+
+for i := 0; i &lt; 1000; i++ {
+    &lt;-ch // Блокируется на каждом получении
+}
+
+// ✅ Лучше: буферизированный
+ch := make(chan int, 100) // Меньше блокировок
+
+go func() {
+    for i := 0; i &lt; 1000; i++ {
+        ch &lt;- i // Блокируется только когда буфер полон
+    }
+    close(ch)
+}()
+
+for val := range ch {
+    _ = val
+}
+</code></pre>
+<h3 id="4-избегайте-долгих-вычислений-без-yield"><a class="header" href="#4-избегайте-долгих-вычислений-без-yield">4. Избегайте долгих вычислений без yield</a></h3>
+<pre><code class="language-go">// ❌ Плохо (в Go &lt; 1.14): монополизирует P
+func compute() {
+    sum := 0
+    for i := 0; i &lt; 1e9; i++ {
+        sum += i
+    }
+    return sum
+}
+
+// ✅ Хорошо: периодически yield (для Go &lt; 1.14)
+func compute() {
+    sum := 0
+    for i := 0; i &lt; 1e9; i++ {
+        sum += i
+        if i % 1e6 == 0 {
+            runtime.Gosched() // Явный yield
+        }
+    }
+    return sum
+}
+
+// ✅ Go 1.14+: не нужен явный yield (signal-based preemption)
+func compute() {
+    sum := 0
+    for i := 0; i &lt; 1e9; i++ {
+        sum += i
+    }
+    return sum
+}
+</code></pre>
+<h3 id="5-gomaxprocs-для-контейнеров"><a class="header" href="#5-gomaxprocs-для-контейнеров">5. GOMAXPROCS для контейнеров</a></h3>
+<pre><code class="language-go">import _ "go.uber.org/automaxprocs"
+
+// Автоматически устанавливает GOMAXPROCS
+// на основе CPU limits в контейнере
+func main() {
+    // automaxprocs уже установил правильное значение
+    // ...
+}
+</code></pre>
+<hr>
+<h2 id="практические-примеры"><a class="header" href="#практические-примеры">Практические примеры</a></h2>
+<h3 id="пример-1-мониторинг-планировщика"><a class="header" href="#пример-1-мониторинг-планировщика">Пример 1: Мониторинг планировщика</a></h3>
+<pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "runtime"
+    "time"
+)
+
+func monitorScheduler(interval time.Duration) {
+    ticker := time.NewTicker(interval)
+    defer ticker.Stop()
+
+    for range ticker.C {
+        var stats runtime.MemStats
+        runtime.ReadMemStats(&amp;stats)
+
+        fmt.Printf("Goroutines: %d, Threads: %d, GOMAXPROCS: %d\n",
+            runtime.NumGoroutine(),
+            runtime.NumCPU(),
+            runtime.GOMAXPROCS(0))
+
+        fmt.Printf("Heap: %.2f MB, Alloc: %.2f MB\n",
+            float64(stats.HeapAlloc)/1024/1024,
+            float64(stats.TotalAlloc)/1024/1024)
+
+        fmt.Println("---")
+    }
+}
+
+func main() {
+    go monitorScheduler(2 * time.Second)
+
+    // Симуляция работы
+    for i := 0; i &lt; 100; i++ {
+        go func(n int) {
+            time.Sleep(time.Duration(n) * time.Second)
+        }(i % 10)
+    }
+
+    time.Sleep(20 * time.Second)
+}
+</code></pre>
+<h3 id="пример-2-оптимизация-с-worker-pool"><a class="header" href="#пример-2-оптимизация-с-worker-pool">Пример 2: Оптимизация с worker pool</a></h3>
+<pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "runtime"
+    "sync"
+    "time"
+)
+
+type Job struct {
+    ID   int
+    Data int
+}
+
+type Result struct {
+    JobID  int
+    Result int
+}
+
+func worker(id int, jobs &lt;-chan Job, results chan&lt;- Result, wg *sync.WaitGroup) {
+    defer wg.Done()
+
+    for job := range jobs {
+        // Симуляция CPU-intensive работы
+        result := 0
+        for i := 0; i &lt; job.Data; i++ {
+            result += i
+        }
+
+        results &lt;- Result{
+            JobID:  job.ID,
+            Result: result,
+        }
+    }
+}
+
+func main() {
+    numWorkers := runtime.GOMAXPROCS(0) // = количество P
+    numJobs := 1000
+
+    jobs := make(chan Job, 100)
+    results := make(chan Result, 100)
+
+    var wg sync.WaitGroup
+
+    // Запускаем workers
+    fmt.Printf("Starting %d workers (GOMAXPROCS=%d)\n", numWorkers, numWorkers)
+    for w := 0; w &lt; numWorkers; w++ {
+        wg.Add(1)
+        go worker(w, jobs, results, &amp;wg)
+    }
+
+    // Закрываем results после завершения всех workers
+    go func() {
+        wg.Wait()
+        close(results)
+    }()
+
+    // Отправляем jobs
+    start := time.Now()
+    go func() {
+        for i := 0; i &lt; numJobs; i++ {
+            jobs &lt;- Job{ID: i, Data: 10000}
+        }
+        close(jobs)
+    }()
+
+    // Собираем результаты
+    count := 0
+    for range results {
+        count++
+    }
+
+    elapsed := time.Since(start)
+    fmt.Printf("Processed %d jobs in %v\n", count, elapsed)
+    fmt.Printf("Throughput: %.2f jobs/sec\n", float64(count)/elapsed.Seconds())
+}
+</code></pre>
+<h3 id="пример-3-сравнение-gomaxprocs"><a class="header" href="#пример-3-сравнение-gomaxprocs">Пример 3: Сравнение GOMAXPROCS</a></h3>
+<pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "runtime"
+    "sync"
+    "time"
+)
+
+func cpuIntensiveWork(n int) int {
+    result := 0
+    for i := 0; i &lt; n; i++ {
+        result += i
+    }
+    return result
+}
+
+func benchmark(numGoroutines, gomaxprocs int) time.Duration {
+    runtime.GOMAXPROCS(gomaxprocs)
+
+    var wg sync.WaitGroup
+    start := time.Now()
+
+    for i := 0; i &lt; numGoroutines; i++ {
+        wg.Add(1)
+        go func() {
+            defer wg.Done()
+            cpuIntensiveWork(1000000)
+        }()
+    }
+
+    wg.Wait()
+    return time.Since(start)
+}
+
+func main() {
+    numCPU := runtime.NumCPU()
+    fmt.Printf("CPU cores: %d\n\n", numCPU)
+
+    goroutines := []int{10, 100, 1000}
+    gomaxprocsValues := []int{1, numCPU / 2, numCPU, numCPU * 2}
+
+    for _, g := range goroutines {
+        fmt.Printf("=== %d goroutines ===\n", g)
+        for _, p := range gomaxprocsValues {
+            duration := benchmark(g, p)
+            fmt.Printf("GOMAXPROCS=%d: %v\n", p, duration)
+        }
+        fmt.Println()
+    }
+}
+</code></pre>
+<hr><!-- AUTO: NAV -->
+<p><strong>Вопросы?</strong> Открой issue на <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/issues">GitHub</a></p>
+<p><a href="./01_goroutines_channels.html">← Назад: Горутины и каналы</a> | <a href="./02a_memory_allocator.html">Вперёд: Аллокатор памяти Go (Memory Allocator Internals) →</a></p>
+<!-- /AUTO: NAV -->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part2-advanced/01_goroutines_channels.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part2-advanced/02a_memory_allocator.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part2-advanced/01_goroutines_channels.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part2-advanced/02a_memory_allocator.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

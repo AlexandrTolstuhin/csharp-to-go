@@ -1,0 +1,3414 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>4.6 Конфигурация - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-e1a1ce5b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-c19b06e6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part4-infrastructure/06_config.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="46-конфигурация-управление-настройками-в-go"><a class="header" href="#46-конфигурация-управление-настройками-в-go">4.6 Конфигурация: Управление настройками в Go</a></h1>
+<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<ul>
+<li><a href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5">Введение</a></li>
+<li><a href="#%D1%8D%D0%BA%D0%BE%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0-c-vs-go">Экосистема: C# vs Go</a></li>
+<li><a href="#%D1%81%D1%82%D0%B0%D0%BD%D0%B4%D0%B0%D1%80%D1%82%D0%BD%D0%B0%D1%8F-%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA%D0%B0-os-%D0%B8-flag">Стандартная библиотека: os и flag</a>
+<ul>
+<li><a href="#osgetenv-%D0%B8-oslookupenv">os.Getenv и os.LookupEnv</a></li>
+<li><a href="#%D1%82%D0%B8%D0%BF%D0%B8%D0%B7%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D0%B0%D1%8F-%D0%BE%D0%B1%D1%91%D1%80%D1%82%D0%BA%D0%B0-%D0%BD%D0%B0%D0%B4-env">Типизированная обёртка над env</a></li>
+<li><a href="#flag-%D0%B0%D1%80%D0%B3%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B-%D0%BA%D0%BE%D0%BC%D0%B0%D0%BD%D0%B4%D0%BD%D0%BE%D0%B9-%D1%81%D1%82%D1%80%D0%BE%D0%BA%D0%B8">flag: аргументы командной строки</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%BC%D0%B1%D0%B8%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-flag-%D0%B8-env">Комбинирование flag и env</a></li>
+</ul>
+</li>
+<li><a href="#caarlos0env-struct-based-env-%D0%BF%D0%B0%D1%80%D1%81%D0%B8%D0%BD%D0%B3">caarlos0/env: struct-based ENV парсинг</a>
+<ul>
+<li><a href="#%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D1%8B-%D0%B8-struct-tags">Основы и struct tags</a></li>
+<li><a href="#%D0%BF%D0%BE%D0%B4%D0%B4%D0%B5%D1%80%D0%B6%D0%B8%D0%B2%D0%B0%D0%B5%D0%BC%D1%8B%D0%B5-%D1%82%D0%B8%D0%BF%D1%8B-%D0%B8-custom-parsers">Поддерживаемые типы и custom parsers</a></li>
+<li><a href="#%D0%B2%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5-%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D1%8B-%D0%B8-prefix">Вложенные структуры и prefix</a></li>
+<li><a href="#required-defaults-expand">Required, defaults, expand</a></li>
+<li><a href="#%D0%B8%D0%BD%D1%82%D0%B5%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D1%81-env-%D1%84%D0%B0%D0%B9%D0%BB%D0%B0%D0%BC%D0%B8-godotenv">Интеграция с .env файлами (godotenv)</a></li>
+</ul>
+</li>
+<li><a href="#kelseyhightowerenvconfig">kelseyhightower/envconfig</a>
+<ul>
+<li><a href="#%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D1%8B-%D0%B8-%D0%BE%D1%82%D0%BB%D0%B8%D1%87%D0%B8%D1%8F-%D0%BE%D1%82-caarlos0env">Основы и отличия от caarlos0/env</a></li>
+<li><a href="#struct-tags-%D0%B8-naming-conventions">Struct tags и naming conventions</a></li>
+<li><a href="#usage-%D0%B8-help-output">Usage и help output</a></li>
+</ul>
+</li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-env-%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA">Сравнение env-библиотек</a></li>
+<li><a href="#viper-%D0%BF%D0%BE%D0%BB%D0%BD%D0%BE%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%BE%D0%BD%D0%B0%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F">Viper: полнофункциональная конфигурация</a>
+<ul>
+<li><a href="#%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%B1%D0%B0%D0%B7%D0%BE%D0%B2%D0%BE%D0%B5-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5">Установка и базовое использование</a></li>
+<li><a href="#%D0%B8%D1%81%D1%82%D0%BE%D1%87%D0%BD%D0%B8%D0%BA%D0%B8-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D0%B8-%D0%B8-%D0%BF%D1%80%D0%B8%D0%BE%D1%80%D0%B8%D1%82%D0%B5%D1%82%D1%8B">Источники конфигурации и приоритеты</a></li>
+<li><a href="#%D1%84%D0%B0%D0%B9%D0%BB%D1%8B-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D0%B8-yaml-toml-json">Файлы конфигурации (YAML, TOML, JSON)</a></li>
+<li><a href="#%D0%BF%D0%B5%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5-%D0%BE%D0%BA%D1%80%D1%83%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F-%D0%B8-automaticenv">Переменные окружения и AutomaticEnv</a></li>
+<li><a href="#unmarshal-%D0%B2-%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D1%8B">Unmarshal в структуры</a></li>
+<li><a href="#watchconfig-%D0%B3%D0%BE%D1%80%D1%8F%D1%87%D0%B0%D1%8F-%D0%BF%D0%B5%D1%80%D0%B5%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BA%D0%B0">WatchConfig: горячая перезагрузка</a></li>
+<li><a href="#remote-config-etcd-consul">Remote Config (etcd, Consul)</a></li>
+<li><a href="#%D0%BF%D1%80%D0%BE%D0%B1%D0%BB%D0%B5%D0%BC%D1%8B-viper-%D0%B8-%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%BD%D0%B5-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C">Проблемы Viper и когда НЕ использовать</a></li>
+</ul>
+</li>
+<li><a href="#koanf-%D1%81%D0%BE%D0%B2%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D0%B0%D1%8F-%D0%B0%D0%BB%D1%8C%D1%82%D0%B5%D1%80%D0%BD%D0%B0%D1%82%D0%B8%D0%B2%D0%B0-viper">koanf: современная альтернатива Viper</a>
+<ul>
+<li><a href="#%D0%B0%D1%80%D1%85%D0%B8%D1%82%D0%B5%D0%BA%D1%82%D1%83%D1%80%D0%B0-providers-%D0%B8-parsers">Архитектура: Providers и Parsers</a></li>
+<li><a href="#%D1%84%D0%B0%D0%B9%D0%BB%D1%8B-env-flags">Файлы, ENV, flags</a></li>
+<li><a href="#unmarshal-%D0%B8-struct-tags">Unmarshal и struct tags</a></li>
+<li><a href="#watch-%D0%B8-reload">Watch и reload</a></li>
+<li><a href="#viper-vs-koanf">Viper vs koanf</a></li>
+</ul>
+</li>
+<li><a href="#cleanenv-%D0%BB%D1%91%D0%B3%D0%BA%D0%B0%D1%8F-%D0%B0%D0%BB%D1%8C%D1%82%D0%B5%D1%80%D0%BD%D0%B0%D1%82%D0%B8%D0%B2%D0%B0">cleanenv: лёгкая альтернатива</a></li>
+<li><a href="#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-%D0%B2%D1%81%D0%B5%D1%85-%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA">Сравнительная таблица всех библиотек</a></li>
+<li><a href="#%D0%B1%D0%BB%D0%BE%D0%BA-%D1%81%D1%85%D0%B5%D0%BC%D0%B0-%D0%B2%D1%8B%D0%B1%D0%BE%D1%80%D0%B0-%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA%D0%B8">Блок-схема выбора библиотеки</a></li>
+<li><a href="#%D0%B2%D0%B0%D0%BB%D0%B8%D0%B4%D0%B0%D1%86%D0%B8%D1%8F-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D0%B8">Валидация конфигурации</a>
+<ul>
+<li><a href="#fail-fast-%D0%BF%D1%80%D0%B8-%D0%B7%D0%B0%D0%BF%D1%83%D1%81%D0%BA%D0%B5">Fail fast при запуске</a></li>
+<li><a href="#go-playgroundvalidator-%D0%B4%D0%BB%D1%8F-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D0%BE%D0%B2">go-playground/validator для конфигов</a></li>
+<li><a href="#custom-validation-logic">Custom validation logic</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD%D1%8B-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D0%B8">Паттерны конфигурации</a>
+<ul>
+<li><a href="#12-factor-app-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-env">12-Factor App: конфигурация через ENV</a></li>
+<li><a href="#multi-environment-devstagingprod">Multi-environment (dev/staging/prod)</a></li>
+<li><a href="#immutable-config-vs-hot-reload">Immutable config vs hot reload</a></li>
+<li><a href="#functional-options-%D0%B4%D0%BB%D1%8F-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D0%B8">Functional Options для конфигурации</a></li>
+</ul>
+</li>
+<li><a href="#%D1%81%D0%B5%D0%BA%D1%80%D0%B5%D1%82%D1%8B-%D0%B8-%D0%B1%D0%B5%D0%B7%D0%BE%D0%BF%D0%B0%D1%81%D0%BD%D0%BE%D1%81%D1%82%D1%8C">Секреты и безопасность</a>
+<ul>
+<li><a href="#%D0%BF%D0%BE%D1%87%D0%B5%D0%BC%D1%83-%D0%BD%D0%B5-%D1%85%D1%80%D0%B0%D0%BD%D0%B8%D1%82%D1%8C-%D1%81%D0%B5%D0%BA%D1%80%D0%B5%D1%82%D1%8B-%D0%B2-config-%D1%84%D0%B0%D0%B9%D0%BB%D0%B0%D1%85">Почему НЕ хранить секреты в config-файлах</a></li>
+<li><a href="#hashicorp-vault">HashiCorp Vault</a></li>
+<li><a href="#aws-secrets-manager">AWS Secrets Manager</a></li>
+<li><a href="#kubernetes-secrets-%D0%B8-configmaps">Kubernetes Secrets и ConfigMaps</a></li>
+<li><a href="#%D0%BC%D0%B0%D1%81%D0%BA%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D1%81%D0%B5%D0%BA%D1%80%D0%B5%D1%82%D0%BE%D0%B2-%D0%B2-%D0%BB%D0%BE%D0%B3%D0%B0%D1%85">Маскирование секретов в логах</a></li>
+</ul>
+</li>
+<li><a href="#feature-flags">Feature Flags</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%BE%D1%81%D1%82%D0%B0%D1%8F-%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8E">Простая реализация через конфигурацию</a></li>
+<li><a href="#openfeature-sdk">OpenFeature SDK</a></li>
+<li><a href="#%D1%81%D1%82%D0%BE%D1%80%D0%BE%D0%BD%D0%BD%D0%B8%D0%B5-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D1%8B">Сторонние сервисы</a></li>
+</ul>
+</li>
+<li><a href="#production-concerns">Production Concerns</a>
+<ul>
+<li><a href="#%D0%BF%D0%BE%D1%80%D1%8F%D0%B4%D0%BE%D0%BA-%D0%B8%D0%BD%D0%B8%D1%86%D0%B8%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8">Порядок инициализации</a></li>
+<li><a href="#graceful-reload">Graceful reload</a></li>
+<li><a href="#%D1%82%D0%B5%D1%81%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D0%B8">Тестирование конфигурации</a></li>
+<li><a href="#observability-%D0%B4%D0%BB%D1%8F-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D0%B8">Observability для конфигурации</a></li>
+<li><a href="#2-%D0%BD%D0%B5-%D0%B2%D0%B0%D0%BB%D0%B8%D0%B4%D0%B8%D1%80%D1%83%D1%8E%D1%82-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8E-%D0%BF%D1%80%D0%B8-%D0%B7%D0%B0%D0%BF%D1%83%D1%81%D0%BA%D0%B5">2. Не валидируют конфигурацию при запуске</a></li>
+<li><a href="#3-%D1%81%D0%B5%D0%BA%D1%80%D0%B5%D1%82%D1%8B-%D0%B2-config-%D1%84%D0%B0%D0%B9%D0%BB%D0%B0%D1%85-%D0%B8-%D0%BA%D0%BE%D0%B4%D0%B5">3. Секреты в config-файлах и коде</a></li>
+<li><a href="#4-%D0%B3%D0%BB%D0%BE%D0%B1%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9-mutable-state">4. Глобальный mutable state</a></li>
+<li><a href="#5-%D0%B8%D0%B3%D0%BD%D0%BE%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-12-factor">5. Игнорирование 12-Factor</a></li>
+<li><a href="#6-%D0%BF%D0%B5%D1%80%D0%B5%D1%87%D0%B8%D1%82%D1%8B%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D0%B0-%D0%BD%D0%B0-%D0%BA%D0%B0%D0%B6%D0%B4%D1%8B%D0%B9-%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81">6. Перечитывание конфига на каждый запрос</a></li>
+<li><a href="#7-%D1%81%D0%BC%D0%B5%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D0%B8-%D0%B8-%D0%B1%D0%B8%D0%B7%D0%BD%D0%B5%D1%81-%D0%BB%D0%BE%D0%B3%D0%B8%D0%BA%D0%B8">7. Смешение конфигурации и бизнес-логики</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B">Практические примеры</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-production-ready-config-%D1%81-caarlos0env">Пример 1: Production-ready config с caarlos0/env</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-multi-source-config-%D1%81-koanf-%D0%B8-hot-reload">Пример 2: Multi-source config с koanf и hot reload</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-config-%D1%81-%D1%81%D0%B5%D0%BA%D1%80%D0%B5%D1%82%D0%B0%D0%BC%D0%B8-%D0%B8-feature-flags">Пример 3: Config с секретами и feature flags</a></li>
+</ul>
+</li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<p>В <a href="../part3-web-api/02_project_structure.html">разделе 3.2</a> мы познакомились с базовым подходом к конфигурации — <code>os.Getenv</code> и простая структура <code>Config</code>. Этого достаточно для учебного проекта, но в production-системах конфигурация — это целая инфраструктура: типизация, валидация, секреты, горячая перезагрузка, мультисреды.</p>
+<p>В предыдущих разделах Части 4 мы уже сталкивались с конфигурацией:</p>
+<ul>
+<li><strong>4.1</strong>: <code>os.Getenv("DB_HOST")</code> для подключения к PostgreSQL</li>
+<li><strong>4.2</strong>: строка подключения Redis, TTL кэша</li>
+<li><strong>4.3</strong>: адреса брокеров Kafka/RabbitMQ</li>
+<li><strong>4.4</strong>: порты и TLS-настройки gRPC</li>
+<li><strong>4.5</strong>: уровни логирования, адреса коллекторов</li>
+</ul>
+<p>Каждый раз мы использовали ad-hoc подход. Теперь систематизируем.</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В .NET конфигурация — часть фреймворка. <code>IConfiguration</code>, <code>appsettings.json</code>, <code>IOptions&lt;T&gt;</code> — всё это встроено в DI-контейнер и работает “из коробки”. В Go нет фреймворка — конфигурация это <strong>просто структура</strong>, которую вы заполняете и передаёте явно. Никакого DI, никакого <code>IOptions&lt;T&gt;</code> — только struct и конструкторы.</p>
+</blockquote>
+<hr>
+<h2 id="экосистема-c-vs-go"><a class="header" href="#экосистема-c-vs-go">Экосистема: C# vs Go</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Концепция</th><th>C# (.NET)</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>Стандартная конфигурация</td><td><code>IConfiguration</code> + <code>ConfigurationBuilder</code></td><td><code>os.Getenv</code> / <code>flag</code></td></tr>
+<tr><td>Файлы настроек</td><td><code>appsettings.json</code> (JSON)</td><td>YAML/TOML через viper/koanf</td></tr>
+<tr><td>Строгая типизация</td><td><code>IOptions&lt;T&gt;</code> паттерн</td><td>Struct + tags</td></tr>
+<tr><td>Переменные окружения</td><td><code>AddEnvironmentVariables()</code></td><td><code>os.Getenv</code> / caarlos0/env</td></tr>
+<tr><td>Перезагрузка</td><td><code>IOptionsMonitor&lt;T&gt;</code></td><td>viper.WatchConfig / atomic.Pointer</td></tr>
+<tr><td>Снимок на запрос</td><td><code>IOptionsSnapshot&lt;T&gt;</code></td><td>Immutable struct (перезагрузка = новая структура)</td></tr>
+<tr><td>Валидация</td><td>Data Annotations / <code>IValidateOptions&lt;T&gt;</code></td><td>go-playground/validator / custom</td></tr>
+<tr><td>Секреты</td><td>User Secrets, Azure Key Vault</td><td>Vault, AWS SM, K8s Secrets</td></tr>
+<tr><td>DI-интеграция</td><td><code>services.Configure&lt;T&gt;()</code></td><td>Нет — передаём struct явно</td></tr>
+<tr><td>Feature flags</td><td><code>Microsoft.FeatureManagement</code></td><td>Manual / OpenFeature / LaunchDarkly</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>⚠️ <strong>Ключевое отличие</strong>: В C# конфигурация пронизывает весь фреймворк через DI. В Go конфигурация — это <strong>данные</strong>, которые вы загружаете при старте и передаёте через конструкторы. Нет магии, нет скрытых зависимостей.</p>
+</blockquote>
+<p><strong>C# подход</strong>:</p>
+<pre><code class="language-csharp">// Program.cs — конфигурация встроена в фреймворк
+var builder = WebApplication.CreateBuilder(args);
+
+// Автоматически загружает: appsettings.json → appsettings.{Env}.json → env vars → secrets
+builder.Configuration
+    .AddJsonFile("appsettings.json")
+    .AddEnvironmentVariables()
+    .AddUserSecrets&lt;Program&gt;();
+
+// Регистрация типизированной конфигурации через DI
+builder.Services.Configure&lt;DatabaseOptions&gt;(
+    builder.Configuration.GetSection("Database"));
+
+builder.Services.AddScoped&lt;IUserRepository, UserRepository&gt;();
+
+// Использование — через DI
+public class UserRepository : IUserRepository
+{
+    public UserRepository(IOptions&lt;DatabaseOptions&gt; options)
+    {
+        _connectionString = options.Value.ConnectionString;
+    }
+}
+</code></pre>
+<p><strong>Go подход</strong>:</p>
+<pre><code class="language-go">// main.go — конфигурация загружается явно
+func main() {
+    // Загрузка конфигурации — явный вызов
+    cfg, err := config.Load()
+    if err != nil {
+        log.Fatal("ошибка загрузки конфигурации", "error", err)
+    }
+
+    // Передача через конструкторы — никакого DI
+    repo := postgres.NewUserRepository(cfg.Database)
+    svc := service.NewUserService(repo)
+    handler := api.NewHandler(svc)
+
+    srv := &amp;http.Server{
+        Addr:    cfg.Server.Address(),
+        Handler: handler.Routes(),
+    }
+    log.Fatal(srv.ListenAndServe())
+}
+</code></pre>
+<p>Простота и явность — философия Go. Конфигурация не исключение.</p>
+<hr>
+<h2 id="стандартная-библиотека-os-и-flag"><a class="header" href="#стандартная-библиотека-os-и-flag">Стандартная библиотека: os и flag</a></h2>
+<h3 id="osgetenv-и-oslookupenv"><a class="header" href="#osgetenv-и-oslookupenv">os.Getenv и os.LookupEnv</a></h3>
+<p>Go предоставляет два способа чтения переменных окружения:</p>
+<pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "os"
+)
+
+func main() {
+    // os.Getenv — возвращает значение или пустую строку
+    // Невозможно отличить "не задана" от "задана пустой"
+    host := os.Getenv("DB_HOST")
+    fmt.Println(host) // "" — не задана? или задана пустой?
+
+    // os.LookupEnv — возвращает значение и флаг наличия
+    host, ok := os.LookupEnv("DB_HOST")
+    if !ok {
+        fmt.Println("DB_HOST не задана")
+    } else {
+        fmt.Printf("DB_HOST = %q\n", host) // может быть пустой строкой
+    }
+}
+</code></pre>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">// Environment.GetEnvironmentVariable — аналог os.LookupEnv
+// Возвращает null, если переменная не задана
+string? host = Environment.GetEnvironmentVariable("DB_HOST");
+if (host is null)
+    Console.WriteLine("DB_HOST не задана");
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Используйте <code>os.LookupEnv</code>, когда нужно отличить “не задана” от “пустая”. Для обязательных переменных — <code>os.Getenv</code> с проверкой на пустоту.</p>
+</blockquote>
+<h3 id="типизированная-обёртка-над-env"><a class="header" href="#типизированная-обёртка-над-env">Типизированная обёртка над env</a></h3>
+<p>Разбросанные вызовы <code>os.Getenv</code> — путь к хаосу. Идиоматичный подход — собрать конфигурацию в структуру:</p>
+<pre><code class="language-go">package config
+
+import (
+    "fmt"
+    "os"
+    "strconv"
+    "time"
+)
+
+type Config struct {
+    Server   ServerConfig
+    Database DatabaseConfig
+}
+
+type ServerConfig struct {
+    Host         string
+    Port         int
+    ReadTimeout  time.Duration
+    WriteTimeout time.Duration
+}
+
+type DatabaseConfig struct {
+    Host     string
+    Port     int
+    User     string
+    Password string
+    Name     string
+    SSLMode  string
+}
+
+func Load() (*Config, error) {
+    port, err := getEnvInt("SERVER_PORT", 8080)
+    if err != nil {
+        return nil, fmt.Errorf("SERVER_PORT: %w", err)
+    }
+
+    dbPort, err := getEnvInt("DB_PORT", 5432)
+    if err != nil {
+        return nil, fmt.Errorf("DB_PORT: %w", err)
+    }
+
+    readTimeout, err := getEnvDuration("SERVER_READ_TIMEOUT", 5*time.Second)
+    if err != nil {
+        return nil, fmt.Errorf("SERVER_READ_TIMEOUT: %w", err)
+    }
+
+    writeTimeout, err := getEnvDuration("SERVER_WRITE_TIMEOUT", 10*time.Second)
+    if err != nil {
+        return nil, fmt.Errorf("SERVER_WRITE_TIMEOUT: %w", err)
+    }
+
+    return &amp;Config{
+        Server: ServerConfig{
+            Host:         getEnv("SERVER_HOST", "0.0.0.0"),
+            Port:         port,
+            ReadTimeout:  readTimeout,
+            WriteTimeout: writeTimeout,
+        },
+        Database: DatabaseConfig{
+            Host:     getEnv("DB_HOST", "localhost"),
+            Port:     dbPort,
+            User:     mustGetEnv("DB_USER"),     // обязательная — паникует
+            Password: mustGetEnv("DB_PASSWORD"), // обязательная — паникует
+            Name:     getEnv("DB_NAME", "myapp"),
+            SSLMode:  getEnv("DB_SSLMODE", "disable"),
+        },
+    }, nil
+}
+
+// getEnv — возвращает значение переменной или default
+func getEnv(key, defaultValue string) string {
+    if value, ok := os.LookupEnv(key); ok {
+        return value
+    }
+    return defaultValue
+}
+
+// mustGetEnv — паникует, если переменная не задана
+func mustGetEnv(key string) string {
+    value, ok := os.LookupEnv(key)
+    if !ok || value == "" {
+        panic(fmt.Sprintf("обязательная переменная окружения %s не задана", key))
+    }
+    return value
+}
+
+// getEnvInt — читает int из env с default
+func getEnvInt(key string, defaultValue int) (int, error) {
+    str, ok := os.LookupEnv(key)
+    if !ok {
+        return defaultValue, nil
+    }
+    return strconv.Atoi(str)
+}
+
+// getEnvDuration — читает time.Duration из env с default
+func getEnvDuration(key string, defaultValue time.Duration) (time.Duration, error) {
+    str, ok := os.LookupEnv(key)
+    if !ok {
+        return defaultValue, nil
+    }
+    return time.ParseDuration(str)
+}
+</code></pre>
+<p>Этот подход <strong>работает</strong>, но у него есть недостатки:</p>
+<ul>
+<li>Каждое новое поле требует отдельной helper-функции</li>
+<li>Нет автоматической документации доступных переменных</li>
+<li>Нет валидации (min/max, формат, зависимости)</li>
+<li>Много boilerplate-кода</li>
+</ul>
+<blockquote>
+<p>⚠️ <strong>Проблема масштабирования</strong>: При 20+ переменных окружения этот подход становится трудно поддерживать. Именно для этого существуют библиотеки — caarlos0/env, envconfig и другие.</p>
+</blockquote>
+<h3 id="flag-аргументы-командной-строки"><a class="header" href="#flag-аргументы-командной-строки">flag: аргументы командной строки</a></h3>
+<p>Пакет <code>flag</code> — встроенный способ работы с CLI-аргументами:</p>
+<pre><code class="language-go">package main
+
+import (
+    "flag"
+    "fmt"
+    "time"
+)
+
+func main() {
+    // Определение флагов
+    host := flag.String("host", "0.0.0.0", "адрес сервера")
+    port := flag.Int("port", 8080, "порт сервера")
+    debug := flag.Bool("debug", false, "режим отладки")
+    timeout := flag.Duration("timeout", 30*time.Second, "таймаут запросов")
+
+    // Парсинг аргументов (обязательно до использования)
+    flag.Parse()
+
+    fmt.Printf("Сервер: %s:%d (debug=%v, timeout=%v)\n",
+        *host, *port, *debug, *timeout)
+}
+</code></pre>
+<pre><code class="language-bash"># Использование
+go run main.go -host localhost -port 9090 -debug -timeout 1m
+
+# Автоматический help
+go run main.go -h
+# Output:
+#   -debug
+#         режим отладки
+#   -host string
+#         адрес сервера (default "0.0.0.0")
+#   -port int
+#         порт сервера (default 8080)
+#   -timeout duration
+#         таймаут запросов (default 30s)
+</code></pre>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">// В C# нет встроенной работы с CLI-аргументами в ASP.NET
+// Обычно используют CommandLineConfigurationProvider или System.CommandLine
+builder.Configuration.AddCommandLine(args);
+
+// Или библиотеку System.CommandLine
+var rootCommand = new RootCommand("My App");
+var portOption = new Option&lt;int&gt;("--port", () =&gt; 8080, "порт сервера");
+rootCommand.AddOption(portOption);
+</code></pre>
+<blockquote>
+<p>💡 <strong>Когда использовать flag</strong>: Для CLI-утилит и инструментов. Для серверных приложений предпочтительнее переменные окружения (12-Factor App). <code>flag</code> удобен для dev-переопределений: <code>go run main.go -debug</code>.</p>
+</blockquote>
+<h3 id="комбинирование-flag-и-env"><a class="header" href="#комбинирование-flag-и-env">Комбинирование flag и env</a></h3>
+<p>В production часто нужен приоритет: <strong>flag &gt; env &gt; default</strong>. Стандартная библиотека <code>pflag</code> (POSIX-совместимые флаги) упрощает это:</p>
+<pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "os"
+
+    "github.com/spf13/pflag"
+)
+
+func main() {
+    // pflag поддерживает длинные и короткие флаги
+    host := pflag.StringP("host", "H", "0.0.0.0", "адрес сервера")
+    port := pflag.IntP("port", "p", 8080, "порт сервера")
+    debug := pflag.BoolP("debug", "d", false, "режим отладки")
+
+    pflag.Parse()
+
+    // Проверяем, был ли флаг явно задан
+    // Если нет — проверяем env
+    if !pflag.CommandLine.Changed("host") {
+        if envHost := os.Getenv("SERVER_HOST"); envHost != "" {
+            *host = envHost
+        }
+    }
+    if !pflag.CommandLine.Changed("port") {
+        if envPort := os.Getenv("SERVER_PORT"); envPort != "" {
+            fmt.Sscanf(envPort, "%d", port)
+        }
+    }
+
+    fmt.Printf("Сервер: %s:%d (debug=%v)\n", *host, *port, *debug)
+}
+</code></pre>
+<pre><code class="language-bash"># POSIX-стиль флагов
+go run main.go --host localhost --port 9090 --debug
+go run main.go -H localhost -p 9090 -d
+
+# Через env
+SERVER_HOST=10.0.0.1 SERVER_PORT=3000 go run main.go
+
+# Flag перебивает env
+SERVER_HOST=10.0.0.1 go run main.go --host localhost
+# Результат: host = localhost (flag приоритетнее)
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Для серверных приложений</strong> этот подход — чрезмерно сложный boilerplate. Используйте caarlos0/env или viper, которые решают эту задачу декларативно.</p>
+</blockquote>
+<hr>
+<h2 id="caarlos0env-struct-based-env-парсинг"><a class="header" href="#caarlos0env-struct-based-env-парсинг">caarlos0/env: struct-based ENV парсинг</a></h2>
+<p><a href="https://github.com/caarlos0/env">github.com/caarlos0/env</a> — самая популярная библиотека для парсинга переменных окружения в Go. Философия: <strong>определи структуру с тегами, получи конфигурацию</strong>.</p>
+<pre><code class="language-bash">go get github.com/caarlos0/env/v11
+</code></pre>
+<h3 id="основы-и-struct-tags"><a class="header" href="#основы-и-struct-tags">Основы и struct tags</a></h3>
+<pre><code class="language-go">package config
+
+import (
+    "fmt"
+    "time"
+
+    "github.com/caarlos0/env/v11"
+)
+
+type Config struct {
+    Server   ServerConfig
+    Database DatabaseConfig
+    Redis    RedisConfig
+    Log      LogConfig
+}
+
+type ServerConfig struct {
+    Host         string        `env:"SERVER_HOST" envDefault:"0.0.0.0"`
+    Port         int           `env:"SERVER_PORT" envDefault:"8080"`
+    ReadTimeout  time.Duration `env:"SERVER_READ_TIMEOUT" envDefault:"5s"`
+    WriteTimeout time.Duration `env:"SERVER_WRITE_TIMEOUT" envDefault:"10s"`
+}
+
+type DatabaseConfig struct {
+    Host     string `env:"DB_HOST" envDefault:"localhost"`
+    Port     int    `env:"DB_PORT" envDefault:"5432"`
+    User     string `env:"DB_USER,required"`     // обязательная — ошибка если не задана
+    Password string `env:"DB_PASSWORD,required"`
+    Name     string `env:"DB_NAME" envDefault:"myapp"`
+    SSLMode  string `env:"DB_SSLMODE" envDefault:"disable"`
+    MaxConns int    `env:"DB_MAX_CONNS" envDefault:"25"`
+}
+
+type RedisConfig struct {
+    Addr     string `env:"REDIS_ADDR" envDefault:"localhost:6379"`
+    Password string `env:"REDIS_PASSWORD"`
+    DB       int    `env:"REDIS_DB" envDefault:"0"`
+}
+
+type LogConfig struct {
+    Level  string `env:"LOG_LEVEL" envDefault:"info"`
+    Format string `env:"LOG_FORMAT" envDefault:"json"` // json или text
+}
+
+func Load() (*Config, error) {
+    cfg := &amp;Config{}
+    if err := env.Parse(cfg); err != nil {
+        return nil, fmt.Errorf("парсинг конфигурации: %w", err)
+    }
+    return cfg, nil
+}
+</code></pre>
+<p>Использование:</p>
+<pre><code class="language-bash"># Задаём обязательные переменные, остальное — defaults
+export DB_USER=admin
+export DB_PASSWORD=secret123
+export SERVER_PORT=9090
+
+# Запускаем приложение
+go run main.go
+</code></pre>
+<p><strong>Сравнение с C#</strong>:</p>
+<pre><code class="language-csharp">// C# — нужен DI, IOptions&lt;T&gt;, builder.Services.Configure&lt;T&gt;()
+public class DatabaseOptions
+{
+    [Required]
+    public string User { get; set; } = default!;
+
+    [Required]
+    public string Password { get; set; } = default!;
+
+    public string Host { get; set; } = "localhost";
+    public int Port { get; set; } = 5432;
+}
+
+// Регистрация
+services.Configure&lt;DatabaseOptions&gt;(config.GetSection("Database"));
+
+// Использование через DI
+public class Repository(IOptions&lt;DatabaseOptions&gt; opts) { }
+</code></pre>
+<pre><code class="language-go">// Go — просто структура, никакого DI
+cfg, err := config.Load()
+if err != nil {
+    log.Fatal(err)
+}
+repo := postgres.NewRepository(cfg.Database)
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: <code>env:"DB_USER,required"</code> — аналог <code>[Required]</code> атрибута на свойстве класса <code>IOptions&lt;T&gt;</code>. Только без DI — парсинг и валидация происходят в момент вызова <code>env.Parse</code>.</p>
+</blockquote>
+<h3 id="поддерживаемые-типы-и-custom-parsers"><a class="header" href="#поддерживаемые-типы-и-custom-parsers">Поддерживаемые типы и custom parsers</a></h3>
+<p>caarlos0/env поддерживает множество типов “из коробки”:</p>
+<pre><code class="language-go">type AllTypesExample struct {
+    // Примитивы
+    String  string  `env:"STR"`
+    Int     int     `env:"INT"`
+    Int64   int64   `env:"INT64"`
+    Float64 float64 `env:"FLOAT"`
+    Bool    bool    `env:"BOOL"` // true, false, 1, 0
+
+    // Стандартные типы
+    Duration time.Duration `env:"DUR"`    // "5s", "1m30s", "2h"
+    URL      url.URL       `env:"URL"`    // "https://example.com"
+
+    // Срезы (разделитель по умолчанию — запятая)
+    Hosts []string `env:"HOSTS" envSeparator:":"` // HOST1:HOST2:HOST3
+    Ports []int    `env:"PORTS"`                   // 8080,8081,8082
+
+    // Map
+    Labels map[string]string `env:"LABELS"` // key=val,key2=val2
+}
+</code></pre>
+<p>Для нестандартных типов — custom parsers:</p>
+<pre><code class="language-go">import (
+    "log/slog"
+    "github.com/caarlos0/env/v11"
+)
+
+// Собственный тип для уровня логирования
+type LogLevel slog.Level
+
+// Реализуем интерфейс env.ParserFunc не нужен —
+// достаточно encoding.TextUnmarshaler
+func (l *LogLevel) UnmarshalText(text []byte) error {
+    switch string(text) {
+    case "debug":
+        *l = LogLevel(slog.LevelDebug)
+    case "info":
+        *l = LogLevel(slog.LevelInfo)
+    case "warn":
+        *l = LogLevel(slog.LevelWarn)
+    case "error":
+        *l = LogLevel(slog.LevelError)
+    default:
+        return fmt.Errorf("неизвестный уровень логирования: %s", text)
+    }
+    return nil
+}
+
+type Config struct {
+    LogLevel LogLevel `env:"LOG_LEVEL" envDefault:"info"`
+}
+</code></pre>
+<p>Альтернативный способ — через <code>env.WithTypeCast</code>:</p>
+<pre><code class="language-go">// Глобальный парсер для типа через опции
+cfg := &amp;Config{}
+err := env.ParseWithOptions(cfg, env.Options{
+    FuncMap: map[reflect.Type]env.ParserFunc{
+        reflect.TypeOf(slog.LevelInfo): func(v string) (interface{}, error) {
+            var level slog.Level
+            err := level.UnmarshalText([]byte(v))
+            return level, err
+        },
+    },
+})
+</code></pre>
+<h3 id="вложенные-структуры-и-prefix"><a class="header" href="#вложенные-структуры-и-prefix">Вложенные структуры и prefix</a></h3>
+<p>Для группировки связанных настроек используйте <code>envPrefix</code>:</p>
+<pre><code class="language-go">type Config struct {
+    // envPrefix добавляет префикс ко всем полям вложенной структуры
+    Primary  DatabaseConfig `envPrefix:"PRIMARY_DB_"`
+    Replica  DatabaseConfig `envPrefix:"REPLICA_DB_"`
+    Cache    RedisConfig    `envPrefix:"CACHE_"`
+    Session  RedisConfig    `envPrefix:"SESSION_"`
+}
+
+type DatabaseConfig struct {
+    Host     string `env:"HOST" envDefault:"localhost"`
+    Port     int    `env:"PORT" envDefault:"5432"`
+    User     string `env:"USER,required"`
+    Password string `env:"PASSWORD,required"`
+}
+
+type RedisConfig struct {
+    Addr     string `env:"ADDR" envDefault:"localhost:6379"`
+    Password string `env:"PASSWORD"`
+    DB       int    `env:"DB" envDefault:"0"`
+}
+</code></pre>
+<pre><code class="language-bash"># Результирующие переменные:
+# PRIMARY_DB_HOST, PRIMARY_DB_PORT, PRIMARY_DB_USER, PRIMARY_DB_PASSWORD
+# REPLICA_DB_HOST, REPLICA_DB_PORT, REPLICA_DB_USER, REPLICA_DB_PASSWORD
+# CACHE_ADDR, CACHE_PASSWORD, CACHE_DB
+# SESSION_ADDR, SESSION_PASSWORD, SESSION_DB
+
+export PRIMARY_DB_USER=admin
+export PRIMARY_DB_PASSWORD=secret
+export REPLICA_DB_USER=reader
+export REPLICA_DB_PASSWORD=readonly
+</code></pre>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">// В C# — секции конфигурации
+services.Configure&lt;DatabaseOptions&gt;(config.GetSection("PrimaryDb"));
+services.Configure&lt;DatabaseOptions&gt;("Replica", config.GetSection("ReplicaDb"));
+</code></pre>
+<h3 id="required-defaults-expand"><a class="header" href="#required-defaults-expand">Required, defaults, expand</a></h3>
+<pre><code class="language-go">type Config struct {
+    // required — ошибка парсинга, если переменная не задана
+    APIKey string `env:"API_KEY,required"`
+
+    // envDefault — значение по умолчанию
+    Port int `env:"PORT" envDefault:"8080"`
+
+    // notEmpty — переменная должна быть задана и не быть пустой
+    DatabaseURL string `env:"DATABASE_URL,notEmpty"`
+
+    // expand — раскрывает ссылки на другие переменные ($VAR или ${VAR})
+    // DATABASE_URL=postgres://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME
+    ExpandedURL string `env:"DATABASE_URL,expand"`
+
+    // file — читает значение из файла (путь в переменной)
+    // DB_PASSWORD_FILE=/run/secrets/db_password (Docker secrets)
+    PasswordFromFile string `env:"DB_PASSWORD_FILE,file"`
+
+    // unset — удаляет переменную из окружения после парсинга (безопасность)
+    Secret string `env:"SECRET_TOKEN,required,unset"`
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong><code>file</code> — для Docker secrets</strong>: Docker Swarm и Kubernetes монтируют секреты как файлы в <code>/run/secrets/</code>. Тег <code>file</code> читает содержимое файла, путь к которому указан в переменной.</p>
+</blockquote>
+<pre><code class="language-bash"># Docker secret монтируется как файл
+echo "supersecret" &gt; /run/secrets/db_password
+
+# Переменная содержит путь к файлу
+export DB_PASSWORD_FILE=/run/secrets/db_password
+
+# caarlos0/env прочитает содержимое файла ("supersecret")
+</code></pre>
+<h3 id="интеграция-с-env-файлами-godotenv"><a class="header" href="#интеграция-с-env-файлами-godotenv">Интеграция с .env файлами (godotenv)</a></h3>
+<p>В development удобно хранить настройки в <code>.env</code> файле:</p>
+<pre><code class="language-go">package config
+
+import (
+    "fmt"
+
+    "github.com/caarlos0/env/v11"
+    "github.com/joho/godotenv"
+)
+
+func Load() (*Config, error) {
+    // В development загружаем .env файл
+    // В production файл просто не существует — ошибка игнорируется
+    _ = godotenv.Load() // .env в текущей директории
+    // godotenv.Load(".env.local", ".env") — несколько файлов, приоритет слева направо
+
+    cfg := &amp;Config{}
+    if err := env.Parse(cfg); err != nil {
+        return nil, fmt.Errorf("парсинг конфигурации: %w", err)
+    }
+    return cfg, nil
+}
+</code></pre>
+<p>Файл <code>.env</code>:</p>
+<pre><code class="language-bash"># .env — НЕ коммитить в git!
+DB_USER=developer
+DB_PASSWORD=devpassword
+DB_HOST=localhost
+DB_PORT=5432
+
+SERVER_PORT=8080
+LOG_LEVEL=debug
+</code></pre>
+<p><code>.env.example</code> — коммитить в git как документацию:</p>
+<pre><code class="language-bash"># .env.example — шаблон для разработчиков
+DB_USER=
+DB_PASSWORD=
+DB_HOST=localhost
+DB_PORT=5432
+
+SERVER_PORT=8080
+LOG_LEVEL=info
+</code></pre>
+<p><code>.gitignore</code>:</p>
+<pre><code>.env
+.env.local
+.env.*.local
+</code></pre>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">// Встроенный механизм User Secrets для development
+// dotnet user-secrets set "Database:Password" "devpassword"
+builder.Configuration.AddUserSecrets&lt;Program&gt;(optional: true);
+
+// В production — через переменные окружения или Azure Key Vault
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Никогда не коммитьте <code>.env</code> файлы с реальными секретами!</strong> Используйте <code>.env.example</code> как шаблон.</p>
+</blockquote>
+<hr>
+<h2 id="kelseyhightowerenvconfig"><a class="header" href="#kelseyhightowerenvconfig">kelseyhightower/envconfig</a></h2>
+<p><a href="https://github.com/kelseyhightower/envconfig">github.com/kelseyhightower/envconfig</a> — ещё одна популярная библиотека для парсинга env. Отличается <strong>prefix-based подходом</strong>: все переменные группируются общим префиксом.</p>
+<pre><code class="language-bash">go get github.com/kelseyhightower/envconfig
+</code></pre>
+<h3 id="основы-и-отличия-от-caarlos0env"><a class="header" href="#основы-и-отличия-от-caarlos0env">Основы и отличия от caarlos0/env</a></h3>
+<pre><code class="language-go">package config
+
+import (
+    "time"
+
+    "github.com/kelseyhightower/envconfig"
+)
+
+type Config struct {
+    Host         string        `envconfig:"HOST" default:"0.0.0.0"`
+    Port         int           `envconfig:"PORT" default:"8080"`
+    Debug        bool          `envconfig:"DEBUG"`
+    ReadTimeout  time.Duration `envconfig:"READ_TIMEOUT" default:"5s"`
+    DatabaseURL  string        `envconfig:"DATABASE_URL" required:"true"`
+    AllowedHosts []string      `envconfig:"ALLOWED_HOSTS" default:"localhost"`
+}
+
+func Load() (*Config, error) {
+    var cfg Config
+    // "myapp" — префикс. Все переменные: MYAPP_HOST, MYAPP_PORT и т.д.
+    if err := envconfig.Process("myapp", &amp;cfg); err != nil {
+        return nil, err
+    }
+    return &amp;cfg, nil
+}
+</code></pre>
+<pre><code class="language-bash"># Все переменные имеют префикс MYAPP_
+export MYAPP_HOST=0.0.0.0
+export MYAPP_PORT=9090
+export MYAPP_DEBUG=true
+export MYAPP_DATABASE_URL=postgres://user:pass@localhost/db
+export MYAPP_ALLOWED_HOSTS=example.com,api.example.com
+</code></pre>
+<p><strong>Ключевое отличие от caarlos0/env</strong>: envconfig использует <strong>prefix</strong> для namespace всех переменных. Это удобно когда несколько сервисов запущены в одном окружении.</p>
+<h3 id="struct-tags-и-naming-conventions"><a class="header" href="#struct-tags-и-naming-conventions">Struct tags и naming conventions</a></h3>
+<p>envconfig автоматически генерирует имена переменных из имён полей:</p>
+<pre><code class="language-go">type Config struct {
+    // Автоматическое именование: CamelCase → SCREAMING_SNAKE
+    DatabaseURL  string // → MYAPP_DATABASE_URL
+    MaxOpenConns int    // → MYAPP_MAX_OPEN_CONNS
+    EnableSSL    bool   // → MYAPP_ENABLE_SSL
+
+    // Явное имя через тег
+    DBHost string `envconfig:"DB_HOST"` // → MYAPP_DB_HOST
+
+    // Вложенные структуры "сплющиваются"
+    DB struct {
+        Host string // → MYAPP_DB_HOST
+        Port int    // → MYAPP_DB_PORT
+    }
+
+    // Игнорирование поля
+    Internal string `envconfig:"-" ignored:"true"`
+}
+</code></pre>
+<h3 id="usage-и-help-output"><a class="header" href="#usage-и-help-output">Usage и help output</a></h3>
+<p>Уникальная фича envconfig — автоматическая генерация документации:</p>
+<pre><code class="language-go">func main() {
+    var cfg Config
+    err := envconfig.Process("myapp", &amp;cfg)
+    if err != nil {
+        // Печатаем документацию по переменным
+        envconfig.Usage("myapp", &amp;cfg)
+        os.Exit(1)
+    }
+}
+</code></pre>
+<p>Вывод <code>Usage</code>:</p>
+<pre><code>This application is configured via the environment. The following environment
+variables can be used:
+
+KEY                     TYPE        DEFAULT      REQUIRED    DESCRIPTION
+MYAPP_HOST              String      0.0.0.0
+MYAPP_PORT              Integer     8080
+MYAPP_DEBUG             True/False
+MYAPP_READ_TIMEOUT      Duration    5s
+MYAPP_DATABASE_URL      String                   true
+MYAPP_ALLOWED_HOSTS     Comma-separated list     localhost
+</code></pre>
+<p>Можно добавить описания через тег <code>desc</code>:</p>
+<pre><code class="language-go">type Config struct {
+    Port        int    `envconfig:"PORT" default:"8080" desc:"порт HTTP-сервера"`
+    DatabaseURL string `envconfig:"DATABASE_URL" required:"true" desc:"строка подключения к PostgreSQL"`
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Usage() — килер-фича envconfig</strong>. Ни caarlos0/env, ни viper не генерируют документацию автоматически. Это особенно ценно для DevOps-команды, которая деплоит ваш сервис.</p>
+</blockquote>
+<hr>
+<h2 id="сравнение-env-библиотек"><a class="header" href="#сравнение-env-библиотек">Сравнение env-библиотек</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>caarlos0/env</th><th>envconfig</th><th>Ручной os.Getenv</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Подход</strong></td><td>Struct tags</td><td>Prefix + struct</td><td>Helper-функции</td></tr>
+<tr><td><strong>Именование</strong></td><td>Явное <code>env:"NAME"</code></td><td>Авто из имени поля</td><td>Ручное</td></tr>
+<tr><td><strong>Prefix</strong></td><td><code>envPrefix</code> на вложенных</td><td>Глобальный prefix</td><td>Ручной</td></tr>
+<tr><td><strong>Required</strong></td><td><code>env:"...,required"</code></td><td><code>required:"true"</code></td><td><code>mustGetEnv()</code></td></tr>
+<tr><td><strong>Defaults</strong></td><td><code>envDefault:"..."</code></td><td><code>default:"..."</code></td><td>Второй аргумент</td></tr>
+<tr><td><strong>File secrets</strong></td><td><code>env:"...,file"</code></td><td>Нет</td><td>Ручное чтение</td></tr>
+<tr><td><strong>Expand $VAR</strong></td><td><code>env:"...,expand"</code></td><td>Нет</td><td><code>os.ExpandEnv()</code></td></tr>
+<tr><td><strong>Usage/Help</strong></td><td>Нет</td><td><code>Usage()</code></td><td>Нет</td></tr>
+<tr><td><strong>Custom типы</strong></td><td><code>TextUnmarshaler</code></td><td><code>Decoder</code> interface</td><td>Ручной парсинг</td></tr>
+<tr><td><strong>Популярность</strong></td><td>~5K stars, активно</td><td>~5K stars, стабильно</td><td>N/A</td></tr>
+<tr><td><strong>Зависимости</strong></td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td><strong>Рекомендация</strong></td><td><strong>Новые проекты</strong></td><td>Проекты с prefix-конвенцией</td><td>Простые сервисы</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Рекомендация</strong>: Для новых проектов используйте <strong>caarlos0/env</strong> — более гибкий, поддерживает file secrets, expand, активно развивается. <strong>envconfig</strong> — хороший выбор если вам нужен auto-generated usage или prefix-конвенция.</p>
+</blockquote>
+<hr>
+<h2 id="viper-полнофункциональная-конфигурация"><a class="header" href="#viper-полнофункциональная-конфигурация">Viper: полнофункциональная конфигурация</a></h2>
+<p><a href="https://github.com/spf13/viper">github.com/spf13/viper</a> — самая известная библиотека конфигурации в Go (~27K stars). Поддерживает файлы, env, flags, remote config и hot reload.</p>
+<pre><code class="language-bash">go get github.com/spf13/viper
+</code></pre>
+<h3 id="установка-и-базовое-использование"><a class="header" href="#установка-и-базовое-использование">Установка и базовое использование</a></h3>
+<p>В <a href="../part3-web-api/02_project_structure.html">разделе 3.2</a> мы видели базовый пример Viper. Теперь разберём все возможности.</p>
+<pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "log"
+
+    "github.com/spf13/viper"
+)
+
+func main() {
+    // Установка значений по умолчанию
+    viper.SetDefault("server.host", "0.0.0.0")
+    viper.SetDefault("server.port", 8080)
+    viper.SetDefault("database.sslmode", "disable")
+
+    // Чтение конфигурационного файла
+    viper.SetConfigName("config")  // имя файла без расширения
+    viper.SetConfigType("yaml")    // формат
+    viper.AddConfigPath(".")       // путь поиска
+    viper.AddConfigPath("./config")
+    viper.AddConfigPath("$HOME/.myapp")
+
+    if err := viper.ReadInConfig(); err != nil {
+        if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+            log.Println("конфиг-файл не найден, используем defaults и env")
+        } else {
+            log.Fatalf("ошибка чтения конфига: %v", err)
+        }
+    }
+
+    // Включаем автоматическое чтение env
+    viper.AutomaticEnv()
+
+    // Чтение значений
+    host := viper.GetString("server.host")
+    port := viper.GetInt("server.port")
+    debug := viper.GetBool("debug")
+
+    fmt.Printf("Сервер: %s:%d (debug=%v)\n", host, port, debug)
+}
+</code></pre>
+<h3 id="источники-конфигурации-и-приоритеты"><a class="header" href="#источники-конфигурации-и-приоритеты">Источники конфигурации и приоритеты</a></h3>
+<p>Viper поддерживает множество источников с чётким приоритетом (первый побеждает):</p>
+<pre><code>1. viper.Set()           — явно заданные значения (высший приоритет)
+2. Флаги командной строки (pflag)
+3. Переменные окружения
+4. Конфигурационный файл
+5. Key/Value store (etcd, Consul)
+6. viper.SetDefault()    — значения по умолчанию (низший приоритет)
+</code></pre>
+<p><strong>C# аналог</strong> — <code>ConfigurationBuilder</code>, но приоритет <strong>обратный</strong> (последний побеждает):</p>
+<pre><code class="language-csharp">// C# — последний AddXxx перезаписывает предыдущие
+builder.Configuration
+    .AddJsonFile("appsettings.json")           // 1. Базовый (низший)
+    .AddJsonFile($"appsettings.{env}.json")    // 2. Перезаписывает
+    .AddEnvironmentVariables()                  // 3. Перезаписывает
+    .AddCommandLine(args);                      // 4. Высший приоритет
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Разный порядок приоритетов!</strong> В C# последний источник побеждает. В Viper — первый. При миграции с C# на Go это частый источник путаницы.</p>
+</blockquote>
+<h3 id="файлы-конфигурации-yaml-toml-json"><a class="header" href="#файлы-конфигурации-yaml-toml-json">Файлы конфигурации (YAML, TOML, JSON)</a></h3>
+<p>Viper поддерживает YAML, TOML, JSON, HCL, envfile и Java properties. YAML — самый популярный формат в Go-экосистеме.</p>
+<p><code>config.yaml</code>:</p>
+<pre><code class="language-yaml">server:
+  host: 0.0.0.0
+  port: 8080
+  read_timeout: 5s
+  write_timeout: 10s
+
+database:
+  host: localhost
+  port: 5432
+  user: admin
+  password: "" # Лучше через env!
+  name: myapp
+  sslmode: disable
+  max_open_conns: 25
+  max_idle_conns: 5
+  conn_max_lifetime: 5m
+
+redis:
+  addr: localhost:6379
+  password: ""
+  db: 0
+
+log:
+  level: info
+  format: json
+</code></pre>
+<pre><code class="language-go">// Чтение вложенных ключей — через точку
+host := viper.GetString("database.host")
+port := viper.GetInt("database.port")
+timeout := viper.GetDuration("server.read_timeout")
+</code></pre>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">// appsettings.json — JSON вместо YAML
+{
+    "Database": {
+        "Host": "localhost",
+        "Port": 5432
+    }
+}
+
+// Доступ через секции
+var host = config.GetSection("Database")["Host"];
+// Или через IOptions&lt;T&gt;
+var host = options.Value.Host;
+</code></pre>
+<h3 id="переменные-окружения-и-automaticenv"><a class="header" href="#переменные-окружения-и-automaticenv">Переменные окружения и AutomaticEnv</a></h3>
+<pre><code class="language-go">// AutomaticEnv — viper автоматически ищет env для каждого ключа
+viper.AutomaticEnv()
+
+// Prefix — все env-переменные должны начинаться с MYAPP_
+viper.SetEnvPrefix("MYAPP")
+
+// server.host → MYAPP_SERVER_HOST
+// Но точки в ключах не совпадают с подчёркиваниями в env!
+// Нужен replacer:
+viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+
+// Теперь:
+// viper.GetString("server.host") → ищет MYAPP_SERVER_HOST
+
+// Явная привязка env к ключу (для нестандартных имён)
+viper.BindEnv("database.password", "DB_PASSWORD") // без prefix
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Главный подводный камень Viper</strong>: <code>AutomaticEnv()</code> работает <strong>только с <code>Get*()</code></strong>, но <strong>НЕ работает с <code>Unmarshal()</code></strong>. Это самый частый баг при использовании Viper:</p>
+</blockquote>
+<pre><code class="language-go">// ❌ AutomaticEnv НЕ заполнит поля при Unmarshal
+viper.AutomaticEnv()
+var cfg Config
+viper.Unmarshal(&amp;cfg) // env-переменные НЕ попадут в структуру!
+
+// ✅ Нужно явно привязывать env к каждому ключу
+viper.BindEnv("server.host", "SERVER_HOST")
+viper.BindEnv("server.port", "SERVER_PORT")
+// ... для каждого поля
+
+// Или использовать viper.Get*() вместо Unmarshal
+host := viper.GetString("server.host") // ✅ AutomaticEnv работает
+</code></pre>
+<p>Это <strong>серьёзное архитектурное ограничение</strong> Viper, из-за которого многие команды переходят на koanf или caarlos0/env.</p>
+<h3 id="unmarshal-в-структуры"><a class="header" href="#unmarshal-в-структуры">Unmarshal в структуры</a></h3>
+<p>Viper использует <code>mapstructure</code> для десериализации в структуры:</p>
+<pre><code class="language-go">type Config struct {
+    Server   ServerConfig   `mapstructure:"server"`
+    Database DatabaseConfig `mapstructure:"database"`
+    Redis    RedisConfig    `mapstructure:"redis"`
+    Log      LogConfig      `mapstructure:"log"`
+}
+
+type ServerConfig struct {
+    Host         string        `mapstructure:"host"`
+    Port         int           `mapstructure:"port"`
+    ReadTimeout  time.Duration `mapstructure:"read_timeout"`
+    WriteTimeout time.Duration `mapstructure:"write_timeout"`
+}
+
+type DatabaseConfig struct {
+    Host           string        `mapstructure:"host"`
+    Port           int           `mapstructure:"port"`
+    User           string        `mapstructure:"user"`
+    Password       string        `mapstructure:"password"`
+    Name           string        `mapstructure:"name"`
+    SSLMode        string        `mapstructure:"sslmode"`
+    MaxOpenConns   int           `mapstructure:"max_open_conns"`
+    MaxIdleConns   int           `mapstructure:"max_idle_conns"`
+    ConnMaxLifetime time.Duration `mapstructure:"conn_max_lifetime"`
+}
+
+func LoadConfig() (*Config, error) {
+    viper.SetConfigName("config")
+    viper.SetConfigType("yaml")
+    viper.AddConfigPath(".")
+
+    if err := viper.ReadInConfig(); err != nil {
+        return nil, fmt.Errorf("чтение конфига: %w", err)
+    }
+
+    var cfg Config
+    // DecoderConfigOption для корректной обработки time.Duration
+    if err := viper.Unmarshal(&amp;cfg, viper.DecodeHook(
+        mapstructure.ComposeDecodeHookFunc(
+            mapstructure.StringToTimeDurationHookFunc(),
+            mapstructure.StringToSliceHookFunc(","),
+        ),
+    )); err != nil {
+        return nil, fmt.Errorf("десериализация конфига: %w", err)
+    }
+
+    return &amp;cfg, nil
+}
+</code></pre>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">// C# — привязка секции к классу через DI
+services.Configure&lt;ServerConfig&gt;(config.GetSection("Server"));
+services.Configure&lt;DatabaseConfig&gt;(config.GetSection("Database"));
+
+// Или напрямую
+var serverConfig = config.GetSection("Server").Get&lt;ServerConfig&gt;();
+</code></pre>
+<blockquote>
+<p>💡 <strong>mapstructure теги</strong>: Viper использует <code>mapstructure</code> (не <code>json</code> или <code>yaml</code>) для десериализации. Это отдельная библиотека с собственными тегами. Если забыть <code>mapstructure:"..."</code> тег — поля не заполнятся.</p>
+</blockquote>
+<h3 id="watchconfig-горячая-перезагрузка"><a class="header" href="#watchconfig-горячая-перезагрузка">WatchConfig: горячая перезагрузка</a></h3>
+<pre><code class="language-go">import (
+    "log"
+    "sync"
+
+    "github.com/fsnotify/fsnotify"
+    "github.com/spf13/viper"
+)
+
+var (
+    cfg    *Config
+    cfgMu  sync.RWMutex
+)
+
+func initConfig() {
+    viper.SetConfigName("config")
+    viper.SetConfigType("yaml")
+    viper.AddConfigPath(".")
+
+    if err := viper.ReadInConfig(); err != nil {
+        log.Fatalf("ошибка чтения конфига: %v", err)
+    }
+
+    // Первоначальная загрузка
+    cfgMu.Lock()
+    cfg = mustUnmarshalConfig()
+    cfgMu.Unlock()
+
+    // Горячая перезагрузка при изменении файла
+    viper.WatchConfig()
+    viper.OnConfigChange(func(e fsnotify.Event) {
+        log.Printf("конфиг изменён: %s", e.Name)
+
+        newCfg := mustUnmarshalConfig()
+
+        cfgMu.Lock()
+        cfg = newCfg
+        cfgMu.Unlock()
+
+        log.Println("конфигурация перезагружена")
+    })
+}
+
+func GetConfig() *Config {
+    cfgMu.RLock()
+    defer cfgMu.RUnlock()
+    return cfg
+}
+</code></pre>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">// IOptionsMonitor&lt;T&gt; — автоматический reload при изменении файла
+public class MyService(IOptionsMonitor&lt;ServerConfig&gt; monitor)
+{
+    public void DoWork()
+    {
+        var current = monitor.CurrentValue; // всегда актуальное значение
+    }
+}
+
+// IOptionsSnapshot&lt;T&gt; — снимок на время запроса (scoped)
+public class MyController(IOptionsSnapshot&lt;ServerConfig&gt; snapshot)
+{
+    public IActionResult Get() =&gt; Ok(snapshot.Value);
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Thread safety</strong>: Viper сам по себе <strong>не потокобезопасен</strong> при записи + чтении. <code>WatchConfig</code> вызывает callback в отдельной горутине. Обязательно используйте <code>sync.RWMutex</code> или <code>atomic.Pointer</code> для защиты конфига.</p>
+</blockquote>
+<h3 id="remote-config-etcd-consul"><a class="header" href="#remote-config-etcd-consul">Remote Config (etcd, Consul)</a></h3>
+<p>Viper поддерживает удалённые хранилища конфигурации:</p>
+<pre><code class="language-go">import (
+    "github.com/spf13/viper"
+    _ "github.com/spf13/viper/remote" // подключение remote provider
+)
+
+func loadFromConsul() error {
+    viper.AddRemoteProvider("consul", "localhost:8500", "myapp/config")
+    viper.SetConfigType("yaml")
+
+    if err := viper.ReadRemoteConfig(); err != nil {
+        return fmt.Errorf("чтение remote config: %w", err)
+    }
+
+    // Периодическое обновление (polling)
+    go func() {
+        for {
+            time.Sleep(5 * time.Second)
+            if err := viper.WatchRemoteConfig(); err != nil {
+                log.Printf("ошибка обновления remote config: %v", err)
+            }
+        }
+    }()
+
+    return nil
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Remote config</strong> полезен для централизованного управления настройками множества сервисов. Но для секретов лучше использовать HashiCorp Vault (раздел <a href="#секреты-и-безопасность">Секреты и безопасность</a>).</p>
+</blockquote>
+<h3 id="проблемы-viper-и-когда-не-использовать"><a class="header" href="#проблемы-viper-и-когда-не-использовать">Проблемы Viper и когда НЕ использовать</a></h3>
+<p><strong>Проблемы Viper</strong> (о которых важно знать):</p>
+<ol>
+<li><strong>Глобальный state по умолчанию</strong>: <code>viper.Get*()</code> работает с глобальным синглтоном. Это затрудняет тестирование и создаёт скрытые зависимости.</li>
+</ol>
+<pre><code class="language-go">// ❌ Глобальный Viper — скрытая зависимость
+func NewServer() *Server {
+    port := viper.GetInt("server.port") // откуда взялось?
+    return &amp;Server{port: port}
+}
+
+// ✅ Явная зависимость — передача Config через конструктор
+func NewServer(cfg ServerConfig) *Server {
+    return &amp;Server{port: cfg.Port}
+}
+</code></pre>
+<ol start="2">
+<li>
+<p><strong>Тяжёлое дерево зависимостей</strong>: spf13/pflag, fsnotify, mapstructure, и многое другое. Для простого микросервиса — чрезмерно.</p>
+</li>
+<li>
+<p><strong>AutomaticEnv не работает с Unmarshal</strong>: Как показано выше — это фундаментальная проблема дизайна.</p>
+</li>
+<li>
+<p><strong>Thread safety</strong>: Нет встроенной защиты от concurrent access.</p>
+</li>
+<li>
+<p><strong>Медленная рефлексия</strong>: mapstructure использует рефлексию. Для конфигурации это несущественно (загрузка однократная), но стоит знать.</p>
+</li>
+</ol>
+<p><strong>Когда НЕ использовать Viper</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Ситуация</th><th>Альтернатива</th></tr>
+</thead>
+<tbody>
+<tr><td>Только env-переменные (12-Factor)</td><td>caarlos0/env</td></tr>
+<tr><td>Простой микросервис</td><td>caarlos0/env или cleanenv</td></tr>
+<tr><td>Нужна модульность и чистая архитектура</td><td>koanf</td></tr>
+<tr><td>Только CLI-утилита</td><td>cobra + pflag</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Когда Viper оправдан</strong>:</p>
+<ul>
+<li>Сложное приложение с файлами + env + flags + remote config</li>
+<li>Легаси-проект, уже использующий Viper</li>
+<li>Нужен WatchConfig из коробки</li>
+</ul>
+<hr>
+<h2 id="koanf-современная-альтернатива-viper"><a class="header" href="#koanf-современная-альтернатива-viper">koanf: современная альтернатива Viper</a></h2>
+<p><a href="https://github.com/knadh/koanf">github.com/knadh/koanf</a> — модульная библиотека конфигурации без глобального state. Решает основные проблемы Viper: модульность, чистая архитектура, минимальные зависимости.</p>
+<pre><code class="language-bash">go get github.com/knadh/koanf/v2
+# Провайдеры и парсеры устанавливаются отдельно
+go get github.com/knadh/koanf/providers/file
+go get github.com/knadh/koanf/providers/env
+go get github.com/knadh/koanf/parsers/yaml
+</code></pre>
+<h3 id="архитектура-providers-и-parsers"><a class="header" href="#архитектура-providers-и-parsers">Архитектура: Providers и Parsers</a></h3>
+<p>koanf построен на двух абстракциях:</p>
+<ul>
+<li><strong>Provider</strong> — источник данных (файл, env, flags, remote)</li>
+<li><strong>Parser</strong> — формат данных (YAML, JSON, TOML)</li>
+</ul>
+<p>Вы импортируете <strong>только то, что используете</strong>:</p>
+<pre><code class="language-go">import (
+    "github.com/knadh/koanf/v2"
+    "github.com/knadh/koanf/providers/file"
+    "github.com/knadh/koanf/providers/env"
+    "github.com/knadh/koanf/parsers/yaml"
+)
+
+// Создание экземпляра — никакого глобального state
+var k = koanf.New(".")
+</code></pre>
+<p><strong>Сравнение с Viper</strong>:</p>
+<pre><code class="language-go">// Viper — глобальный синглтон
+viper.GetString("database.host") // откуда взялось?
+
+// koanf — явный экземпляр
+k := koanf.New(".")
+k.String("database.host") // k передаётся явно
+</code></pre>
+<h3 id="файлы-env-flags"><a class="header" href="#файлы-env-flags">Файлы, ENV, flags</a></h3>
+<pre><code class="language-go">package config
+
+import (
+    "fmt"
+    "log"
+    "strings"
+
+    "github.com/knadh/koanf/v2"
+    "github.com/knadh/koanf/parsers/yaml"
+    "github.com/knadh/koanf/providers/env"
+    "github.com/knadh/koanf/providers/file"
+)
+
+func Load(configPath string) (*koanf.Koanf, error) {
+    k := koanf.New(".")
+
+    // 1. Загрузка из YAML-файла (низший приоритет)
+    if err := k.Load(file.Provider(configPath), yaml.Parser()); err != nil {
+        // Файл необязателен
+        log.Printf("конфиг-файл не найден: %v", err)
+    }
+
+    // 2. Загрузка из env (перезаписывает файл)
+    // APP_SERVER_HOST → server.host
+    err := k.Load(env.Provider("APP_", ".", func(s string) string {
+        return strings.Replace(
+            strings.ToLower(strings.TrimPrefix(s, "APP_")),
+            "_", ".", -1)
+    }), nil)
+    if err != nil {
+        return nil, fmt.Errorf("загрузка env: %w", err)
+    }
+
+    return k, nil
+}
+</code></pre>
+<pre><code class="language-bash"># Env-переменные перезаписывают значения из файла
+export APP_SERVER_HOST=10.0.0.1
+export APP_SERVER_PORT=9090
+export APP_DATABASE_HOST=db.production.internal
+</code></pre>
+<p>Интеграция с <strong>pflag</strong> (CLI-аргументы):</p>
+<pre><code class="language-go">import (
+    "github.com/knadh/koanf/providers/posflag"
+    "github.com/spf13/pflag"
+)
+
+func Load() (*koanf.Koanf, error) {
+    k := koanf.New(".")
+
+    // 1. Файл (низший приоритет)
+    k.Load(file.Provider("config.yaml"), yaml.Parser())
+
+    // 2. ENV
+    k.Load(env.Provider("APP_", ".", transformer), nil)
+
+    // 3. CLI flags (высший приоритет)
+    f := pflag.NewFlagSet("app", pflag.ExitOnError)
+    f.String("server.host", "", "адрес сервера")
+    f.Int("server.port", 0, "порт сервера")
+    f.Parse(os.Args[1:])
+
+    // Загружаем только явно заданные флаги
+    k.Load(posflag.Provider(f, ".", k), nil)
+
+    return k, nil
+}
+</code></pre>
+<h3 id="unmarshal-и-struct-tags"><a class="header" href="#unmarshal-и-struct-tags">Unmarshal и struct tags</a></h3>
+<pre><code class="language-go">type Config struct {
+    Server   ServerConfig   `koanf:"server"`
+    Database DatabaseConfig `koanf:"database"`
+    Redis    RedisConfig    `koanf:"redis"`
+}
+
+type ServerConfig struct {
+    Host         string        `koanf:"host"`
+    Port         int           `koanf:"port"`
+    ReadTimeout  time.Duration `koanf:"read_timeout"`
+    WriteTimeout time.Duration `koanf:"write_timeout"`
+}
+
+type DatabaseConfig struct {
+    Host     string `koanf:"host"`
+    Port     int    `koanf:"port"`
+    User     string `koanf:"user"`
+    Password string `koanf:"password"`
+    Name     string `koanf:"name"`
+}
+
+func LoadConfig(path string) (*Config, error) {
+    k, err := Load(path)
+    if err != nil {
+        return nil, err
+    }
+
+    var cfg Config
+    if err := k.Unmarshal("", &amp;cfg); err != nil {
+        return nil, fmt.Errorf("десериализация: %w", err)
+    }
+
+    // Unmarshal подсекции
+    // var dbCfg DatabaseConfig
+    // k.Unmarshal("database", &amp;dbCfg)
+
+    return &amp;cfg, nil
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>koanf vs viper теги</strong>: koanf использует тег <code>koanf:"..."</code>, viper — <code>mapstructure:"..."</code>. При миграции нужно заменить теги.</p>
+</blockquote>
+<h3 id="watch-и-reload"><a class="header" href="#watch-и-reload">Watch и reload</a></h3>
+<p>koanf поддерживает наблюдение за файлами через callback:</p>
+<pre><code class="language-go">import (
+    "sync/atomic"
+
+    "github.com/knadh/koanf/v2"
+    "github.com/knadh/koanf/parsers/yaml"
+    "github.com/knadh/koanf/providers/file"
+)
+
+type ConfigManager struct {
+    config atomic.Pointer[Config]
+    k      *koanf.Koanf
+}
+
+func NewConfigManager(path string) (*ConfigManager, error) {
+    cm := &amp;ConfigManager{
+        k: koanf.New("."),
+    }
+
+    // Первоначальная загрузка
+    if err := cm.reload(path); err != nil {
+        return nil, err
+    }
+
+    // Наблюдение за файлом (polling)
+    f := file.Provider(path)
+    f.Watch(func(event interface{}, err error) {
+        if err != nil {
+            log.Printf("ошибка watch: %v", err)
+            return
+        }
+
+        log.Println("конфиг-файл изменён, перезагрузка...")
+        if err := cm.reload(path); err != nil {
+            log.Printf("ошибка перезагрузки: %v", err)
+            return
+        }
+        log.Println("конфигурация обновлена")
+    })
+
+    return cm, nil
+}
+
+func (cm *ConfigManager) reload(path string) error {
+    // Создаём новый koanf для чистой загрузки
+    k := koanf.New(".")
+    if err := k.Load(file.Provider(path), yaml.Parser()); err != nil {
+        return fmt.Errorf("загрузка файла: %w", err)
+    }
+
+    var cfg Config
+    if err := k.Unmarshal("", &amp;cfg); err != nil {
+        return fmt.Errorf("десериализация: %w", err)
+    }
+
+    // Атомарная замена конфигурации
+    cm.config.Store(&amp;cfg)
+    return nil
+}
+
+func (cm *ConfigManager) Get() *Config {
+    return cm.config.Load()
+}
+</code></pre>
+<h3 id="viper-vs-koanf"><a class="header" href="#viper-vs-koanf">Viper vs koanf</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>Viper</th><th>koanf</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Глобальный state</strong></td><td>Да (по умолчанию)</td><td>Нет</td></tr>
+<tr><td><strong>Зависимости</strong></td><td>Тяжёлые (~20 deps)</td><td>Модульные (по выбору)</td></tr>
+<tr><td><strong>Struct tags</strong></td><td><code>mapstructure:"..."</code></td><td><code>koanf:"..."</code></td></tr>
+<tr><td><strong>ENV + Unmarshal</strong></td><td>❌ AutomaticEnv не работает</td><td>✅ Работает корректно</td></tr>
+<tr><td><strong>Thread safety</strong></td><td>❌ Нет встроенной</td><td>❌ Нет встроенной</td></tr>
+<tr><td><strong>Модульность</strong></td><td>Монолит</td><td>Provider + Parser</td></tr>
+<tr><td><strong>Remote config</strong></td><td>Встроенный</td><td>Через провайдеры</td></tr>
+<tr><td><strong>Сообщество</strong></td><td>~27K stars, стабильно</td><td>~3K stars, растёт</td></tr>
+<tr><td><strong>API</strong></td><td>Широкий (Get*, Set, Sub)</td><td>Минималистичный</td></tr>
+<tr><td><strong>Рекомендация</strong></td><td>Легаси, сложные проекты</td><td><strong>Новые проекты</strong></td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Рекомендация</strong>: Для новых проектов с файлами конфигурации выбирайте <strong>koanf</strong>. Для env-only проектов — <strong>caarlos0/env</strong>.</p>
+</blockquote>
+<hr>
+<h2 id="cleanenv-лёгкая-альтернатива"><a class="header" href="#cleanenv-лёгкая-альтернатива">cleanenv: лёгкая альтернатива</a></h2>
+<p><a href="https://github.com/ilyakaznacheev/cleanenv">github.com/ilyakaznacheev/cleanenv</a> — простая библиотека, которая объединяет файл и env в одной структуре. Идеальна для небольших и средних проектов.</p>
+<pre><code class="language-bash">go get github.com/ilyakaznacheev/cleanenv
+</code></pre>
+<pre><code class="language-go">package config
+
+import (
+    "github.com/ilyakaznacheev/cleanenv"
+)
+
+type Config struct {
+    Server struct {
+        Host string `yaml:"host" env:"SERVER_HOST" env-default:"0.0.0.0"`
+        Port int    `yaml:"port" env:"SERVER_PORT" env-default:"8080"`
+    } `yaml:"server"`
+
+    Database struct {
+        Host     string `yaml:"host" env:"DB_HOST" env-default:"localhost"`
+        Port     int    `yaml:"port" env:"DB_PORT" env-default:"5432"`
+        User     string `yaml:"user" env:"DB_USER" env-required:"true"`
+        Password string `yaml:"password" env:"DB_PASSWORD" env-required:"true"`
+        Name     string `yaml:"name" env:"DB_NAME" env-default:"myapp"`
+    } `yaml:"database"`
+
+    Log struct {
+        Level string `yaml:"level" env:"LOG_LEVEL" env-default:"info"`
+    } `yaml:"log"`
+}
+
+func Load(path string) (*Config, error) {
+    var cfg Config
+
+    // Читает файл, затем накладывает env-переменные
+    if err := cleanenv.ReadConfig(path, &amp;cfg); err != nil {
+        return nil, err
+    }
+
+    return &amp;cfg, nil
+}
+</code></pre>
+<p><code>config.yaml</code>:</p>
+<pre><code class="language-yaml">server:
+  host: 0.0.0.0
+  port: 8080
+
+database:
+  host: localhost
+  port: 5432
+  name: myapp
+
+log:
+  level: info
+</code></pre>
+<pre><code class="language-bash"># env перезаписывает значения из файла
+export DB_USER=admin
+export DB_PASSWORD=secret
+export LOG_LEVEL=debug
+</code></pre>
+<p><strong>Автоматический help output</strong> (аналог envconfig.Usage):</p>
+<pre><code class="language-go">func main() {
+    var cfg Config
+    help, _ := cleanenv.GetDescription(&amp;cfg, nil)
+    fmt.Println(help)
+}
+</code></pre>
+<p>Вывод:</p>
+<pre><code>Environment variables:
+  SERVER_HOST string (default: "0.0.0.0")
+  SERVER_PORT int (default: "8080")
+  DB_HOST string (default: "localhost")
+  DB_USER string (required)
+  DB_PASSWORD string (required)
+  ...
+</code></pre>
+<blockquote>
+<p>💡 <strong>cleanenv — золотая середина</strong>: проще Viper, мощнее caarlos0/env. Файл + ENV в одной структуре с одними тегами. Идеальна для проектов, где нужен конфиг-файл, но не нужна сложность Viper.</p>
+</blockquote>
+<hr>
+<h2 id="сравнительная-таблица-всех-библиотек"><a class="header" href="#сравнительная-таблица-всех-библиотек">Сравнительная таблица всех библиотек</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>os.Getenv</th><th>caarlos0/env</th><th>envconfig</th><th>cleanenv</th><th>Viper</th><th>koanf</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Config файлы</strong></td><td>❌</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td></tr>
+<tr><td><strong>ENV</strong></td><td>Ручной</td><td>Tags</td><td>Tags</td><td>Tags</td><td>Auto/Bind</td><td>Provider</td></tr>
+<tr><td><strong>CLI flags</strong></td><td>flag</td><td>❌</td><td>❌</td><td>❌</td><td>pflag</td><td>pflag</td></tr>
+<tr><td><strong>Hot reload</strong></td><td>❌</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td></tr>
+<tr><td><strong>Remote config</strong></td><td>❌</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td></tr>
+<tr><td><strong>Зависимости</strong></td><td>0</td><td>0</td><td>0</td><td>Минимум</td><td>Много</td><td>Модульные</td></tr>
+<tr><td><strong>Struct-first</strong></td><td>❌</td><td>✅</td><td>✅</td><td>✅</td><td>Опционально</td><td>Опционально</td></tr>
+<tr><td><strong>Глобальный state</strong></td><td>❌</td><td>❌</td><td>❌</td><td>❌</td><td>✅ (default)</td><td>❌</td></tr>
+<tr><td><strong>Usage/Help</strong></td><td>❌</td><td>❌</td><td>✅</td><td>✅</td><td>❌</td><td>❌</td></tr>
+<tr><td><strong>File secrets</strong></td><td>❌</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td></tr>
+<tr><td><strong>GitHub stars</strong></td><td>N/A</td><td>~5K</td><td>~5K</td><td>~1K</td><td>~27K</td><td>~3K</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="блок-схема-выбора-библиотеки"><a class="header" href="#блок-схема-выбора-библиотеки">Блок-схема выбора библиотеки</a></h2>
+<pre><code>Нужны ли config-файлы (YAML/TOML/JSON)?
+│
+├─ НЕТ (только env) ──────────────────────┐
+│   │                                       │
+│   └─ Нужна автоматическая документация? ──┤
+│       │                                   │
+│       ├─ ДА → envconfig                   │
+│       └─ НЕТ → caarlos0/env ★            │
+│                                           │
+└─ ДА (файлы + env) ──────────────────────┐│
+    │                                      ││
+    ├─ Простой проект (файл + env)?        ││
+    │   └─ ДА → cleanenv                   ││
+    │                                      ││
+    ├─ Нужен hot reload / remote config?   ││
+    │   │                                  ││
+    │   ├─ Новый проект → koanf ★          ││
+    │   └─ Легаси / сложный → Viper        ││
+    │                                      ││
+    └─ Скрипт / утилита?                   ││
+        └─ os.Getenv + flag                ││
+                                           ││
+★ = рекомендуемый выбор                    ││
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для большинства Go-микросервисов</strong> достаточно <strong>caarlos0/env</strong>. 12-Factor App рекомендует env-переменные, а config-файлы — это рудимент десктопных приложений. Файлы конфигурации оправданы для сложных систем с большим количеством настроек.</p>
+</blockquote>
+<hr>
+<h2 id="валидация-конфигурации"><a class="header" href="#валидация-конфигурации">Валидация конфигурации</a></h2>
+<h3 id="fail-fast-при-запуске"><a class="header" href="#fail-fast-при-запуске">Fail fast при запуске</a></h3>
+<p>Главный принцип: <strong>если конфигурация невалидна — приложение не должно запускаться</strong>. Лучше упасть при старте с понятной ошибкой, чем через час в production с непонятной.</p>
+<pre><code class="language-go">func main() {
+    cfg, err := config.Load()
+    if err != nil {
+        // Приложение НЕ запускается с невалидным конфигом
+        log.Fatalf("невалидная конфигурация: %v", err)
+    }
+
+    // Дополнительная валидация бизнес-правил
+    if err := cfg.Validate(); err != nil {
+        log.Fatalf("ошибка валидации конфигурации: %v", err)
+    }
+
+    // Только после успешной валидации — запуск сервера
+    run(cfg)
+}
+</code></pre>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">// .NET 8 — ValidateOnStart
+builder.Services
+    .AddOptions&lt;DatabaseOptions&gt;()
+    .Bind(config.GetSection("Database"))
+    .ValidateDataAnnotations()  // [Required], [Range], etc.
+    .ValidateOnStart();          // Проверка при запуске!
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Распространённая ошибка</strong>: Валидация конфигурации “по запросу” — когда сервис узнаёт о невалидном конфиге только при первом использовании. В Go нет <code>ValidateOnStart()</code> из коробки — реализуйте это явно.</p>
+</blockquote>
+<h3 id="go-playgroundvalidator-для-конфигов"><a class="header" href="#go-playgroundvalidator-для-конфигов">go-playground/validator для конфигов</a></h3>
+<pre><code class="language-bash">go get github.com/go-playground/validator/v10
+</code></pre>
+<pre><code class="language-go">package config
+
+import (
+    "fmt"
+    "time"
+
+    "github.com/caarlos0/env/v11"
+    "github.com/go-playground/validator/v10"
+)
+
+type Config struct {
+    Server   ServerConfig   `validate:"required"`
+    Database DatabaseConfig `validate:"required"`
+    Redis    RedisConfig    `validate:"required"`
+}
+
+type ServerConfig struct {
+    Host         string        `env:"SERVER_HOST" envDefault:"0.0.0.0" validate:"required,ip|hostname"`
+    Port         int           `env:"SERVER_PORT" envDefault:"8080" validate:"required,min=1,max=65535"`
+    ReadTimeout  time.Duration `env:"SERVER_READ_TIMEOUT" envDefault:"5s" validate:"required,min=1000000000"`  // min 1s
+    WriteTimeout time.Duration `env:"SERVER_WRITE_TIMEOUT" envDefault:"10s" validate:"required,min=1000000000"` // min 1s
+}
+
+type DatabaseConfig struct {
+    Host     string `env:"DB_HOST" envDefault:"localhost" validate:"required,hostname|ip"`
+    Port     int    `env:"DB_PORT" envDefault:"5432" validate:"required,min=1,max=65535"`
+    User     string `env:"DB_USER,required" validate:"required,min=1"`
+    Password string `env:"DB_PASSWORD,required" validate:"required,min=8"` // минимум 8 символов
+    Name     string `env:"DB_NAME" envDefault:"myapp" validate:"required,min=1,max=63"`
+    SSLMode  string `env:"DB_SSLMODE" envDefault:"disable" validate:"required,oneof=disable allow prefer require verify-ca verify-full"`
+    MaxConns int    `env:"DB_MAX_CONNS" envDefault:"25" validate:"min=1,max=1000"`
+}
+
+type RedisConfig struct {
+    Addr     string `env:"REDIS_ADDR" envDefault:"localhost:6379" validate:"required"`
+    Password string `env:"REDIS_PASSWORD"`
+    DB       int    `env:"REDIS_DB" envDefault:"0" validate:"min=0,max=15"`
+}
+
+var validate = validator.New()
+
+func Load() (*Config, error) {
+    cfg := &amp;Config{}
+
+    // 1. Парсинг env
+    if err := env.Parse(cfg); err != nil {
+        return nil, fmt.Errorf("парсинг env: %w", err)
+    }
+
+    // 2. Валидация структуры
+    if err := validate.Struct(cfg); err != nil {
+        return nil, fmt.Errorf("валидация: %w", formatValidationErrors(err))
+    }
+
+    return cfg, nil
+}
+
+// formatValidationErrors — человекочитаемые ошибки валидации
+func formatValidationErrors(err error) error {
+    validationErrors, ok := err.(validator.ValidationErrors)
+    if !ok {
+        return err
+    }
+
+    var messages []string
+    for _, e := range validationErrors {
+        switch e.Tag() {
+        case "required":
+            messages = append(messages, fmt.Sprintf("%s: обязательное поле", e.Namespace()))
+        case "min":
+            messages = append(messages, fmt.Sprintf("%s: минимальное значение %s", e.Namespace(), e.Param()))
+        case "max":
+            messages = append(messages, fmt.Sprintf("%s: максимальное значение %s", e.Namespace(), e.Param()))
+        case "oneof":
+            messages = append(messages, fmt.Sprintf("%s: допустимые значения: %s", e.Namespace(), e.Param()))
+        default:
+            messages = append(messages, fmt.Sprintf("%s: не прошло проверку '%s'", e.Namespace(), e.Tag()))
+        }
+    }
+
+    return fmt.Errorf("ошибки валидации:\n  - %s", strings.Join(messages, "\n  - "))
+}
+</code></pre>
+<p>Пример вывода при невалидном конфиге:</p>
+<pre><code>FATAL: валидация: ошибки валидации:
+  - Config.Database.Password: минимальное значение 8
+  - Config.Database.SSLMode: допустимые значения: disable allow prefer require verify-ca verify-full
+  - Config.Server.Port: максимальное значение 65535
+</code></pre>
+<h3 id="custom-validation-logic"><a class="header" href="#custom-validation-logic">Custom validation logic</a></h3>
+<p>Для сложных бизнес-правил — метод <code>Validate()</code> на структуре:</p>
+<pre><code class="language-go">func (c *Config) Validate() error {
+    var errs []error
+
+    // Бизнес-правило: WriteTimeout &gt; ReadTimeout
+    if c.Server.WriteTimeout &lt;= c.Server.ReadTimeout {
+        errs = append(errs, fmt.Errorf(
+            "server.write_timeout (%v) должен быть больше server.read_timeout (%v)",
+            c.Server.WriteTimeout, c.Server.ReadTimeout,
+        ))
+    }
+
+    // Бизнес-правило: в production обязателен SSL
+    if c.Database.SSLMode == "disable" {
+        if env := os.Getenv("APP_ENV"); env == "production" {
+            errs = append(errs, fmt.Errorf(
+                "database.sslmode=disable запрещён в production",
+            ))
+        }
+    }
+
+    // Бизнес-правило: MaxConns &gt;= MaxIdleConns
+    if c.Database.MaxConns &gt; 0 &amp;&amp; c.Database.MaxIdleConns &gt; c.Database.MaxConns {
+        errs = append(errs, fmt.Errorf(
+            "database.max_idle_conns (%d) не может превышать max_conns (%d)",
+            c.Database.MaxIdleConns, c.Database.MaxConns,
+        ))
+    }
+
+    return errors.Join(errs...)
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong><code>errors.Join</code> (Go 1.20+)</strong> — идеальный способ собрать множественные ошибки валидации. В C# аналог — <code>AggregateException</code> или <code>ValidationResult</code> коллекция.</p>
+</blockquote>
+<hr>
+<h2 id="паттерны-конфигурации"><a class="header" href="#паттерны-конфигурации">Паттерны конфигурации</a></h2>
+<h3 id="12-factor-app-конфигурация-через-env"><a class="header" href="#12-factor-app-конфигурация-через-env">12-Factor App: конфигурация через ENV</a></h3>
+<p><a href="https://12factor.net/config">12-Factor App</a> (Factor III) гласит: <strong>конфигурация хранится в переменных окружения</strong>. Это де-факто стандарт для облачных приложений.</p>
+<p><strong>Почему ENV</strong>:</p>
+<ul>
+<li>Языконезависимы (работают с Go, C#, Python, Java)</li>
+<li>Не попадают в git (в отличие от config-файлов)</li>
+<li>Легко менять между средами (dev/staging/prod)</li>
+<li>Нативная поддержка в Docker, Kubernetes, CI/CD</li>
+<li>Одинаково работают на всех ОС</li>
+</ul>
+<p><strong>Когда файлы конфигурации оправданы</strong>:</p>
+<ul>
+<li>Сложная вложенная структура (&gt;50 параметров)</li>
+<li>Конфигурация, которую удобнее редактировать в YAML/TOML</li>
+<li>Локальная разработка без Docker</li>
+<li>Конфиг, который должен быть под версионным контролем</li>
+</ul>
+<pre><code class="language-go">// ✅ 12-Factor подход: только env
+type Config struct {
+    Port        int           `env:"PORT" envDefault:"8080"`
+    DatabaseURL string        `env:"DATABASE_URL,required"`
+    RedisURL    string        `env:"REDIS_URL,required"`
+    LogLevel    string        `env:"LOG_LEVEL" envDefault:"info"`
+    Timeout     time.Duration `env:"TIMEOUT" envDefault:"30s"`
+}
+
+// ❌ Не 12-Factor: хардкод путей к файлам
+// config := LoadFromFile("/etc/myapp/config.yaml")
+</code></pre>
+<h3 id="multi-environment-devstagingprod"><a class="header" href="#multi-environment-devstagingprod">Multi-environment (dev/staging/prod)</a></h3>
+<p>Паттерн: <strong>одинаковый код, разная конфигурация</strong>:</p>
+<pre><code class="language-go">type Config struct {
+    Env string `env:"APP_ENV" envDefault:"development"` // development, staging, production
+
+    Server   ServerConfig
+    Database DatabaseConfig
+    Log      LogConfig
+}
+
+func Load() (*Config, error) {
+    cfg := &amp;Config{}
+
+    // В development загружаем .env файл
+    if os.Getenv("APP_ENV") == "" || os.Getenv("APP_ENV") == "development" {
+        _ = godotenv.Load(".env.development")
+    }
+
+    if err := env.Parse(cfg); err != nil {
+        return nil, err
+    }
+
+    // Среда влияет на defaults
+    if cfg.Env == "production" {
+        if cfg.Log.Level == "" {
+            cfg.Log.Level = "warn"
+        }
+        if cfg.Database.SSLMode == "" {
+            cfg.Database.SSLMode = "require"
+        }
+    }
+
+    return cfg, nil
+}
+</code></pre>
+<pre><code class="language-bash"># .env.development
+APP_ENV=development
+DB_HOST=localhost
+DB_USER=developer
+DB_PASSWORD=devpass
+DB_SSLMODE=disable
+LOG_LEVEL=debug
+
+# Production — через оркестратор (K8s, Docker Compose)
+# APP_ENV=production
+# DB_HOST=db.internal
+# DB_USER=app_user
+# DB_PASSWORD=&lt;из Vault&gt;
+# DB_SSLMODE=verify-full
+# LOG_LEVEL=warn
+</code></pre>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">// Автоматический выбор файла по ASPNETCORE_ENVIRONMENT
+builder.Configuration
+    .AddJsonFile("appsettings.json")
+    .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+</code></pre>
+<h3 id="immutable-config-vs-hot-reload"><a class="header" href="#immutable-config-vs-hot-reload">Immutable config vs hot reload</a></h3>
+<p><strong>Immutable config</strong> (рекомендуемый подход):</p>
+<pre><code class="language-go">// Загружаем один раз при старте — Config неизменяем
+func main() {
+    cfg, err := config.Load()
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // Передаём по значению или указателю — никто не может изменить
+    server := api.NewServer(cfg.Server)
+    repo := postgres.NewRepository(cfg.Database)
+}
+</code></pre>
+<p><strong>Hot reload</strong> (когда действительно нужен):</p>
+<pre><code class="language-go">// Сценарии для hot reload:
+// - Уровень логирования (переключить на debug в production без рестарта)
+// - Rate limiting (изменить лимиты без даунтайма)
+// - Feature flags (включить/выключить функции)
+
+type ConfigManager struct {
+    config atomic.Pointer[Config]
+}
+
+func (cm *ConfigManager) Get() *Config {
+    return cm.config.Load()
+}
+
+func (cm *ConfigManager) Update(newCfg *Config) {
+    cm.config.Store(newCfg)
+}
+</code></pre>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">// IOptions&lt;T&gt;        — immutable, создаётся один раз (Singleton)
+// IOptionsSnapshot&lt;T&gt; — обновляется каждый запрос (Scoped)
+// IOptionsMonitor&lt;T&gt;  — уведомляет об изменениях (Singleton, live reload)
+</code></pre>
+<blockquote>
+<p>💡 <strong>Правило</strong>: Используйте immutable config по умолчанию. Hot reload — только для параметров, которые <strong>действительно</strong> нужно менять без рестарта. Чем меньше mutable state — тем проще отладка.</p>
+</blockquote>
+<h3 id="functional-options-для-конфигурации"><a class="header" href="#functional-options-для-конфигурации">Functional Options для конфигурации</a></h3>
+<p>Functional Options — Go-паттерн для конфигурирования библиотек и компонентов:</p>
+<pre><code class="language-go">// Определение компонента с Options
+type Server struct {
+    host         string
+    port         int
+    readTimeout  time.Duration
+    writeTimeout time.Duration
+    logger       *slog.Logger
+}
+
+type Option func(*Server)
+
+func WithHost(host string) Option {
+    return func(s *Server) { s.host = host }
+}
+
+func WithPort(port int) Option {
+    return func(s *Server) { s.port = port }
+}
+
+func WithTimeouts(read, write time.Duration) Option {
+    return func(s *Server) {
+        s.readTimeout = read
+        s.writeTimeout = write
+    }
+}
+
+func WithLogger(logger *slog.Logger) Option {
+    return func(s *Server) { s.logger = logger }
+}
+
+func NewServer(opts ...Option) *Server {
+    // Defaults
+    s := &amp;Server{
+        host:         "0.0.0.0",
+        port:         8080,
+        readTimeout:  5 * time.Second,
+        writeTimeout: 10 * time.Second,
+        logger:       slog.Default(),
+    }
+
+    for _, opt := range opts {
+        opt(s)
+    }
+
+    return s
+}
+
+// Использование
+func main() {
+    cfg, _ := config.Load()
+
+    srv := NewServer(
+        WithHost(cfg.Server.Host),
+        WithPort(cfg.Server.Port),
+        WithTimeouts(cfg.Server.ReadTimeout, cfg.Server.WriteTimeout),
+    )
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Functional Options vs Config struct</strong>: Для внутренних компонентов приложения предпочтительнее Config struct (проще, явнее). Functional Options — для публичных библиотек, где нужна обратная совместимость и необязательные параметры.</p>
+</blockquote>
+<hr>
+<h2 id="секреты-и-безопасность"><a class="header" href="#секреты-и-безопасность">Секреты и безопасность</a></h2>
+<h3 id="почему-не-хранить-секреты-в-config-файлах"><a class="header" href="#почему-не-хранить-секреты-в-config-файлах">Почему НЕ хранить секреты в config-файлах</a></h3>
+<pre><code class="language-yaml"># ❌ НИКОГДА не делайте так!
+database:
+  password: "my-super-secret-password"
+
+redis:
+  password: "redis-password-123"
+
+api_key: "sk-1234567890abcdef"
+</code></pre>
+<p><strong>Проблемы</strong>:</p>
+<ol>
+<li><strong>Git history</strong> — даже после удаления, секрет остаётся в истории коммитов</li>
+<li><strong>Логи</strong> — config-файлы могут попасть в логи при отладке</li>
+<li><strong>Shared access</strong> — доступ к репозиторию = доступ к секретам</li>
+<li><strong>Нет ротации</strong> — смена секрета требует коммита и деплоя</li>
+</ol>
+<p><strong>Правильный подход</strong>: секреты через env-переменные или secret manager.</p>
+<h3 id="hashicorp-vault"><a class="header" href="#hashicorp-vault">HashiCorp Vault</a></h3>
+<pre><code class="language-bash">go get github.com/hashicorp/vault/api
+</code></pre>
+<pre><code class="language-go">package secrets
+
+import (
+    "context"
+    "fmt"
+
+    vault "github.com/hashicorp/vault/api"
+)
+
+type VaultClient struct {
+    client *vault.Client
+}
+
+func NewVaultClient(addr, token string) (*VaultClient, error) {
+    config := vault.DefaultConfig()
+    config.Address = addr
+
+    client, err := vault.NewClient(config)
+    if err != nil {
+        return nil, fmt.Errorf("создание vault клиента: %w", err)
+    }
+
+    client.SetToken(token)
+
+    return &amp;VaultClient{client: client}, nil
+}
+
+// GetSecret читает секрет из Vault KV v2
+func (vc *VaultClient) GetSecret(ctx context.Context, path, key string) (string, error) {
+    secret, err := vc.client.KVv2("secret").Get(ctx, path)
+    if err != nil {
+        return "", fmt.Errorf("чтение секрета %s: %w", path, err)
+    }
+
+    value, ok := secret.Data[key].(string)
+    if !ok {
+        return "", fmt.Errorf("секрет %s/%s не найден или не строка", path, key)
+    }
+
+    return value, nil
+}
+
+// Использование в загрузке конфигурации
+func LoadWithSecrets() (*Config, error) {
+    cfg := &amp;Config{}
+    if err := env.Parse(cfg); err != nil {
+        return nil, err
+    }
+
+    // Загрузка секретов из Vault (если настроен)
+    vaultAddr := os.Getenv("VAULT_ADDR")
+    vaultToken := os.Getenv("VAULT_TOKEN")
+
+    if vaultAddr != "" &amp;&amp; vaultToken != "" {
+        vc, err := NewVaultClient(vaultAddr, vaultToken)
+        if err != nil {
+            return nil, fmt.Errorf("подключение к vault: %w", err)
+        }
+
+        ctx := context.Background()
+
+        // Перезаписываем секреты из Vault
+        if dbPass, err := vc.GetSecret(ctx, "myapp/database", "password"); err == nil {
+            cfg.Database.Password = dbPass
+        }
+
+        if redisPass, err := vc.GetSecret(ctx, "myapp/redis", "password"); err == nil {
+            cfg.Redis.Password = redisPass
+        }
+    }
+
+    return cfg, nil
+}
+</code></pre>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">// Azure Key Vault
+builder.Configuration.AddAzureKeyVault(
+    new Uri("https://myapp-vault.vault.azure.net/"),
+    new DefaultAzureCredential());
+
+// Секреты автоматически становятся частью IConfiguration
+var dbPassword = config["Database:Password"]; // из Key Vault
+</code></pre>
+<h3 id="aws-secrets-manager"><a class="header" href="#aws-secrets-manager">AWS Secrets Manager</a></h3>
+<pre><code class="language-go">package secrets
+
+import (
+    "context"
+    "encoding/json"
+    "fmt"
+
+    "github.com/aws/aws-sdk-go-v2/config"
+    "github.com/aws/aws-sdk-go-v2/service/secretsmanager"
+)
+
+type AWSSecrets struct {
+    client *secretsmanager.Client
+}
+
+func NewAWSSecrets(ctx context.Context) (*AWSSecrets, error) {
+    cfg, err := config.LoadDefaultConfig(ctx)
+    if err != nil {
+        return nil, fmt.Errorf("загрузка AWS config: %w", err)
+    }
+
+    return &amp;AWSSecrets{
+        client: secretsmanager.NewFromConfig(cfg),
+    }, nil
+}
+
+// GetSecretJSON читает JSON-секрет из AWS Secrets Manager
+func (as *AWSSecrets) GetSecretJSON(ctx context.Context, name string) (map[string]string, error) {
+    result, err := as.client.GetSecretValue(ctx, &amp;secretsmanager.GetSecretValueInput{
+        SecretId: &amp;name,
+    })
+    if err != nil {
+        return nil, fmt.Errorf("чтение секрета %s: %w", name, err)
+    }
+
+    var data map[string]string
+    if err := json.Unmarshal([]byte(*result.SecretString), &amp;data); err != nil {
+        return nil, fmt.Errorf("парсинг секрета %s: %w", name, err)
+    }
+
+    return data, nil
+}
+</code></pre>
+<h3 id="kubernetes-secrets-и-configmaps"><a class="header" href="#kubernetes-secrets-и-configmaps">Kubernetes Secrets и ConfigMaps</a></h3>
+<p>В Kubernetes секреты монтируются как файлы или env-переменные:</p>
+<pre><code class="language-yaml"># deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+spec:
+  template:
+    spec:
+      containers:
+        - name: myapp
+          env:
+            # Из ConfigMap
+            - name: SERVER_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: myapp-config
+                  key: server-port
+
+            # Из Secret
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: myapp-secrets
+                  key: db-password
+
+          # Или монтирование как файлы
+          volumeMounts:
+            - name: secrets
+              mountPath: /run/secrets
+              readOnly: true
+
+      volumes:
+        - name: secrets
+          secret:
+            secretName: myapp-secrets
+</code></pre>
+<pre><code class="language-go">// Чтение секрета из файла (Docker/K8s secrets)
+type Config struct {
+    // Переменная содержит путь к файлу с секретом
+    DBPassword string `env:"DB_PASSWORD_FILE,file"` // caarlos0/env
+
+    // Или обычная переменная (K8s secretKeyRef)
+    DBPasswordEnv string `env:"DB_PASSWORD"`
+}
+</code></pre>
+<h3 id="маскирование-секретов-в-логах"><a class="header" href="#маскирование-секретов-в-логах">Маскирование секретов в логах</a></h3>
+<pre><code class="language-go">// Secret — тип для секретных значений, маскируется при логировании
+type Secret string
+
+// String — маскирует значение при выводе
+func (s Secret) String() string {
+    if len(s) == 0 {
+        return ""
+    }
+    return "***"
+}
+
+// MarshalJSON — маскирует в JSON
+func (s Secret) MarshalJSON() ([]byte, error) {
+    return []byte(`"***"`), nil
+}
+
+// MarshalText — маскирует в текстовом формате (используется slog)
+func (s Secret) MarshalText() ([]byte, error) {
+    return []byte("***"), nil
+}
+
+// Value — получение реального значения (явный вызов)
+func (s Secret) Value() string {
+    return string(s)
+}
+
+// Использование в конфигурации
+type DatabaseConfig struct {
+    Host     string `env:"DB_HOST" envDefault:"localhost"`
+    Port     int    `env:"DB_PORT" envDefault:"5432"`
+    User     string `env:"DB_USER,required"`
+    Password Secret `env:"DB_PASSWORD,required"` // маскируется при логировании
+    Name     string `env:"DB_NAME" envDefault:"myapp"`
+}
+
+// Логирование — секреты замаскированы
+func main() {
+    cfg, _ := config.Load()
+
+    slog.Info("конфигурация загружена",
+        "db_host", cfg.Database.Host,
+        "db_user", cfg.Database.User,
+        "db_password", cfg.Database.Password, // выведет: ***
+    )
+
+    // Для реального использования — явный вызов .Value()
+    dsn := fmt.Sprintf("postgres://%s:%s@%s:%d/%s",
+        cfg.Database.User,
+        cfg.Database.Password.Value(), // реальное значение
+        cfg.Database.Host,
+        cfg.Database.Port,
+        cfg.Database.Name,
+    )
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Тип <code>Secret</code></strong> — простой, но эффективный приём. Он предотвращает случайное попадание паролей в логи, JSON-ответы и отладочный вывод. См. также раздел <a href="./05_observability.html">4.5 Observability</a> — PII-маскирование в логах.</p>
+</blockquote>
+<hr>
+<h2 id="feature-flags"><a class="header" href="#feature-flags">Feature Flags</a></h2>
+<h3 id="простая-реализация-через-конфигурацию"><a class="header" href="#простая-реализация-через-конфигурацию">Простая реализация через конфигурацию</a></h3>
+<p>Для базовых сценариев feature flags — это просто поля в конфиге:</p>
+<pre><code class="language-go">type FeatureFlags struct {
+    EnableNewUI      bool `env:"FF_ENABLE_NEW_UI" envDefault:"false"`
+    EnableV2API      bool `env:"FF_ENABLE_V2_API" envDefault:"false"`
+    EnableAnalytics  bool `env:"FF_ENABLE_ANALYTICS" envDefault:"true"`
+    MaxUploadSizeMB  int  `env:"FF_MAX_UPLOAD_SIZE_MB" envDefault:"10"`
+}
+
+type Config struct {
+    Server   ServerConfig
+    Database DatabaseConfig
+    Features FeatureFlags
+}
+
+// Использование в handler
+func (h *Handler) Upload(w http.ResponseWriter, r *http.Request) {
+    maxSize := int64(h.cfg.Features.MaxUploadSizeMB) * 1024 * 1024
+    r.Body = http.MaxBytesReader(w, r.Body, maxSize)
+
+    if !h.cfg.Features.EnableV2API {
+        h.uploadV1(w, r)
+        return
+    }
+    h.uploadV2(w, r)
+}
+
+// Middleware для feature flags
+func FeatureGate(flag bool) func(http.Handler) http.Handler {
+    return func(next http.Handler) http.Handler {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            if !flag {
+                http.Error(w, "feature not available", http.StatusNotFound)
+                return
+            }
+            next.ServeHTTP(w, r)
+        })
+    }
+}
+
+// Использование
+mux.Handle("/api/v2/", FeatureGate(cfg.Features.EnableV2API)(v2Handler))
+</code></pre>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">// Microsoft.FeatureManagement
+services.AddFeatureManagement(config.GetSection("FeatureFlags"));
+
+// Использование
+[FeatureGate("EnableV2API")]
+public class V2Controller : ControllerBase { }
+
+// Или в коде
+if (await featureManager.IsEnabledAsync("EnableNewUI"))
+    return View("NewUI");
+</code></pre>
+<h3 id="openfeature-sdk"><a class="header" href="#openfeature-sdk">OpenFeature SDK</a></h3>
+<p><a href="https://openfeature.dev/">OpenFeature</a> — вендор-нейтральный стандарт для feature flags:</p>
+<pre><code class="language-bash">go get github.com/open-feature/go-sdk
+</code></pre>
+<pre><code class="language-go">import (
+    "context"
+
+    "github.com/open-feature/go-sdk/openfeature"
+)
+
+func setupFeatureFlags() {
+    // Провайдер — можно заменить на LaunchDarkly, Flagd и др.
+    openfeature.SetProvider(myProvider)
+
+    client := openfeature.NewClient("myapp")
+
+    ctx := context.Background()
+
+    // Оценка флага с контекстом пользователя
+    value, err := client.BooleanValue(ctx, "enable-new-ui", false,
+        openfeature.NewEvaluationContext("", map[string]interface{}{
+            "user-id":    "user-123",
+            "user-role":  "admin",
+            "user-region": "eu",
+        }),
+    )
+    if err != nil {
+        log.Printf("ошибка оценки флага: %v", err)
+    }
+
+    if value {
+        // Новый UI
+    }
+}
+</code></pre>
+<h3 id="сторонние-сервисы"><a class="header" href="#сторонние-сервисы">Сторонние сервисы</a></h3>
+<p>Для сложных сценариев (A/B тестирование, постепенный rollout, таргетинг) — используйте специализированные сервисы:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Сервис</th><th>Особенности</th><th>Go SDK</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>LaunchDarkly</strong></td><td>Лидер рынка, rich targeting</td><td><code>github.com/launchdarkly/go-server-sdk</code></td></tr>
+<tr><td><strong>Unleash</strong></td><td>Open-source, self-hosted</td><td><code>github.com/Unleash/unleash-client-go</code></td></tr>
+<tr><td><strong>Flagsmith</strong></td><td>Open-source, SaaS и self-hosted</td><td><code>github.com/Flagsmith/flagsmith-go-client</code></td></tr>
+<tr><td><strong>flagd</strong></td><td>CNCF, OpenFeature-native</td><td>Через OpenFeature SDK</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Рекомендация</strong>: Начните с config-based флагов. Переходите на OpenFeature / внешний сервис, когда появится потребность в A/B тестировании, постепенном rollout или таргетинге по пользователям.</p>
+</blockquote>
+<hr>
+<h2 id="production-concerns"><a class="header" href="#production-concerns">Production Concerns</a></h2>
+<h3 id="порядок-инициализации"><a class="header" href="#порядок-инициализации">Порядок инициализации</a></h3>
+<p>В Go нет автоматической инициализации как в ASP.NET <code>WebApplicationBuilder</code>. Порядок важен:</p>
+<pre><code class="language-go">func main() {
+    // 1. Загрузка конфигурации (ПЕРВЫМ!)
+    cfg, err := config.Load()
+    if err != nil {
+        // На этом этапе логгер ещё не инициализирован — используем стандартный
+        log.Fatalf("ошибка загрузки конфигурации: %v", err)
+    }
+
+    // 2. Валидация конфигурации
+    if err := cfg.Validate(); err != nil {
+        log.Fatalf("невалидная конфигурация: %v", err)
+    }
+
+    // 3. Инициализация логгера (зависит от cfg.Log)
+    logger := setupLogger(cfg.Log)
+    logger.Info("конфигурация загружена",
+        "env", cfg.Env,
+        "server_port", cfg.Server.Port,
+    )
+
+    // 4. Инициализация трейсинга (зависит от cfg и logger)
+    shutdown, err := setupTracing(cfg.Telemetry)
+    if err != nil {
+        logger.Error("ошибка инициализации трейсинга", "error", err)
+    }
+    defer shutdown(context.Background())
+
+    // 5. Подключение к базам данных (зависит от cfg)
+    db, err := setupDatabase(cfg.Database)
+    if err != nil {
+        logger.Error("ошибка подключения к БД", "error", err)
+        os.Exit(1)
+    }
+    defer db.Close()
+
+    // 6. Создание сервисов
+    repo := postgres.NewRepository(db)
+    svc := service.NewService(repo, logger)
+    handler := api.NewHandler(svc, logger)
+
+    // 7. Запуск сервера
+    srv := &amp;http.Server{
+        Addr:         cfg.Server.Address(),
+        Handler:      handler.Routes(),
+        ReadTimeout:  cfg.Server.ReadTimeout,
+        WriteTimeout: cfg.Server.WriteTimeout,
+    }
+
+    // 8. Graceful shutdown
+    go func() {
+        sigCh := make(chan os.Signal, 1)
+        signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
+        &lt;-sigCh
+
+        logger.Info("получен сигнал завершения")
+        ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+        defer cancel()
+        srv.Shutdown(ctx)
+    }()
+
+    logger.Info("сервер запущен", "addr", cfg.Server.Address())
+    if err := srv.ListenAndServe(); err != http.ErrServerClosed {
+        logger.Error("ошибка сервера", "error", err)
+        os.Exit(1)
+    }
+}
+</code></pre>
+<p><strong>C# аналог</strong> — порядок автоматизирован:</p>
+<pre><code class="language-csharp">var builder = WebApplication.CreateBuilder(args);
+// builder сам управляет порядком: config → logging → DI → middleware → endpoints
+</code></pre>
+<h3 id="graceful-reload"><a class="header" href="#graceful-reload">Graceful reload</a></h3>
+<p>Перезагрузка конфигурации по сигналу SIGHUP:</p>
+<pre><code class="language-go">func setupConfigReload(cm *config.Manager, logger *slog.Logger) {
+    sigCh := make(chan os.Signal, 1)
+    signal.Notify(sigCh, syscall.SIGHUP)
+
+    go func() {
+        for range sigCh {
+            logger.Info("SIGHUP получен, перезагрузка конфигурации...")
+
+            newCfg, err := config.Load()
+            if err != nil {
+                logger.Error("ошибка перезагрузки конфигурации", "error", err)
+                continue
+            }
+
+            if err := newCfg.Validate(); err != nil {
+                logger.Error("невалидная новая конфигурация", "error", err)
+                continue
+            }
+
+            cm.Update(newCfg)
+            logger.Info("конфигурация обновлена")
+        }
+    }()
+}
+</code></pre>
+<pre><code class="language-bash"># Перезагрузка конфигурации без рестарта
+kill -SIGHUP $(pidof myapp)
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Что можно перезагружать</strong>: уровень логирования, feature flags, rate limits. <strong>Что нельзя</strong>: порт сервера, строку подключения к БД (требует переподключения).</p>
+</blockquote>
+<h3 id="тестирование-конфигурации"><a class="header" href="#тестирование-конфигурации">Тестирование конфигурации</a></h3>
+<pre><code class="language-go">package config_test
+
+import (
+    "testing"
+
+    "myapp/config"
+)
+
+func TestLoad_Defaults(t *testing.T) {
+    // t.Setenv устанавливает переменные только для этого теста
+    // и автоматически восстанавливает исходные значения
+    t.Setenv("DB_USER", "testuser")
+    t.Setenv("DB_PASSWORD", "testpass123")
+
+    cfg, err := config.Load()
+    if err != nil {
+        t.Fatalf("неожиданная ошибка: %v", err)
+    }
+
+    // Проверка defaults
+    if cfg.Server.Port != 8080 {
+        t.Errorf("ожидали порт 8080, получили %d", cfg.Server.Port)
+    }
+    if cfg.Server.Host != "0.0.0.0" {
+        t.Errorf("ожидали host 0.0.0.0, получили %s", cfg.Server.Host)
+    }
+}
+
+func TestLoad_RequiredFields(t *testing.T) {
+    // Не задаём обязательные поля — ожидаем ошибку
+    cfg, err := config.Load()
+    if err == nil {
+        t.Fatal("ожидали ошибку для отсутствующих обязательных полей")
+    }
+    if cfg != nil {
+        t.Fatal("конфиг должен быть nil при ошибке")
+    }
+}
+
+func TestValidate_WriteTimeoutGreaterThanRead(t *testing.T) {
+    cfg := &amp;config.Config{
+        Server: config.ServerConfig{
+            ReadTimeout:  10 * time.Second,
+            WriteTimeout: 5 * time.Second, // меньше ReadTimeout — невалидно
+        },
+    }
+
+    err := cfg.Validate()
+    if err == nil {
+        t.Fatal("ожидали ошибку валидации: WriteTimeout &lt; ReadTimeout")
+    }
+}
+
+func TestLoad_CustomValues(t *testing.T) {
+    t.Setenv("DB_USER", "admin")
+    t.Setenv("DB_PASSWORD", "supersecret")
+    t.Setenv("SERVER_PORT", "9090")
+    t.Setenv("LOG_LEVEL", "debug")
+
+    cfg, err := config.Load()
+    if err != nil {
+        t.Fatalf("неожиданная ошибка: %v", err)
+    }
+
+    if cfg.Server.Port != 9090 {
+        t.Errorf("ожидали порт 9090, получили %d", cfg.Server.Port)
+    }
+    if cfg.Log.Level != "debug" {
+        t.Errorf("ожидали log level debug, получили %s", cfg.Log.Level)
+    }
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong><code>t.Setenv</code> (Go 1.17+)</strong> — устанавливает переменную окружения только для текущего теста и автоматически восстанавливает значение после завершения. Безопасен для параллельных тестов (вызывает <code>t.Parallel()</code> panic — по дизайну).</p>
+</blockquote>
+<h3 id="observability-для-конфигурации"><a class="header" href="#observability-для-конфигурации">Observability для конфигурации</a></h3>
+<p>Логируйте конфигурацию при старте и отслеживайте перезагрузки:</p>
+<pre><code class="language-go">// Логирование конфигурации при запуске (без секретов!)
+func logConfig(logger *slog.Logger, cfg *Config) {
+    logger.Info("конфигурация загружена",
+        "env", cfg.Env,
+        "server.host", cfg.Server.Host,
+        "server.port", cfg.Server.Port,
+        "server.read_timeout", cfg.Server.ReadTimeout,
+        "database.host", cfg.Database.Host,
+        "database.port", cfg.Database.Port,
+        "database.name", cfg.Database.Name,
+        "database.sslmode", cfg.Database.SSLMode,
+        "database.max_conns", cfg.Database.MaxConns,
+        "database.password", cfg.Database.Password, // тип Secret — выведет ***
+        "redis.addr", cfg.Redis.Addr,
+        "log.level", cfg.Log.Level,
+        "features", cfg.Features,
+    )
+}
+
+// Prometheus-метрики для конфигурации
+var (
+    configReloadTotal = prometheus.NewCounter(prometheus.CounterOpts{
+        Name: "config_reload_total",
+        Help: "Количество перезагрузок конфигурации",
+    })
+    configReloadErrors = prometheus.NewCounter(prometheus.CounterOpts{
+        Name: "config_reload_errors_total",
+        Help: "Количество ошибок при перезагрузке конфигурации",
+    })
+    configInfo = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+        Name: "config_info",
+        Help: "Информация о текущей конфигурации",
+    }, []string{"env", "log_level"})
+)
+
+func init() {
+    prometheus.MustRegister(configReloadTotal, configReloadErrors, configInfo)
+}
+
+func updateConfigMetrics(cfg *Config) {
+    configInfo.Reset()
+    configInfo.WithLabelValues(cfg.Env, cfg.Log.Level).Set(1)
+}
+
+---
+
+## Типичные ошибки C# разработчиков
+
+### 1. Over-engineering: DI-based config providers
+
+```go
+// ❌ C# привычка — создание интерфейсов и DI для конфигурации
+type ConfigProvider interface {
+    GetConfig() *Config
+}
+
+type envConfigProvider struct{}
+
+func (p *envConfigProvider) GetConfig() *Config {
+    cfg, _ := config.Load()
+    return cfg
+}
+
+// Инъекция через конструктор
+func NewService(cp ConfigProvider) *Service {
+    return &amp;Service{config: cp.GetConfig()}
+}
+
+// ✅ Go-way — просто передайте структуру
+func NewService(cfg ServiceConfig) *Service {
+    return &amp;Service{cfg: cfg}
+}
+</code></pre>
+<h3 id="2-не-валидируют-конфигурацию-при-запуске"><a class="header" href="#2-не-валидируют-конфигурацию-при-запуске">2. Не валидируют конфигурацию при запуске</a></h3>
+<pre><code class="language-go">// ❌ Ленивая валидация — узнаём о проблеме через час в production
+func (r *Repository) Connect() error {
+    if r.cfg.Host == "" {
+        return errors.New("database host не задан") // поздно!
+    }
+    // ...
+}
+
+// ✅ Fail fast — валидация при старте
+func main() {
+    cfg, err := config.Load()
+    if err != nil {
+        log.Fatal(err) // ← сразу при запуске
+    }
+    if err := cfg.Validate(); err != nil {
+        log.Fatal(err) // ← сразу при запуске
+    }
+}
+</code></pre>
+<h3 id="3-секреты-в-config-файлах-и-коде"><a class="header" href="#3-секреты-в-config-файлах-и-коде">3. Секреты в config-файлах и коде</a></h3>
+<pre><code class="language-go">// ❌ Привычка от appsettings.json
+const defaultPassword = "admin123" // никогда!
+
+// ❌ Коммит .env с реальными паролями
+// .env: DB_PASSWORD=production-secret-123
+
+// ✅ Секреты через env или secret manager
+type Config struct {
+    Password Secret `env:"DB_PASSWORD,required"` // обязательная, без default
+}
+</code></pre>
+<h3 id="4-глобальный-mutable-state"><a class="header" href="#4-глобальный-mutable-state">4. Глобальный mutable state</a></h3>
+<pre><code class="language-go">// ❌ Глобальный Viper — скрытая зависимость
+func GetDatabaseHost() string {
+    return viper.GetString("database.host") // кто инициализировал? когда?
+}
+
+// ✅ Явная передача конфигурации
+type Repository struct {
+    cfg DatabaseConfig
+}
+
+func NewRepository(cfg DatabaseConfig) *Repository {
+    return &amp;Repository{cfg: cfg}
+}
+</code></pre>
+<h3 id="5-игнорирование-12-factor"><a class="header" href="#5-игнорирование-12-factor">5. Игнорирование 12-Factor</a></h3>
+<pre><code class="language-go">// ❌ Зависимость от config-файла в production
+func Load() (*Config, error) {
+    return LoadFromFile("/etc/myapp/config.yaml") // а если файла нет?
+}
+
+// ✅ ENV-first, файл — опционально
+func Load() (*Config, error) {
+    _ = godotenv.Load() // опционально для dev
+    cfg := &amp;Config{}
+    return cfg, env.Parse(cfg)
+}
+</code></pre>
+<h3 id="6-перечитывание-конфига-на-каждый-запрос"><a class="header" href="#6-перечитывание-конфига-на-каждый-запрос">6. Перечитывание конфига на каждый запрос</a></h3>
+<pre><code class="language-go">// ❌ Парсинг конфигурации на каждый HTTP-запрос
+func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+    cfg, _ := config.Load() // парсинг env на КАЖДЫЙ запрос!
+    // ...
+}
+
+// ✅ Загрузка один раз, передача через замыкание/поле
+func NewHandler(cfg *Config) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        // cfg уже загружен
+    })
+}
+</code></pre>
+<h3 id="7-смешение-конфигурации-и-бизнес-логики"><a class="header" href="#7-смешение-конфигурации-и-бизнес-логики">7. Смешение конфигурации и бизнес-логики</a></h3>
+<pre><code class="language-go">// ❌ Бизнес-логика читает env напрямую
+func CalculateDiscount(price float64) float64 {
+    maxDiscount, _ := strconv.ParseFloat(os.Getenv("MAX_DISCOUNT"), 64)
+    return price * maxDiscount
+}
+
+// ✅ Бизнес-логика принимает параметры
+func CalculateDiscount(price, maxDiscount float64) float64 {
+    return price * maxDiscount
+}
+
+// Конфигурация — на уровне инициализации
+svc := NewPricingService(cfg.Pricing.MaxDiscount)
+</code></pre>
+<hr>
+<h2 id="практические-примеры"><a class="header" href="#практические-примеры">Практические примеры</a></h2>
+<h3 id="пример-1-production-ready-config-с-caarlos0env"><a class="header" href="#пример-1-production-ready-config-с-caarlos0env">Пример 1: Production-ready config с caarlos0/env</a></h3>
+<p>Полный пакет конфигурации для production-микросервиса:</p>
+<pre><code class="language-go">// internal/config/config.go
+package config
+
+import (
+    "errors"
+    "fmt"
+    "strings"
+    "time"
+
+    "github.com/caarlos0/env/v11"
+    "github.com/go-playground/validator/v10"
+    "github.com/joho/godotenv"
+)
+
+// Secret — тип для секретных значений
+type Secret string
+
+func (s Secret) String() string {
+    if len(s) == 0 {
+        return ""
+    }
+    return "***"
+}
+
+func (s Secret) MarshalText() ([]byte, error) { return []byte("***"), nil }
+func (s Secret) Value() string                 { return string(s) }
+
+// Config — корневая структура конфигурации
+type Config struct {
+    Env    string `env:"APP_ENV" envDefault:"development" validate:"required,oneof=development staging production"`
+    Server ServerConfig
+    DB     DatabaseConfig
+    Redis  RedisConfig
+    Log    LogConfig
+}
+
+type ServerConfig struct {
+    Host         string        `env:"SERVER_HOST" envDefault:"0.0.0.0" validate:"required"`
+    Port         int           `env:"SERVER_PORT" envDefault:"8080" validate:"required,min=1,max=65535"`
+    ReadTimeout  time.Duration `env:"SERVER_READ_TIMEOUT" envDefault:"5s" validate:"required"`
+    WriteTimeout time.Duration `env:"SERVER_WRITE_TIMEOUT" envDefault:"10s" validate:"required"`
+    IdleTimeout  time.Duration `env:"SERVER_IDLE_TIMEOUT" envDefault:"120s"`
+}
+
+func (s ServerConfig) Address() string {
+    return fmt.Sprintf("%s:%d", s.Host, s.Port)
+}
+
+type DatabaseConfig struct {
+    Host            string        `env:"DB_HOST" envDefault:"localhost" validate:"required"`
+    Port            int           `env:"DB_PORT" envDefault:"5432" validate:"required,min=1,max=65535"`
+    User            string        `env:"DB_USER,required" validate:"required"`
+    Password        Secret        `env:"DB_PASSWORD,required" validate:"required"`
+    Name            string        `env:"DB_NAME" envDefault:"myapp" validate:"required"`
+    SSLMode         string        `env:"DB_SSLMODE" envDefault:"disable" validate:"required,oneof=disable allow prefer require verify-ca verify-full"`
+    MaxOpenConns    int           `env:"DB_MAX_OPEN_CONNS" envDefault:"25" validate:"min=1,max=1000"`
+    MaxIdleConns    int           `env:"DB_MAX_IDLE_CONNS" envDefault:"5" validate:"min=0"`
+    ConnMaxLifetime time.Duration `env:"DB_CONN_MAX_LIFETIME" envDefault:"5m"`
+}
+
+func (d DatabaseConfig) DSN() string {
+    return fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s",
+        d.User, d.Password.Value(), d.Host, d.Port, d.Name, d.SSLMode)
+}
+
+type RedisConfig struct {
+    Addr     string `env:"REDIS_ADDR" envDefault:"localhost:6379" validate:"required"`
+    Password Secret `env:"REDIS_PASSWORD"`
+    DB       int    `env:"REDIS_DB" envDefault:"0" validate:"min=0,max=15"`
+}
+
+type LogConfig struct {
+    Level  string `env:"LOG_LEVEL" envDefault:"info" validate:"required,oneof=debug info warn error"`
+    Format string `env:"LOG_FORMAT" envDefault:"json" validate:"required,oneof=json text"`
+}
+
+var validate = validator.New()
+
+// Load загружает и валидирует конфигурацию
+func Load() (*Config, error) {
+    // В development загружаем .env
+    _ = godotenv.Load()
+
+    cfg := &amp;Config{}
+
+    // Парсинг env-переменных
+    if err := env.Parse(cfg); err != nil {
+        return nil, fmt.Errorf("парсинг env: %w", err)
+    }
+
+    // Структурная валидация
+    if err := validate.Struct(cfg); err != nil {
+        return nil, fmt.Errorf("валидация: %w", err)
+    }
+
+    // Бизнес-валидация
+    if err := cfg.validate(); err != nil {
+        return nil, fmt.Errorf("бизнес-валидация: %w", err)
+    }
+
+    return cfg, nil
+}
+
+func (c *Config) validate() error {
+    var errs []error
+
+    if c.Server.WriteTimeout &lt;= c.Server.ReadTimeout {
+        errs = append(errs, fmt.Errorf(
+            "write_timeout (%v) должен быть &gt; read_timeout (%v)",
+            c.Server.WriteTimeout, c.Server.ReadTimeout))
+    }
+
+    if c.DB.MaxIdleConns &gt; c.DB.MaxOpenConns {
+        errs = append(errs, fmt.Errorf(
+            "max_idle_conns (%d) не может быть &gt; max_open_conns (%d)",
+            c.DB.MaxIdleConns, c.DB.MaxOpenConns))
+    }
+
+    if c.Env == "production" &amp;&amp; c.DB.SSLMode == "disable" {
+        errs = append(errs, fmt.Errorf("SSL обязателен в production"))
+    }
+
+    return errors.Join(errs...)
+}
+</code></pre>
+<pre><code class="language-go">// cmd/server/main.go
+package main
+
+import (
+    "log"
+    "log/slog"
+    "os"
+
+    "myapp/internal/config"
+)
+
+func main() {
+    cfg, err := config.Load()
+    if err != nil {
+        log.Fatalf("FATAL: конфигурация: %v", err)
+    }
+
+    logger := setupLogger(cfg.Log)
+    logger.Info("приложение запущено",
+        "env", cfg.Env,
+        "server", cfg.Server.Address(),
+        "db_host", cfg.DB.Host,
+        "db_password", cfg.DB.Password, // выведет ***
+    )
+
+    // ... инициализация и запуск
+}
+
+func setupLogger(cfg config.LogConfig) *slog.Logger {
+    var level slog.Level
+    switch cfg.Level {
+    case "debug":
+        level = slog.LevelDebug
+    case "warn":
+        level = slog.LevelWarn
+    case "error":
+        level = slog.LevelError
+    default:
+        level = slog.LevelInfo
+    }
+
+    opts := &amp;slog.HandlerOptions{Level: level}
+
+    var handler slog.Handler
+    if cfg.Format == "text" {
+        handler = slog.NewTextHandler(os.Stdout, opts)
+    } else {
+        handler = slog.NewJSONHandler(os.Stdout, opts)
+    }
+
+    return slog.New(handler)
+}
+</code></pre>
+<h3 id="пример-2-multi-source-config-с-koanf-и-hot-reload"><a class="header" href="#пример-2-multi-source-config-с-koanf-и-hot-reload">Пример 2: Multi-source config с koanf и hot reload</a></h3>
+<pre><code class="language-go">// internal/config/manager.go
+package config
+
+import (
+    "fmt"
+    "log/slog"
+    "strings"
+    "sync/atomic"
+    "time"
+
+    "github.com/knadh/koanf/v2"
+    "github.com/knadh/koanf/parsers/yaml"
+    "github.com/knadh/koanf/providers/env"
+    "github.com/knadh/koanf/providers/file"
+)
+
+type Config struct {
+    Server struct {
+        Host         string        `koanf:"host"`
+        Port         int           `koanf:"port"`
+        ReadTimeout  time.Duration `koanf:"read_timeout"`
+        WriteTimeout time.Duration `koanf:"write_timeout"`
+    } `koanf:"server"`
+
+    Database struct {
+        Host     string `koanf:"host"`
+        Port     int    `koanf:"port"`
+        User     string `koanf:"user"`
+        Password string `koanf:"password"`
+        Name     string `koanf:"name"`
+    } `koanf:"database"`
+
+    Log struct {
+        Level string `koanf:"level"`
+    } `koanf:"log"`
+
+    Features struct {
+        EnableNewUI bool `koanf:"enable_new_ui"`
+        EnableV2API bool `koanf:"enable_v2_api"`
+    } `koanf:"features"`
+}
+
+// Manager управляет конфигурацией с поддержкой hot reload
+type Manager struct {
+    config    atomic.Pointer[Config]
+    logger    *slog.Logger
+    configPath string
+    reloadCount atomic.Int64
+}
+
+func NewManager(configPath string, logger *slog.Logger) (*Manager, error) {
+    m := &amp;Manager{
+        logger:     logger,
+        configPath: configPath,
+    }
+
+    // Первоначальная загрузка
+    cfg, err := m.load()
+    if err != nil {
+        return nil, fmt.Errorf("первоначальная загрузка: %w", err)
+    }
+    m.config.Store(cfg)
+
+    // Запуск наблюдения за файлом
+    m.watchConfig()
+
+    return m, nil
+}
+
+func (m *Manager) load() (*Config, error) {
+    k := koanf.New(".")
+
+    // 1. Файл (низший приоритет)
+    if err := k.Load(file.Provider(m.configPath), yaml.Parser()); err != nil {
+        m.logger.Warn("конфиг-файл не найден", "path", m.configPath, "error", err)
+    }
+
+    // 2. ENV (высший приоритет) — перезаписывает файл
+    err := k.Load(env.Provider("APP_", ".", func(s string) string {
+        return strings.Replace(
+            strings.ToLower(strings.TrimPrefix(s, "APP_")),
+            "_", ".", -1)
+    }), nil)
+    if err != nil {
+        return nil, fmt.Errorf("загрузка env: %w", err)
+    }
+
+    var cfg Config
+    if err := k.Unmarshal("", &amp;cfg); err != nil {
+        return nil, fmt.Errorf("десериализация: %w", err)
+    }
+
+    return &amp;cfg, nil
+}
+
+func (m *Manager) watchConfig() {
+    f := file.Provider(m.configPath)
+
+    f.Watch(func(event interface{}, err error) {
+        if err != nil {
+            m.logger.Error("ошибка watch", "error", err)
+            return
+        }
+
+        m.logger.Info("обнаружено изменение конфиг-файла")
+
+        cfg, err := m.load()
+        if err != nil {
+            m.logger.Error("ошибка перезагрузки", "error", err)
+            return
+        }
+
+        m.config.Store(cfg)
+        m.reloadCount.Add(1)
+
+        m.logger.Info("конфигурация обновлена",
+            "reload_count", m.reloadCount.Load(),
+            "log_level", cfg.Log.Level,
+        )
+    })
+}
+
+// Get возвращает текущую конфигурацию (thread-safe)
+func (m *Manager) Get() *Config {
+    return m.config.Load()
+}
+
+// ReloadCount возвращает количество перезагрузок
+func (m *Manager) ReloadCount() int64 {
+    return m.reloadCount.Load()
+}
+</code></pre>
+<pre><code class="language-go">// Использование в main.go
+func main() {
+    logger := slog.Default()
+
+    mgr, err := config.NewManager("config.yaml", logger)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // HTTP handler с hot-reloadable конфигом
+    http.HandleFunc("/api/features", func(w http.ResponseWriter, r *http.Request) {
+        cfg := mgr.Get() // всегда актуальная конфигурация
+        json.NewEncoder(w).Encode(cfg.Features)
+    })
+
+    cfg := mgr.Get()
+    addr := fmt.Sprintf("%s:%d", cfg.Server.Host, cfg.Server.Port)
+    log.Fatal(http.ListenAndServe(addr, nil))
+}
+</code></pre>
+<h3 id="пример-3-config-с-секретами-и-feature-flags"><a class="header" href="#пример-3-config-с-секретами-и-feature-flags">Пример 3: Config с секретами и feature flags</a></h3>
+<pre><code class="language-go">// internal/config/loader.go
+package config
+
+import (
+    "context"
+    "fmt"
+    "log/slog"
+    "os"
+    "time"
+
+    "github.com/caarlos0/env/v11"
+    vault "github.com/hashicorp/vault/api"
+    "github.com/joho/godotenv"
+)
+
+type Config struct {
+    Env      string `env:"APP_ENV" envDefault:"development"`
+    Server   ServerConfig
+    DB       DatabaseConfig
+    Redis    RedisConfig
+    Log      LogConfig
+    Features FeatureFlags
+    Vault    VaultConfig
+}
+
+type VaultConfig struct {
+    Addr  string `env:"VAULT_ADDR"`
+    Token Secret `env:"VAULT_TOKEN"`
+    Path  string `env:"VAULT_SECRET_PATH" envDefault:"secret/data/myapp"`
+}
+
+type FeatureFlags struct {
+    EnableNewUI     bool `env:"FF_ENABLE_NEW_UI" envDefault:"false"`
+    EnableV2API     bool `env:"FF_ENABLE_V2_API" envDefault:"false"`
+    EnableAnalytics bool `env:"FF_ENABLE_ANALYTICS" envDefault:"true"`
+}
+
+// Load загружает конфигурацию из env и Vault
+func Load(ctx context.Context, logger *slog.Logger) (*Config, error) {
+    // 1. Загрузка .env в development
+    _ = godotenv.Load()
+
+    // 2. Парсинг env-переменных
+    cfg := &amp;Config{}
+    if err := env.Parse(cfg); err != nil {
+        return nil, fmt.Errorf("парсинг env: %w", err)
+    }
+
+    // 3. Загрузка секретов из Vault (если настроен)
+    if cfg.Vault.Addr != "" {
+        if err := loadVaultSecrets(ctx, cfg, logger); err != nil {
+            // В development — предупреждение, в production — ошибка
+            if cfg.Env == "production" {
+                return nil, fmt.Errorf("загрузка секретов: %w", err)
+            }
+            logger.Warn("Vault недоступен, используем env-переменные", "error", err)
+        }
+    }
+
+    // 4. Валидация
+    if err := cfg.Validate(); err != nil {
+        return nil, fmt.Errorf("валидация: %w", err)
+    }
+
+    return cfg, nil
+}
+
+func loadVaultSecrets(ctx context.Context, cfg *Config, logger *slog.Logger) error {
+    vaultCfg := vault.DefaultConfig()
+    vaultCfg.Address = cfg.Vault.Addr
+
+    client, err := vault.NewClient(vaultCfg)
+    if err != nil {
+        return fmt.Errorf("создание vault клиента: %w", err)
+    }
+
+    client.SetToken(cfg.Vault.Token.Value())
+
+    // Чтение секретов
+    secret, err := client.KVv2("secret").Get(ctx, "myapp")
+    if err != nil {
+        return fmt.Errorf("чтение секретов: %w", err)
+    }
+
+    // Перезаписываем секреты из Vault
+    if dbPass, ok := secret.Data["db_password"].(string); ok {
+        cfg.DB.Password = Secret(dbPass)
+        logger.Debug("секрет db_password загружен из Vault")
+    }
+
+    if redisPass, ok := secret.Data["redis_password"].(string); ok {
+        cfg.Redis.Password = Secret(redisPass)
+        logger.Debug("секрет redis_password загружен из Vault")
+    }
+
+    logger.Info("секреты загружены из Vault")
+    return nil
+}
+
+func (c *Config) Validate() error {
+    // ... валидация как в Примере 1
+    return nil
+}
+</code></pre>
+<pre><code class="language-go">// cmd/server/main.go
+package main
+
+import (
+    "context"
+    "log"
+    "log/slog"
+    "net/http"
+    "os"
+    "os/signal"
+    "syscall"
+    "time"
+
+    "myapp/internal/config"
+)
+
+func main() {
+    ctx := context.Background()
+
+    // Базовый логгер для инициализации
+    initLogger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+
+    // 1. Загрузка конфигурации (с секретами из Vault)
+    cfg, err := config.Load(ctx, initLogger)
+    if err != nil {
+        log.Fatalf("FATAL: %v", err)
+    }
+
+    // 2. Production логгер (с уровнем из конфигурации)
+    logger := setupLogger(cfg.Log)
+    logger.Info("приложение запускается",
+        "env", cfg.Env,
+        "features.new_ui", cfg.Features.EnableNewUI,
+        "features.v2_api", cfg.Features.EnableV2API,
+    )
+
+    // 3. Инициализация инфраструктуры
+    // db := setupDB(cfg.DB)
+    // cache := setupRedis(cfg.Redis)
+    // handler := setupHandler(db, cache, cfg, logger)
+
+    // 4. HTTP-сервер
+    srv := &amp;http.Server{
+        Addr:         cfg.Server.Address(),
+        // Handler:   handler,
+        ReadTimeout:  cfg.Server.ReadTimeout,
+        WriteTimeout: cfg.Server.WriteTimeout,
+    }
+
+    // 5. Graceful shutdown
+    done := make(chan struct{})
+    go func() {
+        sigCh := make(chan os.Signal, 1)
+        signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
+        sig := &lt;-sigCh
+
+        logger.Info("получен сигнал завершения", "signal", sig)
+
+        shutdownCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+        defer cancel()
+
+        if err := srv.Shutdown(shutdownCtx); err != nil {
+            logger.Error("ошибка graceful shutdown", "error", err)
+        }
+        close(done)
+    }()
+
+    logger.Info("сервер запущен", "addr", cfg.Server.Address())
+    if err := srv.ListenAndServe(); err != http.ErrServerClosed {
+        logger.Error("ошибка сервера", "error", err)
+        os.Exit(1)
+    }
+
+    &lt;-done
+    logger.Info("приложение завершено")
+}
+</code></pre>
+<hr><!-- AUTO: NAV -->
+<p><strong>Вопросы?</strong> Открой issue на <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/issues">GitHub</a></p>
+<p><a href="./05_observability.html">← Назад: Observability: Логирование, Метрики, Трейсинг</a> | <a href="./07_containerization.html">Вперёд: Контейнеризация: Docker, Compose и Kubernetes для Go →</a></p>
+<!-- /AUTO: NAV -->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part4-infrastructure/05_observability.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part4-infrastructure/07_containerization.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part4-infrastructure/05_observability.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part4-infrastructure/07_containerization.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,1361 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>7.2 Задачи на горутины и каналы - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-e1a1ce5b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-c19b06e6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part7-interview/02_goroutines_channels.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="72-задачи-на-горутины-и-каналы"><a class="header" href="#72-задачи-на-горутины-и-каналы">7.2 Задачи на горутины и каналы</a></h1>
+<h2 id="содержание"><a class="header" href="#содержание">Содержание</a></h2>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<ul>
+<li><a href="#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5-%D1%87%D1%82%D0%BE-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D1%8F%D1%8E%D1%82">Введение: что проверяют</a>
+<ul>
+<li><a href="#%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5-%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%D1%8B-%D0%BF%D0%B5%D1%80%D0%B5%D0%B4-%D0%BD%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5%D0%BC-%D0%BA%D0%BE%D0%B4%D0%B0">Ключевые вопросы перед написанием кода</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-1-worker-pool">Задача 1: Worker Pool</a>
+<ul>
+<li><a href="#%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0">Формулировка</a></li>
+<li><a href="#%D1%87%D1%82%D0%BE-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D1%8F%D1%8E%D1%82">Что проверяют</a></li>
+<li><a href="#%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D1%8F-%D1%81-context-%D0%B8-%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%BE%D0%B9-%D0%BE%D1%88%D0%B8%D0%B1%D0%BE%D0%BA">Версия с context и обработкой ошибок</a></li>
+<li><a href="#%D1%82%D0%B8%D0%BF%D0%B8%D1%87%D0%BD%D1%8B%D0%B5-%D0%BE%D1%88%D0%B8%D0%B1%D0%BA%D0%B8">Типичные ошибки</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-2-fan-out--fan-in">Задача 2: Fan-Out / Fan-In</a>
+<ul>
+<li><a href="#%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-1">Формулировка</a></li>
+<li><a href="#%D1%87%D1%82%D0%BE-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D1%8F%D1%8E%D1%82-1">Что проверяют</a></li>
+<li><a href="#fan-in-%D1%81-select-%D0%B4%D0%BB%D1%8F-%D0%BE%D1%82%D0%BC%D0%B5%D0%BD%D1%8B">Fan-In с select (для отмены)</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-3-pipeline">Задача 3: Pipeline</a>
+<ul>
+<li><a href="#%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-2">Формулировка</a></li>
+<li><a href="#%D1%87%D1%82%D0%BE-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D1%8F%D1%8E%D1%82-2">Что проверяют</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-4-rate-limiter-%D0%BD%D0%B0-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB%D0%B0%D1%85">Задача 4: Rate Limiter на каналах</a>
+<ul>
+<li><a href="#%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-3">Формулировка</a></li>
+<li><a href="#%D1%87%D1%82%D0%BE-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D1%8F%D1%8E%D1%82-3">Что проверяют</a></li>
+<li><a href="#%D0%B4%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%D1%8B">Дополнительные вопросы</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-5-merge-n-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB%D0%BE%D0%B2">Задача 5: Merge N каналов</a>
+<ul>
+<li><a href="#%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-4">Формулировка</a></li>
+<li><a href="#%D1%87%D1%82%D0%BE-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D1%8F%D1%8E%D1%82-4">Что проверяют</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-6-timeout-%D0%B8-%D0%BE%D1%82%D0%BC%D0%B5%D0%BD%D0%B0-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-context">Задача 6: Timeout и отмена через context</a>
+<ul>
+<li><a href="#%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-5">Формулировка</a></li>
+<li><a href="#%D1%87%D1%82%D0%BE-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D1%8F%D1%8E%D1%82-5">Что проверяют</a></li>
+<li><a href="#%D1%82%D0%B8%D0%BF%D0%B8%D1%87%D0%BD%D1%8B%D0%B5-%D0%BE%D1%88%D0%B8%D0%B1%D0%BA%D0%B8-1">Типичные ошибки</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-7-%D1%87%D1%82%D0%BE-%D0%B2%D1%8B%D0%B2%D0%B5%D0%B4%D0%B5%D1%82-%D0%BA%D0%BE%D0%B4--deadlock-%D0%B8-race">Задача 7: Что выведет код — deadlock и race</a>
+<ul>
+<li><a href="#deadlock-1-%D0%BD%D0%B5%D0%B1%D1%83%D1%84%D0%B5%D1%80%D0%B8%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B9-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB">Deadlock 1: Небуферизованный канал</a></li>
+<li><a href="#deadlock-2-%D0%B7%D0%B0%D0%B1%D1%8B%D1%82%D1%8B%D0%B9-unlock">Deadlock 2: Забытый unlock</a></li>
+<li><a href="#race-condition">Race condition</a></li>
+<li><a href="#close-%D0%BD%D0%B0-nil-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB%D0%B5">Close на nil канале</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-8-pubsub-%D0%BD%D0%B0-%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB%D0%B0%D1%85">Задача 8: Pub/Sub на каналах</a>
+<ul>
+<li><a href="#%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-6">Формулировка</a></li>
+<li><a href="#%D1%87%D1%82%D0%BE-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D1%8F%D1%8E%D1%82-6">Что проверяют</a></li>
+<li><a href="#%D0%B4%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%D1%8B-1">Дополнительные вопросы</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-9-%D0%B1%D0%B0%D1%82%D1%87%D0%B5%D0%B2%D0%B0%D1%8F-%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D1%8C-%D1%81-%D1%82%D0%B0%D0%B9%D0%BC%D0%B5%D1%80%D0%BE%D0%BC">Задача 9: Батчевая запись с таймером</a>
+<ul>
+<li><a href="#%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-7">Формулировка</a></li>
+<li><a href="#%D1%87%D1%82%D0%BE-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D1%8F%D1%8E%D1%82-7">Что проверяют</a></li>
+<li><a href="#%D0%BD%D0%B0%D0%B8%D0%B2%D0%BD%D0%BE%D0%B5-%D1%80%D0%B5%D1%88%D0%B5%D0%BD%D0%B8%D0%B5--%D1%82%D0%BE%D0%BB%D1%8C%D0%BA%D0%BE-%D0%BF%D0%BE-%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%80%D1%83-%D0%B1%D0%B0%D1%82%D1%87%D0%B0">Наивное решение — только по размеру батча</a></li>
+<li><a href="#%D0%BF%D0%BE%D0%BB%D0%BD%D0%BE%D0%B5-%D1%80%D0%B5%D1%88%D0%B5%D0%BD%D0%B8%D0%B5--%D0%B1%D0%B0%D1%82%D1%87-%D0%BF%D0%BE-%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%80%D1%83-%D0%B8%D0%BB%D0%B8-%D0%BF%D0%BE-%D1%82%D0%B0%D0%B9%D0%BC%D0%B5%D1%80%D1%83">Полное решение — батч по размеру ИЛИ по таймеру</a></li>
+<li><a href="#%D1%82%D0%B8%D0%BF%D0%B8%D1%87%D0%BD%D1%8B%D0%B5-%D0%BE%D1%88%D0%B8%D0%B1%D0%BA%D0%B8-2">Типичные ошибки</a></li>
+<li><a href="#%D0%B4%D0%B8%D0%B0%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B0-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%8B">Диаграмма работы</a></li>
+<li><a href="#%D0%B4%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%D1%8B-2">Дополнительные вопросы</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B8%D1%82%D0%BE%D0%B3%D0%B8-%D1%88%D0%BF%D0%B0%D1%80%D0%B3%D0%B0%D0%BB%D0%BA%D0%B0-%D0%BF%D0%BE-%D0%B2%D1%8B%D0%B1%D0%BE%D1%80%D1%83-%D0%BF%D1%80%D0%B8%D0%BC%D0%B8%D1%82%D0%B8%D0%B2%D0%BE%D0%B2">Итоги: шпаргалка по выбору примитивов</a></li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<hr>
+<h2 id="введение-что-проверяют"><a class="header" href="#введение-что-проверяют">Введение: что проверяют</a></h2>
+<p>Задачи на горутины и каналы — <strong>ключевое отличие</strong> Go-интервью от C# интервью. Интервьюер ожидает, что кандидат на Middle+ уровне:</p>
+<ul>
+<li>Понимает <strong>модель CSP</strong> (Communicating Sequential Processes)</li>
+<li>Знает разницу между <strong>буферизованным и небуферизованным</strong> каналами</li>
+<li>Умеет избегать <strong>deadlock</strong> и <strong>race condition</strong></li>
+<li>Использует <strong>context</strong> для отмены и таймаутов</li>
+<li>Выбирает <strong>правильный примитив</strong>: канал vs мьютекс</li>
+</ul>
+<h3 id="ключевые-вопросы-перед-написанием-кода"><a class="header" href="#ключевые-вопросы-перед-написанием-кода">Ключевые вопросы перед написанием кода</a></h3>
+<p>На интервью обязательно уточни:</p>
+<ul>
+<li>“Нужна ли отмена операций?” → context</li>
+<li>“Сколько воркеров?” → фиксированное или динамическое число</li>
+<li>“Нужен ли порядок результатов?” → буферизованный канал + индексирование</li>
+<li>“Что делать с ошибками?” → errgroup vs errCh</li>
+</ul>
+<hr>
+<h2 id="задача-1-worker-pool"><a class="header" href="#задача-1-worker-pool">Задача 1: Worker Pool</a></h2>
+<p><strong>Компания</strong>: Авито, Wildberries, Озон, Яндекс
+<strong>Уровень</strong>: Middle
+<strong>Время</strong>: 20 минут</p>
+<h3 id="формулировка"><a class="header" href="#формулировка">Формулировка</a></h3>
+<blockquote>
+<p>Реализуй worker pool с <code>n</code> воркерами, которые обрабатывают задачи из входного канала. Воркеры должны завершаться корректно, когда входной канал закрывается.</p>
+</blockquote>
+<h3 id="что-проверяют"><a class="header" href="#что-проверяют">Что проверяют</a></h3>
+<ul>
+<li>Понимание паттерна fan-out</li>
+<li>Корректное ожидание завершения воркеров (WaitGroup)</li>
+<li>Закрытие выходного канала только после завершения всех воркеров</li>
+</ul>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">// C# — Parallel.ForEach или Channel&lt;T&gt; с несколькими consumers
+var channel = Channel.CreateUnbounded&lt;int&gt;();
+var tasks = Enumerable.Range(0, numWorkers)
+    .Select(_ =&gt; Task.Run(async () =&gt; {
+        await foreach (var item in channel.Reader.ReadAllAsync())
+            ProcessItem(item);
+    }));
+await Task.WhenAll(tasks);
+</code></pre>
+<p><strong>Go решение</strong>:</p>
+<pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "sync"
+)
+
+// ✅ Классический worker pool
+func workerPool(jobs &lt;-chan int, numWorkers int) &lt;-chan int {
+    results := make(chan int, numWorkers)
+
+    var wg sync.WaitGroup
+    wg.Add(numWorkers)
+
+    for range numWorkers { // Go 1.22+: range по числу
+        go func() {
+            defer wg.Done()
+            for job := range jobs { // завершается когда jobs закрывается
+                results &lt;- process(job)
+            }
+        }()
+    }
+
+    // Закрываем results после завершения ВСЕХ воркеров
+    go func() {
+        wg.Wait()
+        close(results)
+    }()
+
+    return results
+}
+
+func process(n int) int {
+    return n * n // имитация работы
+}
+
+func main() {
+    jobs := make(chan int, 100)
+
+    // Отправляем задачи
+    go func() {
+        for i := 1; i &lt;= 10; i++ {
+            jobs &lt;- i
+        }
+        close(jobs) // сигнал воркерам: задач больше нет
+    }()
+
+    results := workerPool(jobs, 3)
+
+    for r := range results {
+        fmt.Println(r)
+    }
+}
+</code></pre>
+<h3 id="версия-с-context-и-обработкой-ошибок"><a class="header" href="#версия-с-context-и-обработкой-ошибок">Версия с context и обработкой ошибок</a></h3>
+<pre><code class="language-go">// ✅ Production-ready: context + errgroup
+import "golang.org/x/sync/errgroup"
+
+func workerPoolWithContext(ctx context.Context, jobs &lt;-chan int, numWorkers int) ([]int, error) {
+    results := make(chan int, numWorkers)
+    g, ctx := errgroup.WithContext(ctx)
+
+    // Запускаем воркеры
+    for range numWorkers {
+        g.Go(func() error {
+            for {
+                select {
+                case job, ok := &lt;-jobs:
+                    if !ok {
+                        return nil // канал закрыт
+                    }
+                    result, err := processWithErr(ctx, job)
+                    if err != nil {
+                        return err // отменяет остальных через context
+                    }
+                    results &lt;- result
+                case &lt;-ctx.Done():
+                    return ctx.Err()
+                }
+            }
+        })
+    }
+
+    // Ждём завершения воркеров в отдельной горутине
+    go func() {
+        g.Wait()
+        close(results)
+    }()
+
+    // Собираем результаты
+    var out []int
+    for r := range results {
+        out = append(out, r)
+    }
+
+    return out, g.Wait()
+}
+</code></pre>
+<h3 id="типичные-ошибки"><a class="header" href="#типичные-ошибки">Типичные ошибки</a></h3>
+<pre><code class="language-go">// ❌ Закрытие results до завершения воркеров
+go workerA(jobs, results)
+go workerB(jobs, results)
+close(results) // PANIC: send on closed channel!
+
+// ❌ Deadlock: никто не читает results, а воркеры пишут в него
+results := make(chan int) // небуферизованный
+go worker(jobs, results)
+wg.Wait()               // блокируемся здесь
+for r := range results { // никогда не достигаем этой строки
+    ...
+}
+
+// ❌ Отправка в закрытый канал
+close(jobs)
+jobs &lt;- 42 // PANIC!
+</code></pre>
+<hr>
+<h2 id="задача-2-fan-out--fan-in"><a class="header" href="#задача-2-fan-out--fan-in">Задача 2: Fan-Out / Fan-In</a></h2>
+<p><strong>Компания</strong>: Яндекс, ВКонтакте
+<strong>Уровень</strong>: Middle / Senior
+<strong>Время</strong>: 20-25 минут</p>
+<h3 id="формулировка-1"><a class="header" href="#формулировка-1">Формулировка</a></h3>
+<blockquote>
+<p>Есть несколько источников данных (слайс URL для обращения к API). Запроси их параллельно (fan-out), а затем собери результаты в один канал (fan-in). Реализуй функцию <code>fanIn</code>.</p>
+</blockquote>
+<h3 id="что-проверяют-1"><a class="header" href="#что-проверяют-1">Что проверяют</a></h3>
+<ul>
+<li>Понимание паттерна fan-out/fan-in</li>
+<li>Корректное закрытие объединённого канала</li>
+<li>Работа с <code>sync.WaitGroup</code> для ожидания нескольких горутин</li>
+</ul>
+<pre><code class="language-go">// ✅ Fan-Out: распределяем одну задачу по нескольким горутинам
+// Fan-In: собираем результаты из нескольких каналов в один
+
+func fanIn(channels ...&lt;-chan int) &lt;-chan int {
+    merged := make(chan int)
+    var wg sync.WaitGroup
+
+    // Запускаем горутину для каждого входного канала
+    forward := func(ch &lt;-chan int) {
+        defer wg.Done()
+        for v := range ch {
+            merged &lt;- v
+        }
+    }
+
+    wg.Add(len(channels))
+    for _, ch := range channels {
+        go forward(ch)
+    }
+
+    // Закрываем merged только когда все forwarding горутины завершились
+    go func() {
+        wg.Wait()
+        close(merged)
+    }()
+
+    return merged
+}
+
+// Fan-Out: параллельные запросы
+func fetchAll(ctx context.Context, urls []string) &lt;-chan string {
+    results := make(chan string, len(urls))
+    var wg sync.WaitGroup
+
+    for _, url := range urls {
+        url := url // захват (не нужен в Go 1.22+)
+        wg.Add(1)
+        go func() {
+            defer wg.Done()
+            result, err := fetch(ctx, url)
+            if err != nil {
+                result = fmt.Sprintf("error: %v", err)
+            }
+            results &lt;- result
+        }()
+    }
+
+    go func() {
+        wg.Wait()
+        close(results)
+    }()
+
+    return results
+}
+
+// Пример использования
+func main() {
+    ctx := context.Background()
+    urls := []string{
+        "https://api.example.com/1",
+        "https://api.example.com/2",
+        "https://api.example.com/3",
+    }
+
+    for result := range fetchAll(ctx, urls) {
+        fmt.Println(result)
+    }
+}
+</code></pre>
+<h3 id="fan-in-с-select-для-отмены"><a class="header" href="#fan-in-с-select-для-отмены">Fan-In с select (для отмены)</a></h3>
+<pre><code class="language-go">// ✅ Fan-In с поддержкой context (отмена)
+func fanInWithCancel(ctx context.Context, channels ...&lt;-chan int) &lt;-chan int {
+    merged := make(chan int)
+    var wg sync.WaitGroup
+
+    forward := func(ch &lt;-chan int) {
+        defer wg.Done()
+        for {
+            select {
+            case v, ok := &lt;-ch:
+                if !ok {
+                    return
+                }
+                select {
+                case merged &lt;- v:
+                case &lt;-ctx.Done():
+                    return
+                }
+            case &lt;-ctx.Done():
+                return
+            }
+        }
+    }
+
+    wg.Add(len(channels))
+    for _, ch := range channels {
+        go forward(ch)
+    }
+
+    go func() {
+        wg.Wait()
+        close(merged)
+    }()
+
+    return merged
+}
+</code></pre>
+<hr>
+<h2 id="задача-3-pipeline"><a class="header" href="#задача-3-pipeline">Задача 3: Pipeline</a></h2>
+<p><strong>Компания</strong>: ВКонтакте, Яндекс
+<strong>Уровень</strong>: Middle / Senior
+<strong>Время</strong>: 20 минут</p>
+<h3 id="формулировка-2"><a class="header" href="#формулировка-2">Формулировка</a></h3>
+<blockquote>
+<p>Реализуй pipeline из трёх стадий: генерация чисел → фильтрация чётных → возведение в квадрат. Каждая стадия — отдельная горутина.</p>
+</blockquote>
+<h3 id="что-проверяют-2"><a class="header" href="#что-проверяют-2">Что проверяют</a></h3>
+<ul>
+<li>Понимание CSP и pipeline паттерна</li>
+<li>Правильная передача каналов (направленные типы)</li>
+<li>Context для отмены всего pipeline</li>
+</ul>
+<pre><code class="language-go">// ✅ Pipeline из трёх стадий
+
+// Стадия 1: генератор
+func generate(ctx context.Context, nums ...int) &lt;-chan int {
+    out := make(chan int)
+    go func() {
+        defer close(out)
+        for _, n := range nums {
+            select {
+            case out &lt;- n:
+            case &lt;-ctx.Done():
+                return
+            }
+        }
+    }()
+    return out
+}
+
+// Стадия 2: фильтр
+func filterEven(ctx context.Context, in &lt;-chan int) &lt;-chan int {
+    out := make(chan int)
+    go func() {
+        defer close(out)
+        for n := range in {
+            if n%2 == 0 {
+                select {
+                case out &lt;- n:
+                case &lt;-ctx.Done():
+                    return
+                }
+            }
+        }
+    }()
+    return out
+}
+
+// Стадия 3: трансформация
+func square(ctx context.Context, in &lt;-chan int) &lt;-chan int {
+    out := make(chan int)
+    go func() {
+        defer close(out)
+        for n := range in {
+            select {
+            case out &lt;- n * n:
+            case &lt;-ctx.Done():
+                return
+            }
+        }
+    }()
+    return out
+}
+
+func main() {
+    ctx, cancel := context.WithCancel(context.Background())
+    defer cancel()
+
+    // Соединяем стадии
+    nums := generate(ctx, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+    evens := filterEven(ctx, nums)
+    squares := square(ctx, evens)
+
+    for s := range squares {
+        fmt.Println(s) // 4 16 36 64 100
+    }
+}
+</code></pre>
+<blockquote>
+<p>💡 Паттерн: каждая стадия принимает <code>&lt;-chan</code> (read-only) и возвращает <code>&lt;-chan</code> (read-only). Это обеспечивает типобезопасность и явность потока данных.</p>
+</blockquote>
+<hr>
+<h2 id="задача-4-rate-limiter-на-каналах"><a class="header" href="#задача-4-rate-limiter-на-каналах">Задача 4: Rate Limiter на каналах</a></h2>
+<p><strong>Компания</strong>: Тинькофф, Авито (ограничение запросов к внешним API)
+<strong>Уровень</strong>: Middle / Senior
+<strong>Время</strong>: 20 минут</p>
+<h3 id="формулировка-3"><a class="header" href="#формулировка-3">Формулировка</a></h3>
+<blockquote>
+<p>Реализуй rate limiter, который пропускает не более <code>N</code> запросов в секунду. Используй каналы (token bucket).</p>
+</blockquote>
+<h3 id="что-проверяют-3"><a class="header" href="#что-проверяют-3">Что проверяют</a></h3>
+<ul>
+<li>Знание паттерна token bucket</li>
+<li>Правильное использование <code>time.Tick</code> или <code>time.NewTicker</code></li>
+<li>Отличие от <code>golang.org/x/time/rate</code> (стандарт для production)</li>
+</ul>
+<pre><code class="language-go">// ✅ Простой rate limiter через ticker (token per tick)
+func rateLimiter(requests &lt;-chan int, ratePerSec int) &lt;-chan int {
+    out := make(chan int)
+    ticker := time.NewTicker(time.Second / time.Duration(ratePerSec))
+
+    go func() {
+        defer close(out)
+        defer ticker.Stop()
+        for req := range requests {
+            &lt;-ticker.C  // ждём разрешения
+            out &lt;- req
+        }
+    }()
+
+    return out
+}
+
+// ✅ Burst rate limiter: N запросов сразу, потом пополнение
+func burstRateLimiter(ctx context.Context, requests &lt;-chan int, burst, ratePerSec int) &lt;-chan int {
+    tokens := make(chan struct{}, burst)
+
+    // Наполняем bucket
+    for range burst {
+        tokens &lt;- struct{}{}
+    }
+
+    // Пополняем с заданной частотой
+    go func() {
+        ticker := time.NewTicker(time.Second / time.Duration(ratePerSec))
+        defer ticker.Stop()
+        for {
+            select {
+            case &lt;-ticker.C:
+                select {
+                case tokens &lt;- struct{}{}: // добавляем токен если есть место
+                default: // bucket полный — пропускаем
+                }
+            case &lt;-ctx.Done():
+                return
+            }
+        }
+    }()
+
+    out := make(chan int)
+    go func() {
+        defer close(out)
+        for req := range requests {
+            select {
+            case &lt;-tokens: // берём токен
+                out &lt;- req
+            case &lt;-ctx.Done():
+                return
+            }
+        }
+    }()
+
+    return out
+}
+
+func main() {
+    ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+    defer cancel()
+
+    requests := make(chan int, 20)
+    for i := 1; i &lt;= 20; i++ {
+        requests &lt;- i
+    }
+    close(requests)
+
+    // 5 запросов/сек, burst до 3
+    limited := burstRateLimiter(ctx, requests, 3, 5)
+    for req := range limited {
+        fmt.Printf("обработан запрос %d в %v\n", req, time.Now().Format("15:04:05.000"))
+    }
+}
+</code></pre>
+<h3 id="дополнительные-вопросы"><a class="header" href="#дополнительные-вопросы">Дополнительные вопросы</a></h3>
+<ul>
+<li>“Как использовать стандартный rate limiter в production?” → <code>golang.org/x/time/rate</code></li>
+<li>“Чем token bucket отличается от leaky bucket?”</li>
+</ul>
+<pre><code class="language-go">// Production: golang.org/x/time/rate
+import "golang.org/x/time/rate"
+
+limiter := rate.NewLimiter(rate.Limit(100), 10) // 100 req/s, burst 10
+
+func handler(w http.ResponseWriter, r *http.Request) {
+    if err := limiter.Wait(r.Context()); err != nil {
+        http.Error(w, "rate limit exceeded", http.StatusTooManyRequests)
+        return
+    }
+    // обработка
+}
+</code></pre>
+<hr>
+<h2 id="задача-5-merge-n-каналов"><a class="header" href="#задача-5-merge-n-каналов">Задача 5: Merge N каналов</a></h2>
+<p><strong>Компания</strong>: ВКонтакте, Яндекс
+<strong>Уровень</strong>: Senior
+<strong>Время</strong>: 20-25 минут</p>
+<h3 id="формулировка-4"><a class="header" href="#формулировка-4">Формулировка</a></h3>
+<blockquote>
+<p>Напиши функцию <code>merge</code>, которая объединяет произвольное количество каналов в один, используя <code>reflect.Select</code> (динамический select).</p>
+</blockquote>
+<h3 id="что-проверяют-4"><a class="header" href="#что-проверяют-4">Что проверяют</a></h3>
+<ul>
+<li>Знание динамического select через reflect</li>
+<li>Понимание ограничений статического select (количество case известно на этапе компиляции)</li>
+</ul>
+<pre><code class="language-go">// ✅ Вариант 1: горутина на каждый канал (проще, рекомендуется)
+func merge[T any](channels ...&lt;-chan T) &lt;-chan T {
+    merged := make(chan T)
+    var wg sync.WaitGroup
+    wg.Add(len(channels))
+
+    for _, ch := range channels {
+        go func(c &lt;-chan T) {
+            defer wg.Done()
+            for v := range c {
+                merged &lt;- v
+            }
+        }(ch)
+    }
+
+    go func() {
+        wg.Wait()
+        close(merged)
+    }()
+
+    return merged
+}
+
+// ✅ Вариант 2: reflect.Select (для большого числа каналов)
+import "reflect"
+
+func mergeReflect(channels []&lt;-chan int) &lt;-chan int {
+    merged := make(chan int)
+
+    go func() {
+        defer close(merged)
+
+        // Строим cases для reflect.Select
+        cases := make([]reflect.SelectCase, len(channels))
+        for i, ch := range channels {
+            cases[i] = reflect.SelectCase{
+                Dir:  reflect.SelectRecv,
+                Chan: reflect.ValueOf(ch),
+            }
+        }
+
+        // Читаем пока есть открытые каналы
+        for len(cases) &gt; 0 {
+            chosen, value, ok := reflect.Select(cases)
+            if !ok {
+                // Канал закрыт — убираем его из cases
+                cases = append(cases[:chosen], cases[chosen+1:]...)
+                continue
+            }
+            merged &lt;- int(value.Int())
+        }
+    }()
+
+    return merged
+}
+</code></pre>
+<blockquote>
+<p>💡 На интервью скажи: “Горутина на каждый канал — проще и достаточно для большинства случаев. <code>reflect.Select</code> нужен, если каналов очень много или их число неизвестно заранее.” Это показывает зрелость.</p>
+</blockquote>
+<hr>
+<h2 id="задача-6-timeout-и-отмена-через-context"><a class="header" href="#задача-6-timeout-и-отмена-через-context">Задача 6: Timeout и отмена через context</a></h2>
+<p><strong>Компания</strong>: Авито, Тинькофф, Озон
+<strong>Уровень</strong>: Middle
+<strong>Время</strong>: 15 минут</p>
+<h3 id="формулировка-5"><a class="header" href="#формулировка-5">Формулировка</a></h3>
+<blockquote>
+<p>Напиши функцию, которая вызывает несколько “медленных” функций параллельно и возвращает первый успешный результат. Если через <code>timeout</code> ничего не пришло — возвращает ошибку.</p>
+</blockquote>
+<h3 id="что-проверяют-5"><a class="header" href="#что-проверяют-5">Что проверяют</a></h3>
+<ul>
+<li>Паттерн “first response wins”</li>
+<li>Правильная отмена оставшихся горутин через context</li>
+<li>Утечки горутин (если забыть context)</li>
+</ul>
+<pre><code class="language-go">// ✅ First response wins с отменой
+func firstResult(ctx context.Context, fns []func(context.Context) (string, error)) (string, error) {
+    ctx, cancel := context.WithCancel(ctx)
+    defer cancel() // отменяем оставшихся при выходе
+
+    resultCh := make(chan string, len(fns))  // буферизованный — не блокирует
+    errCh := make(chan error, len(fns))
+
+    for _, fn := range fns {
+        fn := fn
+        go func() {
+            result, err := fn(ctx)
+            if err != nil {
+                errCh &lt;- err
+                return
+            }
+            resultCh &lt;- result
+        }()
+    }
+
+    // Ждём первый успешный результат или все ошибки
+    errs := 0
+    for {
+        select {
+        case result := &lt;-resultCh:
+            return result, nil // cancel() закроет остальные горутины
+        case &lt;-errCh:
+            errs++
+            if errs == len(fns) {
+                return "", fmt.Errorf("все источники вернули ошибку")
+            }
+        case &lt;-ctx.Done():
+            return "", ctx.Err()
+        }
+    }
+}
+
+// Использование:
+func main() {
+    ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+    defer cancel()
+
+    slow := func(delay time.Duration, val string) func(context.Context) (string, error) {
+        return func(ctx context.Context) (string, error) {
+            select {
+            case &lt;-time.After(delay):
+                return val, nil
+            case &lt;-ctx.Done():
+                return "", ctx.Err()
+            }
+        }
+    }
+
+    result, err := firstResult(ctx, []func(context.Context) (string, error){
+        slow(500*time.Millisecond, "быстрый"),
+        slow(1*time.Second, "средний"),
+        slow(2*time.Second, "медленный"),
+    })
+    fmt.Println(result, err) // "быстрый" &lt;nil&gt;
+}
+</code></pre>
+<h3 id="типичные-ошибки-1"><a class="header" href="#типичные-ошибки-1">Типичные ошибки</a></h3>
+<pre><code class="language-go">// ❌ Горутина-утечка: нет context, нет выхода
+go func() {
+    result := slowOperation() // если никто не читает resultCh — горутина зависнет
+    resultCh &lt;- result
+}()
+
+// ❌ Небуферизованный канал при нескольких горутинах
+resultCh := make(chan string) // если первый уже прочитан и функция вернулась,
+// остальные горутины заблокируются навсегда при записи в resultCh
+</code></pre>
+<hr>
+<h2 id="задача-7-что-выведет-код--deadlock-и-race"><a class="header" href="#задача-7-что-выведет-код--deadlock-и-race">Задача 7: Что выведет код — deadlock и race</a></h2>
+<p><strong>Компания</strong>: Яндекс, ВКонтакте (проверка глубины знания)
+<strong>Уровень</strong>: Middle / Senior</p>
+<h3 id="deadlock-1-небуферизованный-канал"><a class="header" href="#deadlock-1-небуферизованный-канал">Deadlock 1: Небуферизованный канал</a></h3>
+<pre><code class="language-go">func main() {
+    ch := make(chan int)
+    ch &lt;- 42    // ?
+    fmt.Println(&lt;-ch)
+}
+</code></pre>
+<details>
+<summary>Ответ</summary>
+<p><strong>Deadlock</strong>: <code>ch &lt;- 42</code> заблокируется, так как нет получателя. Горутина main висит, Go runtime обнаруживает, что все горутины заблокированы и паникует: <code>fatal error: all goroutines are asleep - deadlock!</code></p>
+<p><strong>Исправление</strong>:</p>
+<pre><code class="language-go">ch := make(chan int, 1) // буферизованный
+// или
+go func() { ch &lt;- 42 }()
+fmt.Println(&lt;-ch)
+</code></pre>
+</details>
+<hr>
+<h3 id="deadlock-2-забытый-unlock"><a class="header" href="#deadlock-2-забытый-unlock">Deadlock 2: Забытый unlock</a></h3>
+<pre><code class="language-go">var mu sync.Mutex
+
+func main() {
+    mu.Lock()
+    go func() {
+        mu.Lock() // ?
+        defer mu.Unlock()
+        fmt.Println("в горутине")
+    }()
+    // mu.Unlock() — забыли!
+    time.Sleep(time.Second)
+}
+</code></pre>
+<details>
+<summary>Ответ</summary>
+<p>Горутина заблокируется на <code>mu.Lock()</code> навсегда, так как основная горутина никогда не вызовет <code>mu.Unlock()</code>. Программа завершится через <code>time.Sleep</code>, не выполнив горутину. Если убрать <code>time.Sleep</code> — deadlock.</p>
+</details>
+<hr>
+<h3 id="race-condition"><a class="header" href="#race-condition">Race condition</a></h3>
+<pre><code class="language-go">func main() {
+    counter := 0
+    var wg sync.WaitGroup
+
+    for range 1000 {
+        wg.Add(1)
+        go func() {
+            defer wg.Done()
+            counter++ // ?
+        }()
+    }
+
+    wg.Wait()
+    fmt.Println(counter)
+}
+</code></pre>
+<details>
+<summary>Ответ</summary>
+<p><strong>Race condition</strong>: <code>counter++</code> — это три операции (read + add + write), не атомарные. Результат непредсказуем: может быть от 1 до 1000. <code>go run -race</code> обнаружит race condition.</p>
+<p><strong>Исправления</strong>:</p>
+<pre><code class="language-go">// Вариант 1: atomic
+var counter atomic.Int64
+counter.Add(1)
+
+// Вариант 2: mutex
+var mu sync.Mutex
+mu.Lock()
+counter++
+mu.Unlock()
+
+// Вариант 3: канал (идиоматично для простых счётчиков)
+done := make(chan int, 1000)
+for range 1000 {
+    go func() { done &lt;- 1 }()
+}
+total := 0
+for range 1000 {
+    total += &lt;-done
+}
+</code></pre>
+</details>
+<hr>
+<h3 id="close-на-nil-канале"><a class="header" href="#close-на-nil-канале">Close на nil канале</a></h3>
+<pre><code class="language-go">func main() {
+    var ch chan int
+    close(ch) // ?
+}
+</code></pre>
+<details>
+<summary>Ответ</summary>
+<p><strong>Panic</strong>: <code>close of nil channel</code>. Перед закрытием всегда проверяй, что канал инициализирован.</p>
+<p>Правило: тот, кто <strong>создаёт</strong> канал — тот его и <strong>закрывает</strong>. Никогда не закрывай канал со стороны получателя.</p>
+</details>
+<hr>
+<h2 id="задача-8-pubsub-на-каналах"><a class="header" href="#задача-8-pubsub-на-каналах">Задача 8: Pub/Sub на каналах</a></h2>
+<p><strong>Компания</strong>: ВКонтакте, Яндекс (уведомления, WebSocket)
+<strong>Уровень</strong>: Senior
+<strong>Время</strong>: 30 минут</p>
+<h3 id="формулировка-6"><a class="header" href="#формулировка-6">Формулировка</a></h3>
+<blockquote>
+<p>Реализуй простую Pub/Sub систему: есть <code>Broker</code>, к которому можно подписаться (<code>Subscribe</code>) и публиковать сообщения (<code>Publish</code>). При публикации сообщение доставляется всем подписчикам.</p>
+</blockquote>
+<h3 id="что-проверяют-6"><a class="header" href="#что-проверяют-6">Что проверяют</a></h3>
+<ul>
+<li>Управление состоянием конкурентно с мьютексом</li>
+<li>Корректное удаление подписчиков</li>
+<li>Буферизованные каналы для избежания медленных подписчиков</li>
+</ul>
+<pre><code class="language-go">package pubsub
+
+import "sync"
+
+type Broker[T any] struct {
+    mu          sync.RWMutex
+    subscribers map[int]chan T
+    nextID      int
+}
+
+func NewBroker[T any]() *Broker[T] {
+    return &amp;Broker[T]{
+        subscribers: make(map[int]chan T),
+    }
+}
+
+// Subscribe возвращает канал и функцию отписки
+func (b *Broker[T]) Subscribe(bufSize int) (&lt;-chan T, func()) {
+    ch := make(chan T, bufSize) // буферизованный — медленный подписчик не тормозит остальных
+
+    b.mu.Lock()
+    id := b.nextID
+    b.nextID++
+    b.subscribers[id] = ch
+    b.mu.Unlock()
+
+    unsubscribe := func() {
+        b.mu.Lock()
+        delete(b.subscribers, id)
+        close(ch) // сигнал подписчику: поток завершён
+        b.mu.Unlock()
+    }
+
+    return ch, unsubscribe
+}
+
+// Publish отправляет сообщение всем подписчикам
+func (b *Broker[T]) Publish(msg T) {
+    b.mu.RLock()
+    defer b.mu.RUnlock()
+
+    for _, ch := range b.subscribers {
+        // Non-blocking: медленный подписчик теряет сообщение вместо блокировки
+        select {
+        case ch &lt;- msg:
+        default:
+            // подписчик не успевает — пропускаем (или логируем)
+        }
+    }
+}
+
+// Close завершает работу брокера, закрывая все каналы подписчиков
+func (b *Broker[T]) Close() {
+    b.mu.Lock()
+    defer b.mu.Unlock()
+
+    for id, ch := range b.subscribers {
+        close(ch)
+        delete(b.subscribers, id)
+    }
+}
+</code></pre>
+<p><strong>Использование</strong>:</p>
+<pre><code class="language-go">func main() {
+    broker := pubsub.NewBroker[string]()
+
+    // Подписчик 1
+    ch1, unsub1 := broker.Subscribe(10)
+    defer unsub1()
+
+    // Подписчик 2
+    ch2, unsub2 := broker.Subscribe(10)
+    defer unsub2()
+
+    broker.Publish("привет всем!")
+    broker.Publish("ещё одно сообщение")
+
+    fmt.Println(&lt;-ch1) // привет всем!
+    fmt.Println(&lt;-ch2) // привет всем!
+}
+</code></pre>
+<h3 id="дополнительные-вопросы-1"><a class="header" href="#дополнительные-вопросы-1">Дополнительные вопросы</a></h3>
+<ul>
+<li>“Что происходит если подписчик медленный?” → non-blocking send, потеря сообщений или блокировка</li>
+<li>“Как гарантировать доставку?” → буферизация или retry</li>
+<li>“Как масштабировать?” → несколько брокеров + partitioning (как Kafka)</li>
+</ul>
+<hr>
+<h2 id="задача-9-батчевая-запись-с-таймером"><a class="header" href="#задача-9-батчевая-запись-с-таймером">Задача 9: Батчевая запись с таймером</a></h2>
+<p><strong>Компания</strong>: Авито, Wildberries, Озон (батч-запись в БД — реальная production задача)
+<strong>Уровень</strong>: Middle / Senior
+<strong>Время</strong>: 25-30 минут</p>
+<h3 id="формулировка-7"><a class="header" href="#формулировка-7">Формулировка</a></h3>
+<blockquote>
+<p>Реализуй <code>BatchDataStorage</code> — обёртку над хранилищем, которая принимает одиночные записи через <code>Save(id int64)</code>, накапливает их в батч и сбрасывает в БД когда: (а) батч заполнен до <code>batchSize</code>, или (б) прошёл <code>flushInterval</code> с последнего сброса. Методы: <code>Save(id int64)</code>, <code>Close()</code> — ждёт завершения всех горутин.</p>
+</blockquote>
+<h3 id="что-проверяют-7"><a class="header" href="#что-проверяют-7">Что проверяют</a></h3>
+<ul>
+<li>Паттерн “канал как очередь” для декаплинга продьюсеров от логики батчинга</li>
+<li><code>select</code> с двумя кейсами: данные и таймер — классическое применение</li>
+<li>Корректный graceful shutdown: <code>close(ch)</code> → горутина флашит остаток → <code>close(done)</code></li>
+<li>Оптимизация: <code>batch[:0]</code> для сброса без аллокации</li>
+</ul>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">// C# — TPL Dataflow BatchBlock или Channel&lt;T&gt; с BufferBlock
+var batchBlock = new BatchBlock&lt;long&gt;(batchSize);
+// Или вручную через System.Threading.Channels + PeriodicTimer
+</code></pre>
+<hr>
+<h3 id="наивное-решение--только-по-размеру-батча"><a class="header" href="#наивное-решение--только-по-размеру-батча">Наивное решение — только по размеру батча</a></h3>
+<p>Начинаем с простого: сбрасываем только когда батч заполнен. Таймер пока не нужен.</p>
+<pre><code class="language-go">type BatchDataStorage struct {
+    db        DbDataStorage
+    batchSize int
+    ch        chan int64
+    done      chan struct{}
+}
+
+func NewBatchDataStorage(db DbDataStorage, batchSize int) *BatchDataStorage {
+    s := &amp;BatchDataStorage{
+        db:        db,
+        batchSize: batchSize,
+        ch:        make(chan int64, batchSize*10), // буфер чтобы Save не блокировал
+        done:      make(chan struct{}),
+    }
+    go s.processBatches()
+    return s
+}
+
+func (s *BatchDataStorage) Save(id int64) {
+    s.ch &lt;- id // продьюсер просто пишет в канал — он не знает о батчинге
+}
+
+func (s *BatchDataStorage) processBatches() {
+    defer close(s.done)
+
+    batch := make([]int64, 0, s.batchSize)
+
+    for id := range s.ch { // завершится когда ch закрыт
+        batch = append(batch, id)
+        if len(batch) &gt;= s.batchSize {
+            s.db.Save(batch)
+            batch = batch[:0] // сброс без аллокации — переиспользуем backing array
+        }
+    }
+
+    // Флашим остаток после закрытия канала
+    if len(batch) &gt; 0 {
+        s.db.Save(batch)
+    }
+}
+
+func (s *BatchDataStorage) Close() {
+    close(s.ch) // сигнал горутине: новых данных не будет
+    &lt;-s.done    // ждём пока горутина завершит flush
+}
+</code></pre>
+<p><strong>Проблема наивного решения</strong>: если данные поступают медленно, последний батч может застрять в памяти надолго. Например, пришло 3 записи из 10 — они будут ждать оставшихся 7 вечно.</p>
+<blockquote>
+<p>💡 Интервьюер обычно сам задаёт вопрос: “А что если данных мало и батч никогда не заполнится?” — это подводка к таймеру.</p>
+</blockquote>
+<hr>
+<h3 id="полное-решение--батч-по-размеру-или-по-таймеру"><a class="header" href="#полное-решение--батч-по-размеру-или-по-таймеру">Полное решение — батч по размеру ИЛИ по таймеру</a></h3>
+<pre><code class="language-go">func (s *BatchDataStorage) processBatches() {
+    defer close(s.done)
+
+    batch := make([]int64, 0, s.batchSize)
+    timer := time.NewTimer(s.flushInterval)
+    defer timer.Stop()
+
+    flush := func() {
+        if len(batch) == 0 {
+            return
+        }
+        s.db.Save(batch)
+        batch = batch[:0] // переиспользуем память
+    }
+
+    for {
+        select {
+        case id, ok := &lt;-s.ch:
+            if !ok {
+                // Канал закрыт: флашим остаток и выходим
+                flush()
+                return
+            }
+            batch = append(batch, id)
+            if len(batch) &gt;= s.batchSize {
+                flush()
+                // Сбрасываем таймер: данные только что пришли,
+                // следующий flush не раньше чем через flushInterval
+                if !timer.Stop() {
+                    &lt;-timer.C
+                }
+                timer.Reset(s.flushInterval)
+            }
+
+        case &lt;-timer.C:
+            flush() // принудительный flush по таймауту
+            timer.Reset(s.flushInterval)
+        }
+    }
+}
+</code></pre>
+<h3 id="типичные-ошибки-2"><a class="header" href="#типичные-ошибки-2">Типичные ошибки</a></h3>
+<pre><code class="language-go">// ❌ time.Tick вместо time.NewTimer/NewTicker
+// time.Tick создаёт тикер который нельзя остановить — goroutine leak!
+ticker := time.Tick(interval) // утечка ресурсов
+
+// ✅ Правильно:
+timer := time.NewTimer(interval)
+defer timer.Stop()
+
+// ❌ Не флашим остаток при закрытии канала
+for id := range s.ch { ... }
+// после цикла batch может быть непустым!
+
+// ✅ Правильно: всегда flush после range
+for id := range s.ch { ... }
+if len(batch) &gt; 0 { s.db.Save(batch) }
+
+// ❌ batch = nil — теряем аллоцированную память
+batch = nil       // GC должен собрать, затем снова аллоцируем
+// ✅ batch = batch[:0] — сохраняем capacity, одна аллокация на весь жизненный цикл
+
+// ❌ Close без ожидания — данные могут быть потеряны
+func (s *BatchDataStorage) Close() {
+    close(s.ch) // закрыли, но горутина ещё не завершила flush!
+}
+// ✅ Правильно: ждём done
+func (s *BatchDataStorage) Close() {
+    close(s.ch)
+    &lt;-s.done
+}
+</code></pre>
+<h3 id="диаграмма-работы"><a class="header" href="#диаграмма-работы">Диаграмма работы</a></h3>
+<pre class="mermaid">sequenceDiagram
+    participant P as Продьюсеры (N горутин)
+    participant C as chan int64
+    participant G as processBatches()
+    participant D as DB
+
+    P-&gt;&gt;C: Save(id) × много
+    loop select
+        C-&gt;&gt;G: id (кейс данных)
+        G-&gt;&gt;G: batch append
+        alt len(batch) == batchSize
+            G-&gt;&gt;D: Save(batch) [по размеру]
+        end
+        Note over G: timer.C (кейс таймера)
+        G-&gt;&gt;D: Save(batch) [по таймауту]
+    end
+    P-&gt;&gt;C: close(ch)
+    C-&gt;&gt;G: ok=false
+    G-&gt;&gt;D: Save(остаток)
+    G-&gt;&gt;G: close(done)
+</pre>
+
+<h3 id="дополнительные-вопросы-2"><a class="header" href="#дополнительные-вопросы-2">Дополнительные вопросы</a></h3>
+<ul>
+<li>“Что если <code>db.Save</code> возвращает ошибку?” → логировать + retry с backoff или DLQ</li>
+<li>“Что если продьюсеры быстрее консьюмера?” → буфер канала заполнится, <code>Save</code> заблокируется — добавить <code>select</code> с <code>ctx.Done()</code> или дроп с метрикой</li>
+<li>“Как сделать несколько горутин-консьюмеров?” → каждая читает из одного канала (fan-out), но тогда нужна синхронизация батчей</li>
+<li>“Как тестировать?” → мок <code>DbDataStorage</code> + <code>time.AfterFunc</code> для ускорения таймера в тестах</li>
+</ul>
+<hr>
+<h2 id="итоги-шпаргалка-по-выбору-примитивов"><a class="header" href="#итоги-шпаргалка-по-выбору-примитивов">Итоги: шпаргалка по выбору примитивов</a></h2>
+<pre><code>Что нужно сделать?
+│
+├── Защита разделяемого состояния?
+│   ├── Простое состояние (счётчик, флаг) → atomic
+│   ├── Сложное состояние, мало конкуренции → sync.Mutex
+│   └── Много чтений, мало записей → sync.RWMutex
+│
+├── Коммуникация между горутинами?
+│   ├── Один отправитель → один получатель → chan (небуферизованный)
+│   ├── Нужна очередь → chan (буферизованный)
+│   ├── Один раз сигнализировать многим → close(ch) или sync.Once
+│   └── Произвольное число сигналов многим → Pub/Sub или WaitGroup
+│
+├── Ожидание завершения горутин?
+│   ├── Ждать всех → sync.WaitGroup
+│   ├── Ждать первого успешного → канал + select
+│   └── Ждать с ошибками → errgroup
+│
+└── Ограничение конкурентности?
+    ├── Semaphore → chan struct{} с capacity N
+    ├── Rate limit → time.Ticker или golang.org/x/time/rate
+    └── Worker pool → канал задач + N горутин + WaitGroup
+</code></pre>
+<hr><!-- AUTO: NAV -->
+<p><strong>Вопросы?</strong> Открой issue на <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/issues">GitHub</a></p>
+<p><a href="./01_slices_arrays.html">← Назад: Задачи на слайсы и массивы</a> | <a href="./03_maps_sync.html">Вперёд: Задачи на map и синхронизацию →</a></p>
+<!-- /AUTO: NAV -->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part7-interview/01_slices_arrays.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part7-interview/03_maps_sync.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part7-interview/01_slices_arrays.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part7-interview/03_maps_sync.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
