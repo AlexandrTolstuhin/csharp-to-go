@@ -1,0 +1,2163 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Обработка ошибок - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-66c694bb.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-1a7de78a.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part2-advanced/06_error_handling.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="обработка-ошибок-продвинутый-уровень"><a class="header" href="#обработка-ошибок-продвинутый-уровень">Обработка ошибок (продвинутый уровень)</a></h1>
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<p>В <a href="../part1-basics/03_key_differences.html#error-handling-vs-exceptions">разделе 1.3</a> мы познакомились с базовой философией обработки ошибок в Go: <strong>errors are values</strong>, явные проверки, early return. Этот подход кардинально отличается от C# exceptions, но его простота — это только начало.</p>
+<p>В продвинутом уровне мы рассмотрим:</p>
+<ul>
+<li><strong>Архитектурные паттерны</strong>: как правильно обрабатывать ошибки в многослойных приложениях (Repository → Service → Handler)</li>
+<li><strong>Production-ready практики</strong>: retry, dead letter queue, circuit breaker, observability</li>
+<li><strong>Типизированные vs sentinel ошибки</strong>: когда какой подход использовать</li>
+<li><strong>Panic/recover</strong>: правила безопасного использования</li>
+<li><strong>Логирование и метрики</strong>: structured logging, error tracking</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В C# вы привыкли к автоматическим stack traces и глобальным exception handlers. В Go вы строите контекст вручную через error wrapping, но получаете <strong>нулевую стоимость для happy path</strong> и полный контроль над потоком выполнения. Для C# разработчика важно понимать, как масштабировать этот подход на enterprise приложения.</p>
+</blockquote>
+<h3 id="сравнительная-таблица-c-enterprise-vs-go-production-ready"><a class="header" href="#сравнительная-таблица-c-enterprise-vs-go-production-ready">Сравнительная таблица: C# Enterprise vs Go Production-ready</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# (Enterprise)</th><th>Go (Production-ready)</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Stack traces</strong></td><td>✅ Автоматические (дорого)</td><td>⚠️ Ручные через wrapping (дешево)</td></tr>
+<tr><td><strong>Контекст ошибок</strong></td><td>Exception.Data (Dictionary)</td><td>Custom error types с полями</td></tr>
+<tr><td><strong>Иерархия</strong></td><td>Наследование (InvalidOperationException : SystemException)</td><td>Композиция (errors.Is/As)</td></tr>
+<tr><td><strong>HTTP маппинг</strong></td><td>Глобальный exception filter</td><td>Явный маппинг в handler/middleware</td></tr>
+<tr><td><strong>Observability</strong></td><td>Exception telemetry (автоматически)</td><td>Structured logging + wrapping</td></tr>
+<tr><td><strong>Стоимость (happy path)</strong></td><td>✅ Нулевая</td><td>✅ Нулевая (if err == nil)</td></tr>
+<tr><td><strong>Стоимость (error path)</strong></td><td>❌ Высокая (stack unwinding)</td><td>✅ Низкая (return value)</td></tr>
+<tr><td><strong>Явность</strong></td><td>❌ Не видны в сигнатуре метода</td><td>✅ Часть API (func() error)</td></tr>
+<tr><td><strong>Retry логика</strong></td><td>Polly, exception filters</td><td>Явный код, exponential backoff</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="sentinel-errors-vs-typed-errors"><a class="header" href="#sentinel-errors-vs-typed-errors">Sentinel Errors vs Typed Errors</a></h2>
+<p>В Go существует два основных подхода к созданию ошибок: <strong>sentinel errors</strong> (предопределенные переменные) и <strong>typed errors</strong> (кастомные типы). Понимание того, когда использовать каждый подход, критически важно для проектирования стабильного API.</p>
+<h3 id="sentinel-errors-экспортируемые-переменные"><a class="header" href="#sentinel-errors-экспортируемые-переменные">Sentinel Errors (экспортируемые переменные)</a></h3>
+<p><strong>Sentinel errors</strong> — это глобальные переменные типа <code>error</code>, объявленные на уровне пакета. Они используются для представления <strong>константных ошибок без дополнительного контекста</strong>.</p>
+<p><strong>Когда использовать</strong>:</p>
+<ul>
+<li>Ошибки без дополнительных данных (просто факт ошибки)</li>
+<li>Публичный API пакета (стабильность)</li>
+<li>Сравнение через <code>errors.Is()</code></li>
+</ul>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">// C#: Типизированные исключения без данных
+public class UserNotFoundException : Exception
+{
+    public UserNotFoundException() : base("User not found") { }
+}
+
+// Использование
+throw new UserNotFoundException();
+
+// Проверка
+catch (UserNotFoundException ex)
+{
+    return NotFound("User not found");
+}
+</code></pre>
+<p><strong>Go идиоматично</strong>:</p>
+<pre><code class="language-go">// Sentinel errors объявляются на уровне пакета
+var (
+    ErrUserNotFound    = errors.New("user not found")
+    ErrInvalidPassword = errors.New("invalid password")
+    ErrDuplicateEmail  = errors.New("email already exists")
+)
+
+// Использование
+func GetUser(id int) (*User, error) {
+    user := db.Find(id)
+    if user == nil {
+        return nil, ErrUserNotFound  // Без wrapping — это конечная ошибка
+    }
+    return user, nil
+}
+
+// Проверка в вызывающем коде
+user, err := repo.GetUser(42)
+if errors.Is(err, ErrUserNotFound) {
+    return http.StatusNotFound, "user not found"
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Экспортируй sentinel errors с префиксом <code>Err</code> (например, <code>ErrNotFound</code>). Это позволяет клиентам пакета проверять конкретные ошибки через <code>errors.Is()</code>.</p>
+</blockquote>
+<p><strong>⚠️ Ограничения sentinel errors</strong>:</p>
+<ol>
+<li><strong>Нет дополнительного контекста</strong>: Вы не знаете, какой именно пользователь не найден</li>
+<li><strong>Сложно добавлять данные</strong>: Изменение с <code>var ErrNotFound = errors.New("...")</code> на структуру — breaking change</li>
+<li><strong>Один instance</strong>: Все места кода возвращают одну и ту же переменную</li>
+</ol>
+<h3 id="typed-errors-кастомные-типы"><a class="header" href="#typed-errors-кастомные-типы">Typed Errors (кастомные типы)</a></h3>
+<p><strong>Typed errors</strong> — это пользовательские типы, реализующие интерфейс <code>error</code>. Они позволяют добавлять <strong>метаданные</strong> (ID, код ошибки, HTTP статус и т.д.).</p>
+<p><strong>Когда использовать</strong>:</p>
+<ul>
+<li>Нужны метаданные (ID, код, поля)</li>
+<li>Внутренние ошибки пакета (гибкость)</li>
+<li>Сложная логика обработки на основе полей</li>
+</ul>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">// C#: Exception с полями
+public class ValidationException : Exception
+{
+    public Dictionary&lt;string, string[]&gt; Errors { get; }
+
+    public ValidationException(Dictionary&lt;string, string[]&gt; errors)
+        : base("Validation failed")
+    {
+        Errors = errors;
+    }
+}
+
+// Использование
+var errors = new Dictionary&lt;string, string[]&gt;
+{
+    ["email"] = new[] { "Invalid format" },
+    ["password"] = new[] { "Too short" }
+};
+throw new ValidationException(errors);
+
+// Обработка
+catch (ValidationException ex)
+{
+    return BadRequest(new { errors = ex.Errors });
+}
+</code></pre>
+<p><strong>Go идиоматично</strong>:</p>
+<pre><code class="language-go">// Typed error с метаданными
+type ValidationError struct {
+    Field   string
+    Message string
+    Value   interface{}
+}
+
+// Реализация интерфейса error
+func (e *ValidationError) Error() string {
+    return fmt.Sprintf("validation failed: %s: %s", e.Field, e.Message)
+}
+
+// Использование
+func ValidateEmail(email string) error {
+    if !isValidEmail(email) {
+        return &amp;ValidationError{
+            Field:   "email",
+            Message: "invalid format",
+            Value:   email,
+        }
+    }
+    return nil
+}
+
+// Проверка с errors.As() — извлекает данные
+func HandleError(err error) Response {
+    var validationErr *ValidationError
+    if errors.As(err, &amp;validationErr) {
+        return Response{
+            Status: http.StatusBadRequest,
+            Field:  validationErr.Field,
+            Error:  validationErr.Message,
+        }
+    }
+
+    return Response{
+        Status: http.StatusInternalServerError,
+        Error:  "internal error",
+    }
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Используй указатели для custom error types (<code>*ValidationError</code>), чтобы избежать лишних копирований. <code>errors.As()</code> требует указатель на указатель (<code>var e *ValidationError</code>).</p>
+</blockquote>
+<h3 id="сравнительная-таблица-sentinel-vs-typed"><a class="header" href="#сравнительная-таблица-sentinel-vs-typed">Сравнительная таблица: Sentinel vs Typed</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Критерий</th><th>Sentinel Errors</th><th>Typed Errors</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Контекст</strong></td><td>❌ Нет</td><td>✅ Есть (поля структуры)</td></tr>
+<tr><td><strong>Производительность</strong></td><td>✅ Быстрее (одна аллокация при создании)</td><td>⚠️ Аллокация на каждую ошибку</td></tr>
+<tr><td><strong>Проверка</strong></td><td><code>errors.Is(err, ErrNotFound)</code></td><td><code>errors.As(err, &amp;validErr)</code></td></tr>
+<tr><td><strong>Wrapping</strong></td><td>✅ Хорошо работает с fmt.Errorf</td><td>⚠️ Требует внимания (Unwrap метод)</td></tr>
+<tr><td><strong>API стабильность</strong></td><td>✅ Легко добавлять новые</td><td>⚠️ Изменение полей = breaking change</td></tr>
+<tr><td><strong>Когда использовать</strong></td><td>Публичный API, простые случаи</td><td>Внутри пакета, нужны метаданные</td></tr>
+<tr><td><strong>Примеры</strong></td><td>io.EOF, sql.ErrNoRows</td><td>net.OpError, os.PathError</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="hybrid-подход-best-practice"><a class="header" href="#hybrid-подход-best-practice">Hybrid подход (best practice)</a></h3>
+<p>В production коде часто используется <strong>комбинация</strong>: sentinel errors для публичного API + typed errors для внутренней гибкости.</p>
+<p><strong>Идиоматичный паттерн</strong>:</p>
+<pre><code class="language-go">// Sentinel для публичного API (стабильность)
+var ErrValidationFailed = errors.New("validation failed")
+
+// Typed для внутреннего использования (гибкость)
+type ValidationError struct {
+    Errors map[string]string
+}
+
+func (e *ValidationError) Error() string {
+    return fmt.Sprintf("validation failed: %v", e.Errors)
+}
+
+// Функция возвращает wrapped sentinel + typed
+func ValidateUser(user *User) error {
+    errs := make(map[string]string)
+
+    if user.Email == "" {
+        errs["email"] = "required"
+    }
+    if len(user.Password) &lt; 8 {
+        errs["password"] = "must be at least 8 characters"
+    }
+
+    if len(errs) &gt; 0 {
+        // Wrapping: клиент проверяет sentinel, но может извлечь детали
+        return fmt.Errorf("%w: %w", ErrValidationFailed, &amp;ValidationError{Errors: errs})
+    }
+
+    return nil
+}
+
+// Клиентский код
+func CreateUser(user *User) error {
+    if err := ValidateUser(user); err != nil {
+        // Проверяем sentinel (стабильный API)
+        if errors.Is(err, ErrValidationFailed) {
+            // Извлекаем детали (опционально)
+            var validErr *ValidationError
+            if errors.As(err, &amp;validErr) {
+                return BadRequest(validErr.Errors)
+            }
+        }
+        return err
+    }
+    return nil
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Экспортируй sentinel errors для стабильного API, используй typed errors внутри для гибкости. Клиенты пакета зависят от sentinel (стабильные), но могут извлечь детали через <code>errors.As()</code> (опционально).</p>
+</blockquote>
+<hr>
+<h2 id="custom-error-types-с-метаданными"><a class="header" href="#custom-error-types-с-метаданными">Custom Error Types с метаданными</a></h2>
+<p>Для enterprise приложений часто требуются ошибки с дополнительными данными: коды ошибок (для gRPC/внутренних API), HTTP статусы, метаданные для логирования. Рассмотрим, как проектировать такие типы идиоматично.</p>
+<h3 id="коды-ошибок-для-grpcвнутренних-api"><a class="header" href="#коды-ошибок-для-grpcвнутренних-api">Коды ошибок для gRPC/внутренних API</a></h3>
+<p><strong>C# подход</strong>:</p>
+<pre><code class="language-csharp">// C#: Enum для кодов ошибок
+public enum ErrorCode
+{
+    UserNotFound = 1001,
+    InvalidPassword = 1002,
+    DatabaseError = 2001
+}
+
+public class DomainException : Exception
+{
+    public ErrorCode Code { get; }
+    public Dictionary&lt;string, object&gt; Metadata { get; }
+
+    public DomainException(ErrorCode code, string message,
+                          Dictionary&lt;string, object&gt; metadata = null)
+        : base(message)
+    {
+        Code = code;
+        Metadata = metadata ?? new Dictionary&lt;string, object&gt;();
+    }
+}
+
+// Использование
+throw new DomainException(
+    ErrorCode.UserNotFound,
+    "User not found",
+    new Dictionary&lt;string, object&gt; { ["userId"] = 42 }
+);
+
+// Обработка
+catch (DomainException ex)
+{
+    switch (ex.Code)
+    {
+        case ErrorCode.UserNotFound:
+            return NotFound(ex.Message);
+        case ErrorCode.DatabaseError:
+            return StatusCode(500, "Database error");
+    }
+}
+</code></pre>
+<p><strong>Go подход</strong>:</p>
+<pre><code class="language-go">// Определяем коды ошибок
+type ErrorCode int
+
+const (
+    CodeUserNotFound ErrorCode = 1001
+    CodeInvalidPassword ErrorCode = 1002
+    CodeDatabaseError ErrorCode = 2001
+)
+
+// Кастомный тип ошибки
+type DomainError struct {
+    Code     ErrorCode
+    Message  string
+    Metadata map[string]interface{}
+    Wrapped  error  // Вложенная ошибка для wrapping
+}
+
+func (e *DomainError) Error() string {
+    if e.Wrapped != nil {
+        return fmt.Sprintf("[%d] %s: %v", e.Code, e.Message, e.Wrapped)
+    }
+    return fmt.Sprintf("[%d] %s", e.Code, e.Message)
+}
+
+// Реализуем Unwrap для поддержки errors.Is/As
+func (e *DomainError) Unwrap() error {
+    return e.Wrapped
+}
+
+// Helper функция для создания
+func NewDomainError(code ErrorCode, message string, wrapped error) *DomainError {
+    return &amp;DomainError{
+        Code:     code,
+        Message:  message,
+        Wrapped:  wrapped,
+        Metadata: make(map[string]interface{}),
+    }
+}
+
+// Использование в repository
+func (r *UserRepository) GetByID(id int) (*User, error) {
+    user, err := r.db.QueryUser(id)
+    if err != nil {
+        if errors.Is(err, sql.ErrNoRows) {
+            return nil, NewDomainError(CodeUserNotFound, "user not found", err).
+                WithMetadata("user_id", id)
+        }
+        return nil, NewDomainError(CodeDatabaseError, "query failed", err).
+            WithMetadata("user_id", id)
+    }
+    return user, nil
+}
+
+// Обработка в handler
+func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {
+    user, err := h.service.GetUser(id)
+    if err != nil {
+        var domainErr *DomainError
+        if errors.As(err, &amp;domainErr) {
+            switch domainErr.Code {
+            case CodeUserNotFound:
+                respondJSON(w, http.StatusNotFound, map[string]interface{}{
+                    "code":    domainErr.Code,
+                    "message": domainErr.Message,
+                })
+                return
+            case CodeDatabaseError:
+                h.logger.Error("database error", "metadata", domainErr.Metadata)
+                respondJSON(w, http.StatusInternalServerError, map[string]interface{}{
+                    "code":    domainErr.Code,
+                    "message": "internal error",
+                })
+                return
+            }
+        }
+
+        // Неизвестная ошибка
+        respondJSON(w, http.StatusInternalServerError, map[string]interface{}{
+            "message": "internal error",
+        })
+    }
+}
+</code></pre>
+<h3 id="fluent-api-для-метаданных"><a class="header" href="#fluent-api-для-метаданных">Fluent API для метаданных</a></h3>
+<p><strong>Идиома Go (builder pattern)</strong>:</p>
+<pre><code class="language-go">// Метод для добавления метаданных (chainable)
+func (e *DomainError) WithMetadata(key string, value interface{}) *DomainError {
+    e.Metadata[key] = value
+    return e
+}
+
+// Использование (chaining)
+return NewDomainError(CodeUserNotFound, "user not found", err).
+    WithMetadata("user_id", id).
+    WithMetadata("requested_by", currentUser.ID).
+    WithMetadata("timestamp", time.Now())
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Методы, возвращающие <code>*T</code>, позволяют строить fluent API. Это удобно для конфигурирования объектов.</p>
+</blockquote>
+<h3 id="http-status-маппинг"><a class="header" href="#http-status-маппинг">HTTP status маппинг</a></h3>
+<p>Часто требуется мапить доменные ошибки на HTTP статусы. Добавим метод в <code>DomainError</code>:</p>
+<pre><code class="language-go">// Метод для получения HTTP статуса
+func (e *DomainError) HTTPStatus() int {
+    switch e.Code {
+    case CodeUserNotFound:
+        return http.StatusNotFound
+    case CodeInvalidPassword:
+        return http.StatusUnauthorized
+    case CodeDatabaseError:
+        return http.StatusInternalServerError
+    default:
+        return http.StatusInternalServerError
+    }
+}
+
+// Middleware для автоматического маппинга
+func ErrorToHTTP(err error) (int, map[string]interface{}) {
+    var domainErr *DomainError
+    if errors.As(err, &amp;domainErr) {
+        return domainErr.HTTPStatus(), map[string]interface{}{
+            "code":     domainErr.Code,
+            "message":  domainErr.Message,
+            "metadata": domainErr.Metadata,
+        }
+    }
+
+    // Неизвестная ошибка
+    return http.StatusInternalServerError, map[string]interface{}{
+        "message": "internal server error",
+    }
+}
+
+// Использование в handler
+func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {
+    user, err := h.service.GetUser(id)
+    if err != nil {
+        status, body := ErrorToHTTP(err)
+        respondJSON(w, status, body)
+        return
+    }
+    respondJSON(w, http.StatusOK, user)
+}
+</code></pre>
+<hr>
+<h2 id="panicrecover-когда-и-как-использовать"><a class="header" href="#panicrecover-когда-и-как-использовать">Panic/Recover: когда и как использовать</a></h2>
+<p><strong>Критически важно</strong>: Panic в Go — это <strong>НЕ exceptions</strong>. Использовать panic следует только для невосстановимых ошибок.</p>
+<h3 id="сравнение-panic-vs-exceptions"><a class="header" href="#сравнение-panic-vs-exceptions">Сравнение Panic vs Exceptions</a></h3>
+<p><strong>C# exceptions (норма для контроля потока)</strong>:</p>
+<pre><code class="language-csharp">// C#: Исключения — обычный механизм контроля потока
+public User GetUser(int id)
+{
+    if (id &lt;= 0)
+        throw new ArgumentException("Invalid ID");
+
+    var user = _db.Users.Find(id);
+    if (user == null)
+        throw new NotFoundException($"User {id} not found");
+
+    return user;
+}
+
+// Использование
+try
+{
+    var user = service.GetUser(id);
+    return Ok(user);
+}
+catch (ArgumentException ex)
+{
+    return BadRequest(ex.Message);
+}
+catch (NotFoundException ex)
+{
+    return NotFound(ex.Message);
+}
+</code></pre>
+<p><strong>Go panic (ТОЛЬКО для критических ошибок)</strong>:</p>
+<pre><code class="language-go">// ❌ ПЛОХО: паника для бизнес-логики
+func GetUser(id int) *User {
+    if id &lt;= 0 {
+        panic("invalid ID")  // НЕТ! Это не критическая ошибка
+    }
+
+    user := db.Find(id)
+    if user == nil {
+        panic("user not found")  // НЕТ! Это ожидаемая ситуация
+    }
+
+    return user
+}
+
+// ✅ ХОРОШО: явные ошибки
+func GetUser(id int) (*User, error) {
+    if id &lt;= 0 {
+        return nil, fmt.Errorf("invalid ID: %d", id)
+    }
+
+    user := db.Find(id)
+    if user == nil {
+        return nil, fmt.Errorf("%w: id=%d", ErrUserNotFound, id)
+    }
+
+    return user, nil
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: В C# exceptions дешевые для happy path, но дорогие при выбросе. В Go panic <strong>всегда дорогая</strong> (stack unwinding, восстановление состояния). Используйте panic только для программных ошибок (bugs), а не для ожидаемых ситуаций.</p>
+</blockquote>
+<h3 id="когда-использовать-panic"><a class="header" href="#когда-использовать-panic">Когда использовать panic</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Сценарий</th><th>Panic?</th><th>Решение</th><th>Почему</th></tr>
+</thead>
+<tbody>
+<tr><td>Невалидные аргументы</td><td>❌</td><td>Вернуть <code>error</code></td><td>Ожидаемая ситуация</td></tr>
+<tr><td>Бизнес-логика (запись не найдена)</td><td>❌</td><td>Вернуть <code>error</code></td><td>Ожидаемая ситуация</td></tr>
+<tr><td>Ошибка сети, БД</td><td>❌</td><td>Вернуть <code>error</code></td><td>Ожидаемая ситуация</td></tr>
+<tr><td>Невозможная ситуация (assertion)</td><td>✅</td><td><code>panic("unreachable")</code></td><td>Программная ошибка</td></tr>
+<tr><td>Критическая ошибка инициализации</td><td>✅</td><td><code>log.Fatal()</code> или <code>panic()</code></td><td>Приложение не может работать</td></tr>
+<tr><td>Nil dereference (баг в коде)</td><td>✅</td><td>Автоматически</td><td>Программная ошибка</td></tr>
+<tr><td>Out of memory</td><td>✅</td><td>Автоматически</td><td>Система не может продолжить</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Примеры правильного использования panic</strong>:</p>
+<pre><code class="language-go">// ✅ Assertion (unreachable code)
+func ProcessStatus(status Status) {
+    switch status {
+    case StatusActive, StatusInactive:
+        // handle
+    default:
+        panic(fmt.Sprintf("unreachable: unknown status %v", status))
+    }
+}
+
+// ✅ Критическая инициализация (обычно в init())
+func init() {
+    config, err := LoadConfig()
+    if err != nil {
+        panic(fmt.Sprintf("failed to load config: %v", err))
+        // Или log.Fatal(err) — более явно
+    }
+    globalConfig = config
+}
+
+// ✅ Regexp compilation (compile-time check)
+var emailRegex = regexp.MustCompile(`^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$`)
+// MustCompile паникует если regex невалидный — это OK, т.к. это баг в коде
+</code></pre>
+<h3 id="recover-в-middleware-защита-httpgrpc-сервера"><a class="header" href="#recover-в-middleware-защита-httpgrpc-сервера">Recover в middleware (защита HTTP/gRPC сервера)</a></h3>
+<p>Даже если вы не используете panic в своем коде, третьесторонние библиотеки или программные ошибки могут вызвать панику. Для защиты сервера используйте <code>recover</code> в middleware.</p>
+<p><strong>C# аналог (global exception handler)</strong>:</p>
+<pre><code class="language-csharp">// C#: Middleware для перехвата всех исключений
+public class ExceptionMiddleware
+{
+    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+    {
+        try
+        {
+            await next(context);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unhandled exception");
+            context.Response.StatusCode = 500;
+            await context.Response.WriteAsJsonAsync(new { error = "Internal error" });
+        }
+    }
+}
+</code></pre>
+<p><strong>Go паттерн (recover в HTTP middleware)</strong>:</p>
+<pre><code class="language-go">func RecoverMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        defer func() {
+            if rec := recover(); rec != nil {
+                // Логируем stack trace
+                stack := debug.Stack()
+                log.Printf("PANIC recovered: %v\n%s", rec, stack)
+
+                // Возвращаем 500
+                w.Header().Set("Content-Type", "application/json")
+                w.WriteHeader(http.StatusInternalServerError)
+                json.NewEncoder(w).Encode(map[string]string{
+                    "error": "internal server error",
+                })
+            }
+        }()
+
+        // Вызываем следующий handler
+        next.ServeHTTP(w, r)
+    })
+}
+
+// Использование
+func main() {
+    mux := http.NewServeMux()
+    mux.HandleFunc("/users", GetUsersHandler)
+
+    // Оборачиваем в recover middleware
+    http.ListenAndServe(":8080", RecoverMiddleware(mux))
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Всегда защищай HTTP/gRPC серверы через recover middleware. Даже если твой код не паникует, third-party библиотеки могут.</p>
+</blockquote>
+<h3 id="defer-и-panic-порядок-выполнения"><a class="header" href="#defer-и-panic-порядок-выполнения">Defer и panic: порядок выполнения</a></h3>
+<p><strong>Механика</strong>:</p>
+<pre><code class="language-go">func Example() {
+    defer fmt.Println("defer 1")
+    defer fmt.Println("defer 2")
+    panic("error")
+    defer fmt.Println("defer 3")  // Никогда не выполнится
+}
+
+// Вывод (defer выполняются в обратном порядке):
+// defer 2
+// defer 1
+// panic: error
+</code></pre>
+<p><strong>Идиома: recover только в defer</strong>:</p>
+<pre><code class="language-go">func SafeOperation() (err error) {
+    defer func() {
+        if r := recover(); r != nil {
+            // Преобразуем panic в error
+            err = fmt.Errorf("panic recovered: %v", r)
+        }
+    }()
+
+    // Код, который может паниковать
+    riskyCode()
+
+    return nil
+}
+</code></pre>
+<p><strong>⚠️ КРИТИЧЕСКИ ВАЖНО: Recover работает только в текущей горутине!</strong></p>
+<pre><code class="language-go">// ❌ НЕ РАБОТАЕТ
+func Bad() {
+    defer func() {
+        if r := recover(); r != nil {
+            fmt.Println("recovered")  // Никогда не выполнится!
+        }
+    }()
+
+    go func() {
+        panic("error")  // Упадет вся программа!
+    }()
+
+    time.Sleep(time.Second)
+}
+
+// ✅ ПРАВИЛЬНО: recover в каждой горутине
+func Good() {
+    go func() {
+        defer func() {
+            if r := recover(); r != nil {
+                log.Printf("recovered in goroutine: %v", r)
+            }
+        }()
+
+        panic("error")  // Будет пойман
+    }()
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: Если горутина паникует и нет recover, <strong>вся программа упадет</strong>. Всегда добавляй defer+recover в горутины, которые могут паниковать.</p>
+</blockquote>
+<hr>
+<h2 id="error-wrapping-chains"><a class="header" href="#error-wrapping-chains">Error Wrapping Chains</a></h2>
+<h3 id="построение-контекста-через-wrapping"><a class="header" href="#построение-контекста-через-wrapping">Построение контекста через wrapping</a></h3>
+<p>В C# stack trace строится автоматически при выбросе exception. В Go вы <strong>вручную строите контекст</strong> через error wrapping, но это <strong>дешево</strong> и дает полный контроль.</p>
+<p><strong>C# stack trace (автоматически)</strong>:</p>
+<pre><code class="language-csharp">// C#: Автоматический stack trace
+public User GetUser(int id)
+{
+    throw new Exception("Database error");
+}
+
+// Вывод:
+// System.Exception: Database error
+//    at UserRepository.GetUser(Int32 id) in UserRepository.cs:line 42
+//    at UserService.FindUser(Int32 id) in UserService.cs:line 23
+//    at UserController.GetUser(Int32 id) in UserController.cs:line 15
+</code></pre>
+<p><strong>Go wrapping (вручную, но дешево)</strong>:</p>
+<pre><code class="language-go">// Repository слой
+func (r *UserRepository) GetUser(id int) (*User, error) {
+    row := r.db.QueryRow("SELECT * FROM users WHERE id = $1", id)
+    var user User
+    if err := row.Scan(&amp;user); err != nil {
+        // Добавляем контекст: что делали, с каким ID
+        return nil, fmt.Errorf("scan user %d: %w", id, err)
+    }
+    return &amp;user, nil
+}
+
+// Service слой
+func (s *UserService) FindUser(id int) (*User, error) {
+    user, err := s.repo.GetUser(id)
+    if err != nil {
+        // Добавляем контекст: на каком уровне
+        return nil, fmt.Errorf("find user: %w", err)
+    }
+    return user, nil
+}
+
+// Handler слой
+func (h *UserController) GetUser(w http.ResponseWriter, r *http.Request) {
+    user, err := h.service.FindUser(id)
+    if err != nil {
+        // Ошибка содержит всю цепочку
+        log.Printf("get user failed: %v", err)
+        // Вывод: get user failed: find user: scan user 42: sql: no rows in result set
+
+        // Проверяем конкретную ошибку
+        if errors.Is(err, sql.ErrNoRows) {
+            http.Error(w, "User not found", http.StatusNotFound)
+            return
+        }
+
+        http.Error(w, "Internal error", http.StatusInternalServerError)
+        return
+    }
+    json.NewEncoder(w).Encode(user)
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Используй <code>fmt.Errorf("context: %w", err)</code> для wrapping. Флаг <code>%w</code> сохраняет возможность проверки через <code>errors.Is()</code> и <code>errors.As()</code>.</p>
+</blockquote>
+<h3 id="unwrapping-цепочки"><a class="header" href="#unwrapping-цепочки">Unwrapping цепочки</a></h3>
+<p><strong>Ручное unwrapping</strong>:</p>
+<pre><code class="language-go">func PrintErrorChain(err error) {
+    for err != nil {
+        fmt.Println(err)
+        err = errors.Unwrap(err)
+    }
+}
+
+// Пример:
+// find user: scan user 42: sql: no rows in result set
+// scan user 42: sql: no rows in result set
+// sql: no rows in result set
+</code></pre>
+<p><strong>Проверка вложенных ошибок</strong>:</p>
+<pre><code class="language-go">// errors.Is проходит по всей цепочке
+if errors.Is(err, sql.ErrNoRows) {
+    // Сработает даже если ошибка обернута несколько раз
+}
+
+// errors.As извлекает typed error из цепочки
+var netErr *net.OpError
+if errors.As(err, &amp;netErr) {
+    // netErr теперь содержит конкретную сетевую ошибку
+    fmt.Println("Network operation:", netErr.Op)
+    fmt.Println("Network address:", netErr.Addr)
+}
+</code></pre>
+<h3 id="stack-traces-с-pkgerrors-опционально"><a class="header" href="#stack-traces-с-pkgerrors-опционально">Stack traces с pkg/errors (опционально)</a></h3>
+<p>Стандартная библиотека <code>errors</code> не добавляет stack traces. Для debugging можно использовать <code>github.com/pkg/errors</code>:</p>
+<pre><code class="language-go">import "github.com/pkg/errors"
+
+func GetUser(id int) (*User, error) {
+    user, err := db.Query(id)
+    if err != nil {
+        // errors.Wrap добавляет stack trace
+        return nil, errors.Wrap(err, "query user")
+    }
+    return user, nil
+}
+
+// Вывод с stack trace (используй fmt %+v)
+fmt.Printf("%+v", err)
+// Вывод:
+// query user
+// main.GetUser
+//     /path/to/file.go:42
+// main.main
+//     /path/to/main.go:15
+// sql: no rows in result set
+</code></pre>
+<p><strong>⚠️ Trade-off</strong>: Stack traces полезны для debugging, но:</p>
+<ul>
+<li><strong>Дороги</strong>: каждая ошибка аллоцирует stack trace (heap allocation)</li>
+<li><strong>Избыточны</strong> для production: structured logging с контекстом обычно лучше</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Рекомендация для production</strong>: Используй stdlib <code>errors</code> + structured logging с метаданными. pkg/errors полезен для локальной разработки и debugging.</p>
+</blockquote>
+<hr>
+<h2 id="стратегии-обработки-ошибок-по-слоям"><a class="header" href="#стратегии-обработки-ошибок-по-слоям">Стратегии обработки ошибок по слоям</a></h2>
+<p>В многослойных приложениях (Clean Architecture, Hexagonal Architecture) важно понимать, <strong>где</strong> и <strong>как</strong> обрабатывать ошибки на каждом уровне.</p>
+<p><strong>Архитектура</strong> (типичная):</p>
+<pre><code>Handler/Controller (HTTP/gRPC) — маппинг на статусы, логирование
+       ↓
+Service (бизнес-логика) — валидация, координация
+       ↓
+Repository (доступ к данным) — маппинг БД ошибок на доменные
+</code></pre>
+<h3 id="repository-слой"><a class="header" href="#repository-слой">Repository слой</a></h3>
+<p><strong>Ответственность</strong>:</p>
+<ul>
+<li>Мапить ошибки БД/внешних сервисов на <strong>доменные ошибки</strong></li>
+<li>Добавлять контекст (ID, таблица, операция)</li>
+<li><strong>НЕ логировать</strong> (логирование на краях системы)</li>
+<li><strong>НЕ мапить на HTTP</strong> (repository не должен знать про HTTP)</li>
+</ul>
+<p><strong>❌ ПЛОХО: пробрасываем сырые ошибки БД</strong>:</p>
+<pre><code class="language-go">func (r *UserRepository) GetByID(id int) (*User, error) {
+    return r.db.QueryUser(id)  // sql.ErrNoRows утечет наружу!
+}
+
+// Проблема: клиент зависит от деталей реализации (SQL)
+// Если позже заменишь БД на MongoDB, клиентский код сломается
+</code></pre>
+<p><strong>✅ ХОРОШО: мапим на доменные ошибки</strong>:</p>
+<pre><code class="language-go">// Доменные ошибки (объявлены на уровне пакета domain/repository)
+var (
+    ErrUserNotFound = errors.New("user not found")
+    ErrDuplicateEmail = errors.New("email already exists")
+)
+
+func (r *UserRepository) GetByID(id int) (*User, error) {
+    user, err := r.db.QueryUser(id)
+    if err != nil {
+        // Мапим SQL ошибку на доменную
+        if errors.Is(err, sql.ErrNoRows) {
+            return nil, fmt.Errorf("%w (id=%d)", ErrUserNotFound, id)
+        }
+        // Неизвестная ошибка — wrapping с контекстом
+        return nil, fmt.Errorf("query user %d: %w", id, err)
+    }
+    return user, nil
+}
+
+func (r *UserRepository) Create(user *User) error {
+    err := r.db.Insert(user)
+    if err != nil {
+        // Мапим constraint violation на доменную ошибку
+        if isPgUniqueViolation(err, "users_email_key") {
+            return fmt.Errorf("%w: %s", ErrDuplicateEmail, user.Email)
+        }
+        return fmt.Errorf("insert user: %w", err)
+    }
+    return nil
+}
+
+// Helper для проверки PostgreSQL ошибок
+func isPgUniqueViolation(err error, constraint string) bool {
+    var pgErr *pgconn.PgError
+    if errors.As(err, &amp;pgErr) {
+        return pgErr.Code == "23505" &amp;&amp; pgErr.ConstraintName == constraint
+    }
+    return false
+}
+</code></pre>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">// C#: Repository мапит EF исключения на доменные
+public class UserRepository
+{
+    public async Task&lt;User&gt; GetByIdAsync(int id)
+    {
+        try
+        {
+            return await _context.Users.FindAsync(id);
+        }
+        catch (SqlException ex) when (ex.Number == 2627) // Unique constraint
+        {
+            throw new DuplicateEmailException("Email already exists", ex);
+        }
+        catch (SqlException ex)
+        {
+            throw new DatabaseException($"Failed to query user {id}", ex);
+        }
+    }
+}
+</code></pre>
+<h3 id="service-слой"><a class="header" href="#service-слой">Service слой</a></h3>
+<p><strong>Ответственность</strong>:</p>
+<ul>
+<li>Бизнес-валидация</li>
+<li>Координация нескольких репозиториев/внешних сервисов</li>
+<li>Обогащение ошибок <strong>бизнес-контекстом</strong></li>
+<li><strong>НЕ мапить на HTTP</strong> (service не знает про HTTP)</li>
+<li><strong>НЕ логировать</strong> (кроме критических случаев)</li>
+</ul>
+<p><strong>Паттерн</strong>:</p>
+<pre><code class="language-go">func (s *UserService) UpdateProfile(ctx context.Context, userID int, req UpdateProfileRequest) error {
+    // 1. Валидация (бизнес-правила)
+    if err := s.validator.Validate(req); err != nil {
+        return fmt.Errorf("validation failed: %w", err)
+    }
+
+    // 2. Получение пользователя
+    user, err := s.repo.GetByID(userID)
+    if err != nil {
+        // Обогащаем контекстом: кто пытался обновить
+        return fmt.Errorf("get user for update (requested_by=%d): %w", userID, err)
+    }
+
+    // 3. Проверка бизнес-правил
+    if user.IsBlocked {
+        return fmt.Errorf("user %d is blocked and cannot update profile", userID)
+    }
+
+    // 4. Обновление
+    user.Name = req.Name
+    user.Email = req.Email
+
+    if err := s.repo.Update(user); err != nil {
+        return fmt.Errorf("update user %d: %w", userID, err)
+    }
+
+    // 5. Побочные эффекты (не критично)
+    if err := s.emailService.SendUpdateNotification(user); err != nil {
+        // НЕ возвращаем ошибку — профиль обновлен успешно
+        // Но логируем на уровне WARNING
+        s.logger.Warn("failed to send notification",
+            "user_id", userID,
+            "error", err)
+    }
+
+    return nil
+}
+</code></pre>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">// C#: Service координирует и валидирует
+public class UserService
+{
+    public async Task UpdateProfileAsync(int userId, UpdateProfileRequest request)
+    {
+        // Валидация
+        var validationResult = await _validator.ValidateAsync(request);
+        if (!validationResult.IsValid)
+            throw new ValidationException(validationResult.Errors);
+
+        // Получение пользователя
+        var user = await _repo.GetByIdAsync(userId);
+        if (user == null)
+            throw new UserNotFoundException(userId);
+
+        // Бизнес-правила
+        if (user.IsBlocked)
+            throw new BusinessException("User is blocked");
+
+        // Обновление
+        user.Name = request.Name;
+        user.Email = request.Email;
+        await _repo.UpdateAsync(user);
+
+        // Побочные эффекты (не критично)
+        try
+        {
+            await _emailService.SendNotificationAsync(user);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to send notification");
+            // Не пробрасываем
+        }
+    }
+}
+</code></pre>
+<h3 id="handler-слой"><a class="header" href="#handler-слой">Handler слой</a></h3>
+<p><strong>Ответственность</strong>:</p>
+<ul>
+<li>Мапить доменные ошибки на <strong>HTTP/gRPC статусы</strong></li>
+<li><strong>Логировать unexpected ошибки</strong> (unknown errors)</li>
+<li>Возвращать клиенту <strong>безопасные сообщения</strong> (не раскрывать внутренние детали)</li>
+<li>Добавлять метрики (error counters)</li>
+</ul>
+<p><strong>Паттерн (HTTP)</strong>:</p>
+<pre><code class="language-go">type ErrorResponse struct {
+    Error   string                 `json:"error"`
+    Code    string                 `json:"code,omitempty"`
+    Details map[string]interface{} `json:"details,omitempty"`
+}
+
+func (h *UserHandler) UpdateProfile(w http.ResponseWriter, r *http.Request) {
+    var req UpdateProfileRequest
+    if err := json.NewDecoder(r.Body).Decode(&amp;req); err != nil {
+        h.respondError(w, http.StatusBadRequest, "invalid request body", nil)
+        return
+    }
+
+    userID := getUserIDFromContext(r.Context())
+
+    err := h.service.UpdateProfile(r.Context(), userID, req)
+    if err != nil {
+        h.handleServiceError(w, r, err)
+        return
+    }
+
+    w.WriteHeader(http.StatusNoContent)
+}
+
+func (h *UserHandler) handleServiceError(w http.ResponseWriter, r *http.Request, err error) {
+    // 1. Проверяем известные доменные ошибки
+    switch {
+    case errors.Is(err, ErrUserNotFound):
+        h.respondError(w, http.StatusNotFound, "user not found", nil)
+        return
+
+    case errors.Is(err, ErrValidationFailed):
+        var validErr *ValidationError
+        if errors.As(err, &amp;validErr) {
+            h.respondError(w, http.StatusBadRequest, "validation failed", validErr.Errors)
+            return
+        }
+
+    case errors.Is(err, ErrUnauthorized):
+        h.respondError(w, http.StatusUnauthorized, "unauthorized", nil)
+        return
+
+    case errors.Is(err, ErrDuplicateEmail):
+        h.respondError(w, http.StatusConflict, "email already exists", nil)
+        return
+    }
+
+    // 2. Неизвестная ошибка — логируем детали, клиенту Generic message
+    h.logger.Error("unexpected error",
+        "path", r.URL.Path,
+        "method", r.Method,
+        "user_id", getUserIDFromContext(r.Context()),
+        "error", fmt.Sprintf("%+v", err),  // Полная цепочка
+    )
+
+    // Метрики
+    h.metrics.ErrorCounter.WithLabelValues("unexpected", r.URL.Path).Inc()
+
+    h.respondError(w, http.StatusInternalServerError, "internal server error", nil)
+}
+
+func (h *UserHandler) respondError(w http.ResponseWriter, status int, message string, details map[string]interface{}) {
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(status)
+    json.NewEncoder(w).Encode(ErrorResponse{
+        Error:   message,
+        Details: details,
+    })
+}
+</code></pre>
+<p><strong>C# аналог (global exception filter)</strong>:</p>
+<pre><code class="language-csharp">// C#: Централизованная обработка ошибок
+public class GlobalExceptionFilter : IExceptionFilter
+{
+    public void OnException(ExceptionContext context)
+    {
+        var status = context.Exception switch
+        {
+            NotFoundException =&gt; 404,
+            ValidationException =&gt; 400,
+            UnauthorizedException =&gt; 401,
+            DuplicateEmailException =&gt; 409,
+            _ =&gt; 500
+        };
+
+        if (status == 500)
+        {
+            _logger.LogError(context.Exception, "Unhandled exception");
+            context.Result = new ObjectResult(new { error = "Internal error" })
+            {
+                StatusCode = 500
+            };
+        }
+        else
+        {
+            context.Result = new ObjectResult(new { error = context.Exception.Message })
+            {
+                StatusCode = status
+            };
+        }
+    }
+}
+</code></pre>
+<h3 id="таблица-где-обрабатывать-ошибки"><a class="header" href="#таблица-где-обрабатывать-ошибки">Таблица: Где обрабатывать ошибки</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Слой</th><th>Что делать</th><th>Что НЕ делать</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Repository</strong></td><td>• Мапить БД ошибки на доменные<br>• Добавлять контекст (ID, таблица)<br>• Wrapping с fmt.Errorf</td><td>❌ Логировать<br>❌ Мапить на HTTP статусы<br>❌ Знать про HTTP</td></tr>
+<tr><td><strong>Service</strong></td><td>• Бизнес-валидация<br>• Координация репозиториев<br>• Обогащение бизнес-контекстом<br>• Wrapping ошибок</td><td>❌ Мапить на HTTP<br>❌ Логировать (кроме критического)<br>❌ Знать про HTTP</td></tr>
+<tr><td><strong>Handler</strong></td><td>• Мапить на HTTP/gRPC статусы<br>• Логировать unexpected errors<br>• Безопасные сообщения клиенту<br>• Метрики (error counters)</td><td>❌ Бизнес-логика<br>❌ Прямой доступ к БД<br>❌ Раскрывать внутренние детали</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="логирование-ошибок"><a class="header" href="#логирование-ошибок">Логирование ошибок</a></h2>
+<h3 id="где-логировать"><a class="header" href="#где-логировать">Где логировать</a></h3>
+<p><strong>Правило</strong>: Логировать на <strong>краях системы</strong> (handlers, background jobs), а не в середине.</p>
+<p><strong>❌ ПЛОХО: логирование на каждом уровне</strong>:</p>
+<pre><code class="language-go">// Repository
+func (r *Repo) GetUser(id int) (*User, error) {
+    user, err := r.db.Query(id)
+    if err != nil {
+        log.Printf("ERROR: query user %d: %v", id, err)  // НЕТ!
+        return nil, err
+    }
+    return user, nil
+}
+
+// Service
+func (s *Service) FindUser(id int) (*User, error) {
+    user, err := s.repo.GetUser(id)
+    if err != nil {
+        log.Printf("ERROR: find user %d: %v", id, err)  // Дублирование!
+        return nil, err
+    }
+    return user, nil
+}
+
+// Handler
+func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {
+    user, err := h.service.FindUser(id)
+    if err != nil {
+        log.Printf("ERROR: get user %d: %v", id, err)  // Третий раз!
+        http.Error(w, "error", 500)
+    }
+}
+
+// Результат: 3 дубликата в логах для одной ошибки!
+// ERROR: query user 42: sql: no rows in result set
+// ERROR: find user 42: query user 42: sql: no rows in result set
+// ERROR: get user 42: find user: query user 42: sql: no rows in result set
+</code></pre>
+<p><strong>✅ ХОРОШО: логирование на краю</strong>:</p>
+<pre><code class="language-go">// Repository — только wrapping
+func (r *Repo) GetUser(id int) (*User, error) {
+    user, err := r.db.Query(id)
+    if err != nil {
+        return nil, fmt.Errorf("query user %d: %w", id, err)
+    }
+    return user, nil
+}
+
+// Service — только wrapping
+func (s *Service) FindUser(id int) (*User, error) {
+    user, err := s.repo.GetUser(id)
+    if err != nil {
+        return nil, fmt.Errorf("find user: %w", err)
+    }
+    return user, nil
+}
+
+// Handler — логируем ОДИН РАЗ
+func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {
+    user, err := h.service.FindUser(id)
+    if err != nil {
+        // Логируем только неизвестные ошибки
+        if !errors.Is(err, ErrUserNotFound) {
+            h.logger.Error("unexpected error",
+                "path", r.URL.Path,
+                "user_id", id,
+                "error", err,  // Вся цепочка: find user: query user 42: sql: no rows
+            )
+        }
+
+        handleError(w, err)
+    }
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Repository и Service не логируют — только wrapping. Handler логирует unexpected errors один раз.</p>
+</blockquote>
+<h3 id="структурированное-логирование-slog"><a class="header" href="#структурированное-логирование-slog">Структурированное логирование (slog)</a></h3>
+<p>С Go 1.21+ в стандартной библиотеке появился <code>log/slog</code> — structured logger.</p>
+<p><strong>Go 1.21+ (stdlib slog)</strong>:</p>
+<pre><code class="language-go">import "log/slog"
+
+// Настройка (в main)
+logger := slog.New(slog.NewJSONHandler(os.Stdout, &amp;slog.HandlerOptions{
+    Level: slog.LevelInfo,
+}))
+
+// Использование
+func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {
+    user, err := h.service.FindUser(id)
+    if err != nil {
+        logger.Error("get user failed",
+            "error", err,
+            "user_id", id,
+            "path", r.URL.Path,
+            "method", r.Method,
+            "request_id", r.Header.Get("X-Request-ID"),
+        )
+        return
+    }
+}
+
+// Вывод (JSON):
+// {
+//   "time": "2026-01-24T12:00:00Z",
+//   "level": "ERROR",
+//   "msg": "get user failed",
+//   "error": "find user: query user 42: sql: no rows",
+//   "user_id": 42,
+//   "path": "/users/42",
+//   "method": "GET",
+//   "request_id": "abc123"
+// }
+</code></pre>
+<p><strong>C# аналог (Serilog)</strong>:</p>
+<pre><code class="language-csharp">// C#: Structured logging
+Log.Error(ex, "Get user failed {UserId} {Path}", userId, path);
+
+// Вывод (JSON):
+// {
+//   "Timestamp": "2026-01-24T12:00:00Z",
+//   "Level": "Error",
+//   "MessageTemplate": "Get user failed {UserId} {Path}",
+//   "UserId": 42,
+//   "Path": "/users/42",
+//   "Exception": "..."
+// }
+</code></pre>
+<blockquote>
+<p>💡 <strong>Рекомендация</strong>: Используй structured logging (slog, zap, zerolog) вместо fmt.Printf для production. Это позволяет фильтровать и анализировать логи в системах мониторинга (ELK, Grafana Loki).</p>
+</blockquote>
+<h3 id="expected-vs-unexpected-errors"><a class="header" href="#expected-vs-unexpected-errors">Expected vs Unexpected errors</a></h3>
+<p><strong>Правило</strong>: Не логировать <strong>expected errors</strong> (404, 400) как ERROR. Используй INFO или не логируй вообще.</p>
+<pre><code class="language-go">func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {
+    user, err := h.service.FindUser(id)
+    if err != nil {
+        switch {
+        case errors.Is(err, ErrUserNotFound):
+            // Expected — логируем как INFO или не логируем
+            logger.Info("user not found", "user_id", id)
+            http.Error(w, "not found", 404)
+            return
+
+        case errors.Is(err, ErrUnauthorized):
+            // Expected — логируем как WARN
+            logger.Warn("unauthorized access attempt",
+                "user_id", id,
+                "ip", r.RemoteAddr)
+            http.Error(w, "unauthorized", 401)
+            return
+
+        default:
+            // Unexpected — логируем как ERROR
+            logger.Error("unexpected error", "error", err, "user_id", id)
+            http.Error(w, "internal error", 500)
+            return
+        }
+    }
+}
+</code></pre>
+<p><strong>Таблица: Уровни логирования</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>HTTP Status</th><th>Тип ошибки</th><th>Уровень логирования</th><th>Почему</th></tr>
+</thead>
+<tbody>
+<tr><td>400 Bad Request</td><td>Валидация</td><td>INFO или не логировать</td><td>Ожидаемая ситуация</td></tr>
+<tr><td>401 Unauthorized</td><td>Аутентификация</td><td>WARN</td><td>Потенциальная атака</td></tr>
+<tr><td>403 Forbidden</td><td>Авторизация</td><td>WARN</td><td>Потенциальная атака</td></tr>
+<tr><td>404 Not Found</td><td>Запись не найдена</td><td>INFO или не логировать</td><td>Ожидаемая ситуация</td></tr>
+<tr><td>409 Conflict</td><td>Дубликат</td><td>INFO</td><td>Ожидаемая ситуация</td></tr>
+<tr><td>500 Internal Error</td><td>Неизвестная ошибка</td><td><strong>ERROR</strong></td><td>Требует расследования</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="идиоматичные-паттерны-для-production"><a class="header" href="#идиоматичные-паттерны-для-production">Идиоматичные паттерны для production</a></h2>
+<h3 id="retry-с-exponential-backoff"><a class="header" href="#retry-с-exponential-backoff">Retry с exponential backoff</a></h3>
+<p><strong>C# (Polly)</strong>:</p>
+<pre><code class="language-csharp">var policy = Policy
+    .Handle&lt;HttpRequestException&gt;()
+    .WaitAndRetryAsync(3, retryAttempt =&gt;
+        TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+
+await policy.ExecuteAsync(async () =&gt;
+    await httpClient.GetAsync(url));
+</code></pre>
+<p><strong>Go паттерн</strong>:</p>
+<pre><code class="language-go">func RetryWithBackoff(ctx context.Context, maxRetries int, fn func() error) error {
+    backoff := time.Second
+
+    for i := 0; i &lt; maxRetries; i++ {
+        err := fn()
+        if err == nil {
+            return nil
+        }
+
+        // Проверяем, можно ли retry
+        if !IsRetryable(err) {
+            return fmt.Errorf("non-retryable error: %w", err)
+        }
+
+        if i == maxRetries-1 {
+            return fmt.Errorf("max retries exceeded: %w", err)
+        }
+
+        select {
+        case &lt;-time.After(backoff):
+            backoff *= 2  // Exponential backoff
+        case &lt;-ctx.Done():
+            return ctx.Err()
+        }
+    }
+
+    return errors.New("unreachable")
+}
+
+// Классификация ошибок
+func IsRetryable(err error) bool {
+    // Сетевые временные ошибки
+    var netErr net.Error
+    if errors.As(err, &amp;netErr) &amp;&amp; netErr.Temporary() {
+        return true
+    }
+
+    // Timeout — retry
+    if errors.Is(err, context.DeadlineExceeded) {
+        return true
+    }
+
+    // Cancelled — НЕ retry
+    if errors.Is(err, context.Canceled) {
+        return false
+    }
+
+    return false
+}
+
+// Использование
+err := RetryWithBackoff(ctx, 3, func() error {
+    return httpClient.Get(url)
+})
+</code></pre>
+<h3 id="error-aggregation-несколько-горутин"><a class="header" href="#error-aggregation-несколько-горутин">Error aggregation (несколько горутин)</a></h3>
+<p><strong>C# (Task.WhenAll + AggregateException)</strong>:</p>
+<pre><code class="language-csharp">try
+{
+    await Task.WhenAll(
+        Task.Run(() =&gt; Operation1()),
+        Task.Run(() =&gt; Operation2()),
+        Task.Run(() =&gt; Operation3())
+    );
+}
+catch (AggregateException ex)
+{
+    foreach (var inner in ex.InnerExceptions)
+    {
+        Console.WriteLine(inner.Message);
+    }
+}
+</code></pre>
+<p><strong>Go (errgroup — возвращает первую ошибку)</strong>:</p>
+<pre><code class="language-go">import "golang.org/x/sync/errgroup"
+
+func ProcessMultiple(ctx context.Context, items []Item) error {
+    g, ctx := errgroup.WithContext(ctx)
+
+    for _, item := range items {
+        item := item  // Capture
+        g.Go(func() error {
+            return processItem(ctx, item)
+        })
+    }
+
+    // Возвращает первую ошибку, отменяет контекст
+    return g.Wait()
+}
+</code></pre>
+<p><strong>Go (собираем все ошибки — MultiError helper)</strong>:</p>
+<pre><code class="language-go">type MultiError struct {
+    Errors []error
+}
+
+func (m *MultiError) Error() string {
+    if len(m.Errors) == 0 {
+        return "no errors"
+    }
+
+    var buf strings.Builder
+    buf.WriteString(fmt.Sprintf("%d errors occurred:", len(m.Errors)))
+    for i, err := range m.Errors {
+        buf.WriteString(fmt.Sprintf("\n\t%d: %v", i+1, err))
+    }
+    return buf.String()
+}
+
+func (m *MultiError) Add(err error) {
+    if err != nil {
+        m.Errors = append(m.Errors, err)
+    }
+}
+
+func (m *MultiError) ErrorOrNil() error {
+    if len(m.Errors) == 0 {
+        return nil
+    }
+    return m
+}
+
+// Использование
+func ProcessAll(items []Item) error {
+    var wg sync.WaitGroup
+    var mu sync.Mutex
+    var multiErr MultiError
+
+    for _, item := range items {
+        wg.Add(1)
+        go func(item Item) {
+            defer wg.Done()
+            if err := processItem(item); err != nil {
+                mu.Lock()
+                multiErr.Add(fmt.Errorf("process item %d: %w", item.ID, err))
+                mu.Unlock()
+            }
+        }(item)
+    }
+
+    wg.Wait()
+    return multiErr.ErrorOrNil()
+}
+</code></pre>
+<h3 id="context-для-cancellation-cascading-errors"><a class="header" href="#context-для-cancellation-cascading-errors">Context для cancellation (cascading errors)</a></h3>
+<p><strong>Паттерн</strong>: Отмена всех операций при первой ошибке.</p>
+<pre><code class="language-go">func ProcessPipeline(ctx context.Context) error {
+    // Создаем контекст с отменой
+    ctx, cancel := context.WithCancel(ctx)
+    defer cancel()
+
+    // Если любая горутина упадет — отменим остальные
+    errCh := make(chan error, 3)
+
+    go func() {
+        if err := step1(ctx); err != nil {
+            errCh &lt;- fmt.Errorf("step1: %w", err)
+        } else {
+            errCh &lt;- nil
+        }
+    }()
+
+    go func() {
+        if err := step2(ctx); err != nil {
+            errCh &lt;- fmt.Errorf("step2: %w", err)
+        } else {
+            errCh &lt;- nil
+        }
+    }()
+
+    go func() {
+        if err := step3(ctx); err != nil {
+            errCh &lt;- fmt.Errorf("step3: %w", err)
+        } else {
+            errCh &lt;- nil
+        }
+    }()
+
+    // Ждем результатов
+    for i := 0; i &lt; 3; i++ {
+        if err := &lt;-errCh; err != nil {
+            cancel()  // Отменяем остальные
+            return err
+        }
+    }
+
+    return nil
+}
+</code></pre>
+<hr>
+<h2 id="практические-примеры"><a class="header" href="#практические-примеры">Практические примеры</a></h2>
+<h3 id="пример-1-rest-api-с-централизованной-обработкой-ошибок"><a class="header" href="#пример-1-rest-api-с-централизованной-обработкой-ошибок">Пример 1: REST API с централизованной обработкой ошибок</a></h3>
+<p><strong>Задача</strong>: Реализовать CRUD API для пользователей с правильной обработкой ошибок на всех слоях.</p>
+<p><strong>Архитектура</strong>:</p>
+<pre><code>errors.go          — Доменные ошибки
+repository.go      — Маппинг БД ошибок
+service.go         — Бизнес-логика
+handler.go         — HTTP маппинг
+middleware.go      — Recover + logging
+</code></pre>
+<details>
+<summary>Полный код (кликните чтобы развернуть)</summary>
+<pre><code class="language-go">// ========== errors.go ==========
+package domain
+
+import "errors"
+
+// Доменные ошибки (публичный API)
+var (
+    ErrUserNotFound    = errors.New("user not found")
+    ErrDuplicateEmail  = errors.New("email already exists")
+    ErrValidationFailed = errors.New("validation failed")
+)
+
+// Typed error для валидации
+type ValidationError struct {
+    Errors map[string]string
+}
+
+func (e *ValidationError) Error() string {
+    return "validation failed"
+}
+
+// ========== repository.go ==========
+package repository
+
+import (
+    "database/sql"
+    "errors"
+    "fmt"
+
+    "github.com/jackc/pgconn"
+    "myapp/domain"
+)
+
+type UserRepository struct {
+    db *sql.DB
+}
+
+func (r *UserRepository) GetByID(id int) (*domain.User, error) {
+    var user domain.User
+    err := r.db.QueryRow("SELECT id, email, name FROM users WHERE id = $1", id).
+        Scan(&amp;user.ID, &amp;user.Email, &amp;user.Name)
+
+    if err != nil {
+        if errors.Is(err, sql.ErrNoRows) {
+            return nil, fmt.Errorf("%w (id=%d)", domain.ErrUserNotFound, id)
+        }
+        return nil, fmt.Errorf("query user %d: %w", id, err)
+    }
+
+    return &amp;user, nil
+}
+
+func (r *UserRepository) Create(user *domain.User) error {
+    _, err := r.db.Exec("INSERT INTO users (email, name) VALUES ($1, $2)",
+        user.Email, user.Name)
+
+    if err != nil {
+        var pgErr *pgconn.PgError
+        if errors.As(err, &amp;pgErr) &amp;&amp; pgErr.Code == "23505" {
+            return fmt.Errorf("%w: %s", domain.ErrDuplicateEmail, user.Email)
+        }
+        return fmt.Errorf("insert user: %w", err)
+    }
+
+    return nil
+}
+
+// ========== service.go ==========
+package service
+
+import (
+    "context"
+    "fmt"
+    "myapp/domain"
+)
+
+type UserService struct {
+    repo UserRepository
+}
+
+func (s *UserService) GetUser(ctx context.Context, id int) (*domain.User, error) {
+    user, err := s.repo.GetByID(id)
+    if err != nil {
+        return nil, fmt.Errorf("get user: %w", err)
+    }
+    return user, nil
+}
+
+func (s *UserService) CreateUser(ctx context.Context, req domain.CreateUserRequest) (*domain.User, error) {
+    // Валидация
+    errs := make(map[string]string)
+    if req.Email == "" {
+        errs["email"] = "required"
+    }
+    if req.Name == "" {
+        errs["name"] = "required"
+    }
+
+    if len(errs) &gt; 0 {
+        return nil, fmt.Errorf("%w: %w", domain.ErrValidationFailed, &amp;domain.ValidationError{Errors: errs})
+    }
+
+    // Создание
+    user := &amp;domain.User{Email: req.Email, Name: req.Name}
+    if err := s.repo.Create(user); err != nil {
+        return nil, fmt.Errorf("create user: %w", err)
+    }
+
+    return user, nil
+}
+
+// ========== handler.go ==========
+package handler
+
+import (
+    "encoding/json"
+    "errors"
+    "log/slog"
+    "net/http"
+
+    "myapp/domain"
+    "myapp/service"
+)
+
+type UserHandler struct {
+    service *service.UserService
+    logger  *slog.Logger
+}
+
+func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
+    id := getIDFromPath(r.URL.Path)
+
+    user, err := h.service.GetUser(r.Context(), id)
+    if err != nil {
+        h.handleError(w, r, err)
+        return
+    }
+
+    respondJSON(w, http.StatusOK, user)
+}
+
+func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
+    var req domain.CreateUserRequest
+    if err := json.NewDecoder(r.Body).Decode(&amp;req); err != nil {
+        respondJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid request"})
+        return
+    }
+
+    user, err := h.service.CreateUser(r.Context(), req)
+    if err != nil {
+        h.handleError(w, r, err)
+        return
+    }
+
+    respondJSON(w, http.StatusCreated, user)
+}
+
+func (h *UserHandler) handleError(w http.ResponseWriter, r *http.Request, err error) {
+    switch {
+    case errors.Is(err, domain.ErrUserNotFound):
+        respondJSON(w, http.StatusNotFound, map[string]string{"error": "user not found"})
+
+    case errors.Is(err, domain.ErrDuplicateEmail):
+        respondJSON(w, http.StatusConflict, map[string]string{"error": "email already exists"})
+
+    case errors.Is(err, domain.ErrValidationFailed):
+        var validErr *domain.ValidationError
+        if errors.As(err, &amp;validErr) {
+            respondJSON(w, http.StatusBadRequest, map[string]interface{}{
+                "error": "validation failed",
+                "fields": validErr.Errors,
+            })
+            return
+        }
+
+    default:
+        h.logger.Error("unexpected error",
+            "path", r.URL.Path,
+            "method", r.Method,
+            "error", err,
+        )
+        respondJSON(w, http.StatusInternalServerError, map[string]string{"error": "internal error"})
+    }
+}
+
+func respondJSON(w http.ResponseWriter, status int, data interface{}) {
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(status)
+    json.NewEncoder(w).Encode(data)
+}
+
+// ========== middleware.go ==========
+package middleware
+
+import (
+    "log"
+    "net/http"
+    "runtime/debug"
+)
+
+func RecoverMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        defer func() {
+            if rec := recover(); rec != nil {
+                log.Printf("PANIC: %v\n%s", rec, debug.Stack())
+                w.WriteHeader(http.StatusInternalServerError)
+                w.Write([]byte(`{"error":"internal server error"}`))
+            }
+        }()
+
+        next.ServeHTTP(w, r)
+    })
+}
+</code></pre>
+</details>
+<hr>
+<h3 id="пример-2-background-job-с-retry-и-dlq"><a class="header" href="#пример-2-background-job-с-retry-и-dlq">Пример 2: Background Job с retry и DLQ</a></h3>
+<p><strong>Задача</strong>: Обработка сообщений из Kafka с классификацией ошибок (transient vs permanent), retry и dead letter queue.</p>
+<details>
+<summary>Полный код (кликните чтобы развернуть)</summary>
+<pre><code class="language-go">package worker
+
+import (
+    "context"
+    "errors"
+    "fmt"
+    "log"
+    "time"
+)
+
+// Классификация ошибок
+var (
+    ErrTransient = errors.New("transient error")  // Можно retry
+    ErrPermanent = errors.New("permanent error")  // Отправить в DLQ
+)
+
+type Message struct {
+    ID   string
+    Data []byte
+}
+
+type Worker struct {
+    kafka     KafkaConsumer
+    dlq       DLQPublisher
+    maxRetries int
+}
+
+func (w *Worker) ProcessMessage(ctx context.Context, msg Message) error {
+    backoff := time.Second
+
+    for i := 0; i &lt; w.maxRetries; i++ {
+        err := w.processMessageOnce(ctx, msg)
+        if err == nil {
+            return nil
+        }
+
+        // Классификация ошибки
+        if errors.Is(err, ErrPermanent) {
+            log.Printf("permanent error, sending to DLQ: %v", err)
+            return w.dlq.Publish(msg, err.Error())
+        }
+
+        if !errors.Is(err, ErrTransient) {
+            // Неизвестная ошибка — считаем transient
+            log.Printf("unknown error (treating as transient): %v", err)
+        }
+
+        // Retry с exponential backoff
+        if i &lt; w.maxRetries-1 {
+            log.Printf("retry %d/%d after %v: %v", i+1, w.maxRetries, backoff, err)
+
+            select {
+            case &lt;-time.After(backoff):
+                backoff *= 2
+            case &lt;-ctx.Done():
+                return ctx.Err()
+            }
+        }
+    }
+
+    // Превышено количество попыток — отправляем в DLQ
+    log.Printf("max retries exceeded, sending to DLQ")
+    return w.dlq.Publish(msg, "max retries exceeded")
+}
+
+func (w *Worker) processMessageOnce(ctx context.Context, msg Message) error {
+    // Парсинг сообщения
+    order, err := parseOrder(msg.Data)
+    if err != nil {
+        return fmt.Errorf("%w: invalid message format: %v", ErrPermanent, err)
+    }
+
+    // Валидация
+    if err := validateOrder(order); err != nil {
+        return fmt.Errorf("%w: validation failed: %v", ErrPermanent, err)
+    }
+
+    // Сохранение в БД
+    if err := saveOrder(ctx, order); err != nil {
+        if isDeadlock(err) || isConnectionError(err) {
+            return fmt.Errorf("%w: database error: %v", ErrTransient, err)
+        }
+        return fmt.Errorf("database error: %v", err)
+    }
+
+    return nil
+}
+
+func isDeadlock(err error) bool {
+    // Проверка PostgreSQL deadlock
+    return false // Упрощено
+}
+
+func isConnectionError(err error) bool {
+    // Проверка сетевых ошибок
+    return false // Упрощено
+}
+</code></pre>
+</details>
+<hr>
+<h3 id="пример-3-grpc-сервис-с-error-details"><a class="header" href="#пример-3-grpc-сервис-с-error-details">Пример 3: gRPC сервис с error details</a></h3>
+<p><strong>Задача</strong>: gRPC API с детальными ошибками (Google API error model).</p>
+<details>
+<summary>Полный код (кликните чтобы развернуть)</summary>
+<pre><code class="language-go">package grpc
+
+import (
+    "context"
+    "errors"
+
+    "google.golang.org/genproto/googleapis/rpc/errdetails"
+    "google.golang.org/grpc/codes"
+    "google.golang.org/grpc/status"
+
+    pb "myapp/proto"
+    "myapp/domain"
+)
+
+type Server struct {
+    service UserService
+}
+
+func (s *Server) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.User, error) {
+    user, err := s.service.GetUser(ctx, int(req.Id))
+    if err != nil {
+        return nil, toGRPCError(err)
+    }
+
+    return &amp;pb.User{
+        Id:    int64(user.ID),
+        Email: user.Email,
+        Name:  user.Name,
+    }, nil
+}
+
+func toGRPCError(err error) error {
+    switch {
+    case errors.Is(err, domain.ErrUserNotFound):
+        st := status.New(codes.NotFound, "user not found")
+
+        // Добавляем детали
+        st, _ = st.WithDetails(&amp;errdetails.ResourceInfo{
+            ResourceType: "User",
+            Description:  "The requested user was not found",
+        })
+        return st.Err()
+
+    case errors.Is(err, domain.ErrValidationFailed):
+        var validErr *domain.ValidationError
+        if errors.As(err, &amp;validErr) {
+            st := status.New(codes.InvalidArgument, "validation failed")
+
+            br := &amp;errdetails.BadRequest{}
+            for field, msg := range validErr.Errors {
+                br.FieldViolations = append(br.FieldViolations, &amp;errdetails.BadRequest_FieldViolation{
+                    Field:       field,
+                    Description: msg,
+                })
+            }
+
+            st, _ = st.WithDetails(br)
+            return st.Err()
+        }
+    }
+
+    return status.Error(codes.Internal, "internal error")
+}
+
+// ========== Client ==========
+func (c *Client) GetUser(id int) (*pb.User, error) {
+    user, err := c.client.GetUser(ctx, &amp;pb.GetUserRequest{Id: int64(id)})
+    if err != nil {
+        // Извлекаем детали
+        st := status.Convert(err)
+
+        for _, detail := range st.Details() {
+            switch t := detail.(type) {
+            case *errdetails.BadRequest:
+                fmt.Println("Validation errors:")
+                for _, v := range t.FieldViolations {
+                    fmt.Printf("  %s: %s\n", v.Field, v.Description)
+                }
+            }
+        }
+
+        return nil, err
+    }
+
+    return user, nil
+}
+</code></pre>
+</details>
+<hr>
+<h3 id="пример-4-observability--distributed-tracing"><a class="header" href="#пример-4-observability--distributed-tracing">Пример 4: Observability — distributed tracing</a></h3>
+<p><strong>Задача</strong>: Трассировка ошибок через микросервисы с OpenTelemetry.</p>
+<details>
+<summary>Краткий пример</summary>
+<pre><code class="language-go">package tracing
+
+import (
+    "context"
+    "fmt"
+
+    "go.opentelemetry.io/otel"
+    "go.opentelemetry.io/otel/attribute"
+    "go.opentelemetry.io/otel/codes"
+)
+
+func ProcessOrder(ctx context.Context, orderID int) error {
+    tracer := otel.Tracer("order-service")
+    ctx, span := tracer.Start(ctx, "ProcessOrder")
+    defer span.End()
+
+    span.SetAttributes(attribute.Int("order.id", orderID))
+
+    // Вызов другого сервиса
+    user, err := getUserFromService(ctx, userID)
+    if err != nil {
+        // Записываем ошибку в span
+        span.RecordError(err)
+        span.SetStatus(codes.Error, "failed to get user")
+        return fmt.Errorf("get user: %w", err)
+    }
+
+    span.SetAttributes(attribute.String("user.email", user.Email))
+
+    // Success
+    span.SetStatus(codes.Ok, "")
+    return nil
+}
+</code></pre>
+</details>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part2-advanced/05_sync_primitives.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part2-advanced/07_testing_benchmarking.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part2-advanced/05_sync_primitives.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part2-advanced/07_testing_benchmarking.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

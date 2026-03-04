@@ -1,0 +1,1749 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Примитивы синхронизации - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-66c694bb.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-1a7de78a.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part2-advanced/05_sync_primitives.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="примитивы-синхронизации"><a class="header" href="#примитивы-синхронизации">Примитивы синхронизации</a></h1>
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<p>Go предоставляет богатый набор примитивов синхронизации в пакете <code>sync</code> для координации работы горутин. В этом разделе мы рассмотрим каждый примитив в сравнении с аналогами из C#.</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В Go философия синхронизации отличается от C#. Вместо “share memory by communicating” (как в .NET с lock и Interlocked), в Go предпочитают “communicate to share memory” через каналы. Но для низкоуровневой синхронизации примитивы <code>sync</code> незаменимы.</p>
+</blockquote>
+<p><strong>Когда использовать каналы, а когда sync примитивы?</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Сценарий</th><th>Решение</th><th>Почему</th></tr>
+</thead>
+<tbody>
+<tr><td>Передача данных между горутинами</td><td><strong>Каналы</strong></td><td>Естественный способ коммуникации</td></tr>
+<tr><td>Защита разделяемого состояния</td><td><strong>Mutex</strong></td><td>Простота и производительность</td></tr>
+<tr><td>Ожидание N горутин</td><td><strong>WaitGroup</strong> или <strong>errgroup</strong></td><td>Явное выражение намерения</td></tr>
+<tr><td>Инициализация singleton</td><td><strong>Once</strong></td><td>Гарантия однократности</td></tr>
+<tr><td>Атомарные счетчики</td><td><strong>atomic</strong></td><td>Максимальная производительность</td></tr>
+<tr><td>Редкая запись, частое чтение</td><td><strong>RWMutex</strong> или <strong>atomic.Value</strong></td><td>Оптимизация для читателей</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="mutex-взаимное-исключение"><a class="header" href="#mutex-взаимное-исключение">Mutex: взаимное исключение</a></h2>
+<h3 id="syncmutex-vs-c-lock"><a class="header" href="#syncmutex-vs-c-lock">sync.Mutex vs C# lock</a></h3>
+<p><code>sync.Mutex</code> — это базовый примитив взаимного исключения, аналог <code>lock</code> в C#.</p>
+<p><strong>C# (lock statement)</strong>:</p>
+<pre><code class="language-csharp">public class Counter
+{
+    private int _count;
+    private readonly object _lock = new object();
+
+    public void Increment()
+    {
+        lock (_lock)
+        {
+            _count++;
+        }
+    }
+
+    public int GetCount()
+    {
+        lock (_lock)
+        {
+            return _count;
+        }
+    }
+}
+</code></pre>
+<p><strong>Go (sync.Mutex)</strong>:</p>
+<pre><code class="language-go">type Counter struct {
+    mu    sync.Mutex
+    count int
+}
+
+func (c *Counter) Increment() {
+    c.mu.Lock()
+    c.count++
+    c.mu.Unlock()
+}
+
+func (c *Counter) GetCount() int {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+    return c.count
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: В Go <strong>нет автоматической разблокировки</strong> при выходе из области видимости (как <code>lock</code> в C#). Всегда используйте <code>defer</code> для гарантии разблокировки!</p>
+</blockquote>
+<p><strong>Идиоматичный паттерн</strong>:</p>
+<pre><code class="language-go">func (c *Counter) Increment() {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+
+    c.count++
+    // Даже если здесь будет panic, Unlock() выполнится
+}
+</code></pre>
+<h4 id="сравнительная-таблица-mutex-vs-lock"><a class="header" href="#сравнительная-таблица-mutex-vs-lock">Сравнительная таблица: Mutex vs lock</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# <code>lock</code></th><th>Go <code>sync.Mutex</code></th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Автоматическая разблокировка</strong></td><td>✅ Да (при выходе из блока)</td><td>❌ Нет (используй <code>defer</code>)</td></tr>
+<tr><td><strong>Рекурсивность</strong></td><td>❌ Нет (но есть <code>Monitor.Enter</code> с флагом)</td><td>❌ Нет (deadlock!)</td></tr>
+<tr><td><strong>Стоимость</strong></td><td>~20-50 нс (uncontended)</td><td>~10-20 нс (uncontended)</td></tr>
+<tr><td><strong>Вложенные блокировки</strong></td><td>Deadlock</td><td>Deadlock</td></tr>
+<tr><td><strong>Try-Lock</strong></td><td><code>Monitor.TryEnter</code></td><td>❌ Нет (но можно через канал)</td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="распространённые-ошибки"><a class="header" href="#распространённые-ошибки">Распространённые ошибки</a></h4>
+<p><strong>❌ Забыть defer</strong>:</p>
+<pre><code class="language-go">func (c *Counter) Increment() {
+    c.mu.Lock()
+    c.count++
+    c.mu.Unlock() // Если panic на строке выше — deadlock!
+}
+</code></pre>
+<p><strong>✅ Правильно</strong>:</p>
+<pre><code class="language-go">func (c *Counter) Increment() {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+
+    c.count++
+}
+</code></pre>
+<p><strong>❌ Копирование структуры с Mutex</strong>:</p>
+<pre><code class="language-go">func main() {
+    c1 := Counter{}
+    c2 := c1 // ❌ Копируется Mutex — undefined behavior!
+}
+</code></pre>
+<p><strong>✅ Правильно</strong>:</p>
+<pre><code class="language-go">func main() {
+    c1 := &amp;Counter{} // Используй указатели
+    c2 := c1
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: <code>go vet</code> предупредит о копировании Mutex. Всегда используйте указатели на структуры с примитивами синхронизации.</p>
+</blockquote>
+<hr>
+<h3 id="syncrwmutex-vs-readerwriterlockslim"><a class="header" href="#syncrwmutex-vs-readerwriterlockslim">sync.RWMutex vs ReaderWriterLockSlim</a></h3>
+<p><code>sync.RWMutex</code> — мьютекс для чтения-записи, позволяющий множественным читателям одновременный доступ.</p>
+<p><strong>C# (ReaderWriterLockSlim)</strong>:</p>
+<pre><code class="language-csharp">public class Cache
+{
+    private readonly Dictionary&lt;string, string&gt; _data = new();
+    private readonly ReaderWriterLockSlim _lock = new();
+
+    public string Get(string key)
+    {
+        _lock.EnterReadLock();
+        try
+        {
+            return _data.TryGetValue(key, out var value) ? value : null;
+        }
+        finally
+        {
+            _lock.ExitReadLock();
+        }
+    }
+
+    public void Set(string key, string value)
+    {
+        _lock.EnterWriteLock();
+        try
+        {
+            _data[key] = value;
+        }
+        finally
+        {
+            _lock.ExitWriteLock();
+        }
+    }
+}
+</code></pre>
+<p><strong>Go (sync.RWMutex)</strong>:</p>
+<pre><code class="language-go">type Cache struct {
+    mu   sync.RWMutex
+    data map[string]string
+}
+
+func NewCache() *Cache {
+    return &amp;Cache{
+        data: make(map[string]string),
+    }
+}
+
+func (c *Cache) Get(key string) (string, bool) {
+    c.mu.RLock()
+    defer c.mu.RUnlock()
+
+    val, ok := c.data[key]
+    return val, ok
+}
+
+func (c *Cache) Set(key, value string) {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+
+    c.data[key] = value
+}
+</code></pre>
+<h4 id="когда-использовать-rwmutex"><a class="header" href="#когда-использовать-rwmutex">Когда использовать RWMutex?</a></h4>
+<p><strong>✅ Используйте RWMutex</strong>:</p>
+<ul>
+<li>Чтение происходит <strong>значительно чаще</strong> записи (90%+ чтений)</li>
+<li>Критическая секция для чтения <strong>не мгновенна</strong> (&gt; 100 нс)</li>
+</ul>
+<p><strong>❌ Не используйте RWMutex</strong>:</p>
+<ul>
+<li>Запись такая же частая, как чтение</li>
+<li>Критическая секция очень короткая (&lt; 50 нс) — overhead RWMutex больше выигрыша</li>
+</ul>
+<p><strong>Benchmark</strong>:</p>
+<pre><code class="language-go">// BenchmarkMutex-8         50000000    25.3 ns/op
+// BenchmarkRWMutex-8       20000000    68.1 ns/op  (для записи)
+// BenchmarkRWMutexRead-8  100000000    12.5 ns/op  (для чтения без конкуренции)
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Если не уверены — начните с <code>sync.Mutex</code>. Переход на <code>RWMutex</code> — это оптимизация, которую нужно проверять бенчмарками.</p>
+</blockquote>
+<hr>
+<h3 id="deadlock-и-как-его-избежать"><a class="header" href="#deadlock-и-как-его-избежать">Deadlock и как его избежать</a></h3>
+<p><strong>Типичные причины deadlock</strong>:</p>
+<h4 id="1-рекурсивный-lock"><a class="header" href="#1-рекурсивный-lock">1. Рекурсивный lock</a></h4>
+<pre><code class="language-go">func (c *Counter) IncrementTwice() {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+
+    c.Increment() // ❌ Deadlock! Increment() тоже вызывает Lock()
+}
+</code></pre>
+<p><strong>Решение</strong>: выделить метод без блокировки:</p>
+<pre><code class="language-go">func (c *Counter) Increment() {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+    c.incrementUnsafe()
+}
+
+func (c *Counter) IncrementTwice() {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+    c.incrementUnsafe()
+    c.incrementUnsafe()
+}
+
+// incrementUnsafe предполагает, что блокировка уже захвачена
+func (c *Counter) incrementUnsafe() {
+    c.count++
+}
+</code></pre>
+<h4 id="2-circular-wait-циклическое-ожидание"><a class="header" href="#2-circular-wait-циклическое-ожидание">2. Circular wait (циклическое ожидание)</a></h4>
+<pre><code class="language-go">func Transfer(from, to *Account, amount int) {
+    from.mu.Lock()
+    defer from.mu.Unlock()
+
+    to.mu.Lock() // ❌ Если другая горутина делает Transfer(to, from, ...) — deadlock!
+    defer to.mu.Unlock()
+
+    from.balance -= amount
+    to.balance += amount
+}
+</code></pre>
+<p><strong>Решение</strong>: упорядочить захват блокировок:</p>
+<pre><code class="language-go">func Transfer(from, to *Account, amount int) {
+    // Всегда захватываем блокировки в порядке возрастания ID
+    if from.id &lt; to.id {
+        from.mu.Lock()
+        defer from.mu.Unlock()
+        to.mu.Lock()
+        defer to.mu.Unlock()
+    } else {
+        to.mu.Lock()
+        defer to.mu.Unlock()
+        from.mu.Lock()
+        defer from.mu.Unlock()
+    }
+
+    from.balance -= amount
+    to.balance += amount
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Используйте детектор deadlock из <code>-race</code> флага: <code>go run -race main.go</code></p>
+</blockquote>
+<hr>
+<h2 id="waitgroup-ожидание-завершения-горутин"><a class="header" href="#waitgroup-ожидание-завершения-горутин">WaitGroup: ожидание завершения горутин</a></h2>
+<p><code>sync.WaitGroup</code> ожидает завершения группы горутин. Аналог <code>CountdownEvent</code> или <code>Task.WhenAll</code> в C#.</p>
+<p><strong>C# (Task.WhenAll)</strong>:</p>
+<pre><code class="language-csharp">public async Task ProcessItemsAsync(List&lt;string&gt; items)
+{
+    var tasks = items.Select(item =&gt; Task.Run(() =&gt; ProcessItem(item)));
+    await Task.WhenAll(tasks);
+    Console.WriteLine("All items processed");
+}
+</code></pre>
+<p><strong>Go (sync.WaitGroup)</strong>:</p>
+<pre><code class="language-go">func ProcessItems(items []string) {
+    var wg sync.WaitGroup
+
+    for _, item := range items {
+        wg.Add(1) // Увеличиваем счётчик
+
+        go func(item string) {
+            defer wg.Done() // Уменьшаем счётчик при завершении
+            ProcessItem(item)
+        }(item)
+    }
+
+    wg.Wait() // Блокируемся до тех пор, пока счётчик не станет 0
+    fmt.Println("All items processed")
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: Передавайте переменную цикла как параметр в горутину! Иначе все горутины получат одно и то же значение (последнее).</p>
+</blockquote>
+<p><strong>❌ Распространённая ошибка</strong>:</p>
+<pre><code class="language-go">for _, item := range items {
+    wg.Add(1)
+    go func() {
+        defer wg.Done()
+        ProcessItem(item) // ❌ Замыкание захватывает переменную цикла!
+    }()
+}
+// Все горутины обработают последний item!
+</code></pre>
+<p><strong>✅ Правильно</strong>:</p>
+<pre><code class="language-go">for _, item := range items {
+    wg.Add(1)
+    go func(item string) { // Передаём item как параметр
+        defer wg.Done()
+        ProcessItem(item)
+    }(item)
+}
+</code></pre>
+<h3 id="waitgroup-vs-errgroup"><a class="header" href="#waitgroup-vs-errgroup">WaitGroup vs errgroup</a></h3>
+<p>Для обработки ошибок используйте <code>golang.org/x/sync/errgroup</code> вместо <code>WaitGroup</code>:</p>
+<p><strong>Базовый WaitGroup (ошибки игнорируются)</strong>:</p>
+<pre><code class="language-go">func DownloadFiles(urls []string) {
+    var wg sync.WaitGroup
+
+    for _, url := range urls {
+        wg.Add(1)
+        go func(url string) {
+            defer wg.Done()
+            if err := Download(url); err != nil {
+                // ❌ Как сообщить об ошибке?
+                log.Println(err)
+            }
+        }(url)
+    }
+
+    wg.Wait()
+}
+</code></pre>
+<p><strong>errgroup (с обработкой ошибок)</strong>:</p>
+<pre><code class="language-go">import "golang.org/x/sync/errgroup"
+
+func DownloadFiles(ctx context.Context, urls []string) error {
+    g, ctx := errgroup.WithContext(ctx)
+
+    for _, url := range urls {
+        url := url // Для Go &lt; 1.22
+        g.Go(func() error {
+            return Download(ctx, url) // Возвращаем ошибку
+        })
+    }
+
+    // Wait() вернёт первую ошибку (если была)
+    if err := g.Wait(); err != nil {
+        return fmt.Errorf("failed to download files: %w", err)
+    }
+
+    return nil
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Используйте <code>errgroup</code> вместо <code>WaitGroup</code>, если нужна обработка ошибок или cancellation.</p>
+</blockquote>
+<h3 id="waitgroupgo--новый-api-go-125"><a class="header" href="#waitgroupgo--новый-api-go-125">WaitGroup.Go() — новый API (Go 1.25)</a></h3>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Аналог <code>Task.WhenAll(tasks)</code> — запустить горутину и автоматически зарегистрировать её в группе.</p>
+</blockquote>
+<p>В Go 1.25 у <code>sync.WaitGroup</code> появился метод <code>Go(func())</code>, который объединяет <code>wg.Add(1)</code> + <code>go</code> + <code>wg.Done()</code> в одну операцию:</p>
+<p><strong>До Go 1.25 (многословно, легко забыть <code>Done</code>):</strong></p>
+<pre><code class="language-go">var wg sync.WaitGroup
+
+for _, url := range urls {
+    wg.Add(1)
+    go func(u string) {
+        defer wg.Done() // Легко забыть!
+        process(u)
+    }(url)
+}
+
+wg.Wait()
+</code></pre>
+<p><strong>Go 1.25+ с <code>WaitGroup.Go()</code> (идиоматично):</strong></p>
+<pre><code class="language-go">var wg sync.WaitGroup
+
+for _, url := range urls {
+    wg.Go(func() {            // Add(1) + go + Done() — всё в одном
+        process(url)
+    })
+}
+
+wg.Wait()
+</code></pre>
+<p><strong>Сравнение с C#:</strong></p>
+<pre><code class="language-csharp">// C# — Task.WhenAll
+var tasks = urls.Select(url =&gt; Task.Run(() =&gt; Process(url)));
+await Task.WhenAll(tasks);
+</code></pre>
+<pre><code class="language-go">// Go 1.25 — WaitGroup.Go
+var wg sync.WaitGroup
+for _, url := range urls {
+    wg.Go(func() { process(url) })
+}
+wg.Wait()
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: <code>WaitGroup.Go()</code> не поддерживает возврат ошибок. Для этого по-прежнему используйте <code>errgroup.Group.Go()</code>.</p>
+</blockquote>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Случай</th><th>Рекомендация</th></tr>
+</thead>
+<tbody>
+<tr><td>Запустить горутины, ждать завершения</td><td><code>wg.Go()</code> (Go 1.25+)</td></tr>
+<tr><td>Горутины возвращают ошибки</td><td><code>errgroup.Group.Go()</code></td></tr>
+<tr><td>Горутины + cancellation</td><td><code>errgroup.WithContext()</code></td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="once-однократное-выполнение"><a class="header" href="#once-однократное-выполнение">Once: однократное выполнение</a></h2>
+<p><code>sync.Once</code> гарантирует, что функция выполнится ровно <strong>один раз</strong>, даже при вызове из множества горутин. Аналог <code>Lazy&lt;T&gt;</code> в C#.</p>
+<p><strong>C# (Lazy<t>)</t></strong>:</p>
+<pre><code class="language-csharp">public class Config
+{
+    private static readonly Lazy&lt;Config&gt; _instance =
+        new Lazy&lt;Config&gt;(() =&gt; LoadConfig());
+
+    public static Config Instance =&gt; _instance.Value;
+
+    private static Config LoadConfig()
+    {
+        // Дорогая операция загрузки
+        Thread.Sleep(1000);
+        return new Config();
+    }
+}
+</code></pre>
+<p><strong>Go (sync.Once)</strong>:</p>
+<pre><code class="language-go">type Config struct {
+    // поля конфигурации
+}
+
+var (
+    instance *Config
+    once     sync.Once
+)
+
+func GetConfig() *Config {
+    once.Do(func() {
+        // Выполнится только один раз
+        instance = loadConfig()
+    })
+    return instance
+}
+
+func loadConfig() *Config {
+    // Дорогая операция загрузки
+    time.Sleep(1 * time.Second)
+    return &amp;Config{}
+}
+</code></pre>
+<h3 id="практическое-применение"><a class="header" href="#практическое-применение">Практическое применение</a></h3>
+<h4 id="1-инициализация-singleton"><a class="header" href="#1-инициализация-singleton">1. Инициализация singleton</a></h4>
+<pre><code class="language-go">type Database struct {
+    conn *sql.DB
+}
+
+var (
+    db   *Database
+    once sync.Once
+)
+
+func GetDB() *Database {
+    once.Do(func() {
+        conn, err := sql.Open("postgres", "connection_string")
+        if err != nil {
+            panic(err) // В production лучше вернуть ошибку
+        }
+        db = &amp;Database{conn: conn}
+    })
+    return db
+}
+</code></pre>
+<h4 id="2-ленивая-инициализация-с-ошибками"><a class="header" href="#2-ленивая-инициализация-с-ошибками">2. Ленивая инициализация с ошибками</a></h4>
+<pre><code class="language-go">type Service struct {
+    client *http.Client
+    once   sync.Once
+    initErr error
+}
+
+func (s *Service) init() {
+    s.once.Do(func() {
+        // Дорогая инициализация
+        s.client, s.initErr = createHTTPClient()
+    })
+}
+
+func (s *Service) MakeRequest(url string) error {
+    s.init()
+    if s.initErr != nil {
+        return s.initErr
+    }
+
+    // Используем s.client
+    return nil
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: <code>sync.Once</code> удобен для ленивой инициализации, но для singleton паттерна часто достаточно <code>init()</code> функции.</p>
+</blockquote>
+<hr>
+<h2 id="cond-условные-переменные"><a class="header" href="#cond-условные-переменные">Cond: условные переменные</a></h2>
+<p><code>sync.Cond</code> — это условная переменная, позволяющая горутинам ждать или сигнализировать об изменении состояния. Аналог <code>Monitor.Wait/Pulse</code> в C#.</p>
+<blockquote>
+<p>⚠️ <strong>Внимание</strong>: <code>sync.Cond</code> — это низкоуровневый примитив. В большинстве случаев лучше использовать <strong>каналы</strong>.</p>
+</blockquote>
+<p><strong>C# (Monitor.Wait/Pulse)</strong>:</p>
+<pre><code class="language-csharp">public class Queue&lt;T&gt;
+{
+    private readonly object _lock = new object();
+    private readonly System.Collections.Generic.Queue&lt;T&gt; _queue = new();
+
+    public void Enqueue(T item)
+    {
+        lock (_lock)
+        {
+            _queue.Enqueue(item);
+            Monitor.Pulse(_lock); // Разбудить одного ожидающего
+        }
+    }
+
+    public T Dequeue()
+    {
+        lock (_lock)
+        {
+            while (_queue.Count == 0)
+            {
+                Monitor.Wait(_lock); // Ждём, пока не появятся данные
+            }
+            return _queue.Dequeue();
+        }
+    }
+}
+</code></pre>
+<p><strong>Go (sync.Cond) — не идиоматично</strong>:</p>
+<pre><code class="language-go">type Queue struct {
+    mu    sync.Mutex
+    cond  *sync.Cond
+    items []interface{}
+}
+
+func NewQueue() *Queue {
+    q := &amp;Queue{}
+    q.cond = sync.NewCond(&amp;q.mu)
+    return q
+}
+
+func (q *Queue) Enqueue(item interface{}) {
+    q.mu.Lock()
+    defer q.mu.Unlock()
+
+    q.items = append(q.items, item)
+    q.cond.Signal() // Разбудить одну горутину
+}
+
+func (q *Queue) Dequeue() interface{} {
+    q.mu.Lock()
+    defer q.mu.Unlock()
+
+    for len(q.items) == 0 {
+        q.cond.Wait() // Ждём, пока не появятся данные
+    }
+
+    item := q.items[0]
+    q.items = q.items[1:]
+    return item
+}
+</code></pre>
+<p><strong>Go (каналы) — идиоматично</strong> ✅:</p>
+<pre><code class="language-go">type Queue struct {
+    ch chan interface{}
+}
+
+func NewQueue(size int) *Queue {
+    return &amp;Queue{
+        ch: make(chan interface{}, size),
+    }
+}
+
+func (q *Queue) Enqueue(item interface{}) {
+    q.ch &lt;- item // Блокируется, если буфер полон
+}
+
+func (q *Queue) Dequeue() interface{} {
+    return &lt;-q.ch // Блокируется, если канал пуст
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: В 99% случаев используйте <strong>каналы</strong> вместо <code>sync.Cond</code>. Каналы проще, безопаснее и более идиоматичны.</p>
+</blockquote>
+<p><strong>Когда использовать Cond</strong>:</p>
+<ul>
+<li>Нужно разбудить <strong>все</strong> ожидающие горутины (<code>Broadcast()</code>)</li>
+<li>Сложная логика ожидания с несколькими условиями</li>
+<li>Миграция legacy кода с Monitor.Wait/Pulse</li>
+</ul>
+<hr>
+<h2 id="atomic-операции"><a class="header" href="#atomic-операции">Atomic операции</a></h2>
+<p>Пакет <code>sync/atomic</code> предоставляет атомарные операции для базовых типов. Аналог <code>Interlocked</code> в C#.</p>
+<p><strong>C# (Interlocked)</strong>:</p>
+<pre><code class="language-csharp">public class Metrics
+{
+    private long _requestCount;
+    private long _errorCount;
+
+    public void IncrementRequests()
+    {
+        Interlocked.Increment(ref _requestCount);
+    }
+
+    public void IncrementErrors()
+    {
+        Interlocked.Increment(ref _errorCount);
+    }
+
+    public (long requests, long errors) GetCounts()
+    {
+        return (
+            Interlocked.Read(ref _requestCount),
+            Interlocked.Read(ref _errorCount)
+        );
+    }
+}
+</code></pre>
+<p><strong>Go (sync/atomic) — старый API</strong>:</p>
+<pre><code class="language-go">type Metrics struct {
+    requestCount int64
+    errorCount   int64
+}
+
+func (m *Metrics) IncrementRequests() {
+    atomic.AddInt64(&amp;m.requestCount, 1)
+}
+
+func (m *Metrics) IncrementErrors() {
+    atomic.AddInt64(&amp;m.errorCount, 1)
+}
+
+func (m *Metrics) GetCounts() (requests, errors int64) {
+    return atomic.LoadInt64(&amp;m.requestCount),
+           atomic.LoadInt64(&amp;m.errorCount)
+}
+</code></pre>
+<p><strong>Go 1.19+ (atomic.Int64) — новый type-safe API</strong> ✅:</p>
+<pre><code class="language-go">type Metrics struct {
+    requestCount atomic.Int64
+    errorCount   atomic.Int64
+}
+
+func (m *Metrics) IncrementRequests() {
+    m.requestCount.Add(1)
+}
+
+func (m *Metrics) IncrementErrors() {
+    m.errorCount.Add(1)
+}
+
+func (m *Metrics) GetCounts() (requests, errors int64) {
+    return m.requestCount.Load(), m.errorCount.Load()
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: В Go 1.19+ используйте типизированные <code>atomic.Int64</code>, <code>atomic.Uint64</code> и т.д. вместо старого API с указателями.</p>
+</blockquote>
+<h3 id="поддерживаемые-типы"><a class="header" href="#поддерживаемые-типы">Поддерживаемые типы</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Go 1.19+</th><th>Старый API</th><th>Описание</th></tr>
+</thead>
+<tbody>
+<tr><td><code>atomic.Int32</code></td><td><code>atomic.AddInt32(&amp;v, delta)</code></td><td>32-bit signed integer</td></tr>
+<tr><td><code>atomic.Int64</code></td><td><code>atomic.AddInt64(&amp;v, delta)</code></td><td>64-bit signed integer</td></tr>
+<tr><td><code>atomic.Uint32</code></td><td><code>atomic.AddUint32(&amp;v, delta)</code></td><td>32-bit unsigned integer</td></tr>
+<tr><td><code>atomic.Uint64</code></td><td><code>atomic.AddUint64(&amp;v, delta)</code></td><td>64-bit unsigned integer</td></tr>
+<tr><td><code>atomic.Uintptr</code></td><td><code>atomic.AddUintptr(&amp;v, delta)</code></td><td>Pointer-sized unsigned integer</td></tr>
+<tr><td><code>atomic.Pointer[T]</code></td><td><code>atomic.LoadPointer/StorePointer</code></td><td>Type-safe указатель</td></tr>
+<tr><td><code>atomic.Value</code></td><td><code>atomic.Value{}</code></td><td>Любой тип (через interface{})</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="atomicvalue-хранение-произвольных-типов"><a class="header" href="#atomicvalue-хранение-произвольных-типов">atomic.Value: хранение произвольных типов</a></h3>
+<p><code>atomic.Value</code> позволяет атомарно читать/записывать значения <strong>любого типа</strong>.</p>
+<p><strong>Пример: атомарная замена конфигурации</strong>:</p>
+<pre><code class="language-go">type Config struct {
+    Timeout time.Duration
+    MaxConn int
+}
+
+var config atomic.Value
+
+func init() {
+    config.Store(&amp;Config{
+        Timeout: 30 * time.Second,
+        MaxConn: 100,
+    })
+}
+
+// Чтение конфигурации (из любой горутины)
+func GetConfig() *Config {
+    return config.Load().(*Config)
+}
+
+// Обновление конфигурации (атомарно)
+func UpdateConfig(newConfig *Config) {
+    config.Store(newConfig)
+}
+
+// Использование
+func MakeRequest() {
+    cfg := GetConfig()
+    client := &amp;http.Client{
+        Timeout: cfg.Timeout,
+    }
+    // ...
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: Тип значения в <code>atomic.Value</code> должен быть <strong>одинаковым</strong> для всех <code>Store()</code>. Иначе — panic!</p>
+</blockquote>
+<p><strong>❌ Ошибка</strong>:</p>
+<pre><code class="language-go">var v atomic.Value
+v.Store("string")
+v.Store(123) // panic: sync/atomic: store of inconsistently typed value into Value
+</code></pre>
+<h3 id="mutex-vs-atomic-что-выбрать"><a class="header" href="#mutex-vs-atomic-что-выбрать">Mutex vs Atomic: что выбрать?</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Сценарий</th><th>Решение</th><th>Почему</th></tr>
+</thead>
+<tbody>
+<tr><td>Простой счётчик</td><td><code>atomic.Int64</code></td><td>В ~10x быстрее Mutex</td></tr>
+<tr><td>Несколько связанных полей</td><td><code>Mutex</code></td><td>Атомарность группы операций</td></tr>
+<tr><td>Чтение конфигурации</td><td><code>atomic.Value</code></td><td>Нет аллокаций, lock-free чтение</td></tr>
+<tr><td>Сложная логика</td><td><code>Mutex</code></td><td>Простота и читаемость</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Benchmark</strong>:</p>
+<pre><code class="language-go">// BenchmarkMutex-8         50000000    25.3 ns/op
+// BenchmarkAtomic-8       500000000     3.2 ns/op
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Используйте <code>atomic</code> для простых операций (счётчики, флаги). Для всего остального — <code>Mutex</code>.</p>
+</blockquote>
+<hr>
+<h2 id="syncmap-потокобезопасная-карта"><a class="header" href="#syncmap-потокобезопасная-карта">sync.Map: потокобезопасная карта</a></h2>
+<p><code>sync.Map</code> — это потокобезопасная карта, оптимизированная для сценариев с редкими записями и частыми чтениями. Аналог <code>ConcurrentDictionary&lt;K,V&gt;</code> в C#.</p>
+<p><strong>C# (ConcurrentDictionary)</strong>:</p>
+<pre><code class="language-csharp">var cache = new ConcurrentDictionary&lt;string, string&gt;();
+
+// Запись
+cache.TryAdd("key1", "value1");
+cache["key2"] = "value2"; // Или перезапись
+
+// Чтение
+if (cache.TryGetValue("key1", out var value))
+{
+    Console.WriteLine(value);
+}
+
+// Удаление
+cache.TryRemove("key1", out _);
+</code></pre>
+<p><strong>Go (sync.Map)</strong>:</p>
+<pre><code class="language-go">var cache sync.Map
+
+// Запись
+cache.Store("key1", "value1")
+cache.Store("key2", "value2")
+
+// Чтение
+if val, ok := cache.Load("key1"); ok {
+    fmt.Println(val.(string)) // Требуется type assertion
+}
+
+// Удаление
+cache.Delete("key1")
+
+// Load или Store (аналог GetOrAdd)
+actual, loaded := cache.LoadOrStore("key3", "value3")
+if loaded {
+    fmt.Println("Уже существует:", actual)
+} else {
+    fmt.Println("Создали новое значение")
+}
+</code></pre>
+<h3 id="когда-использовать-syncmap"><a class="header" href="#когда-использовать-syncmap">Когда использовать sync.Map?</a></h3>
+<p><strong>✅ Используйте sync.Map</strong>:</p>
+<ul>
+<li><strong>(1) Ключи записываются один раз и потом только читаются</strong> (write-once, read-many)</li>
+<li><strong>(2) Множество горутин читает/записывает разные ключи</strong> (low contention)</li>
+</ul>
+<p><strong>❌ Не используйте sync.Map</strong>:</p>
+<ul>
+<li>Частые обновления одних и тех же ключей</li>
+<li>Нужна типобезопасность (sync.Map использует <code>interface{}</code>)</li>
+<li>Нужны методы вроде <code>Len()</code> или итерация</li>
+</ul>
+<p><strong>Альтернативы</strong>:</p>
+<pre><code class="language-go">// Вариант 1: map + RWMutex (типобезопасно, более гибко)
+type SafeMap struct {
+    mu   sync.RWMutex
+    data map[string]string
+}
+
+func (m *SafeMap) Get(key string) (string, bool) {
+    m.mu.RLock()
+    defer m.mu.RUnlock()
+    val, ok := m.data[key]
+    return val, ok
+}
+
+func (m *SafeMap) Set(key, value string) {
+    m.mu.Lock()
+    defer m.mu.Unlock()
+    m.data[key] = value
+}
+
+// Вариант 2: Sharded map (для высокой конкуренции)
+type ShardedMap struct {
+    shards [16]*shard // 16 шардов
+}
+
+type shard struct {
+    mu   sync.RWMutex
+    data map[string]string
+}
+
+func (m *ShardedMap) getShard(key string) *shard {
+    hash := fnv.New32()
+    hash.Write([]byte(key))
+    return m.shards[hash.Sum32()%16]
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: В большинстве случаев <code>map + RWMutex</code> проще и эффективнее <code>sync.Map</code>. Используйте <code>sync.Map</code> только для write-once сценариев.</p>
+</blockquote>
+<h3 id="syncmap-и-swiss-tables-go-124"><a class="header" href="#syncmap-и-swiss-tables-go-124">sync.Map и Swiss Tables (Go 1.24)</a></h3>
+<p>В Go 1.24 внутренняя реализация <code>sync.Map</code> переписана с использованием <strong>Swiss Tables</strong> — алгоритма хэш-таблицы от Google, который также применяется во встроенных <code>map</code> (Go 1.24). Это <strong>прозрачное улучшение</strong>: никаких изменений в API, только прирост производительности.</p>
+<p><strong>Что изменилось внутри:</strong></p>
+<ul>
+<li>Лучшая cache-locality за счёт группировки ключей в «buckets» по 8 записей</li>
+<li>SIMD-оптимизации на современных CPU (Ice Lake, AMD Zen 4+)</li>
+<li>Меньше промахов кэша при lookup</li>
+</ul>
+<p><strong>Для вас это значит:</strong></p>
+<pre><code class="language-go">// API не изменился — код работает быстрее «бесплатно»
+var cache sync.Map
+
+cache.Store("key", "value")
+val, ok := cache.Load("key")
+_ = val
+_ = ok
+</code></pre>
+<blockquote>
+<p>💡 <strong>Контекст</strong>: Swiss Tables (Go 1.24) дают ~2-3% ускорения CPU на map-тяжёлых workload-ах. Встроенные <code>map</code> получили то же улучшение. Подробнее — в разделе <a href="./03_gc.html">2.3 Сборка мусора</a>.</p>
+</blockquote>
+<hr>
+<h2 id="выбор-правильного-примитива"><a class="header" href="#выбор-правильного-примитива">Выбор правильного примитива</a></h2>
+<p><strong>Блок-схема выбора</strong>:</p>
+<pre><code>Нужна синхронизация?
+│
+├─ Передача данных → Каналы
+│
+├─ Простой счётчик → atomic.Int64
+│
+├─ Ожидание N горутин → WaitGroup (или errgroup)
+│
+├─ Singleton инициализация → sync.Once
+│
+├─ Защита разделяемого состояния
+│  │
+│  ├─ Одно поле (int/bool) → atomic
+│  │
+│  ├─ Несколько связанных полей → Mutex
+│  │
+│  ├─ Редкая запись, частое чтение → RWMutex или atomic.Value
+│  │
+│  └─ Конкурентная карта
+│     │
+│     ├─ Write-once, read-many → sync.Map
+│     │
+│     ├─ Высокая конкуренция → Sharded map
+│     │
+│     └─ Остальное → map + RWMutex
+│
+└─ Сложное ожидание условия → Каналы (или редко sync.Cond)
+</code></pre>
+<hr>
+<h2 id="практические-примеры"><a class="header" href="#практические-примеры">Практические примеры</a></h2>
+<h3 id="пример-1-rate-limiter-ограничение-частоты-запросов"><a class="header" href="#пример-1-rate-limiter-ограничение-частоты-запросов">Пример 1: Rate Limiter (ограничение частоты запросов)</a></h3>
+<p><strong>Задача</strong>: Ограничить количество одновременных HTTP запросов до 10.</p>
+<p><strong>C# решение</strong>:</p>
+<pre><code class="language-csharp">public class RateLimiter
+{
+    private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(10);
+
+    public async Task&lt;T&gt; ExecuteAsync&lt;T&gt;(Func&lt;Task&lt;T&gt;&gt; action)
+    {
+        await _semaphore.WaitAsync();
+        try
+        {
+            return await action();
+        }
+        finally
+        {
+            _semaphore.Release();
+        }
+    }
+}
+
+// Использование
+var limiter = new RateLimiter();
+var tasks = urls.Select(url =&gt;
+    limiter.ExecuteAsync(() =&gt; httpClient.GetStringAsync(url))
+);
+await Task.WhenAll(tasks);
+</code></pre>
+<p><strong>Go решение (буферизированный канал как семафор)</strong>:</p>
+<pre><code class="language-go">func RateLimitedFetch(urls []string, maxConcurrent int) []string {
+    // Буферизированный канал как семафор
+    semaphore := make(chan struct{}, maxConcurrent)
+
+    results := make([]string, len(urls))
+    var wg sync.WaitGroup
+
+    for i, url := range urls {
+        wg.Add(1)
+        go func(i int, url string) {
+            defer wg.Done()
+
+            // Захватываем слот
+            semaphore &lt;- struct{}{}
+            defer func() { &lt;-semaphore }() // Освобождаем
+
+            // Выполняем запрос
+            resp, err := http.Get(url)
+            if err != nil {
+                results[i] = fmt.Sprintf("Error: %v", err)
+                return
+            }
+            defer resp.Body.Close()
+
+            body, _ := io.ReadAll(resp.Body)
+            results[i] = string(body)
+        }(i, url)
+    }
+
+    wg.Wait()
+    return results
+}
+</code></pre>
+<p><strong>Go решение (с errgroup и context)</strong>:</p>
+<pre><code class="language-go">import "golang.org/x/sync/semaphore"
+
+func RateLimitedFetch(ctx context.Context, urls []string, maxConcurrent int) ([]string, error) {
+    sem := semaphore.NewWeighted(int64(maxConcurrent))
+    g, ctx := errgroup.WithContext(ctx)
+
+    results := make([]string, len(urls))
+
+    for i, url := range urls {
+        i, url := i, url // Для Go &lt; 1.22
+
+        g.Go(func() error {
+            // Захватываем семафор с учётом cancellation
+            if err := sem.Acquire(ctx, 1); err != nil {
+                return err
+            }
+            defer sem.Release(1)
+
+            req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
+            resp, err := http.DefaultClient.Do(req)
+            if err != nil {
+                return err
+            }
+            defer resp.Body.Close()
+
+            body, err := io.ReadAll(resp.Body)
+            if err != nil {
+                return err
+            }
+
+            results[i] = string(body)
+            return nil
+        })
+    }
+
+    if err := g.Wait(); err != nil {
+        return nil, err
+    }
+
+    return results, nil
+}
+</code></pre>
+<hr>
+<h3 id="пример-2-метрики-с-low-contention"><a class="header" href="#пример-2-метрики-с-low-contention">Пример 2: Метрики с low contention</a></h3>
+<p><strong>Задача</strong>: Собирать метрики HTTP сервера (RPS, latency) с минимальными потерями производительности.</p>
+<p><strong>Наивное решение (высокая конкуренция)</strong>:</p>
+<pre><code class="language-go">type Metrics struct {
+    mu            sync.Mutex
+    requestCount  int64
+    totalDuration time.Duration
+}
+
+func (m *Metrics) Record(duration time.Duration) {
+    m.mu.Lock()
+    m.requestCount++
+    m.totalDuration += duration
+    m.mu.Unlock()
+}
+
+// Проблема: каждый запрос конкурирует за один мьютекс
+</code></pre>
+<p><strong>Оптимизированное решение (atomic + sharding)</strong>:</p>
+<pre><code class="language-go">type Metrics struct {
+    requestCount atomic.Int64
+
+    // Sharded счётчики для latency (чтобы избежать конкуренции)
+    shards [16]shard
+}
+
+type shard struct {
+    _            [64]byte // Padding для избежания false sharing
+    totalNanos   atomic.Int64
+}
+
+func (m *Metrics) Record(duration time.Duration) {
+    m.requestCount.Add(1)
+
+    // Распределяем latency по шардам (на основе goroutine ID)
+    shardIdx := runtime_fastrand() % 16
+    m.shards[shardIdx].totalNanos.Add(duration.Nanoseconds())
+}
+
+func (m *Metrics) GetStats() (count int64, avgLatency time.Duration) {
+    count = m.requestCount.Load()
+
+    var totalNanos int64
+    for i := range m.shards {
+        totalNanos += m.shards[i].totalNanos.Load()
+    }
+
+    if count &gt; 0 {
+        avgLatency = time.Duration(totalNanos / count)
+    }
+    return
+}
+
+// runtime_fastrand — недокументированная функция для быстрого rand
+//go:linkname runtime_fastrand runtime.fastrand
+func runtime_fastrand() uint32
+</code></pre>
+<blockquote>
+<p>💡 <strong>Производительность</strong>: Sharding снижает конкуренцию, а padding (<code>[64]byte</code>) предотвращает false sharing на CPU cache line.</p>
+</blockquote>
+<hr>
+<h3 id="пример-3-connection-pool"><a class="header" href="#пример-3-connection-pool">Пример 3: Connection Pool</a></h3>
+<p><strong>Задача</strong>: Реализовать пул соединений к базе данных.</p>
+<p><strong>Go решение (каналы + sync.Once)</strong>:</p>
+<pre><code class="language-go">type ConnPool struct {
+    conns     chan *sql.DB
+    factory   func() (*sql.DB, error)
+    initOnce  sync.Once
+    closeOnce sync.Once
+}
+
+func NewConnPool(size int, factory func() (*sql.DB, error)) *ConnPool {
+    return &amp;ConnPool{
+        conns:   make(chan *sql.DB, size),
+        factory: factory,
+    }
+}
+
+func (p *ConnPool) init() error {
+    var initErr error
+    p.initOnce.Do(func() {
+        // Создаём соединения лениво
+        for i := 0; i &lt; cap(p.conns); i++ {
+            conn, err := p.factory()
+            if err != nil {
+                initErr = err
+                return
+            }
+            p.conns &lt;- conn
+        }
+    })
+    return initErr
+}
+
+func (p *ConnPool) Get(ctx context.Context) (*sql.DB, error) {
+    if err := p.init(); err != nil {
+        return nil, err
+    }
+
+    select {
+    case conn := &lt;-p.conns:
+        return conn, nil
+    case &lt;-ctx.Done():
+        return nil, ctx.Err()
+    }
+}
+
+func (p *ConnPool) Put(conn *sql.DB) {
+    select {
+    case p.conns &lt;- conn:
+    default:
+        // Пул переполнен (не должно случиться)
+        conn.Close()
+    }
+}
+
+func (p *ConnPool) Close() error {
+    var firstErr error
+    p.closeOnce.Do(func() {
+        close(p.conns)
+        for conn := range p.conns {
+            if err := conn.Close(); err != nil &amp;&amp; firstErr == nil {
+                firstErr = err
+            }
+        }
+    })
+    return firstErr
+}
+
+// Использование
+func main() {
+    pool := NewConnPool(10, func() (*sql.DB, error) {
+        return sql.Open("postgres", "connection_string")
+    })
+    defer pool.Close()
+
+    ctx := context.Background()
+    conn, err := pool.Get(ctx)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer pool.Put(conn)
+
+    // Используем соединение
+    rows, err := conn.QueryContext(ctx, "SELECT * FROM users")
+    // ...
+}
+</code></pre>
+<hr>
+<h2 id="golangorgxsync-расширенные-примитивы"><a class="header" href="#golangorgxsync-расширенные-примитивы">golang.org/x/sync: расширенные примитивы</a></h2>
+<p>Пакет <code>golang.org/x/sync</code> предоставляет дополнительные примитивы синхронизации, не вошедшие в стандартную библиотеку.</p>
+<h3 id="errgroup-waitgroup-с-обработкой-ошибок"><a class="header" href="#errgroup-waitgroup-с-обработкой-ошибок">errgroup: WaitGroup с обработкой ошибок</a></h3>
+<p>Мы уже видели <code>errgroup</code> в примерах выше. Это расширение <code>WaitGroup</code> с поддержкой ошибок и cancellation.</p>
+<p><strong>Установка</strong>:</p>
+<pre><code class="language-bash">go get golang.org/x/sync/errgroup
+</code></pre>
+<p><strong>Основные возможности</strong>:</p>
+<pre><code class="language-go">import "golang.org/x/sync/errgroup"
+
+// 1. Базовое использование
+func ProcessFiles(files []string) error {
+    g := new(errgroup.Group)
+
+    for _, file := range files {
+        file := file // Для Go &lt; 1.22
+        g.Go(func() error {
+            return processFile(file)
+        })
+    }
+
+    // Wait() вернёт первую ошибку (если была)
+    return g.Wait()
+}
+
+// 2. С контекстом и cancellation
+func DownloadWithTimeout(ctx context.Context, urls []string) error {
+    g, ctx := errgroup.WithContext(ctx)
+
+    for _, url := range urls {
+        url := url
+        g.Go(func() error {
+            // Если одна горутина вернёт ошибку, ctx будет отменён
+            return download(ctx, url)
+        })
+    }
+
+    return g.Wait()
+}
+
+// 3. Ограничение конкурентности с SetLimit (Go 1.20+)
+func ProcessWithLimit(items []string) error {
+    g := new(errgroup.Group)
+    g.SetLimit(10) // Максимум 10 горутин одновременно
+
+    for _, item := range items {
+        item := item
+        g.Go(func() error {
+            return processItem(item)
+        })
+    }
+
+    return g.Wait()
+}
+</code></pre>
+<p><strong>Сравнение с C#</strong>:</p>
+<pre><code class="language-csharp">// C# (Task.WhenAll с обработкой ошибок)
+public async Task ProcessFilesAsync(List&lt;string&gt; files)
+{
+    var tasks = files.Select(file =&gt; ProcessFileAsync(file));
+
+    try
+    {
+        await Task.WhenAll(tasks);
+    }
+    catch (Exception ex)
+    {
+        // Только первое исключение (как в errgroup)
+        throw;
+    }
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Используйте <code>errgroup</code> вместо <code>WaitGroup</code>, если нужна обработка ошибок или автоматический cancellation.</p>
+</blockquote>
+<hr>
+<h3 id="semaphore-взвешенный-семафор"><a class="header" href="#semaphore-взвешенный-семафор">semaphore: взвешенный семафор</a></h3>
+<p><code>semaphore.Weighted</code> — это семафор с поддержкой весов (можно захватывать N слотов за раз).</p>
+<p><strong>Установка</strong>:</p>
+<pre><code class="language-bash">go get golang.org/x/sync/semaphore
+</code></pre>
+<p><strong>Использование</strong>:</p>
+<pre><code class="language-go">import "golang.org/x/sync/semaphore"
+
+func RateLimitedDownload(ctx context.Context, urls []string, maxConcurrent int64) error {
+    sem := semaphore.NewWeighted(maxConcurrent)
+    g, ctx := errgroup.WithContext(ctx)
+
+    for _, url := range urls {
+        url := url
+        g.Go(func() error {
+            // Захватываем 1 слот (блокируемся, если достигнут лимит)
+            if err := sem.Acquire(ctx, 1); err != nil {
+                return err
+            }
+            defer sem.Release(1)
+
+            return download(ctx, url)
+        })
+    }
+
+    return g.Wait()
+}
+
+// Пример с весами: тяжёлые файлы занимают больше слотов
+func DownloadWithWeights(ctx context.Context, files []FileInfo, maxWeight int64) error {
+    sem := semaphore.NewWeighted(maxWeight)
+    g, ctx := errgroup.WithContext(ctx)
+
+    for _, file := range files {
+        file := file
+        g.Go(func() error {
+            weight := file.Size / (1024 * 1024) // MB
+            if weight &lt; 1 {
+                weight = 1
+            }
+
+            if err := sem.Acquire(ctx, weight); err != nil {
+                return err
+            }
+            defer sem.Release(weight)
+
+            return downloadFile(ctx, file)
+        })
+    }
+
+    return g.Wait()
+}
+</code></pre>
+<p><strong>Сравнение с C#</strong>:</p>
+<pre><code class="language-csharp">// C# (SemaphoreSlim)
+var semaphore = new SemaphoreSlim(10);
+
+foreach (var url in urls)
+{
+    await semaphore.WaitAsync();
+    _ = Task.Run(async () =&gt;
+    {
+        try
+        {
+            await DownloadAsync(url);
+        }
+        finally
+        {
+            semaphore.Release();
+        }
+    });
+}
+</code></pre>
+<p><strong>Альтернатива: буферизированный канал</strong> (более идиоматично для Go):</p>
+<pre><code class="language-go">func RateLimitedDownload(urls []string, maxConcurrent int) {
+    sem := make(chan struct{}, maxConcurrent)
+
+    for _, url := range urls {
+        sem &lt;- struct{}{} // Захватываем слот
+        go func(url string) {
+            defer func() { &lt;-sem }() // Освобождаем
+            download(url)
+        }(url)
+    }
+
+    // Ждём, пока все завершатся
+    for i := 0; i &lt; cap(sem); i++ {
+        sem &lt;- struct{}{}
+    }
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Для простых сценариев используйте <strong>буферизированный канал</strong> как семафор. <code>semaphore.Weighted</code> нужен только для взвешенных слотов или интеграции с <code>context</code>.</p>
+</blockquote>
+<hr>
+<h3 id="singleflight-дедупликация-вызовов"><a class="header" href="#singleflight-дедупликация-вызовов">singleflight: дедупликация вызовов</a></h3>
+<p><code>singleflight.Group</code> устраняет дублирование одновременных вызовов одной и той же функции. Полезно для кэширования.</p>
+<p><strong>Установка</strong>:</p>
+<pre><code class="language-bash">go get golang.org/x/sync/singleflight
+</code></pre>
+<p><strong>Проблема</strong>:</p>
+<pre><code class="language-go">// ❌ БЕЗ singleflight: 1000 одновременных запросов = 1000 вызовов БД
+func (c *Cache) GetUser(id int) (*User, error) {
+    if user := c.get(id); user != nil {
+        return user, nil
+    }
+
+    // Если кэш пуст, все горутины пойдут в БД!
+    user, err := db.Query("SELECT * FROM users WHERE id = ?", id)
+    if err != nil {
+        return nil, err
+    }
+
+    c.set(id, user)
+    return user, nil
+}
+</code></pre>
+<p><strong>Решение с singleflight</strong>:</p>
+<pre><code class="language-go">import "golang.org/x/sync/singleflight"
+
+type Cache struct {
+    mu    sync.RWMutex
+    data  map[int]*User
+    group singleflight.Group
+}
+
+func (c *Cache) GetUser(id int) (*User, error) {
+    // Проверяем кэш
+    c.mu.RLock()
+    if user := c.data[id]; user != nil {
+        c.mu.RUnlock()
+        return user, nil
+    }
+    c.mu.RUnlock()
+
+    // Дедупликация: только ОДНА горутина выполнит запрос в БД
+    key := fmt.Sprintf("user:%d", id)
+    v, err, shared := c.group.Do(key, func() (interface{}, error) {
+        user, err := db.Query("SELECT * FROM users WHERE id = ?", id)
+        if err != nil {
+            return nil, err
+        }
+
+        // Сохраняем в кэш
+        c.mu.Lock()
+        c.data[id] = user
+        c.mu.Unlock()
+
+        return user, nil
+    })
+
+    if err != nil {
+        return nil, err
+    }
+
+    // shared == true, если результат получен от другой горутины
+    return v.(*User), nil
+}
+</code></pre>
+<p><strong>Пример: защита от cache stampede</strong>:</p>
+<pre><code class="language-go">type APICache struct {
+    mu    sync.RWMutex
+    cache map[string][]byte
+    group singleflight.Group
+    ttl   time.Duration
+}
+
+func (c *APICache) Get(ctx context.Context, url string) ([]byte, error) {
+    // Проверяем кэш
+    c.mu.RLock()
+    if data, ok := c.cache[url]; ok {
+        c.mu.RUnlock()
+        return data, nil
+    }
+    c.mu.RUnlock()
+
+    // Дедупликация запросов
+    v, err, _ := c.group.Do(url, func() (interface{}, error) {
+        // Только одна горутина выполнит HTTP запрос
+        resp, err := http.Get(url)
+        if err != nil {
+            return nil, err
+        }
+        defer resp.Body.Close()
+
+        data, err := io.ReadAll(resp.Body)
+        if err != nil {
+            return nil, err
+        }
+
+        // Кэшируем
+        c.mu.Lock()
+        c.cache[url] = data
+        c.mu.Unlock()
+
+        // Автоматическое удаление через TTL
+        time.AfterFunc(c.ttl, func() {
+            c.mu.Lock()
+            delete(c.cache, url)
+            c.mu.Unlock()
+        })
+
+        return data, nil
+    })
+
+    if err != nil {
+        return nil, err
+    }
+
+    return v.([]byte), nil
+}
+</code></pre>
+<p><strong>Методы singleflight.Group</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Метод</th><th>Описание</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Do(key, fn)</code></td><td>Выполняет <code>fn</code> для ключа, дедуплицируя одновременные вызовы. Возвращает <code>(result, error, shared)</code>.</td></tr>
+<tr><td><code>DoChan(key, fn)</code></td><td>Асинхронная версия, возвращает канал с результатом.</td></tr>
+<tr><td><code>Forget(key)</code></td><td>Забывает ключ (следующий вызов выполнит <code>fn</code> снова).</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Сравнение с C#</strong>:</p>
+<pre><code class="language-csharp">// C# (нет встроенного аналога, можно реализовать через SemaphoreSlim + Dictionary)
+public class SingleFlight&lt;TKey, TValue&gt;
+{
+    private readonly ConcurrentDictionary&lt;TKey, SemaphoreSlim&gt; _locks = new();
+
+    public async Task&lt;TValue&gt; DoAsync(TKey key, Func&lt;Task&lt;TValue&gt;&gt; fn)
+    {
+        var semaphore = _locks.GetOrAdd(key, _ =&gt; new SemaphoreSlim(1, 1));
+
+        await semaphore.WaitAsync();
+        try
+        {
+            return await fn();
+        }
+        finally
+        {
+            semaphore.Release();
+            _locks.TryRemove(key, out _);
+        }
+    }
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Когда использовать singleflight</strong>:</p>
+<ul>
+<li>Защита от <strong>cache stampede</strong> (когда кэш истекает под нагрузкой)</li>
+<li>Дедупликация дорогих операций (БД, внешние API)</li>
+<li>Снижение нагрузки при одновременных запросах одних данных</li>
+</ul>
+</blockquote>
+<hr>
+<h3 id="сравнительная-таблица-golangorgxsync"><a class="header" href="#сравнительная-таблица-golangorgxsync">Сравнительная таблица: golang.org/x/sync</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Примитив</th><th>Назначение</th><th>Аналог в C#</th><th>Когда использовать</th></tr>
+</thead>
+<tbody>
+<tr><td><code>errgroup.Group</code></td><td>WaitGroup + ошибки + cancellation</td><td><code>Task.WhenAll</code> + exception handling</td><td>Конкурентная обработка с ошибками</td></tr>
+<tr><td><code>semaphore.Weighted</code></td><td>Взвешенный семафор</td><td><code>SemaphoreSlim</code></td><td>Ограничение конкурентности (особенно с весами)</td></tr>
+<tr><td><code>singleflight.Group</code></td><td>Дедупликация вызовов</td><td>Нет (реализовать вручную)</td><td>Защита от cache stampede</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part2-advanced/04_gc.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part2-advanced/06_error_handling.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part2-advanced/04_gc.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part2-advanced/06_error_handling.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

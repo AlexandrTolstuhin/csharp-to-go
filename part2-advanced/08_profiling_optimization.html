@@ -1,0 +1,2310 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Профилирование и оптимизация - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-66c694bb.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-1a7de78a.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part2-advanced/08_profiling_optimization.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="профилирование-и-оптимизация"><a class="header" href="#профилирование-и-оптимизация">Профилирование и оптимизация</a></h1>
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<p>В предыдущих разделах мы изучили отдельные аспекты производительности Go:</p>
+<ul>
+<li><a href="./03_gc.html">Раздел 2.3 (GC)</a> — pprof для memory profiling, escape analysis, <code>GOGC</code>/<code>GOMEMLIMIT</code></li>
+<li><a href="./06_testing_benchmarking.html">Раздел 2.6 (Тестирование)</a> — benchmarks, <code>benchstat</code>, race detector</li>
+</ul>
+<p>Этот раздел объединяет все инструменты в <strong>единый workflow профилирования</strong> и фокусируется на:</p>
+<ul>
+<li><strong>CPU профилирование</strong> (основной фокус — не рассматривалось ранее)</li>
+<li><strong>Комплексная методология</strong> “от симптома к решению”</li>
+<li><strong>Практические паттерны оптимизации</strong> production-кода</li>
+<li><strong>Continuous Profiling</strong> для мониторинга в production</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В .NET экосистеме профилирование обычно требует платных инструментов (dotTrace, dotMemory, ANTS Profiler) или сложной настройки (PerfView, ETW). В Go все инструменты встроены и бесплатны — <code>pprof</code>, <code>go tool trace</code>, <code>go test -bench</code>. Философия та же: <strong>не оптимизируй без данных профилировщика</strong>.</p>
+</blockquote>
+<h3 id="сравнительная-таблица-net-profiling-vs-go-profiling"><a class="header" href="#сравнительная-таблица-net-profiling-vs-go-profiling">Сравнительная таблица: .NET Profiling vs Go Profiling</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>.NET</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>CPU Profiling</strong></td><td>Visual Studio Profiler, dotTrace, PerfView</td><td><code>pprof</code> CPU profile</td></tr>
+<tr><td><strong>Memory Profiling</strong></td><td>dotMemory, PerfView, VS Diagnostic Tools</td><td><code>pprof</code> heap/allocs (<a href="./03_gc.html">раздел 2.3</a>)</td></tr>
+<tr><td><strong>Concurrency</strong></td><td>Concurrency Visualizer (VS Enterprise)</td><td><code>go tool trace</code></td></tr>
+<tr><td><strong>Benchmarks</strong></td><td>BenchmarkDotNet (NuGet)</td><td><code>go test -bench</code> (встроенный)</td></tr>
+<tr><td><strong>Race Detection</strong></td><td>Thread Sanitizer (LLVM, внешний)</td><td><code>go test -race</code> (встроенный)</td></tr>
+<tr><td><strong>Flame Graphs</strong></td><td>PerfView, speedscope</td><td><code>pprof -http</code> (встроенный)</td></tr>
+<tr><td><strong>Production Profiling</strong></td><td>Application Insights, Datadog</td><td>Pyroscope, Cloud Profiler</td></tr>
+<tr><td><strong>Стоимость</strong></td><td>Часто платные (dotTrace ~$400/год)</td><td>Бесплатно</td></tr>
+<tr><td><strong>Интеграция с IDE</strong></td><td>Отличная (VS, Rider)</td><td>Базовая (GoLand), CLI-first</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="золотое-правило-профилирования"><a class="header" href="#золотое-правило-профилирования">Золотое правило профилирования</a></h3>
+<pre><code>╔═══════════════════════════════════════════════════════════════╗
+║   "Premature optimization is the root of all evil"           ║
+║                                    — Donald Knuth             ║
+║                                                               ║
+║   НО:                                                         ║
+║   "Измерение без оптимизации — потеря времени"               ║
+║   "Оптимизация без измерения — гадание на кофейной гуще"     ║
+╚═══════════════════════════════════════════════════════════════╝
+</code></pre>
+<p><strong>Правильный подход:</strong></p>
+<ol>
+<li><strong>Measure</strong> — собери данные профилировщика</li>
+<li><strong>Identify</strong> — найди bottleneck</li>
+<li><strong>Optimize</strong> — измени код</li>
+<li><strong>Verify</strong> — подтверди улучшение через benchstat</li>
+</ol>
+<hr>
+<h2 id="1-pprof-cpu-профилирование"><a class="header" href="#1-pprof-cpu-профилирование">1. pprof: CPU профилирование</a></h2>
+<p>CPU профилирование — это основной инструмент для ответа на вопрос <strong>“Где моё приложение тратит процессорное время?”</strong></p>
+<blockquote>
+<p>💡 <strong>Связь с другими разделами</strong>: Memory profiling через pprof подробно описан в <a href="./03_gc.html">разделе 2.3 (GC)</a>. Здесь фокусируемся на CPU.</p>
+</blockquote>
+<h3 id="11-как-работает-cpu-sampling"><a class="header" href="#11-как-работает-cpu-sampling">1.1 Как работает CPU sampling</a></h3>
+<p>Go использует <strong>sampling-based профилирование</strong>:</p>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                   CPU SAMPLING                               │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│   Время ──────────────────────────────────────────────►     │
+│                                                              │
+│   Программа:  ████████░░░░████████████░░░░░░████████        │
+│                  ▲         ▲           ▲        ▲           │
+│                  │         │           │        │           │
+│   Samples:      [1]       [2]         [3]      [4]          │
+│                  │         │           │        │           │
+│                  ▼         ▼           ▼        ▼           │
+│   Stack:     main()   process()   process()   main()        │
+│              parse()   compute()  compute()   write()       │
+│              read()    math()     math()      flush()       │
+│                                                              │
+│   Частота: 100 samples/sec (каждые 10ms)                    │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Как это работает:</strong></p>
+<ol>
+<li>Профилировщик каждые ~10ms останавливает выполнение</li>
+<li>Записывает текущий call stack всех горутин</li>
+<li>После завершения агрегирует: какие функции чаще всего были на стеке</li>
+</ol>
+<p><strong>Преимущества sampling:</strong></p>
+<ul>
+<li>Низкий overhead (~5-10%)</li>
+<li>Не искажает поведение программы</li>
+<li>Статистически точен при достаточном времени сбора</li>
+</ul>
+<p><strong>Сравнение с .NET:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>.NET (dotTrace)</th><th>Go (pprof)</th></tr>
+</thead>
+<tbody>
+<tr><td>Метод</td><td>Sampling + Tracing</td><td>Sampling only</td></tr>
+<tr><td>Частота</td><td>Настраиваемая</td><td>100 Hz (фиксированная)</td></tr>
+<tr><td>Overhead</td><td>5-50% (зависит от режима)</td><td>~5-10%</td></tr>
+<tr><td>Line-level</td><td>Да (в tracing mode)</td><td>Да</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="12-подключение-pprof-к-приложению"><a class="header" href="#12-подключение-pprof-к-приложению">1.2 Подключение pprof к приложению</a></h3>
+<h4 id="способ-1-http-endpoint-рекомендуется-для-серверов"><a class="header" href="#способ-1-http-endpoint-рекомендуется-для-серверов">Способ 1: HTTP endpoint (рекомендуется для серверов)</a></h4>
+<pre><code class="language-go">package main
+
+import (
+    "log"
+    "net/http"
+    _ "net/http/pprof" // Важно: blank import!
+)
+
+func main() {
+    // Регистрирует endpoints:
+    // /debug/pprof/
+    // /debug/pprof/profile     &lt;- CPU profile
+    // /debug/pprof/heap        &lt;- Memory profile
+    // /debug/pprof/goroutine   &lt;- Goroutine stacks
+    // /debug/pprof/block       &lt;- Block profile
+    // /debug/pprof/mutex       &lt;- Mutex profile
+    // /debug/pprof/trace       &lt;- Execution trace
+
+    // Опция 1: Отдельный порт для pprof (рекомендуется для production)
+    go func() {
+        log.Println("pprof server: http://localhost:6060/debug/pprof/")
+        log.Println(http.ListenAndServe("localhost:6060", nil))
+    }()
+
+    // Ваш основной сервер
+    mux := http.NewServeMux()
+    mux.HandleFunc("/api/users", handleUsers)
+
+    log.Fatal(http.ListenAndServe(":8080", mux))
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Безопасность</strong>: Никогда не экспонируйте pprof endpoint в публичный интернет! Он раскрывает внутреннюю структуру приложения и может содержать чувствительные данные в stack traces.</p>
+</blockquote>
+<p><strong>Защита pprof в production:</strong></p>
+<pre><code class="language-go">// Вариант 1: Только localhost
+http.ListenAndServe("localhost:6060", nil)
+
+// Вариант 2: Middleware с авторизацией
+func pprofAuth(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        token := r.Header.Get("X-Pprof-Token")
+        if token != os.Getenv("PPROF_TOKEN") {
+            http.Error(w, "Unauthorized", http.StatusUnauthorized)
+            return
+        }
+        next.ServeHTTP(w, r)
+    })
+}
+</code></pre>
+<h4 id="способ-2-программный-сбор-для-cli-benchmarks"><a class="header" href="#способ-2-программный-сбор-для-cli-benchmarks">Способ 2: Программный сбор (для CLI, benchmarks)</a></h4>
+<pre><code class="language-go">package main
+
+import (
+    "os"
+    "runtime/pprof"
+)
+
+func main() {
+    // Создаём файл для профиля
+    f, err := os.Create("cpu.prof")
+    if err != nil {
+        panic(err)
+    }
+    defer f.Close()
+
+    // Начинаем профилирование
+    if err := pprof.StartCPUProfile(f); err != nil {
+        panic(err)
+    }
+    defer pprof.StopCPUProfile()
+
+    // Выполняем код, который хотим профилировать
+    runExpensiveOperation()
+}
+</code></pre>
+<h4 id="способ-3-профилирование-benchmarks-самый-простой"><a class="header" href="#способ-3-профилирование-benchmarks-самый-простой">Способ 3: Профилирование benchmarks (самый простой)</a></h4>
+<pre><code class="language-bash"># Запустить benchmark и сохранить CPU профиль
+go test -bench=BenchmarkProcess -cpuprofile=cpu.prof
+
+# Также можно собрать memory профиль
+go test -bench=BenchmarkProcess -memprofile=mem.prof
+</code></pre>
+<h3 id="13-сбор-cpu-профиля"><a class="header" href="#13-сбор-cpu-профиля">1.3 Сбор CPU профиля</a></h3>
+<h4 id="через-http-endpoint"><a class="header" href="#через-http-endpoint">Через HTTP endpoint</a></h4>
+<pre><code class="language-bash"># Собрать 30-секундный CPU профиль
+go tool pprof http://localhost:6060/debug/pprof/profile?seconds=30
+
+# Или сохранить в файл
+curl -o cpu.prof "http://localhost:6060/debug/pprof/profile?seconds=30"
+</code></pre>
+<h4 id="минимальное-время-сбора"><a class="header" href="#минимальное-время-сбора">Минимальное время сбора</a></h4>
+<pre><code>┌────────────────────────────────────────────────────────────┐
+│              РЕКОМЕНДУЕМОЕ ВРЕМЯ СБОРА                      │
+├────────────────────────────────────────────────────────────┤
+│                                                             │
+│   Сценарий                    │ Время                      │
+│   ─────────────────────────────────────────────────        │
+│   Benchmark, микро-тест       │ 5-10 секунд                │
+│   Типичный production         │ 30 секунд                  │
+│   Редкие события              │ 60-120 секунд              │
+│   Поиск intermittent issues   │ 5-10 минут                 │
+│                                                             │
+│   Правило: минимум 1000 samples для статистики             │
+│   100 Hz × 30 sec = 3000 samples ✓                         │
+│                                                             │
+└────────────────────────────────────────────────────────────┘
+</code></pre>
+<h3 id="14-анализ-профиля-интерактивный-режим"><a class="header" href="#14-анализ-профиля-интерактивный-режим">1.4 Анализ профиля: интерактивный режим</a></h3>
+<pre><code class="language-bash"># Открыть интерактивный режим
+go tool pprof cpu.prof
+</code></pre>
+<p><strong>Основные команды:</strong></p>
+<h4 id="top--топ-функций-по-времени"><a class="header" href="#top--топ-функций-по-времени"><code>top</code> — топ функций по времени</a></h4>
+<pre><code>(pprof) top
+Showing nodes accounting for 4.5s, 90% of 5s total
+      flat  flat%   sum%        cum   cum%
+     2.0s 40.00% 40.00%      2.5s 50.00%  main.processData
+     1.5s 30.00% 70.00%      1.5s 30.00%  runtime.mallocgc
+     0.5s 10.00% 80.00%      3.0s 60.00%  main.handleRequest
+     0.3s  6.00% 86.00%      0.3s  6.00%  encoding/json.Marshal
+     0.2s  4.00% 90.00%      0.2s  4.00%  runtime.memmove
+</code></pre>
+<p><strong>Что означают колонки:</strong></p>
+<ul>
+<li><strong>flat</strong> — время только в этой функции (без вызовов)</li>
+<li><strong>cum</strong> (cumulative) — общее время (включая вызовы других функций)</li>
+</ul>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                FLAT vs CUM (CUMULATIVE)                      │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│   func A() {           │   flat(A) = 1s (время в самой A)   │
+│       // 1s работы     │   cum(A)  = 4s (A + B + C)         │
+│       B()              │                                     │
+│   }                    │   flat(B) = 2s                      │
+│                        │   cum(B)  = 3s (B + C)              │
+│   func B() {           │                                     │
+│       // 2s работы     │   flat(C) = 1s                      │
+│       C()              │   cum(C)  = 1s                      │
+│   }                    │                                     │
+│                        │                                     │
+│   func C() {           │   ⚠️ Высокий flat = код функции     │
+│       // 1s работы     │   ⚠️ Высокий cum = функция или      │
+│   }                    │      её дочерние вызовы             │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+</code></pre>
+<h4 id="top--cum--топ-по-cumulative-time"><a class="header" href="#top--cum--топ-по-cumulative-time"><code>top -cum</code> — топ по cumulative time</a></h4>
+<pre><code>(pprof) top -cum
+Showing nodes accounting for 4.5s, 90% of 5s total
+      flat  flat%   sum%        cum   cum%
+     0.1s  2.00%  2.00%      5.0s   100%  main.main
+     0.5s 10.00% 12.00%      3.0s 60.00%  main.handleRequest
+     2.0s 40.00% 52.00%      2.5s 50.00%  main.processData
+</code></pre>
+<h4 id="list--исходный-код-с-аннотациями"><a class="header" href="#list--исходный-код-с-аннотациями"><code>list</code> — исходный код с аннотациями</a></h4>
+<pre><code>(pprof) list processData
+Total: 5s
+ROUTINE ======================== main.processData
+     2.0s      2.5s (flat, cum) 50.00% of Total
+         .          .     15:func processData(data []byte) Result {
+         .          .     16:    var result Result
+     0.5s      0.5s     17:    for _, b := range data {        // ← 0.5s здесь
+     1.0s      1.0s     18:        result.Sum += int(b)        // ← 1.0s здесь
+     0.5s      0.5s     19:        result.Count++              // ← 0.5s здесь
+         .          .     20:    }
+         .      0.5s     21:    result.Normalize()             // ← 0.5s в Normalize
+         .          .     22:    return result
+         .          .     23:}
+</code></pre>
+<h4 id="web--визуализация-в-браузере"><a class="header" href="#web--визуализация-в-браузере"><code>web</code> — визуализация в браузере</a></h4>
+<pre><code class="language-bash">(pprof) web
+# Открывает граф в браузере (требует graphviz)
+</code></pre>
+<h3 id="15-flame-graphs"><a class="header" href="#15-flame-graphs">1.5 Flame Graphs</a></h3>
+<p>Flame Graph — это самый эффективный способ визуализации CPU профиля.</p>
+<pre><code class="language-bash"># Встроенный веб-интерфейс с flame graph
+go tool pprof -http=:8080 cpu.prof
+</code></pre>
+<p><strong>Как читать Flame Graph:</strong></p>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                      FLAME GRAPH                             │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│   ┌─────────────────────────────────────────────────────┐   │
+│   │                    main.main                         │   │
+│   └─────────────────────────────────────────────────────┘   │
+│   ┌───────────────────────────┐┌────────────────────────┐   │
+│   │     main.handleRequest    ││    main.loadConfig     │   │
+│   └───────────────────────────┘└────────────────────────┘   │
+│   ┌─────────────┐┌────────────┐                             │
+│   │main.process ││ json.Marshal│                            │
+│   └─────────────┘└────────────┘                             │
+│   ┌───────┐                                                  │
+│   │compute│                                                  │
+│   └───────┘                                                  │
+│                                                              │
+│   Ширина = время CPU                                        │
+│   Высота = глубина стека                                    │
+│   ↑ Кликни на блок = zoom in                                │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Интерпретация:</strong></p>
+<ul>
+<li><strong>Широкие блоки</strong> — много CPU времени, потенциальные bottlenecks</li>
+<li><strong>Глубокие стеки</strong> — много вызовов функций (возможно, рекурсия)</li>
+<li><strong>Плоские широкие блоки</strong> — функции с тяжёлыми вычислениями внутри</li>
+</ul>
+<h3 id="16-типичные-cpu-bottlenecks"><a class="header" href="#16-типичные-cpu-bottlenecks">1.6 Типичные CPU bottlenecks</a></h3>
+<h4 id="1-избыточные-аллокации-gc-pressure"><a class="header" href="#1-избыточные-аллокации-gc-pressure">1. Избыточные аллокации (GC pressure)</a></h4>
+<pre><code class="language-go">// ❌ Плохо: аллокация в каждой итерации
+func processBad(items []string) []string {
+    var result []string  // len=0, cap=0
+    for _, item := range items {
+        result = append(result, transform(item))  // Grow → allocate
+    }
+    return result
+}
+
+// ✅ Хорошо: preallocation
+func processGood(items []string) []string {
+    result := make([]string, 0, len(items))  // Preallocate capacity
+    for _, item := range items {
+        result = append(result, transform(item))  // No reallocation
+    }
+    return result
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Связь с GC</strong>: Подробнее об аллокациях и escape analysis — <a href="./03_gc.html">раздел 2.3</a>.</p>
+</blockquote>
+<h4 id="2-конкатенация-строк"><a class="header" href="#2-конкатенация-строк">2. Конкатенация строк</a></h4>
+<pre><code class="language-go">// ❌ Плохо: O(n²) по памяти
+func joinBad(items []string) string {
+    result := ""
+    for _, s := range items {
+        result += s  // Каждый раз новая аллокация!
+    }
+    return result
+}
+
+// ✅ Хорошо: O(n) с strings.Builder
+func joinGood(items []string) string {
+    var b strings.Builder
+    b.Grow(estimatedSize)  // Опционально: preallocate
+    for _, s := range items {
+        b.WriteString(s)
+    }
+    return b.String()
+}
+</code></pre>
+<p><strong>Сравнение производительности:</strong></p>
+<pre><code>BenchmarkJoinBad-8      1000000    15234 ns/op    58320 B/op   999 allocs/op
+BenchmarkJoinGood-8    10000000      234 ns/op      512 B/op     1 allocs/op
+</code></pre>
+<h4 id="3-json-marshalingunmarshaling"><a class="header" href="#3-json-marshalingunmarshaling">3. JSON marshaling/unmarshaling</a></h4>
+<pre><code class="language-go">// ❌ Плохо: encoding/json использует reflection
+import "encoding/json"
+
+func handleRequest(w http.ResponseWriter, r *http.Request) {
+    var req Request
+    json.NewDecoder(r.Body).Decode(&amp;req)  // Reflection + allocations
+
+    resp := process(req)
+    json.NewEncoder(w).Encode(resp)  // Reflection + allocations
+}
+</code></pre>
+<p><strong>Альтернативы (по скорости):</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Библиотека</th><th>Скорость vs encoding/json</th><th>Особенности</th></tr>
+</thead>
+<tbody>
+<tr><td><code>encoding/json</code></td><td>1x (baseline)</td><td>Стандартная библиотека</td></tr>
+<tr><td><code>json-iterator</code></td><td>~3-5x</td><td>Drop-in replacement</td></tr>
+<tr><td><code>easyjson</code></td><td>~5-7x</td><td>Code generation</td></tr>
+<tr><td><code>sonic</code></td><td>~10x</td><td>SIMD, code gen</td></tr>
+<tr><td><code>goccy/go-json</code></td><td>~3-5x</td><td>Drop-in, zero-alloc</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-go">// ✅ С easyjson (code generation)
+//go:generate easyjson -all types.go
+
+func handleRequestFast(w http.ResponseWriter, r *http.Request) {
+    var req Request
+    easyjson.UnmarshalFromReader(r.Body, &amp;req)
+
+    resp := process(req)
+    easyjson.MarshalToWriter(resp, w)
+}
+</code></pre>
+<h4 id="4-reflection"><a class="header" href="#4-reflection">4. Reflection</a></h4>
+<pre><code class="language-go">// ❌ Плохо: reflection в hot path
+func processBad(v interface{}) {
+    rv := reflect.ValueOf(v)
+    for i := 0; i &lt; rv.NumField(); i++ {
+        field := rv.Field(i)
+        // ...
+    }
+}
+
+// ✅ Хорошо: generics (Go 1.18+)
+func processGood[T any](v T) {
+    // Type-safe, no reflection
+}
+
+// ✅ Или: type switch для известных типов
+func processSwitch(v interface{}) {
+    switch x := v.(type) {
+    case *User:
+        processUser(x)
+    case *Order:
+        processOrder(x)
+    }
+}
+</code></pre>
+<h4 id="5-mutex-contention"><a class="header" href="#5-mutex-contention">5. Mutex contention</a></h4>
+<pre><code class="language-go">// ❌ Плохо: глобальный mutex
+var (
+    mu    sync.Mutex
+    cache = make(map[string]Value)
+)
+
+func Get(key string) Value {
+    mu.Lock()
+    defer mu.Unlock()
+    return cache[key]  // Read-only, но блокирует всех
+}
+
+// ✅ Хорошо: RWMutex для read-heavy workloads
+var (
+    mu    sync.RWMutex
+    cache = make(map[string]Value)
+)
+
+func Get(key string) Value {
+    mu.RLock()
+    defer mu.RUnlock()
+    return cache[key]  // Параллельные чтения
+}
+
+// ✅ Ещё лучше: sharded cache
+type ShardedCache struct {
+    shards [256]struct {
+        sync.RWMutex
+        data map[string]Value
+    }
+}
+
+func (c *ShardedCache) getShard(key string) *shard {
+    h := fnv.New32a()
+    h.Write([]byte(key))
+    return &amp;c.shards[h.Sum32()%256]
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Связь с sync</strong>: Подробнее о mutex и contention — <a href="./04_sync_primitives.html">раздел 2.4</a>.</p>
+</blockquote>
+<h4 id="6-регулярные-выражения"><a class="header" href="#6-регулярные-выражения">6. Регулярные выражения</a></h4>
+<pre><code class="language-go">// ❌ Плохо: компиляция regex в каждом вызове
+func validateBad(email string) bool {
+    re := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
+    return re.MatchString(email)
+}
+
+// ✅ Хорошо: компиляция один раз
+var emailRegex = regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
+
+func validateGood(email string) bool {
+    return emailRegex.MatchString(email)
+}
+
+// ✅ Ещё лучше для простых случаев: strings functions
+func validateFast(email string) bool {
+    at := strings.Index(email, "@")
+    if at == -1 || at == 0 {
+        return false
+    }
+    dot := strings.LastIndex(email[at:], ".")
+    return dot &gt; 1 &amp;&amp; dot &lt; len(email[at:])-2
+}
+</code></pre>
+<hr>
+<h2 id="2-go-tool-trace-расширенный-анализ"><a class="header" href="#2-go-tool-trace-расширенный-анализ">2. go tool trace: расширенный анализ</a></h2>
+<p><code>go tool trace</code> — это инструмент для детального анализа выполнения программы во времени. В отличие от pprof (который показывает агрегированную статистику), trace показывает <strong>что происходило в каждый момент времени</strong>.</p>
+<blockquote>
+<p>💡 <strong>Связь с разделом 2.2</strong>: Базовое описание trace для анализа планировщика — в <a href="./02_runtime_scheduler.html">разделе 2.2 (Runtime)</a>. Здесь фокусируемся на практическом применении для диагностики проблем.</p>
+</blockquote>
+<h3 id="21-когда-использовать-trace-vs-pprof"><a class="header" href="#21-когда-использовать-trace-vs-pprof">2.1 Когда использовать trace vs pprof</a></h3>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│              PPROF vs TRACE: КОГДА ЧТО ИСПОЛЬЗОВАТЬ         │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│   ВОПРОС                          │ ИНСТРУМЕНТ              │
+│   ────────────────────────────────────────────────────────  │
+│   "Где тратится CPU время?"       │ pprof CPU               │
+│   "Где выделяется память?"        │ pprof heap/allocs       │
+│   "Почему горутины блокируются?"  │ go tool trace ✓         │
+│   "Почему есть latency spikes?"   │ go tool trace ✓         │
+│   "Что делал планировщик?"        │ go tool trace ✓         │
+│   "Где mutex contention?"         │ pprof mutex + trace     │
+│   "Когда были GC паузы?"          │ go tool trace ✓         │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Ключевое отличие:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>pprof</th><th>go tool trace</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Тип данных</strong></td><td>Агрегированная статистика</td><td>Timeline событий</td></tr>
+<tr><td><strong>Вопрос</strong></td><td>“Сколько времени в функции X?”</td><td>“Что происходило в момент T?”</td></tr>
+<tr><td><strong>Overhead</strong></td><td>~5-10%</td><td>~10-25%</td></tr>
+<tr><td><strong>Размер данных</strong></td><td>Килобайты</td><td>Мегабайты (10MB/sec)</td></tr>
+<tr><td><strong>Визуализация</strong></td><td>Flame graph, text</td><td>Timeline в браузере</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Сравнение с .NET:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Go</th><th>.NET</th></tr>
+</thead>
+<tbody>
+<tr><td><code>go tool trace</code></td><td>Concurrency Visualizer (VS Enterprise)</td></tr>
+<tr><td>Бесплатный</td><td>$5000+/год (Enterprise лицензия)</td></tr>
+<tr><td>CLI + браузер</td><td>Visual Studio only</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="22-сбор-и-визуализация-trace"><a class="header" href="#22-сбор-и-визуализация-trace">2.2 Сбор и визуализация trace</a></h3>
+<h4 id="способ-1-через-тесты"><a class="header" href="#способ-1-через-тесты">Способ 1: Через тесты</a></h4>
+<pre><code class="language-bash"># Запустить тесты и собрать trace
+go test -trace=trace.out ./...
+
+# Запустить конкретный benchmark с trace
+go test -bench=BenchmarkProcess -trace=trace.out
+
+# Открыть trace в браузере
+go tool trace trace.out
+</code></pre>
+<h4 id="способ-2-программно"><a class="header" href="#способ-2-программно">Способ 2: Программно</a></h4>
+<pre><code class="language-go">package main
+
+import (
+    "os"
+    "runtime/trace"
+)
+
+func main() {
+    // Создаём файл для trace
+    f, err := os.Create("trace.out")
+    if err != nil {
+        panic(err)
+    }
+    defer f.Close()
+
+    // Начинаем трассировку
+    if err := trace.Start(f); err != nil {
+        panic(err)
+    }
+    defer trace.Stop()
+
+    // Выполняем код
+    runApplication()
+}
+</code></pre>
+<h4 id="способ-3-через-http-endpoint"><a class="header" href="#способ-3-через-http-endpoint">Способ 3: Через HTTP endpoint</a></h4>
+<pre><code class="language-bash"># Собрать 5-секундный trace
+curl -o trace.out "http://localhost:6060/debug/pprof/trace?seconds=5"
+
+# Открыть в браузере
+go tool trace trace.out
+</code></pre>
+<h4 id="способ-4-user-defined-tasks-и-regions-go-111"><a class="header" href="#способ-4-user-defined-tasks-и-regions-go-111">Способ 4: User-defined tasks и regions (Go 1.11+)</a></h4>
+<pre><code class="language-go">import "runtime/trace"
+
+func processOrder(ctx context.Context, order Order) error {
+    // Создаём task для группировки связанных событий
+    ctx, task := trace.NewTask(ctx, "processOrder")
+    defer task.End()
+
+    // Region для отдельной фазы
+    trace.WithRegion(ctx, "validation", func() {
+        validateOrder(order)
+    })
+
+    trace.WithRegion(ctx, "payment", func() {
+        processPayment(order)
+    })
+
+    trace.WithRegion(ctx, "notification", func() {
+        sendNotification(order)
+    })
+
+    return nil
+}
+</code></pre>
+<h3 id="23-анализ-goroutine-analysis"><a class="header" href="#23-анализ-goroutine-analysis">2.3 Анализ Goroutine Analysis</a></h3>
+<p>После открытия <code>go tool trace trace.out</code> в браузере, ключевые секции:</p>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                  GO TOOL TRACE: ОСНОВНЫЕ VIEWS              │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  1. View trace                                               │
+│     └── Timeline всех событий (горутины, GC, syscalls)      │
+│                                                              │
+│  2. Goroutine analysis                                       │
+│     └── Статистика по горутинам:                            │
+│         • Execution time (время выполнения)                 │
+│         • Network wait (ожидание сети)                      │
+│         • Sync block (блокировка на mutex/channel)          │
+│         • Syscall (системные вызовы)                        │
+│         • Scheduler wait (ожидание планировщика)            │
+│                                                              │
+│  3. Network blocking profile                                 │
+│     └── Где горутины ждут сеть                              │
+│                                                              │
+│  4. Synchronization blocking profile                         │
+│     └── Где горутины ждут mutex/channel                     │
+│                                                              │
+│  5. Syscall blocking profile                                 │
+│     └── Где горутины ждут syscalls (file I/O, etc.)         │
+│                                                              │
+│  6. User-defined tasks                                       │
+│     └── Ваши trace.NewTask и trace.WithRegion               │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Goroutine analysis — ключевые метрики:</strong></p>
+<pre><code>Goroutine analysis:
+─────────────────────────────────────────────────────────────
+Goroutine Name             Count   Total Time   Execution   Network   Sync Block
+─────────────────────────────────────────────────────────────
+main.handleRequest           100     10.5s        2.1s       5.2s      3.2s
+main.processData              50      5.2s        4.8s       0.1s      0.3s
+runtime.gcBgMarkWorker         4      1.2s        1.2s       0s        0s
+</code></pre>
+<p><strong>Интерпретация:</strong></p>
+<ul>
+<li><strong>High Network wait</strong> → Медленные внешние сервисы, БД</li>
+<li><strong>High Sync block</strong> → Contention на mutex или переполненные каналы</li>
+<li><strong>High Syscall</strong> → Много disk I/O</li>
+<li><strong>High Scheduler wait</strong> → Слишком много горутин, не хватает P</li>
+</ul>
+<h3 id="24-диагностика-latency-spikes"><a class="header" href="#24-диагностика-latency-spikes">2.4 Диагностика latency spikes</a></h3>
+<p>Latency spikes — это когда P99 latency значительно выше P50. Типичные причины:</p>
+<h4 id="причина-1-gc-паузы-stw"><a class="header" href="#причина-1-gc-паузы-stw">Причина 1: GC паузы (STW)</a></h4>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                     GC PAUSE В TRACE                         │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  Timeline:                                                   │
+│                                                              │
+│  Goroutine 1: ████████░░░░░░░░████████████                  │
+│  Goroutine 2: ██████░░░░░░░░░░██████████████                │
+│  Goroutine 3: ████░░░░░░░░░░░░████████████████              │
+│                     ▲                                        │
+│                     │                                        │
+│               GC STW (stop-the-world)                       │
+│               Все горутины остановлены                      │
+│                                                              │
+│  ⚠️ STW &gt; 1ms = проблема для low-latency систем            │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Диагностика:</strong></p>
+<ol>
+<li>Открыть trace, найти “GC” события</li>
+<li>Посмотреть на длительность STW фаз</li>
+<li>Если STW &gt; 1ms, оптимизировать аллокации</li>
+</ol>
+<p><strong>Решение:</strong></p>
+<ul>
+<li>Уменьшить аллокации (escape analysis, sync.Pool)</li>
+<li>Увеличить GOGC (больше памяти, реже GC)</li>
+<li>Использовать GOMEMLIMIT</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Подробнее</strong>: <a href="./03_gc.html">Раздел 2.3 (GC)</a></p>
+</blockquote>
+<h4 id="причина-2-блокировка-на-mutex"><a class="header" href="#причина-2-блокировка-на-mutex">Причина 2: Блокировка на mutex</a></h4>
+<pre><code class="language-go">// Симптом в trace: высокий "Sync block" для многих горутин
+
+// Проблемный код
+var globalMu sync.Mutex
+var cache = make(map[string]Value)
+
+func handleRequest(key string) Value {
+    globalMu.Lock()  // ← Все запросы сериализуются здесь
+    defer globalMu.Unlock()
+
+    if v, ok := cache[key]; ok {
+        return v
+    }
+    v := computeExpensive(key)
+    cache[key] = v
+    return v
+}
+</code></pre>
+<p><strong>Как выглядит в trace:</strong></p>
+<pre><code>Goroutine 1: ████████████████████████████████  (executing)
+Goroutine 2: ░░░░░░░░░░░░████████████████████  (blocked on mutex)
+Goroutine 3: ░░░░░░░░░░░░░░░░░░░░░████████████  (blocked on mutex)
+</code></pre>
+<p><strong>Решение:</strong></p>
+<ul>
+<li>RWMutex для read-heavy workloads</li>
+<li>Sharding (несколько locks)</li>
+<li>Lock-free структуры (sync/atomic)</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Подробнее</strong>: <a href="./04_sync_primitives.html">Раздел 2.4 (Синхронизация)</a></p>
+</blockquote>
+<h4 id="причина-3-медленные-syscalls-io"><a class="header" href="#причина-3-медленные-syscalls-io">Причина 3: Медленные syscalls (I/O)</a></h4>
+<pre><code class="language-go">// Симптом в trace: высокий "Syscall" time
+
+func handleRequest(w http.ResponseWriter, r *http.Request) {
+    // Синхронное чтение файла — блокирует горутину
+    data, _ := os.ReadFile("/var/log/large.log")  // ← Syscall blocking
+
+    // Синхронный запрос к внешнему сервису
+    resp, _ := http.Get("http://slow-service/api")  // ← Network blocking
+    defer resp.Body.Close()
+
+    // ...
+}
+</code></pre>
+<p><strong>Решение:</strong></p>
+<ul>
+<li>Асинхронная обработка через горутины</li>
+<li>Кэширование результатов</li>
+<li>Connection pooling</li>
+</ul>
+<h4 id="причина-4-scheduler-latency"><a class="header" href="#причина-4-scheduler-latency">Причина 4: Scheduler latency</a></h4>
+<pre><code>Симптом: горутины долго ждут в "Runnable" состоянии
+(ждут пока планировщик назначит их на P)
+</code></pre>
+<p><strong>Диагностика:</strong></p>
+<pre><code class="language-bash">GODEBUG=schedtrace=1000 ./myapp
+</code></pre>
+<p><strong>Причины:</strong></p>
+<ul>
+<li>Слишком много горутин (&gt; 10K активных)</li>
+<li>GOMAXPROCS слишком низкий</li>
+<li>Горутины не yielding (нет I/O, нет runtime.Gosched())</li>
+</ul>
+<hr>
+<h2 id="3-комплексный-workflow-профилирования"><a class="header" href="#3-комплексный-workflow-профилирования">3. Комплексный workflow профилирования</a></h2>
+<p>Этот раздел объединяет все инструменты в единую методологию решения проблем производительности.</p>
+<h3 id="31-методология-measure--identify--optimize--verify"><a class="header" href="#31-методология-measure--identify--optimize--verify">3.1 Методология: Measure → Identify → Optimize → Verify</a></h3>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                 WORKFLOW ПРОФИЛИРОВАНИЯ                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌──────────────┐                                               │
+│  │  1. MEASURE  │ ← Воспроизвести проблему, собрать данные      │
+│  └──────┬───────┘                                               │
+│         │                                                        │
+│         ▼                                                        │
+│  ┌──────────────┐                                               │
+│  │  2. IDENTIFY │ ← Проанализировать профиль, найти bottleneck  │
+│  └──────┬───────┘                                               │
+│         │                                                        │
+│         ▼                                                        │
+│  ┌──────────────┐                                               │
+│  │  3. OPTIMIZE │ ← Изменить код                                │
+│  └──────┬───────┘                                               │
+│         │                                                        │
+│         ▼                                                        │
+│  ┌──────────────┐                                               │
+│  │  4. VERIFY   │ ← Подтвердить улучшение (benchstat)           │
+│  └──────┬───────┘                                               │
+│         │                                                        │
+│         ▼                                                        │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │  Улучшение достаточно?  ──No──►  Вернуться к шагу 1      │   │
+│  │         │                                                 │   │
+│  │        Yes                                                │   │
+│  │         ▼                                                 │   │
+│  │      ГОТОВО                                               │   │
+│  └──────────────────────────────────────────────────────────┘   │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre>
+<h4 id="шаг-1-measure-измерение"><a class="header" href="#шаг-1-measure-измерение">Шаг 1: Measure (Измерение)</a></h4>
+<pre><code class="language-bash"># 1. Создать воспроизводимый benchmark
+go test -bench=BenchmarkHandler -count=10 &gt; before.txt
+
+# 2. Собрать профиль CPU
+go test -bench=BenchmarkHandler -cpuprofile=cpu.prof
+
+# 3. Или для running сервиса
+curl -o cpu.prof "http://localhost:6060/debug/pprof/profile?seconds=30"
+</code></pre>
+<p><strong>Важно:</strong></p>
+<ul>
+<li>Тестировать на <strong>реалистичных данных</strong></li>
+<li>Использовать <strong>production-like нагрузку</strong></li>
+<li>Собирать <strong>достаточно samples</strong> (минимум 30 секунд для production)</li>
+</ul>
+<h4 id="шаг-2-identify-идентификация"><a class="header" href="#шаг-2-identify-идентификация">Шаг 2: Identify (Идентификация)</a></h4>
+<pre><code class="language-bash"># Открыть профиль
+go tool pprof -http=:8080 cpu.prof
+
+# В браузере:
+# 1. Посмотреть Flame Graph — найти широкие блоки
+# 2. top -cum — найти функции с высоким cumulative time
+# 3. list &lt;function&gt; — посмотреть код с аннотациями
+</code></pre>
+<p><strong>Типичные находки:</strong></p>
+<pre><code>Находка                          │ Возможная причина
+─────────────────────────────────────────────────────────
+runtime.mallocgc занимает &gt;20%   │ Много аллокаций, GC pressure
+encoding/json.* занимает много   │ Медленный JSON
+runtime.lock/unlock много        │ Mutex contention
+syscall.* много                  │ I/O bottleneck
+runtime.memmove много            │ Копирование данных
+</code></pre>
+<h4 id="шаг-3-optimize-оптимизация"><a class="header" href="#шаг-3-optimize-оптимизация">Шаг 3: Optimize (Оптимизация)</a></h4>
+<p>После идентификации bottleneck — изменить код:</p>
+<pre><code class="language-go">// Пример: нашли что strings concat медленный
+// До:
+func process(items []string) string {
+    result := ""
+    for _, s := range items {
+        result += s  // ← Bottleneck найден в профиле
+    }
+    return result
+}
+
+// После:
+func process(items []string) string {
+    var b strings.Builder
+    b.Grow(estimatedSize)
+    for _, s := range items {
+        b.WriteString(s)
+    }
+    return b.String()
+}
+</code></pre>
+<h4 id="шаг-4-verify-верификация"><a class="header" href="#шаг-4-verify-верификация">Шаг 4: Verify (Верификация)</a></h4>
+<pre><code class="language-bash"># Запустить тот же benchmark после изменений
+go test -bench=BenchmarkHandler -count=10 &gt; after.txt
+
+# Сравнить результаты с помощью benchstat
+benchstat before.txt after.txt
+</code></pre>
+<p><strong>Пример вывода benchstat:</strong></p>
+<pre><code>name              old time/op    new time/op    delta
+Handler-8           1.25ms ± 2%    0.42ms ± 3%   -66.4%  (p=0.000 n=10+10)
+
+name              old alloc/op   new alloc/op   delta
+Handler-8           48.2kB ± 0%    12.1kB ± 0%   -74.9%  (p=0.000 n=10+10)
+
+name              old allocs/op  new allocs/op  delta
+Handler-8              125 ± 0%        32 ± 0%   -74.4%  (p=0.000 n=10+10)
+</code></pre>
+<blockquote>
+<p>💡 <strong>Подробнее о benchstat</strong>: <a href="./06_testing_benchmarking.html">Раздел 2.6 (Тестирование)</a></p>
+</blockquote>
+<h3 id="32-выбор-инструмента-по-типу-проблемы"><a class="header" href="#32-выбор-инструмента-по-типу-проблемы">3.2 Выбор инструмента по типу проблемы</a></h3>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│              МАТРИЦА ВЫБОРА ИНСТРУМЕНТА                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   СИМПТОМ                      │ ПЕРВЫЙ ИНСТРУМЕНТ              │
+│   ─────────────────────────────────────────────────────────     │
+│   Высокий CPU usage            │ pprof CPU + flame graph        │
+│   Высокое потребление RAM      │ pprof heap                     │
+│   Частые GC паузы              │ GODEBUG=gctrace + pprof allocs │
+│   Latency spikes (P99 &gt;&gt; P50)  │ go tool trace                  │
+│   Data races                   │ go test -race                  │
+│   Goroutine leaks              │ pprof goroutine                │
+│   Медленный throughput         │ benchmarks + pprof CPU         │
+│   Mutex contention             │ pprof mutex + trace            │
+│   I/O bottleneck               │ go tool trace (syscall)        │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Блок-схема выбора:</strong></p>
+<pre><code>                    ┌─────────────────┐
+                    │  Какая проблема? │
+                    └────────┬────────┘
+                             │
+         ┌───────────────────┼───────────────────┐
+         ▼                   ▼                   ▼
+   ┌───────────┐       ┌───────────┐       ┌───────────┐
+   │   CPU %   │       │  Memory   │       │  Latency  │
+   │   высокий │       │  растёт   │       │  спайки   │
+   └─────┬─────┘       └─────┬─────┘       └─────┬─────┘
+         │                   │                   │
+         ▼                   ▼                   ▼
+   ┌───────────┐       ┌───────────┐       ┌───────────┐
+   │pprof CPU  │       │pprof heap │       │ go tool   │
+   │flame graph│       │+ allocs   │       │   trace   │
+   └───────────┘       └───────────┘       └───────────┘
+</code></pre>
+<h3 id="33-интеграция-с-cicd"><a class="header" href="#33-интеграция-с-cicd">3.3 Интеграция с CI/CD</a></h3>
+<p>Автоматическое отслеживание регрессий производительности.</p>
+<h4 id="github-actions-benchmark-на-каждый-pr"><a class="header" href="#github-actions-benchmark-на-каждый-pr">GitHub Actions: Benchmark на каждый PR</a></h4>
+<pre><code class="language-yaml"># .github/workflows/benchmark.yml
+name: Benchmark
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Run benchmarks
+        run: |
+          go test -bench=. -count=10 -benchmem ./... &gt; new.txt
+
+      - name: Download baseline
+        uses: actions/download-artifact@v4
+        with:
+          name: benchmark-baseline
+        continue-on-error: true  # Первый запуск
+
+      - name: Compare with baseline
+        run: |
+          if [ -f old.txt ]; then
+            go install golang.org/x/perf/cmd/benchstat@latest
+            benchstat old.txt new.txt | tee comparison.txt
+
+            # Проверить на регрессии &gt; 10%
+            if grep -E '\+[0-9]{2,}\.[0-9]+%' comparison.txt; then
+              echo "::warning::Performance regression detected!"
+            fi
+          fi
+
+      - name: Save as baseline (main only)
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-baseline
+          path: new.txt
+</code></pre>
+<h4 id="пример-с-регрессией"><a class="header" href="#пример-с-регрессией">Пример с регрессией:</a></h4>
+<pre><code>                                   PR #123
+                                      │
+                                      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  benchstat old.txt new.txt                                       │
+│                                                                  │
+│  name              old time/op    new time/op    delta          │
+│  Handler-8           1.25ms ± 2%    1.89ms ± 3%   +51.2%  ⚠️     │
+│                                                                  │
+│  ::warning:: Performance regression detected!                   │
+│  PR blocked until regression is fixed or approved               │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre>
+<h4 id="сбор-профилей-в-production-опционально"><a class="header" href="#сбор-профилей-в-production-опционально">Сбор профилей в production (опционально)</a></h4>
+<pre><code class="language-yaml"># Периодический сбор профилей
+- name: Collect production profile
+  run: |
+    curl -o cpu.prof "http://prod-service:6060/debug/pprof/profile?seconds=30"
+    # Отправить в S3 / GCS для анализа
+    aws s3 cp cpu.prof s3://profiles/$(date +%Y-%m-%d)/cpu.prof
+</code></pre>
+<hr>
+<h2 id="4-оптимизация-production-кода"><a class="header" href="#4-оптимизация-production-кода">4. Оптимизация production-кода</a></h2>
+<p>После профилирования — практические паттерны оптимизации.</p>
+<h3 id="41-hot-paths-и-закон-амдала"><a class="header" href="#41-hot-paths-и-закон-амдала">4.1 Hot paths и закон Амдала</a></h3>
+<p><strong>Закон Амдала</strong> определяет максимальное ускорение при оптимизации части программы:</p>
+<pre><code>                    1
+Speedup = ──────────────────────────
+          (1 - P) + P/S
+
+P = доля времени в оптимизируемой части
+S = ускорение этой части
+</code></pre>
+<p><strong>Практический вывод:</strong></p>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│              ЗАКОН АМДАЛА: ПРАКТИКА                          │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│   Если функция занимает 50% времени:                        │
+│   - Ускорить в 2x → общее ускорение 1.33x                   │
+│   - Ускорить в 10x → общее ускорение 1.82x                  │
+│   - Ускорить в ∞x → общее ускорение 2x (максимум!)          │
+│                                                              │
+│   Если функция занимает 10% времени:                        │
+│   - Ускорить в 10x → общее ускорение 1.1x                   │
+│   - Не стоит тратить время на эту функцию!                  │
+│                                                              │
+│   ⚠️ Вывод: Оптимизируй только hot paths (&gt;20% времени)     │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Как найти hot paths:</strong></p>
+<pre><code class="language-bash">go tool pprof -http=:8080 cpu.prof
+# В Flame Graph: самые широкие блоки = hot paths
+</code></pre>
+<h3 id="42-оптимизация-строковых-операций"><a class="header" href="#42-оптимизация-строковых-операций">4.2 Оптимизация строковых операций</a></h3>
+<h4 id="конкатенация-строк"><a class="header" href="#конкатенация-строк">Конкатенация строк</a></h4>
+<pre><code class="language-go">// ❌ Очень плохо: O(n²) — каждая итерация создаёт новую строку
+func buildSlow(items []string) string {
+    result := ""
+    for _, s := range items {
+        result += s  // Новая аллокация каждый раз!
+    }
+    return result
+}
+
+// ✅ Хорошо: strings.Builder (O(n), amortized)
+func buildFast(items []string) string {
+    var b strings.Builder
+
+    // Опционально: предварительный расчёт размера
+    size := 0
+    for _, s := range items {
+        size += len(s)
+    }
+    b.Grow(size)  // Одна аллокация
+
+    for _, s := range items {
+        b.WriteString(s)
+    }
+    return b.String()
+}
+
+// ✅ Альтернатива: strings.Join (если просто конкатенация)
+func buildJoin(items []string) string {
+    return strings.Join(items, "")
+}
+</code></pre>
+<p><strong>Benchmark:</strong></p>
+<pre><code>BenchmarkBuildSlow-8     10000     150234 ns/op    530192 B/op    999 allocs/op
+BenchmarkBuildFast-8   1000000       1234 ns/op      4096 B/op      1 allocs/op
+BenchmarkBuildJoin-8   1000000       1156 ns/op      4096 B/op      1 allocs/op
+</code></pre>
+<h4 id="сравнение-с-c"><a class="header" href="#сравнение-с-c">Сравнение с C#</a></h4>
+<pre><code class="language-csharp">// C# — аналогичная проблема
+string result = "";
+foreach (var s in items)
+{
+    result += s;  // ❌ Плохо
+}
+
+// C# — StringBuilder
+var sb = new StringBuilder();
+foreach (var s in items)
+{
+    sb.Append(s);  // ✅ Хорошо
+}
+return sb.ToString();
+</code></pre>
+<p><strong>Сравнение:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Go</th><th>C#</th></tr>
+</thead>
+<tbody>
+<tr><td><code>strings.Builder</code></td><td><code>StringBuilder</code></td></tr>
+<tr><td><code>.WriteString()</code></td><td><code>.Append()</code></td></tr>
+<tr><td><code>.Grow(n)</code></td><td><code>.EnsureCapacity(n)</code></td></tr>
+<tr><td><code>.String()</code></td><td><code>.ToString()</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="43-оптимизация-json"><a class="header" href="#43-оптимизация-json">4.3 Оптимизация JSON</a></h3>
+<p>JSON serialization — частый bottleneck в HTTP сервисах.</p>
+<h4 id="стандартная-библиотека"><a class="header" href="#стандартная-библиотека">Стандартная библиотека</a></h4>
+<pre><code class="language-go">import "encoding/json"
+
+// Работает, но использует reflection
+func handleRequest(w http.ResponseWriter, r *http.Request) {
+    var req Request
+    json.NewDecoder(r.Body).Decode(&amp;req)  // Reflection
+
+    resp := process(req)
+    json.NewEncoder(w).Encode(resp)  // Reflection
+}
+</code></pre>
+<h4 id="альтернативы-по-скорости"><a class="header" href="#альтернативы-по-скорости">Альтернативы (по скорости)</a></h4>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│           СРАВНЕНИЕ JSON БИБЛИОТЕК                           │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│   Библиотека       │ Скорость │ Аллокации │ Особенности     │
+│   ─────────────────────────────────────────────────────     │
+│   encoding/json    │    1x    │  Много    │ Стандартная     │
+│   json-iterator    │   3-5x   │  Меньше   │ Drop-in         │
+│   goccy/go-json    │   3-5x   │  Меньше   │ Drop-in         │
+│   easyjson         │   5-7x   │  Мало     │ Code generation │
+│   sonic            │  10-15x  │  Минимум  │ SIMD, code gen  │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+</code></pre>
+<h4 id="easyjson--code-generation"><a class="header" href="#easyjson--code-generation">easyjson — code generation</a></h4>
+<pre><code class="language-bash"># Установка
+go install github.com/mailru/easyjson/...@latest
+
+# Генерация (для файла с типами)
+easyjson -all types.go
+</code></pre>
+<pre><code class="language-go">// types.go
+type Request struct {
+    UserID   int64  `json:"user_id"`
+    Action   string `json:"action"`
+    Payload  []byte `json:"payload"`
+}
+
+// После easyjson -all types.go создаётся types_easyjson.go
+// с методами MarshalEasyJSON / UnmarshalEasyJSON
+</code></pre>
+<pre><code class="language-go">// Использование
+import "github.com/mailru/easyjson"
+
+func handleRequestFast(w http.ResponseWriter, r *http.Request) {
+    var req Request
+    easyjson.UnmarshalFromReader(r.Body, &amp;req)  // Без reflection
+
+    resp := process(req)
+    easyjson.MarshalToWriter(resp, w)  // Без reflection
+}
+</code></pre>
+<h4 id="сравнение-с-c-1"><a class="header" href="#сравнение-с-c-1">Сравнение с C#</a></h4>
+<pre><code class="language-csharp">// C# — System.Text.Json (с source generators)
+[JsonSerializable(typeof(Request))]
+public partial class JsonContext : JsonSerializerContext { }
+
+// Использование (без reflection)
+var req = JsonSerializer.Deserialize(json, JsonContext.Default.Request);
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Go</th><th>C#</th></tr>
+</thead>
+<tbody>
+<tr><td><code>easyjson</code> (code gen)</td><td><code>System.Text.Json</code> + source generators</td></tr>
+<tr><td><code>encoding/json</code> (reflection)</td><td><code>Newtonsoft.Json</code> (reflection)</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="44-избегание-interface-в-hot-paths"><a class="header" href="#44-избегание-interface-в-hot-paths">4.4 Избегание interface{} в hot paths</a></h3>
+<p><code>interface{}</code> (или <code>any</code> в Go 1.18+) требует boxing/unboxing и не позволяет компилятору оптимизировать.</p>
+<pre><code class="language-go">// ❌ Плохо: interface{} в hot path
+func processSlow(items []interface{}) int {
+    sum := 0
+    for _, item := range items {
+        // Type assertion в каждой итерации
+        if v, ok := item.(int); ok {
+            sum += v
+        }
+    }
+    return sum
+}
+
+// ✅ Хорошо: generics (Go 1.18+)
+func processFast[T constraints.Integer](items []T) T {
+    var sum T
+    for _, item := range items {
+        sum += item  // Без type assertion
+    }
+    return sum
+}
+
+// ✅ Или: конкретный тип
+func processInts(items []int) int {
+    sum := 0
+    for _, item := range items {
+        sum += item
+    }
+    return sum
+}
+</code></pre>
+<p><strong>Benchmark:</strong></p>
+<pre><code>BenchmarkProcessInterface-8    5000000    312 ns/op    80 B/op    5 allocs/op
+BenchmarkProcessGeneric-8     50000000     24 ns/op     0 B/op    0 allocs/op
+BenchmarkProcessInts-8        50000000     23 ns/op     0 B/op    0 allocs/op
+</code></pre>
+<h4 id="type-switch-как-альтернатива"><a class="header" href="#type-switch-как-альтернатива">Type switch как альтернатива</a></h4>
+<pre><code class="language-go">// Когда типов немного и они известны заранее
+func processKnownTypes(v interface{}) int {
+    switch x := v.(type) {
+    case int:
+        return x * 2
+    case int64:
+        return int(x * 2)
+    case string:
+        return len(x)
+    default:
+        return 0
+    }
+}
+</code></pre>
+<h3 id="45-preallocations-и-переиспользование"><a class="header" href="#45-preallocations-и-переиспользование">4.5 Preallocations и переиспользование</a></h3>
+<h4 id="preallocation-слайсов"><a class="header" href="#preallocation-слайсов">Preallocation слайсов</a></h4>
+<pre><code class="language-go">// ❌ Плохо: много reallocations
+func collectBad(n int) []int {
+    var result []int  // len=0, cap=0
+    for i := 0; i &lt; n; i++ {
+        result = append(result, compute(i))  // Grow: 0→1→2→4→8→16→...
+    }
+    return result
+}
+
+// ✅ Хорошо: одна аллокация
+func collectGood(n int) []int {
+    result := make([]int, 0, n)  // len=0, cap=n
+    for i := 0; i &lt; n; i++ {
+        result = append(result, compute(i))  // No reallocation
+    }
+    return result
+}
+
+// ✅ Ещё лучше, если индекс известен
+func collectBest(n int) []int {
+    result := make([]int, n)  // len=n, cap=n
+    for i := 0; i &lt; n; i++ {
+        result[i] = compute(i)  // Direct assignment
+    }
+    return result
+}
+</code></pre>
+<h4 id="preallocation-maps"><a class="header" href="#preallocation-maps">Preallocation maps</a></h4>
+<pre><code class="language-go">// ❌ Плохо: много rehashing
+func buildMapBad(items []Item) map[string]Item {
+    result := make(map[string]Item)  // Начальный размер по умолчанию
+    for _, item := range items {
+        result[item.ID] = item  // Rehash при росте
+    }
+    return result
+}
+
+// ✅ Хорошо: одна аллокация
+func buildMapGood(items []Item) map[string]Item {
+    result := make(map[string]Item, len(items))  // Точный размер
+    for _, item := range items {
+        result[item.ID] = item  // No rehashing
+    }
+    return result
+}
+</code></pre>
+<h4 id="syncpool-для-переиспользования"><a class="header" href="#syncpool-для-переиспользования">sync.Pool для переиспользования</a></h4>
+<pre><code class="language-go">// Пул буферов для JSON encoding
+var bufferPool = sync.Pool{
+    New: func() interface{} {
+        return new(bytes.Buffer)
+    },
+}
+
+func encodeJSON(v interface{}) ([]byte, error) {
+    buf := bufferPool.Get().(*bytes.Buffer)
+    buf.Reset()  // Важно: очистить перед использованием
+    defer bufferPool.Put(buf)
+
+    err := json.NewEncoder(buf).Encode(v)
+    if err != nil {
+        return nil, err
+    }
+
+    // Копируем, потому что буфер вернётся в пул
+    result := make([]byte, buf.Len())
+    copy(result, buf.Bytes())
+    return result, nil
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Подробнее о sync.Pool</strong>: <a href="./03_gc.html">Раздел 2.3 (GC)</a></p>
+</blockquote>
+<h4 id="сравнение-с-c-2"><a class="header" href="#сравнение-с-c-2">Сравнение с C#</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Go</th><th>C#</th></tr>
+</thead>
+<tbody>
+<tr><td><code>make([]T, 0, n)</code></td><td><code>new List&lt;T&gt;(capacity: n)</code></td></tr>
+<tr><td><code>make(map[K]V, n)</code></td><td><code>new Dictionary&lt;K,V&gt;(capacity: n)</code></td></tr>
+<tr><td><code>sync.Pool</code></td><td><code>ObjectPool&lt;T&gt;</code> (Microsoft.Extensions.ObjectPool)</td></tr>
+<tr><td><code>[]byte</code> buffer reuse</td><td><code>ArrayPool&lt;byte&gt;.Shared</code></td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-csharp">// C# эквивалент sync.Pool
+var pool = ArrayPool&lt;byte&gt;.Shared;
+byte[] buffer = pool.Rent(1024);
+try
+{
+    // Использовать buffer
+}
+finally
+{
+    pool.Return(buffer);
+}
+</code></pre>
+<hr>
+<h2 id="5-continuous-profiling"><a class="header" href="#5-continuous-profiling">5. Continuous Profiling</a></h2>
+<p>Continuous Profiling — это постоянный сбор профилей в production для отслеживания производительности во времени.</p>
+<h3 id="51-концепция"><a class="header" href="#51-концепция">5.1 Концепция</a></h3>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│              CONTINUOUS PROFILING: КОНЦЕПЦИЯ                     │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   Традиционное профилирование:                                  │
+│   ────────────────────────────                                  │
+│   1. Заметили проблему                                          │
+│   2. Подключились к production                                  │
+│   3. Собрали профиль                                            │
+│   4. Проблема уже прошла... 😞                                  │
+│                                                                  │
+│   Continuous Profiling:                                         │
+│   ─────────────────────                                         │
+│   • Постоянный сбор профилей (CPU, memory, goroutines)          │
+│   • Агрегация и хранение во времени                             │
+│   • Можно "вернуться в прошлое" и увидеть, что происходило      │
+│   • Сравнение версий: v1.2.3 vs v1.2.4                          │
+│   • Alerts на аномалии                                          │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Преимущества:</strong></p>
+<ul>
+<li><strong>Ретроспективный анализ</strong> — посмотреть профиль на момент инцидента</li>
+<li><strong>Сравнение версий</strong> — новая версия стала медленнее?</li>
+<li><strong>Тренды</strong> — производительность деградирует со временем?</li>
+<li><strong>Корреляция</strong> — связать профиль с метриками и логами</li>
+</ul>
+<h3 id="52-инструменты"><a class="header" href="#52-инструменты">5.2 Инструменты</a></h3>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│           ИНСТРУМЕНТЫ CONTINUOUS PROFILING                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   Инструмент          │ Тип          │ Стоимость                │
+│   ────────────────────────────────────────────────────────────  │
+│   Pyroscope           │ Open-source  │ Бесплатно (self-hosted)  │
+│   Grafana Phlare      │ Open-source  │ Бесплатно (self-hosted)  │
+│   Google Cloud        │ Cloud        │ $5/agent/month           │
+│     Profiler          │              │                          │
+│   Datadog             │ Cloud        │ Включено в APM план      │
+│     Profiler          │              │                          │
+│   Polar Signals       │ Cloud/OSS    │ Free tier + paid         │
+│   Parca               │ Open-source  │ Бесплатно (self-hosted)  │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Сравнение с .NET:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Go</th><th>.NET</th></tr>
+</thead>
+<tbody>
+<tr><td>Pyroscope</td><td>Application Insights Profiler</td></tr>
+<tr><td>Datadog Profiler</td><td>Datadog .NET Profiler</td></tr>
+<tr><td>Google Cloud Profiler</td><td>Azure Application Insights</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="53-интеграция-с-go-приложением"><a class="header" href="#53-интеграция-с-go-приложением">5.3 Интеграция с Go приложением</a></h3>
+<h4 id="pyroscope-open-source"><a class="header" href="#pyroscope-open-source">Pyroscope (Open Source)</a></h4>
+<pre><code class="language-go">package main
+
+import (
+    "github.com/grafana/pyroscope-go"
+)
+
+func main() {
+    // Инициализация Pyroscope
+    pyroscope.Start(pyroscope.Config{
+        ApplicationName: "my-service",
+        ServerAddress:   "http://pyroscope:4040",
+
+        // Типы профилей для сбора
+        ProfileTypes: []pyroscope.ProfileType{
+            pyroscope.ProfileCPU,
+            pyroscope.ProfileAllocObjects,
+            pyroscope.ProfileAllocSpace,
+            pyroscope.ProfileInuseObjects,
+            pyroscope.ProfileInuseSpace,
+            pyroscope.ProfileGoroutines,
+        },
+
+        // Теги для фильтрации
+        Tags: map[string]string{
+            "env":     "production",
+            "version": "1.2.3",
+            "region":  "us-east-1",
+        },
+    })
+
+    // Запуск приложения
+    runApp()
+}
+</code></pre>
+<p><strong>Dockerfile для Pyroscope:</strong></p>
+<pre><code class="language-dockerfile">FROM golang:1.22 AS builder
+WORKDIR /app
+COPY . .
+RUN go build -o /app/myservice
+
+FROM gcr.io/distroless/base
+COPY --from=builder /app/myservice /myservice
+CMD ["/myservice"]
+</code></pre>
+<p><strong>Docker Compose:</strong></p>
+<pre><code class="language-yaml">version: "3.8"
+services:
+  pyroscope:
+    image: grafana/pyroscope:latest
+    ports:
+      - "4040:4040"
+    volumes:
+      - pyroscope-data:/var/lib/pyroscope
+
+  myservice:
+    build: .
+    environment:
+      - PYROSCOPE_SERVER=http://pyroscope:4040
+    depends_on:
+      - pyroscope
+
+volumes:
+  pyroscope-data:
+</code></pre>
+<h4 id="google-cloud-profiler"><a class="header" href="#google-cloud-profiler">Google Cloud Profiler</a></h4>
+<pre><code class="language-go">package main
+
+import (
+    "cloud.google.com/go/profiler"
+    "log"
+)
+
+func main() {
+    // Инициализация Cloud Profiler
+    cfg := profiler.Config{
+        Service:        "my-service",
+        ServiceVersion: "1.2.3",
+        ProjectID:      "my-gcp-project",  // Опционально, если в GCP
+
+        // Не нужно указывать MutexProfiling, он включён по умолчанию
+    }
+
+    if err := profiler.Start(cfg); err != nil {
+        log.Fatalf("Failed to start profiler: %v", err)
+    }
+
+    // Запуск приложения
+    runApp()
+}
+</code></pre>
+<h4 id="datadog-continuous-profiler"><a class="header" href="#datadog-continuous-profiler">Datadog Continuous Profiler</a></h4>
+<pre><code class="language-go">package main
+
+import (
+    "gopkg.in/DataDog/dd-trace-go.v1/profiler"
+    "log"
+)
+
+func main() {
+    // Инициализация Datadog Profiler
+    err := profiler.Start(
+        profiler.WithService("my-service"),
+        profiler.WithEnv("production"),
+        profiler.WithVersion("1.2.3"),
+        profiler.WithProfileTypes(
+            profiler.CPUProfile,
+            profiler.HeapProfile,
+            profiler.GoroutineProfile,
+            profiler.MutexProfile,
+            profiler.BlockProfile,
+        ),
+    )
+    if err != nil {
+        log.Fatalf("Failed to start profiler: %v", err)
+    }
+    defer profiler.Stop()
+
+    // Запуск приложения
+    runApp()
+}
+</code></pre>
+<h4 id="low-overhead-профилирование"><a class="header" href="#low-overhead-профилирование">Low-overhead профилирование</a></h4>
+<p>Continuous profiling работает с низким overhead (~1-5%):</p>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│              OVERHEAD CONTINUOUS PROFILING                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   Профиль         │ Overhead │ Частота сбора                    │
+│   ────────────────────────────────────────────────────────────  │
+│   CPU             │  ~1-2%   │ Постоянно (sampling 100 Hz)      │
+│   Heap            │  ~1%     │ Каждые 10 секунд                 │
+│   Goroutines      │  ~0.5%   │ Каждые 10 секунд                 │
+│   Mutex           │  ~0.5%   │ Постоянно (sampling)             │
+│   Block           │  ~1%     │ Постоянно (sampling)             │
+│   ────────────────────────────────────────────────────────────  │
+│   ИТОГО           │  ~3-5%   │ Приемлемо для production         │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h2 id="5-новые-инструменты-профилирования-go-125-126"><a class="header" href="#5-новые-инструменты-профилирования-go-125-126">5. Новые инструменты профилирования (Go 1.25-1.26)</a></h2>
+<h3 id="51-runtimetraceflightrecorder-go-125"><a class="header" href="#51-runtimetraceflightrecorder-go-125">5.1 runtime/trace.FlightRecorder (Go 1.25)</a></h3>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Аналог .NET ETW (Event Tracing for Windows) или Application Insights Snapshot Debugger — кольцевой буфер событий для диагностики редких проблем в продакшне.</p>
+</blockquote>
+<p>Go 1.25 добавил <code>runtime/trace.FlightRecorder</code> — <strong>непрерывную запись trace-событий</strong> в кольцевой буфер. В отличие от <code>go tool trace</code>, FlightRecorder работает <strong>всегда в фоне</strong> и сохраняет только последние N секунд. Полезен для захвата редких ошибок (latency spike раз в несколько часов).</p>
+<p><strong>Проблема классического trace:</strong></p>
+<pre><code class="language-go">// Классический подход: trace нужно включить заранее
+// Если latency spike произошёл до включения — данных нет
+f, _ := os.Create("trace.out")
+trace.Start(f)
+defer trace.Stop()
+// Ждём проблему... которая уже произошла
+</code></pre>
+<p><strong>FlightRecorder — всегда пишет, сохраняет по событию:</strong></p>
+<pre><code class="language-go">import (
+    "os"
+    "runtime/trace"
+)
+
+func startFlightRecorder() {
+    // Создаём recorder с буфером на 30 секунд
+    recorder := &amp;trace.FlightRecorder{}
+    recorder.Start()
+
+    // В отдельной горутине следим за latency
+    go func() {
+        for {
+            start := time.Now()
+            checkLatency()
+            elapsed := time.Since(start)
+
+            // При latency spike — сохраняем последние 30 сек
+            if elapsed &gt; 500*time.Millisecond {
+                f, err := os.Create("flight-" + time.Now().Format("150405") + ".trace")
+                if err == nil {
+                    recorder.WriteTo(f) // Сохраняем буфер
+                    f.Close()
+                    log.Printf("latency spike detected: %v, trace saved", elapsed)
+                }
+            }
+            time.Sleep(100 * time.Millisecond)
+        }
+    }()
+}
+</code></pre>
+<p><strong>Интеграция с HTTP handler для on-demand дампа:</strong></p>
+<pre><code class="language-go">// Endpoint для получения trace по требованию
+http.HandleFunc("/debug/flight-trace", func(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/octet-stream")
+    w.Header().Set("Content-Disposition", `attachment; filename="flight.trace"`)
+    recorder.WriteTo(w) // Отдаём trace клиенту
+})
+</code></pre>
+<p><strong>Сравнение с .NET:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>.NET ETW / Snapshot</th><th>Go FlightRecorder</th></tr>
+</thead>
+<tbody>
+<tr><td>Всегда активен</td><td>Да (ETW)</td><td>Да</td></tr>
+<tr><td>Кольцевой буфер</td><td>Да</td><td>Да</td></tr>
+<tr><td>Накладные расходы</td><td>~1-3% CPU</td><td>~1-2% CPU</td></tr>
+<tr><td>Размер буфера</td><td>Настраиваемый</td><td>По времени (N сек)</td></tr>
+<tr><td>Инструмент анализа</td><td>PerfView, dotnet-trace</td><td>go tool trace</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h3 id="52-обнаружение-утечек-горутин-go-126-экспериментально"><a class="header" href="#52-обнаружение-утечек-горутин-go-126-экспериментально">5.2 Обнаружение утечек горутин (Go 1.26, экспериментально)</a></h3>
+<p>Go 1.26 добавил <strong>экспериментальный</strong> детектор утечек горутин в runtime. Включается через <code>GOEXPERIMENT=goroutineleak</code>.</p>
+<pre><code class="language-go">// При сборке с GOEXPERIMENT=goroutineleak
+// runtime отслеживает горутины без владельцев
+
+// go build -gcflags="-e" -tags goroutineleak ./...
+
+func processOrders(ctx context.Context) {
+    for order := range orderChan {
+        go func(o Order) { // ← Если ctx отменён до завершения горутины —
+            result := processOrder(ctx, o) // ← детектор зафиксирует утечку
+            resultChan &lt;- result
+        }(order)
+    }
+}
+</code></pre>
+<pre><code class="language-bash"># Включение детектора при тестировании
+GOEXPERIMENT=goroutineleak go test ./... -v
+
+# В логах увидите:
+# GOROUTINE LEAK: goroutine 42 started at main.processOrders:45
+# still running after context cancellation
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Статус</strong>: Экспериментальный в Go 1.26. Не рекомендуется для продакшна. Для стабильного обнаружения утечек используйте <a href="https://github.com/uber-go/goleak">goleak</a> (см. раздел 11.3 в 06_testing_benchmarking.md).</p>
+</blockquote>
+<hr>
+<h3 id="53-новые-runtimemetrics-в-go-126"><a class="header" href="#53-новые-runtimemetrics-в-go-126">5.3 Новые runtime/metrics в Go 1.26</a></h3>
+<p>Go 1.26 добавил новые метрики в <code>runtime/metrics</code> (доступны через Prometheus и OpenTelemetry):</p>
+<pre><code class="language-go">import "runtime/metrics"
+
+// Новые метрики Go 1.26
+samples := []metrics.Sample{
+    // Состояния горутин
+    {Name: "/sched/goroutines:goroutines"},        // Текущее количество
+    {Name: "/sched/goroutines/created:goroutines"}, // Создано всего (новая!)
+    {Name: "/sched/goroutines/runnable:goroutines"}, // В очереди (новая!)
+    {Name: "/sched/goroutines/blocked:goroutines"},   // Заблокированных (новая!)
+
+    // OS потоки
+    {Name: "/sched/latencies:seconds"},            // Latency планировщика
+    {Name: "/os/threads:threads"},                 // OS потоки (новая!)
+}
+
+metrics.Read(samples)
+
+for _, s := range samples {
+    fmt.Printf("%s = %v\n", s.Name, s.Value)
+}
+</code></pre>
+<p><strong>Prometheus: экспорт новых метрик:</strong></p>
+<pre><code class="language-go">// go.opencensus.io/stats или prometheus/client_golang
+// Автоматически подхватывает новые runtime/metrics через
+// collectors.NewGoCollector(collectors.WithGoCollectorRuntimeMetrics(...))
+
+import (
+    "github.com/prometheus/client_golang/prometheus"
+    "github.com/prometheus/client_golang/prometheus/collectors"
+)
+
+func initMetrics() *prometheus.Registry {
+    reg := prometheus.NewRegistry()
+    reg.MustRegister(
+        collectors.NewGoCollector(
+            // Go 1.26: включаем все runtime метрики включая новые
+            collectors.WithGoCollectorRuntimeMetrics(
+                collectors.GoRuntimeMetricsRuleAny,
+            ),
+        ),
+    )
+    return reg
+}
+</code></pre>
+<p><strong>Что отслеживают новые метрики:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Метрика</th><th>Что показывает</th><th>Применение</th></tr>
+</thead>
+<tbody>
+<tr><td><code>goroutines/created</code></td><td>Темп создания горутин</td><td>Утечки горутин</td></tr>
+<tr><td><code>goroutines/runnable</code></td><td>Очередь планировщика</td><td>Overload планировщика</td></tr>
+<tr><td><code>goroutines/blocked</code></td><td>Ожидание channel/mutex</td><td>Deadlock-риски</td></tr>
+<tr><td><code>os/threads</code></td><td>OS потоки (M в GMP)</td><td>Thread pool bloat</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="практические-примеры"><a class="header" href="#практические-примеры">Практические примеры</a></h2>
+<h3 id="пример-1-оптимизация-http-сервиса-end-to-end"><a class="header" href="#пример-1-оптимизация-http-сервиса-end-to-end">Пример 1: Оптимизация HTTP сервиса (end-to-end)</a></h3>
+<p><strong>Сценарий:</strong> HTTP сервис с высоким latency на endpoint <code>/api/users</code>.</p>
+<h4 id="шаг-1-воспроизвести-проблему"><a class="header" href="#шаг-1-воспроизвести-проблему">Шаг 1: Воспроизвести проблему</a></h4>
+<pre><code class="language-go">// main.go
+package main
+
+import (
+    "encoding/json"
+    "net/http"
+    _ "net/http/pprof"  // Добавляем pprof
+)
+
+type User struct {
+    ID       int64    `json:"id"`
+    Name     string   `json:"name"`
+    Email    string   `json:"email"`
+    Tags     []string `json:"tags"`
+    Metadata string   `json:"metadata"`
+}
+
+func getUsers(w http.ResponseWriter, r *http.Request) {
+    users := loadUsers()  // Загрузка из БД
+
+    // Проблемный код: строим JSON ответ неэффективно
+    var result string
+    for _, u := range users {
+        data, _ := json.Marshal(u)
+        result += string(data) + ","  // ❌ Конкатенация строк
+    }
+    result = "[" + result[:len(result)-1] + "]"
+
+    w.Header().Set("Content-Type", "application/json")
+    w.Write([]byte(result))
+}
+
+func main() {
+    // pprof на отдельном порту
+    go func() {
+        http.ListenAndServe("localhost:6060", nil)
+    }()
+
+    mux := http.NewServeMux()
+    mux.HandleFunc("/api/users", getUsers)
+    http.ListenAndServe(":8080", mux)
+}
+</code></pre>
+<h4 id="шаг-2-benchmark"><a class="header" href="#шаг-2-benchmark">Шаг 2: Benchmark</a></h4>
+<pre><code class="language-go">// main_test.go
+package main
+
+import (
+    "net/http"
+    "net/http/httptest"
+    "testing"
+)
+
+func BenchmarkGetUsers(b *testing.B) {
+    req := httptest.NewRequest("GET", "/api/users", nil)
+
+    for i := 0; i &lt; b.N; i++ {
+        w := httptest.NewRecorder()
+        getUsers(w, req)
+    }
+}
+</code></pre>
+<pre><code class="language-bash"># Запуск benchmark с CPU профилем
+go test -bench=BenchmarkGetUsers -count=10 -cpuprofile=cpu.prof &gt; before.txt
+</code></pre>
+<h4 id="шаг-3-анализ-профиля"><a class="header" href="#шаг-3-анализ-профиля">Шаг 3: Анализ профиля</a></h4>
+<pre><code class="language-bash">go tool pprof -http=:8080 cpu.prof
+</code></pre>
+<p><strong>Результат анализа:</strong></p>
+<pre><code>Showing top 10 nodes out of 43
+      flat  flat%   sum%        cum   cum%
+     2.5s 35.00% 35.00%      2.5s 35.00%  runtime.mallocgc      ← Много аллокаций!
+     1.5s 21.00% 56.00%      1.5s 21.00%  runtime.memmove       ← Копирование данных
+     1.0s 14.00% 70.00%      4.0s 56.00%  main.getUsers         ← Наш handler
+     0.5s  7.00% 77.00%      0.5s  7.00%  encoding/json.Marshal
+</code></pre>
+<p><strong>Вывод:</strong> Много аллокаций (<code>mallocgc</code>) и копирование (<code>memmove</code>) — типично для конкатенации строк.</p>
+<h4 id="шаг-4-оптимизация"><a class="header" href="#шаг-4-оптимизация">Шаг 4: Оптимизация</a></h4>
+<pre><code class="language-go">func getUsersOptimized(w http.ResponseWriter, r *http.Request) {
+    users := loadUsers()
+
+    w.Header().Set("Content-Type", "application/json")
+
+    // ✅ Используем json.Encoder напрямую — никакой конкатенации
+    json.NewEncoder(w).Encode(users)
+}
+</code></pre>
+<p><strong>Ещё лучше с easyjson:</strong></p>
+<pre><code class="language-go">//go:generate easyjson -all main.go
+
+func getUsersFast(w http.ResponseWriter, r *http.Request) {
+    users := loadUsers()
+
+    w.Header().Set("Content-Type", "application/json")
+
+    // ✅ easyjson — без reflection
+    out, _ := easyjson.Marshal(users)
+    w.Write(out)
+}
+</code></pre>
+<h4 id="шаг-5-верификация"><a class="header" href="#шаг-5-верификация">Шаг 5: Верификация</a></h4>
+<pre><code class="language-bash">go test -bench=BenchmarkGetUsers -count=10 &gt; after.txt
+benchstat before.txt after.txt
+</code></pre>
+<p><strong>Результат:</strong></p>
+<pre><code>name          old time/op    new time/op    delta
+GetUsers-8      15.2ms ± 2%     1.2ms ± 3%   -92.1%  (p=0.000 n=10+10)
+
+name          old alloc/op   new alloc/op   delta
+GetUsers-8      4.52MB ± 0%    0.12MB ± 0%   -97.3%  (p=0.000 n=10+10)
+
+name          old allocs/op  new allocs/op  delta
+GetUsers-8       45.2k ± 0%      0.5k ± 0%   -98.9%  (p=0.000 n=10+10)
+</code></pre>
+<hr>
+<h3 id="пример-2-диагностика-memory-leak-через-goroutine-leak"><a class="header" href="#пример-2-диагностика-memory-leak-через-goroutine-leak">Пример 2: Диагностика memory leak через goroutine leak</a></h3>
+<p><strong>Сценарий:</strong> Память приложения постоянно растёт.</p>
+<h4 id="симптомы"><a class="header" href="#симптомы">Симптомы</a></h4>
+<pre><code class="language-bash"># Мониторинг памяти
+watch -n 5 'curl -s localhost:6060/debug/pprof/heap | head -20'
+
+# Результат: память растёт на ~10MB каждую минуту
+</code></pre>
+<h4 id="шаг-1-проверка-горутин"><a class="header" href="#шаг-1-проверка-горутин">Шаг 1: Проверка горутин</a></h4>
+<pre><code class="language-bash"># Количество горутин
+curl -s localhost:6060/debug/pprof/goroutine | head -1
+# goroutine profile: total 15234  ← Подозрительно много!
+
+# Детальный профиль
+go tool pprof http://localhost:6060/debug/pprof/goroutine
+</code></pre>
+<pre><code>(pprof) top
+Showing nodes accounting for 15000, 98.5% of 15234 total
+      flat  flat%   sum%        cum   cum%
+     15000 98.5% 98.5%      15000 98.5%  main.processRequest
+</code></pre>
+<h4 id="шаг-2-анализ-кода"><a class="header" href="#шаг-2-анализ-кода">Шаг 2: Анализ кода</a></h4>
+<pre><code class="language-go">// Проблемный код
+func processRequest(ctx context.Context, data Data) {
+    // Горутина запускается, но никогда не завершается
+    go func() {
+        for {
+            result := heavyComputation(data)
+            sendToChannel(result)  // ← Канал заполнен, горутина блокируется
+        }
+    }()
+}
+
+// Канал никогда не читается после первых N элементов
+var resultChan = make(chan Result, 100)
+
+func init() {
+    go func() {
+        for i := 0; i &lt; 100; i++ {
+            &lt;-resultChan  // Читаем только 100 элементов
+        }
+        // Больше не читаем — все горутины блокируются на send
+    }()
+}
+</code></pre>
+<h4 id="шаг-3-исправление"><a class="header" href="#шаг-3-исправление">Шаг 3: Исправление</a></h4>
+<pre><code class="language-go">func processRequestFixed(ctx context.Context, data Data) {
+    go func() {
+        for {
+            select {
+            case &lt;-ctx.Done():
+                return  // ✅ Выход при отмене контекста
+            default:
+                result := heavyComputation(data)
+                select {
+                case resultChan &lt;- result:
+                    // Отправлено успешно
+                case &lt;-ctx.Done():
+                    return  // ✅ Выход если контекст отменён
+                case &lt;-time.After(time.Second):
+                    // ✅ Таймаут — не блокируемся навечно
+                    log.Warn("channel full, dropping result")
+                }
+            }
+        }
+    }()
+}
+</code></pre>
+<h4 id="шаг-4-использование-goleak-в-тестах"><a class="header" href="#шаг-4-использование-goleak-в-тестах">Шаг 4: Использование goleak в тестах</a></h4>
+<pre><code class="language-go">import "go.uber.org/goleak"
+
+func TestMain(m *testing.M) {
+    goleak.VerifyTestMain(m)
+}
+
+func TestProcessRequest(t *testing.T) {
+    ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+    defer cancel()
+
+    processRequestFixed(ctx, testData)
+
+    // goleak автоматически проверит утечки горутин
+}
+</code></pre>
+<hr>
+<h3 id="пример-3-latency-spikes-в-микросервисе"><a class="header" href="#пример-3-latency-spikes-в-микросервисе">Пример 3: Latency spikes в микросервисе</a></h3>
+<p><strong>Сценарий:</strong> P99 latency = 500ms, P50 = 10ms. Огромный разброс.</p>
+<h4 id="шаг-1-сбор-trace"><a class="header" href="#шаг-1-сбор-trace">Шаг 1: Сбор trace</a></h4>
+<pre><code class="language-bash">curl -o trace.out "http://localhost:6060/debug/pprof/trace?seconds=60"
+go tool trace trace.out
+</code></pre>
+<h4 id="шаг-2-анализ"><a class="header" href="#шаг-2-анализ">Шаг 2: Анализ</a></h4>
+<p>В браузере открываем “Goroutine analysis”:</p>
+<pre><code>Goroutine analysis:
+────────────────────────────────────────────────────────────────
+Goroutine Name           Count   Execution   Sync Block   GC Wait
+────────────────────────────────────────────────────────────────
+main.handleRequest        1000     100ms       350ms       50ms
+                                               ↑            ↑
+                                         Mutex/Channel   GC паузы
+</code></pre>
+<p><strong>Вывод:</strong></p>
+<ul>
+<li>350ms в “Sync Block” — блокировка на mutex или channel</li>
+<li>50ms в “GC Wait” — ожидание GC</li>
+</ul>
+<h4 id="шаг-3-диагностика-mutex-contention"><a class="header" href="#шаг-3-диагностика-mutex-contention">Шаг 3: Диагностика mutex contention</a></h4>
+<pre><code class="language-bash"># Профиль mutex contention
+go tool pprof http://localhost:6060/debug/pprof/mutex
+</code></pre>
+<pre><code>(pprof) top
+Showing nodes accounting for 8.5s, 85% of 10s total
+      flat  flat%   sum%        cum   cum%
+     8.5s 85.00% 85.00%      8.5s 85.00%  sync.(*Mutex).Lock
+                                           main.getCache
+</code></pre>
+<p><strong>Проблемный код:</strong></p>
+<pre><code class="language-go">var (
+    cacheMu sync.Mutex
+    cache   = make(map[string]Value)
+)
+
+func getCache(key string) Value {
+    cacheMu.Lock()  // ← Все запросы сериализуются здесь
+    defer cacheMu.Unlock()
+    return cache[key]
+}
+</code></pre>
+<h4 id="шаг-4-оптимизация-1"><a class="header" href="#шаг-4-оптимизация-1">Шаг 4: Оптимизация</a></h4>
+<pre><code class="language-go">// Решение 1: RWMutex для read-heavy workload
+var (
+    cacheMu sync.RWMutex
+    cache   = make(map[string]Value)
+)
+
+func getCacheRW(key string) Value {
+    cacheMu.RLock()  // ✅ Параллельные чтения
+    defer cacheMu.RUnlock()
+    return cache[key]
+}
+
+// Решение 2: Sharded cache для high contention
+type ShardedCache struct {
+    shards [256]struct {
+        sync.RWMutex
+        data map[string]Value
+    }
+}
+
+func (c *ShardedCache) Get(key string) Value {
+    shard := &amp;c.shards[hash(key)%256]
+    shard.RLock()
+    defer shard.RUnlock()
+    return shard.data[key]
+}
+</code></pre>
+<h4 id="шаг-5-диагностика-gc"><a class="header" href="#шаг-5-диагностика-gc">Шаг 5: Диагностика GC</a></h4>
+<pre><code class="language-bash">GODEBUG=gctrace=1 ./myapp 2&gt;&amp;1 | grep gc
+</code></pre>
+<pre><code>gc 1 @0.012s 2%: 0.5+15+0.5 ms clock, 4+0/12/0+4 ms cpu, 100-&gt;105-&gt;50 MB
+gc 2 @0.034s 3%: 0.6+18+0.6 ms clock, 5+0/15/0+5 ms cpu, 100-&gt;110-&gt;55 MB
+                      ↑
+                 STW pause = 18ms — слишком долго!
+</code></pre>
+<p><strong>Решение:</strong></p>
+<pre><code class="language-go">// Увеличить GOGC (меньше GC циклов, больше памяти)
+// В production или через переменную окружения
+import "runtime/debug"
+
+func init() {
+    debug.SetGCPercent(200)  // Дефолт 100, увеличиваем в 2 раза
+}
+</code></pre>
+<hr>
+<h3 id="пример-4-cicd-pipeline-для-производительности"><a class="header" href="#пример-4-cicd-pipeline-для-производительности">Пример 4: CI/CD pipeline для производительности</a></h3>
+<p><strong>Цель:</strong> Автоматически ловить регрессии производительности в PR.</p>
+<h4 id="github-actions-workflow"><a class="header" href="#github-actions-workflow">GitHub Actions workflow</a></h4>
+<pre><code class="language-yaml"># .github/workflows/performance.yml
+name: Performance Tests
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Для сравнения с main
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Install benchstat
+        run: go install golang.org/x/perf/cmd/benchstat@latest
+
+      - name: Run benchmarks on PR
+        run: |
+          go test -bench=. -count=10 -benchmem ./... &gt; new.txt
+
+      - name: Checkout main branch
+        run: |
+          git checkout main
+          go test -bench=. -count=10 -benchmem ./... &gt; old.txt
+          git checkout -
+
+      - name: Compare benchmarks
+        id: compare
+        run: |
+          benchstat old.txt new.txt &gt; comparison.txt
+          cat comparison.txt
+
+          # Проверка на регрессии &gt; 10%
+          if grep -E '\+[1-9][0-9]+\.[0-9]+%' comparison.txt; then
+            echo "regression=true" &gt;&gt; $GITHUB_OUTPUT
+          else
+            echo "regression=false" &gt;&gt; $GITHUB_OUTPUT
+          fi
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const comparison = fs.readFileSync('comparison.txt', 'utf8');
+
+            const body = `## Benchmark Results
+
+            \`\`\`
+            ${comparison}
+            \`\`\`
+
+            ${process.env.REGRESSION === 'true' ? '⚠️ **Performance regression detected!**' : '✅ No significant regressions'}
+            `;
+
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: body
+            });
+        env:
+          REGRESSION: ${{ steps.compare.outputs.regression }}
+
+      - name: Fail on regression
+        if: steps.compare.outputs.regression == 'true'
+        run: |
+          echo "Performance regression detected!"
+          exit 1
+</code></pre>
+<h4 id="результат-в-pr"><a class="header" href="#результат-в-pr">Результат в PR</a></h4>
+<pre><code>## Benchmark Results
+
+name              old time/op    new time/op    delta
+Handler-8           1.25ms ± 2%    1.89ms ± 3%   +51.2%  ⚠️
+
+name              old alloc/op   new alloc/op   delta
+Handler-8           48.2kB ± 0%    72.1kB ± 0%   +49.6%  ⚠️
+
+⚠️ **Performance regression detected!**
+</code></pre>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part2-advanced/07_testing_benchmarking.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part3-web-api/01_http_server.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part2-advanced/07_testing_benchmarking.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part3-web-api/01_http_server.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

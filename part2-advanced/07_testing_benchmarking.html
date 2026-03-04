@@ -1,0 +1,2562 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Тестирование и бенчмаркинг - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-66c694bb.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-1a7de78a.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part2-advanced/07_testing_benchmarking.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="тестирование-и-бенчмаркинг"><a class="header" href="#тестирование-и-бенчмаркинг">Тестирование и бенчмаркинг</a></h1>
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<p>В <a href="../part1-basics/04_practice.html">разделе 1.4</a> мы писали практические проекты, но тестирование было минимальным. Теперь, когда мы изучили продвинутые темы (<a href="./01_goroutines_channels.html">горутины</a>, <a href="./03_gc.html">GC</a>, <a href="./04_sync_primitives.html">синхронизацию</a>, <a href="./05_error_handling.html">обработку ошибок</a>), пришло время научиться тестировать сложный Go код на уровне production.</p>
+<p>В этом разделе мы рассмотрим:</p>
+<ul>
+<li><strong>testing package</strong> — минималистичный подход Go vs богатые фреймворки C# (xUnit, NUnit, MSTest)</li>
+<li><strong>Table-driven tests</strong> — идиоматичный Go паттерн vs [Theory]/[InlineData]</li>
+<li><strong>Мокирование</strong> — интерфейсы и code generation vs Moq/NSubstitute</li>
+<li><strong>Benchmarks</strong> — встроенные бенчмарки vs BenchmarkDotNet</li>
+<li><strong>Fuzzing</strong> — новая фича Go 1.18+ для обнаружения багов</li>
+<li><strong>Integration тесты</strong> — httptest, testcontainers, БД</li>
+<li><strong>Race detector</strong> — обнаружение data races (критично для конкурентного кода)</li>
+<li><strong>Coverage</strong> — измерение покрытия кода</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В C# вы привыкли к богатым assertion библиотекам (FluentAssertions, Shouldly), атрибутам ([Test], [Theory]) и мощным фреймворкам (xUnit, NUnit). В Go философия другая: <strong>простота и минимализм</strong>. Стандартная библиотека <code>testing</code> предоставляет только базовые возможности (<code>t.Error()</code>, <code>t.Fatal()</code>), а идиоматичные паттерны (table-driven tests, subtests) заменяют многие фичи фреймворков. Это делает тесты более читаемыми и предсказуемыми.</p>
+</blockquote>
+<h3 id="сравнительная-таблица-c-vs-go-тестирование"><a class="header" href="#сравнительная-таблица-c-vs-go-тестирование">Сравнительная таблица: C# vs Go тестирование</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# (xUnit/NUnit/MSTest)</th><th>Go (testing)</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Фреймворк</strong></td><td>Сторонние (xUnit, NUnit, MSTest)</td><td>Встроенный (<code>testing</code> package)</td></tr>
+<tr><td><strong>Атрибуты</strong></td><td><code>[Test]</code>, <code>[Theory]</code>, <code>[Fact]</code></td><td>Соглашение по именованию: <code>func TestXxx(t *testing.T)</code></td></tr>
+<tr><td><strong>Параметризация</strong></td><td><code>[InlineData]</code>, <code>[MemberData]</code></td><td><strong>Table-driven tests</strong> (идиома Go)</td></tr>
+<tr><td><strong>Assertions</strong></td><td>Rich: <code>Assert.Equal()</code>, FluentAssertions</td><td>Минималистичные: <code>t.Error()</code>, <code>t.Fatal()</code></td></tr>
+<tr><td><strong>Setup/Teardown</strong></td><td><code>IClassFixture</code>, <code>[SetUp]</code>, <code>[TearDown]</code></td><td><code>TestMain()</code>, <code>defer</code>, <code>t.Cleanup()</code></td></tr>
+<tr><td><strong>Subtests</strong></td><td>Nested classes</td><td><code>t.Run(name, func)</code></td></tr>
+<tr><td><strong>Mocking</strong></td><td>Moq, NSubstitute (reflection-based)</td><td>Интерфейсы + <code>gomock</code>/<code>testify</code> (code gen)</td></tr>
+<tr><td><strong>Benchmarks</strong></td><td>BenchmarkDotNet (отдельный пакет)</td><td>Встроенные: <code>func BenchmarkXxx(b *testing.B)</code></td></tr>
+<tr><td><strong>Fuzzing</strong></td><td>❌ Нет в стандарте (сторонние)</td><td>✅ Встроенный с Go 1.18+: <code>func FuzzXxx(f *testing.F)</code></td></tr>
+<tr><td><strong>Race detection</strong></td><td>Thread Sanitizer (LLVM, внешний)</td><td>✅ Встроенный: <code>go test -race</code></td></tr>
+<tr><td><strong>Coverage</strong></td><td>Visual Studio, dotCover</td><td>✅ Встроенный: <code>go test -cover</code></td></tr>
+<tr><td><strong>Parallel</strong></td><td><code>[Theory]</code> автоматически</td><td><code>t.Parallel()</code> (явно)</td></tr>
+<tr><td><strong>Фильтрация</strong></td><td><code>dotnet test --filter</code></td><td><code>go test -run TestName</code></td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="1-testing-package-основы"><a class="header" href="#1-testing-package-основы">1. testing package: основы</a></h2>
+<h3 id="11-структура-тестов"><a class="header" href="#11-структура-тестов">1.1 Структура тестов</a></h3>
+<p>В Go тесты — это обычные функции с определенной сигнатурой. Ключевые соглашения:</p>
+<ol>
+<li><strong>Имя файла</strong>: <code>*_test.go</code> (например, <code>user_test.go</code> для <code>user.go</code>)</li>
+<li><strong>Имя функции</strong>: <code>func TestXxx(t *testing.T)</code> (начинается с <code>Test</code>, затем заглавная буква)</li>
+<li><strong>Расположение</strong>: в том же пакете или в отдельном (<code>package xxx_test</code>)</li>
+</ol>
+<h4 id="сравнение-c-vs-go"><a class="header" href="#сравнение-c-vs-go">Сравнение: C# vs Go</a></h4>
+<p><strong>C# (xUnit)</strong>:</p>
+<pre><code class="language-csharp">// UserServiceTests.cs
+using Xunit;
+
+public class UserServiceTests
+{
+    [Fact]
+    public void GetUser_ValidId_ReturnsUser()
+    {
+        // Arrange
+        var service = new UserService();
+
+        // Act
+        var user = service.GetUser(1);
+
+        // Assert
+        Assert.NotNull(user);
+        Assert.Equal("Alice", user.Name);
+    }
+
+    [Theory]
+    [InlineData(1, "Alice")]
+    [InlineData(2, "Bob")]
+    public void GetUser_MultipleIds_ReturnsCorrectUser(int id, string expectedName)
+    {
+        var service = new UserService();
+        var user = service.GetUser(id);
+        Assert.Equal(expectedName, user.Name);
+    }
+}
+</code></pre>
+<p><strong>Go (идиоматично)</strong>:</p>
+<pre><code class="language-go">// user_test.go
+package user
+
+import "testing"
+
+// Simple unit test
+func TestGetUser(t *testing.T) {
+    service := NewUserService()
+
+    user, err := service.GetUser(1)
+    if err != nil {
+        t.Fatalf("unexpected error: %v", err)
+    }
+
+    if user.Name != "Alice" {
+        t.Errorf("expected name %q, got %q", "Alice", user.Name)
+    }
+}
+
+// Table-driven test (вместо [Theory])
+func TestGetUser_TableDriven(t *testing.T) {
+    service := NewUserService()
+
+    tests := []struct {
+        name         string
+        id           int
+        expectedName string
+    }{
+        {"Alice", 1, "Alice"},
+        {"Bob", 2, "Bob"},
+    }
+
+    for _, tt := range tests {
+        t.Run(tt.name, func(t *testing.T) {
+            user, err := service.GetUser(tt.id)
+            if err != nil {
+                t.Fatalf("unexpected error: %v", err)
+            }
+            if user.Name != tt.expectedName {
+                t.Errorf("expected %q, got %q", tt.expectedName, user.Name)
+            }
+        })
+    }
+}
+</code></pre>
+<h4 id="ключевые-различия"><a class="header" href="#ключевые-различия">Ключевые различия</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C#</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Атрибуты</strong></td><td><code>[Fact]</code>, <code>[Theory]</code></td><td>Соглашение: <code>func TestXxx(t *testing.T)</code></td></tr>
+<tr><td><strong>Файл</strong></td><td><code>UserServiceTests.cs</code></td><td><code>user_test.go</code> (суффикс <code>_test</code>)</td></tr>
+<tr><td><strong>Класс</strong></td><td>Требуется</td><td>❌ Не нужен (пакетная функция)</td></tr>
+<tr><td><strong>Assertions</strong></td><td><code>Assert.Equal()</code>, <code>Assert.NotNull()</code></td><td><code>t.Error()</code>, <code>t.Errorf()</code>, <code>t.Fatal()</code></td></tr>
+<tr><td><strong>Параметризация</strong></td><td><code>[InlineData]</code></td><td>Table-driven pattern (struct slice)</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Тесты находятся в том же пакете (<code>package user</code>), что позволяет тестировать unexported функции. Для тестирования только публичного API используйте <code>package user_test</code>.</p>
+</blockquote>
+<h4 id="testingt-методы"><a class="header" href="#testingt-методы">testing.T методы</a></h4>
+<pre><code class="language-go">// t.Error / t.Errorf — помечает тест как failed, НО продолжает выполнение
+t.Error("something went wrong")
+t.Errorf("expected %d, got %d", 10, result)
+
+// t.Fatal / t.Fatalf — помечает failed и НЕМЕДЛЕННО останавливает тест
+t.Fatal("critical failure, stop test")
+t.Fatalf("expected user, got nil")
+
+// t.Log / t.Logf — выводит в консоль (только с флагом -v)
+t.Logf("Processing user ID: %d", userID)
+
+// t.Skip / t.Skipf — пропускает тест (например, если нет БД)
+if testing.Short() {
+    t.Skip("skipping integration test in short mode")
+}
+
+// t.Cleanup — регистрирует функцию cleanup (Go 1.14+)
+t.Cleanup(func() {
+    db.Close()
+})
+</code></pre>
+<p><strong>Когда использовать <code>Error</code> vs <code>Fatal</code>?</strong></p>
+<pre><code class="language-go">func TestUser(t *testing.T) {
+    user, err := GetUser(1)
+
+    // Fatal: если ошибка критична и дальше тестировать нет смысла
+    if err != nil {
+        t.Fatalf("failed to get user: %v", err)
+    }
+
+    // Error: если можно продолжить проверки
+    if user.Name != "Alice" {
+        t.Errorf("expected name Alice, got %s", user.Name)
+    }
+
+    if user.Age != 30 {
+        t.Errorf("expected age 30, got %d", user.Age)
+    }
+}
+</code></pre>
+<hr>
+<h3 id="12-запуск-тестов"><a class="header" href="#12-запуск-тестов">1.2 Запуск тестов</a></h3>
+<h4 id="базовые-команды"><a class="header" href="#базовые-команды">Базовые команды</a></h4>
+<pre><code class="language-bash"># Запуск всех тестов в текущем пакете
+go test
+
+# Verbose output (показывает t.Log и имена тестов)
+go test -v
+
+# Запуск тестов рекурсивно во всех подпакетах
+go test ./...
+
+# Запуск конкретного теста (regex)
+go test -run TestGetUser
+
+# Запуск конкретного subtest
+go test -run TestGetUser/Alice
+
+# Запуск в "short mode" (пропускает медленные тесты)
+go test -short
+
+# Параллельный запуск
+go test -parallel 4
+
+# Запуск N раз (для проверки flaky tests)
+go test -count=10
+</code></pre>
+<h4 id="сравнение-dotnet-test-vs-go-test"><a class="header" href="#сравнение-dotnet-test-vs-go-test">Сравнение: dotnet test vs go test</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Задача</th><th>C# (<code>dotnet test</code>)</th><th>Go (<code>go test</code>)</th></tr>
+</thead>
+<tbody>
+<tr><td>Все тесты</td><td><code>dotnet test</code></td><td><code>go test</code></td></tr>
+<tr><td>Verbose</td><td><code>dotnet test -v detailed</code></td><td><code>go test -v</code></td></tr>
+<tr><td>Фильтр</td><td><code>dotnet test --filter FullyQualifiedName~GetUser</code></td><td><code>go test -run GetUser</code></td></tr>
+<tr><td>Параллельность</td><td>Автоматически</td><td><code>go test -parallel N</code></td></tr>
+<tr><td>Coverage</td><td><code>dotnet test --collect:"XPlat Code Coverage"</code></td><td><code>go test -cover</code></td></tr>
+<tr><td>Рекурсивно</td><td><code>dotnet test</code> (ищет .csproj)</td><td><code>go test ./...</code></td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="пример-вывода"><a class="header" href="#пример-вывода">Пример вывода</a></h4>
+<pre><code class="language-bash">$ go test -v
+=== RUN   TestGetUser
+--- PASS: TestGetUser (0.00s)
+=== RUN   TestGetUser_TableDriven
+=== RUN   TestGetUser_TableDriven/Alice
+=== RUN   TestGetUser_TableDriven/Bob
+--- PASS: TestGetUser_TableDriven (0.00s)
+    --- PASS: TestGetUser_TableDriven/Alice (0.00s)
+    --- PASS: TestGetUser_TableDriven/Bob (0.00s)
+PASS
+ok      github.com/user/myapp    0.123s
+</code></pre>
+<hr>
+<h3 id="13-setupteardown"><a class="header" href="#13-setupteardown">1.3 Setup/Teardown</a></h3>
+<p>В C# вы используете <code>IClassFixture</code>, <code>[SetUp]</code>, <code>[TearDown]</code> для инициализации. В Go подход проще и явнее.</p>
+<h4 id="способ-1-testmain-package-level-setup"><a class="header" href="#способ-1-testmain-package-level-setup">Способ 1: TestMain (package-level setup)</a></h4>
+<p><code>TestMain</code> запускается <strong>один раз</strong> перед всеми тестами пакета. Используется для глобальной инициализации (БД, конфиги и т.д.).</p>
+<p><strong>C# (xUnit)</strong>:</p>
+<pre><code class="language-csharp">public class DatabaseFixture : IDisposable
+{
+    public Database DB { get; private set; }
+
+    public DatabaseFixture()
+    {
+        DB = new Database("test_connection");
+        DB.Migrate();
+    }
+
+    public void Dispose()
+    {
+        DB.Close();
+    }
+}
+
+public class UserServiceTests : IClassFixture&lt;DatabaseFixture&gt;
+{
+    private readonly Database _db;
+
+    public UserServiceTests(DatabaseFixture fixture)
+    {
+        _db = fixture.DB;
+    }
+
+    [Fact]
+    public void Test1() { /* использует _db */ }
+}
+</code></pre>
+<p><strong>Go (TestMain)</strong>:</p>
+<pre><code class="language-go">package user
+
+import (
+    "testing"
+    "os"
+)
+
+var testDB *Database
+
+// TestMain запускается ПЕРЕД всеми тестами
+func TestMain(m *testing.M) {
+    // Setup
+    testDB = setupTestDatabase()
+    testDB.Migrate()
+
+    // Запуск тестов
+    code := m.Run()
+
+    // Teardown (выполняется ВСЕГДА, даже если тесты упали)
+    testDB.Close()
+
+    // Выход с кодом (0 = success, 1 = failure)
+    os.Exit(code)
+}
+
+func TestGetUser(t *testing.T) {
+    // testDB доступен здесь
+    user, err := GetUserFromDB(testDB, 1)
+    if err != nil {
+        t.Fatal(err)
+    }
+    // ...
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: <code>TestMain</code> используется редко, только для тяжелой инициализации (БД, внешние сервисы). Для простых случаев используйте <code>t.Cleanup()</code> или <code>defer</code>.</p>
+</blockquote>
+<h4 id="способ-2-defer-для-простого-cleanup"><a class="header" href="#способ-2-defer-для-простого-cleanup">Способ 2: defer (для простого cleanup)</a></h4>
+<pre><code class="language-go">func TestWithCleanup(t *testing.T) {
+    // Setup
+    file, err := os.CreateTemp("", "test")
+    if err != nil {
+        t.Fatal(err)
+    }
+    defer os.Remove(file.Name()) // Cleanup через defer
+
+    // Test logic
+    _, err = file.WriteString("test data")
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    // defer вызовется автоматически при выходе из функции
+}
+</code></pre>
+<h4 id="способ-3-tcleanup-go-114-идиоматично"><a class="header" href="#способ-3-tcleanup-go-114-идиоматично">Способ 3: t.Cleanup() (Go 1.14+, идиоматично)</a></h4>
+<p><code>t.Cleanup()</code> удобнее <code>defer</code>, так как cleanup запускается <strong>после всех subtests</strong>.</p>
+<pre><code class="language-go">func TestWithCleanup(t *testing.T) {
+    // Setup
+    db := setupDatabase()
+
+    // Регистрируем cleanup (выполнится в конце теста)
+    t.Cleanup(func() {
+        db.Close()
+    })
+
+    // Test logic
+    user, err := db.GetUser(1)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    // Можно вызвать t.Fatal() — cleanup всё равно выполнится
+}
+</code></pre>
+<p><strong>Сравнение: defer vs t.Cleanup()</strong></p>
+<pre><code class="language-go">func TestDeferVsCleanup(t *testing.T) {
+    // defer выполняется СРАЗУ при выходе из функции
+    defer fmt.Println("defer cleanup")
+
+    // t.Cleanup выполняется ПОСЛЕ всех subtests
+    t.Cleanup(func() {
+        fmt.Println("t.Cleanup cleanup")
+    })
+
+    t.Run("subtest1", func(t *testing.T) {
+        fmt.Println("subtest1")
+    })
+
+    t.Run("subtest2", func(t *testing.T) {
+        fmt.Println("subtest2")
+    })
+}
+
+// Вывод:
+// subtest1
+// subtest2
+// t.Cleanup cleanup
+// defer cleanup
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Предпочитайте <code>t.Cleanup()</code> для cleanup в тестах с subtests. Для простых случаев <code>defer</code> тоже подходит.</p>
+</blockquote>
+<hr>
+<h2 id="2-table-driven-tests-идиоматичный-go"><a class="header" href="#2-table-driven-tests-идиоматичный-go">2. Table-Driven Tests (идиоматичный Go)</a></h2>
+<p><strong>Table-driven tests</strong> — это <strong>идиоматичный</strong> паттерн тестирования в Go. Он заменяет атрибуты <code>[Theory]</code>/<code>[InlineData]</code> из C#.</p>
+<h3 id="21-паттерн-table-driven"><a class="header" href="#21-паттерн-table-driven">2.1 Паттерн Table-Driven</a></h3>
+<p>Идея: создать <strong>slice структур</strong> с тестовыми случаями и прогнать их в цикле.</p>
+<h4 id="сравнение-c-theory-vs-go-table-driven"><a class="header" href="#сравнение-c-theory-vs-go-table-driven">Сравнение: C# [Theory] vs Go table-driven</a></h4>
+<p><strong>C# (xUnit)</strong>:</p>
+<pre><code class="language-csharp">[Theory]
+[InlineData("user@example.com", true)]
+[InlineData("invalid-email", false)]
+[InlineData("", false)]
+[InlineData("test@", false)]
+public void IsValidEmail_VariousInputs_ReturnsExpected(string email, bool expected)
+{
+    var result = EmailValidator.IsValid(email);
+    Assert.Equal(expected, result);
+}
+</code></pre>
+<p><strong>Go (table-driven test)</strong>:</p>
+<pre><code class="language-go">func TestIsValidEmail(t *testing.T) {
+    // Таблица тестовых случаев
+    tests := []struct {
+        name     string // Описание case
+        email    string // Входные данные
+        expected bool   // Ожидаемый результат
+    }{
+        {"valid email", "user@example.com", true},
+        {"missing @", "invalid-email", false},
+        {"empty string", "", false},
+        {"incomplete domain", "test@", false},
+        {"no domain", "user@", false},
+        {"unicode email", "пользователь@пример.рф", true}, // Go поддерживает unicode
+    }
+
+    // Прогоняем все cases
+    for _, tt := range tests {
+        t.Run(tt.name, func(t *testing.T) {
+            result := IsValidEmail(tt.email)
+            if result != tt.expected {
+                t.Errorf("IsValidEmail(%q) = %v, expected %v", tt.email, result, tt.expected)
+            }
+        })
+    }
+}
+</code></pre>
+<h4 id="анатомия-table-driven-теста"><a class="header" href="#анатомия-table-driven-теста">Анатомия table-driven теста</a></h4>
+<pre><code class="language-go">tests := []struct {
+    // 1. name — описание case (отображается в выводе)
+    name string
+
+    // 2. Входные параметры
+    input  string
+    userID int
+
+    // 3. Ожидаемые результаты
+    want      string
+    wantError bool
+
+    // 4. (Опционально) Setup функция для этого case
+    setupFunc func()
+}{
+    {
+        name:      "success case",
+        input:     "valid",
+        userID:    1,
+        want:      "result",
+        wantError: false,
+    },
+    // ...
+}
+</code></pre>
+<hr>
+<h3 id="22-преимущества-подхода"><a class="header" href="#22-преимущества-подхода">2.2 Преимущества подхода</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Преимущество</th><th>C# [Theory]</th><th>Go table-driven</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Читаемость</strong></td><td>Атрибуты могут быть далеко от кода</td><td>✅ Все данные рядом с логикой</td></tr>
+<tr><td><strong>Добавление случаев</strong></td><td>Новый <code>[InlineData]</code></td><td>✅ Новая строка в slice</td></tr>
+<tr><td><strong>Именование</strong></td><td>Генерируется автоматически</td><td>✅ Явное поле <code>name</code></td></tr>
+<tr><td><strong>Сложные структуры</strong></td><td><code>[MemberData]</code> требует отдельный метод</td><td>✅ Inline в slice</td></tr>
+<tr><td><strong>Переиспользование</strong></td><td>Сложно</td><td>✅ Можно вынести <code>tests</code> в переменную</td></tr>
+<tr><td><strong>Отладка</strong></td><td>Атрибуты скрывают детали</td><td>✅ Обычный Go код</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Пример: сложные структуры</strong></p>
+<pre><code class="language-go">func TestProcessOrder(t *testing.T) {
+    tests := []struct {
+        name  string
+        order Order
+        want  OrderResult
+    }{
+        {
+            name: "order with discount",
+            order: Order{
+                ID:    1,
+                Items: []Item{{Name: "Book", Price: 100}},
+                User:  User{ID: 1, HasDiscount: true},
+            },
+            want: OrderResult{
+                Total:        90,
+                DiscountUsed: true,
+            },
+        },
+        {
+            name: "order without items",
+            order: Order{
+                ID:    2,
+                Items: []Item{},
+                User:  User{ID: 2},
+            },
+            want: OrderResult{
+                Total: 0,
+                Error: ErrNoItems,
+            },
+        },
+    }
+
+    for _, tt := range tests {
+        t.Run(tt.name, func(t *testing.T) {
+            result := ProcessOrder(tt.order)
+            if result != tt.want {
+                t.Errorf("got %+v, want %+v", result, tt.want)
+            }
+        })
+    }
+}
+</code></pre>
+<hr>
+<h3 id="23-продвинутые-техники"><a class="header" href="#23-продвинутые-техники">2.3 Продвинутые техники</a></h3>
+<h4 id="техника-1-именованные-поля-описательность"><a class="header" href="#техника-1-именованные-поля-описательность">Техника 1: Именованные поля (описательность)</a></h4>
+<p>Вместо позиционных параметров используйте <strong>именованные поля</strong>.</p>
+<pre><code class="language-go">// ❌ Плохо: непонятно, что означают параметры
+tests := []struct {
+    string
+    int
+    bool
+}{
+    {"test", 10, true},
+}
+
+// ✅ Хорошо: явные имена полей
+tests := []struct {
+    name     string
+    input    int
+    expected bool
+}{
+    {name: "positive", input: 10, expected: true},
+}
+</code></pre>
+<h4 id="техника-2-setupteardown-для-каждого-case"><a class="header" href="#техника-2-setupteardown-для-каждого-case">Техника 2: Setup/Teardown для каждого case</a></h4>
+<pre><code class="language-go">func TestWithPerCaseSetup(t *testing.T) {
+    tests := []struct {
+        name      string
+        setupFunc func() *Database
+        input     int
+    }{
+        {
+            name: "with real DB",
+            setupFunc: func() *Database {
+                return setupRealDB()
+            },
+            input: 1,
+        },
+        {
+            name: "with mock DB",
+            setupFunc: func() *Database {
+                return setupMockDB()
+            },
+            input: 2,
+        },
+    }
+
+    for _, tt := range tests {
+        t.Run(tt.name, func(t *testing.T) {
+            db := tt.setupFunc()
+            defer db.Close()
+
+            result := db.Query(tt.input)
+            // ...
+        })
+    }
+}
+</code></pre>
+<h4 id="техника-3-параллелизация-table-tests"><a class="header" href="#техника-3-параллелизация-table-tests">Техника 3: Параллелизация table tests</a></h4>
+<pre><code class="language-go">func TestParallel(t *testing.T) {
+    tests := []struct {
+        name  string
+        input int
+    }{
+        {"case1", 1},
+        {"case2", 2},
+        {"case3", 3},
+    }
+
+    for _, tt := range tests {
+        tt := tt // Копируем переменную цикла (до Go 1.22)
+
+        t.Run(tt.name, func(t *testing.T) {
+            t.Parallel() // Запускаем subtests параллельно
+
+            result := SlowFunction(tt.input)
+            // ...
+        })
+    }
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Go 1.22+</strong>: Начиная с Go 1.22, переменные цикла имеют область видимости внутри итерации, поэтому <code>tt := tt</code> больше не требуется. В более старых версиях это обязательно!</p>
+</blockquote>
+<hr>
+<h2 id="3-subtests-trun"><a class="header" href="#3-subtests-trun">3. Subtests (t.Run)</a></h2>
+<h3 id="31-организация-вложенных-тестов"><a class="header" href="#31-организация-вложенных-тестов">3.1 Организация вложенных тестов</a></h3>
+<p><code>t.Run()</code> позволяет создавать <strong>иерархию тестов</strong> и запускать их независимо. Это аналог nested classes в C#.</p>
+<h4 id="сравнение-c-nested-classes-vs-go-trun"><a class="header" href="#сравнение-c-nested-classes-vs-go-trun">Сравнение: C# Nested classes vs Go t.Run</a></h4>
+<p><strong>C# (xUnit)</strong>:</p>
+<pre><code class="language-csharp">public class UserServiceTests
+{
+    public class GetUserTests
+    {
+        [Fact]
+        public void ValidId_ReturnsUser() { }
+
+        [Fact]
+        public void InvalidId_ReturnsNull() { }
+    }
+
+    public class CreateUserTests
+    {
+        [Fact]
+        public void ValidData_CreatesUser() { }
+
+        [Fact]
+        public void DuplicateEmail_ThrowsException() { }
+    }
+}
+</code></pre>
+<p><strong>Go (t.Run)</strong>:</p>
+<pre><code class="language-go">func TestUserService(t *testing.T) {
+    t.Run("GetUser", func(t *testing.T) {
+        t.Run("valid ID", func(t *testing.T) {
+            user, err := GetUser(1)
+            if err != nil {
+                t.Fatal(err)
+            }
+            // ...
+        })
+
+        t.Run("invalid ID", func(t *testing.T) {
+            user, err := GetUser(-1)
+            if user != nil {
+                t.Errorf("expected nil, got %v", user)
+            }
+        })
+    })
+
+    t.Run("CreateUser", func(t *testing.T) {
+        t.Run("valid data", func(t *testing.T) {
+            user, err := CreateUser("alice@example.com")
+            if err != nil {
+                t.Fatal(err)
+            }
+            // ...
+        })
+
+        t.Run("duplicate email", func(t *testing.T) {
+            _, err := CreateUser("existing@example.com")
+            if err == nil {
+                t.Error("expected error for duplicate email")
+            }
+        })
+    })
+}
+</code></pre>
+<h4 id="запуск-конкретного-subtest"><a class="header" href="#запуск-конкретного-subtest">Запуск конкретного subtest</a></h4>
+<pre><code class="language-bash"># Запустить весь тест
+go test -run TestUserService
+
+# Запустить только GetUser subtests
+go test -run TestUserService/GetUser
+
+# Запустить конкретный subtest
+go test -run TestUserService/GetUser/valid
+
+# Regex тоже работает
+go test -run TestUserService/.*valid
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Используйте <code>t.Run()</code> для группировки связанных тестов. Это удобнее, чем создавать отдельные <code>TestGetUser_ValidID</code>, <code>TestGetUser_InvalidID</code> и т.д.</p>
+</blockquote>
+<hr>
+<h3 id="32-parallel-subtests"><a class="header" href="#32-parallel-subtests">3.2 Parallel subtests</a></h3>
+<p><code>t.Parallel()</code> запускает subtests <strong>параллельно</strong>. Это ускоряет медленные тесты (I/O, network, БД).</p>
+<h4 id="сравнение-c-theory-vs-go-tparallel"><a class="header" href="#сравнение-c-theory-vs-go-tparallel">Сравнение: C# [Theory] vs Go t.Parallel</a></h4>
+<p><strong>C# (xUnit)</strong> — параллелизм автоматический:</p>
+<pre><code class="language-csharp">[Theory]
+[InlineData(1)]
+[InlineData(2)]
+[InlineData(3)]
+public async Task SlowTest(int id)
+{
+    // xUnit по умолчанию запускает каждый case параллельно
+    await Task.Delay(1000);
+}
+</code></pre>
+<p><strong>Go</strong> — параллелизм явный:</p>
+<pre><code class="language-go">func TestSlow(t *testing.T) {
+    tests := []int{1, 2, 3}
+
+    for _, id := range tests {
+        id := id // Копируем (до Go 1.22)
+
+        t.Run(fmt.Sprintf("case_%d", id), func(t *testing.T) {
+            t.Parallel() // Явно включаем параллелизм
+
+            time.Sleep(1 * time.Second)
+            // ...
+        })
+    }
+}
+</code></pre>
+<h4 id="важные-правила-tparallel"><a class="header" href="#важные-правила-tparallel">Важные правила t.Parallel()</a></h4>
+<p><strong>Правило 1</strong>: <code>t.Parallel()</code> блокирует выполнение до завершения родительского теста</p>
+<pre><code class="language-go">func TestParallelRules(t *testing.T) {
+    fmt.Println("Parent start")
+
+    t.Run("child1", func(t *testing.T) {
+        t.Parallel()
+        fmt.Println("Child1 start")
+        time.Sleep(1 * time.Second)
+        fmt.Println("Child1 end")
+    })
+
+    t.Run("child2", func(t *testing.T) {
+        t.Parallel()
+        fmt.Println("Child2 start")
+        time.Sleep(1 * time.Second)
+        fmt.Println("Child2 end")
+    })
+
+    fmt.Println("Parent end") // Выполнится ПОСЛЕ child1 и child2
+}
+
+// Вывод:
+// Parent start
+// Child1 start
+// Child2 start
+// (1 секунда, параллельно)
+// Child1 end
+// Child2 end
+// Parent end
+</code></pre>
+<p><strong>Правило 2</strong>: Изолируйте состояние между параллельными тестами</p>
+<pre><code class="language-go">// ❌ ПЛОХО: race condition
+func TestRaceCondition(t *testing.T) {
+    counter := 0
+
+    for i := 0; i &lt; 10; i++ {
+        t.Run(fmt.Sprintf("case_%d", i), func(t *testing.T) {
+            t.Parallel()
+            counter++ // Race! Несколько горутин пишут в counter
+        })
+    }
+}
+
+// ✅ ХОРОШО: изолированное состояние
+func TestIsolated(t *testing.T) {
+    for i := 0; i &lt; 10; i++ {
+        i := i // Копируем переменную
+
+        t.Run(fmt.Sprintf("case_%d", i), func(t *testing.T) {
+            t.Parallel()
+
+            // Каждый subtest имеет свою копию i
+            result := ProcessItem(i)
+            if result != i*2 {
+                t.Errorf("expected %d, got %d", i*2, result)
+            }
+        })
+    }
+}
+</code></pre>
+<p><strong>Правило 3</strong>: Контролируйте параллелизм через <code>-parallel</code></p>
+<pre><code class="language-bash"># По умолчанию GOMAXPROCS (количество CPU)
+go test -parallel 4
+
+# Ограничить до 1 (последовательно)
+go test -parallel 1
+</code></pre>
+<hr>
+<h3 id="33-интеграция-с-table-driven"><a class="header" href="#33-интеграция-с-table-driven">3.3 Интеграция с table-driven</a></h3>
+<p>Комбинация table-driven + t.Run + t.Parallel — <strong>самый идиоматичный паттерн</strong> в Go.</p>
+<pre><code class="language-go">func TestUserValidation(t *testing.T) {
+    tests := []struct {
+        name      string
+        user      User
+        wantError bool
+    }{
+        {
+            name:      "valid user",
+            user:      User{Name: "Alice", Email: "alice@example.com"},
+            wantError: false,
+        },
+        {
+            name:      "empty name",
+            user:      User{Name: "", Email: "alice@example.com"},
+            wantError: true,
+        },
+        {
+            name:      "invalid email",
+            user:      User{Name: "Bob", Email: "not-an-email"},
+            wantError: true,
+        },
+    }
+
+    for _, tt := range tests {
+        tt := tt // Копируем (до Go 1.22)
+
+        t.Run(tt.name, func(t *testing.T) {
+            t.Parallel() // Параллельные subtests
+
+            err := ValidateUser(tt.user)
+
+            if tt.wantError &amp;&amp; err == nil {
+                t.Error("expected error, got nil")
+            }
+            if !tt.wantError &amp;&amp; err != nil {
+                t.Errorf("unexpected error: %v", err)
+            }
+        })
+    }
+}
+</code></pre>
+<p><strong>Вывод с <code>-v</code>:</strong></p>
+<pre><code>=== RUN   TestUserValidation
+=== RUN   TestUserValidation/valid_user
+=== RUN   TestUserValidation/empty_name
+=== RUN   TestUserValidation/invalid_email
+=== PAUSE TestUserValidation/valid_user
+=== PAUSE TestUserValidation/empty_name
+=== PAUSE TestUserValidation/invalid_email
+=== CONT  TestUserValidation/valid_user
+=== CONT  TestUserValidation/invalid_email
+=== CONT  TestUserValidation/empty_name
+--- PASS: TestUserValidation (0.00s)
+    --- PASS: TestUserValidation/valid_user (0.00s)
+    --- PASS: TestUserValidation/invalid_email (0.00s)
+    --- PASS: TestUserValidation/empty_name (0.00s)
+</code></pre>
+<hr>
+<h2 id="4-мокирование-и-тестирование-зависимостей"><a class="header" href="#4-мокирование-и-тестирование-зависимостей">4. Мокирование и тестирование зависимостей</a></h2>
+<h3 id="41-интерфейсы-для-тестируемости"><a class="header" href="#41-интерфейсы-для-тестируемости">4.1 Интерфейсы для тестируемости</a></h3>
+<p>В C# мокирование основано на <strong>reflection</strong> (Moq, NSubstitute). В Go используются <strong>интерфейсы</strong> — более явный и type-safe подход.</p>
+<h4 id="принцип-accept-interfaces-return-structs"><a class="header" href="#принцип-accept-interfaces-return-structs">Принцип: Accept interfaces, return structs</a></h4>
+<pre><code class="language-go">// ❌ ПЛОХО: функция принимает конкретный тип
+func ProcessUser(db *sql.DB, userID int) error {
+    // Невозможно подставить mock без реальной БД
+}
+
+// ✅ ХОРОШО: функция принимает интерфейс
+type UserRepository interface {
+    GetUser(id int) (*User, error)
+}
+
+func ProcessUser(repo UserRepository, userID int) error {
+    user, err := repo.GetUser(userID)
+    // ...
+}
+</code></pre>
+<p>Теперь можно легко подставить mock:</p>
+<pre><code class="language-go">type MockUserRepository struct {
+    GetUserFunc func(id int) (*User, error)
+}
+
+func (m *MockUserRepository) GetUser(id int) (*User, error) {
+    return m.GetUserFunc(id)
+}
+
+// В тесте
+func TestProcessUser(t *testing.T) {
+    mock := &amp;MockUserRepository{
+        GetUserFunc: func(id int) (*User, error) {
+            return &amp;User{ID: id, Name: "Alice"}, nil
+        },
+    }
+
+    err := ProcessUser(mock, 1)
+    if err != nil {
+        t.Fatal(err)
+    }
+}
+</code></pre>
+<h4 id="сравнение-c-moq-vs-go-интерфейсы"><a class="header" href="#сравнение-c-moq-vs-go-интерфейсы">Сравнение: C# Moq vs Go интерфейсы</a></h4>
+<p><strong>C# (Moq)</strong>:</p>
+<pre><code class="language-csharp">public interface IUserRepository
+{
+    User GetUser(int id);
+}
+
+public class UserService
+{
+    private readonly IUserRepository _repo;
+    public UserService(IUserRepository repo) =&gt; _repo = repo;
+
+    public void ProcessUser(int id)
+    {
+        var user = _repo.GetUser(id);
+        // ...
+    }
+}
+
+// Тест
+[Fact]
+public void ProcessUser_ValidId_Success()
+{
+    var mockRepo = new Mock&lt;IUserRepository&gt;();
+    mockRepo.Setup(r =&gt; r.GetUser(1))
+            .Returns(new User { Id = 1, Name = "Alice" });
+
+    var service = new UserService(mockRepo.Object);
+    service.ProcessUser(1);
+
+    mockRepo.Verify(r =&gt; r.GetUser(1), Times.Once);
+}
+</code></pre>
+<p><strong>Go (ручной mock)</strong>:</p>
+<pre><code class="language-go">type UserRepository interface {
+    GetUser(id int) (*User, error)
+}
+
+type UserService struct {
+    repo UserRepository
+}
+
+func NewUserService(repo UserRepository) *UserService {
+    return &amp;UserService{repo: repo}
+}
+
+func (s *UserService) ProcessUser(id int) error {
+    user, err := s.repo.GetUser(id)
+    // ...
+}
+
+// Тест
+type MockUserRepository struct {
+    GetUserCalled int
+    GetUserFunc   func(id int) (*User, error)
+}
+
+func (m *MockUserRepository) GetUser(id int) (*User, error) {
+    m.GetUserCalled++
+    return m.GetUserFunc(id)
+}
+
+func TestProcessUser(t *testing.T) {
+    mock := &amp;MockUserRepository{
+        GetUserFunc: func(id int) (*User, error) {
+            return &amp;User{ID: id, Name: "Alice"}, nil
+        },
+    }
+
+    service := NewUserService(mock)
+    err := service.ProcessUser(1)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if mock.GetUserCalled != 1 {
+        t.Errorf("expected 1 call, got %d", mock.GetUserCalled)
+    }
+}
+</code></pre>
+<hr>
+<h3 id="42-ручные-моки-идиоматично"><a class="header" href="#42-ручные-моки-идиоматично">4.2 Ручные моки (идиоматично)</a></h3>
+<p>Для <strong>простых случаев</strong> ручные моки предпочтительнее генерации.</p>
+<h4 id="паттерн-1-функциональный-mock"><a class="header" href="#паттерн-1-функциональный-mock">Паттерн 1: Функциональный mock</a></h4>
+<pre><code class="language-go">type EmailSender interface {
+    Send(to, subject, body string) error
+}
+
+type MockEmailSender struct {
+    SendFunc func(to, subject, body string) error
+}
+
+func (m *MockEmailSender) Send(to, subject, body string) error {
+    if m.SendFunc != nil {
+        return m.SendFunc(to, subject, body)
+    }
+    return nil
+}
+
+// Использование
+func TestNotifyUser(t *testing.T) {
+    var sentTo string
+
+    mock := &amp;MockEmailSender{
+        SendFunc: func(to, subject, body string) error {
+            sentTo = to
+            return nil
+        },
+    }
+
+    NotifyUser(mock, "user@example.com", "Hello")
+
+    if sentTo != "user@example.com" {
+        t.Errorf("expected email to %q, sent to %q", "user@example.com", sentTo)
+    }
+}
+</code></pre>
+<h4 id="паттерн-2-mock-с-состоянием"><a class="header" href="#паттерн-2-mock-с-состоянием">Паттерн 2: Mock с состоянием</a></h4>
+<pre><code class="language-go">type MockCache struct {
+    Data  map[string]string
+    Calls []string
+}
+
+func (m *MockCache) Get(key string) (string, bool) {
+    m.Calls = append(m.Calls, "Get:"+key)
+    val, ok := m.Data[key]
+    return val, ok
+}
+
+func (m *MockCache) Set(key, value string) {
+    m.Calls = append(m.Calls, "Set:"+key)
+    if m.Data == nil {
+        m.Data = make(map[string]string)
+    }
+    m.Data[key] = value
+}
+</code></pre>
+<hr>
+<h3 id="43-gomock-code-generation"><a class="header" href="#43-gomock-code-generation">4.3 gomock (code generation)</a></h3>
+<p>Для сложных интерфейсов удобно использовать <strong>gomock</strong>.</p>
+<h4 id="установка"><a class="header" href="#установка">Установка</a></h4>
+<pre><code class="language-bash">go install github.com/golang/mock/mockgen@latest
+</code></pre>
+<h4 id="генерация-моков"><a class="header" href="#генерация-моков">Генерация моков</a></h4>
+<pre><code class="language-go">//go:generate mockgen -destination=mocks/mock_repository.go -package=mocks . UserRepository
+
+type UserRepository interface {
+    GetUser(id int) (*User, error)
+    CreateUser(user *User) error
+}
+</code></pre>
+<pre><code class="language-bash">go generate ./...
+</code></pre>
+<h4 id="использование"><a class="header" href="#использование">Использование</a></h4>
+<pre><code class="language-go">import (
+    "testing"
+    "github.com/golang/mock/gomock"
+    "myapp/mocks"
+}
+
+func TestUserService_GetUser(t *testing.T) {
+    ctrl := gomock.NewController(t)
+    defer ctrl.Finish()
+
+    mockRepo := mocks.NewMockUserRepository(ctrl)
+
+    mockRepo.EXPECT().
+        GetUser(1).
+        Return(&amp;User{ID: 1, Name: "Alice"}, nil).
+        Times(1)
+
+    service := NewUserService(mockRepo)
+    user, err := service.GetUser(1)
+
+    if err != nil || user.Name != "Alice" {
+        t.Fatal("test failed")
+    }
+}
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# Moq</th><th>Go gomock</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Генерация</strong></td><td>Runtime (reflection)</td><td>Code generation</td></tr>
+<tr><td><strong>Type safety</strong></td><td>❌ Runtime</td><td>✅ Compile-time</td></tr>
+<tr><td><strong>Setup</strong></td><td><code>mock.Setup(...)</code></td><td><code>mock.EXPECT()...</code></td></tr>
+<tr><td><strong>Verification</strong></td><td><code>mock.Verify(...)</code></td><td>Автоматически</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h3 id="44-testifymock"><a class="header" href="#44-testifymock">4.4 testify/mock</a></h3>
+<p>Альтернатива gomock без code generation.</p>
+<pre><code class="language-bash">go get github.com/stretchr/testify
+</code></pre>
+<pre><code class="language-go">import (
+    "testing"
+    "github.com/stretchr/testify/mock"
+    "github.com/stretchr/testify/assert"
+)
+
+type MockUserRepository struct {
+    mock.Mock
+}
+
+func (m *MockUserRepository) GetUser(id int) (*User, error) {
+    args := m.Called(id)
+    if args.Get(0) == nil {
+        return nil, args.Error(1)
+    }
+    return args.Get(0).(*User), args.Error(1)
+}
+
+func TestUserService(t *testing.T) {
+    mockRepo := new(MockUserRepository)
+    mockRepo.On("GetUser", 1).Return(&amp;User{ID: 1, Name: "Alice"}, nil)
+
+    service := NewUserService(mockRepo)
+    user, err := service.GetUser(1)
+
+    assert.NoError(t, err)
+    assert.Equal(t, "Alice", user.Name)
+    mockRepo.AssertExpectations(t)
+}
+</code></pre>
+<p><strong>testify/assert</strong> (Rich assertions):</p>
+<pre><code class="language-go">assert.Equal(t, 10, result)
+assert.NotNil(t, result)
+assert.Contains(t, []int{1, 2, 3}, result)
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Подход</th><th>Когда использовать</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Ручные моки</strong></td><td>Простые интерфейсы (1-3 метода)</td></tr>
+<tr><td><strong>gomock</strong></td><td>Сложные интерфейсы, compile-time safety</td></tr>
+<tr><td><strong>testify/mock</strong></td><td>Средняя сложность</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Для большинства случаев <strong>ручные моки</strong> предпочтительнее.</p>
+</blockquote>
+<hr>
+<h2 id="5-benchmarks-производительность"><a class="header" href="#5-benchmarks-производительность">5. Benchmarks: производительность</a></h2>
+<h3 id="51-основы-бенчмаркинга"><a class="header" href="#51-основы-бенчмаркинга">5.1 Основы бенчмаркинга</a></h3>
+<p>Benchmarks в Go встроены в <code>testing</code> package, в отличие от C# где нужен BenchmarkDotNet.</p>
+<h4 id="сравнение-benchmarkdotnet-vs-go-benchmarks"><a class="header" href="#сравнение-benchmarkdotnet-vs-go-benchmarks">Сравнение: BenchmarkDotNet vs Go benchmarks</a></h4>
+<p><strong>C# (BenchmarkDotNet)</strong>:</p>
+<pre><code class="language-csharp">using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Running;
+
+[MemoryDiagnoser]
+public class StringBenchmarks
+{
+    [Benchmark]
+    public string Concatenation()
+    {
+        string result = "";
+        for (int i = 0; i &lt; 1000; i++)
+            result += "a";
+        return result;
+    }
+
+    [Benchmark]
+    public string StringBuilder()
+    {
+        var sb = new StringBuilder();
+        for (int i = 0; i &lt; 1000; i++)
+            sb.Append("a");
+        return sb.ToString();
+    }
+}
+
+// Program.cs
+BenchmarkRunner.Run&lt;StringBenchmarks&gt;();
+</code></pre>
+<p><strong>Go (встроенный)</strong>:</p>
+<pre><code class="language-go">// string_test.go
+func BenchmarkConcatenation(b *testing.B) {
+    for i := 0; i &lt; b.N; i++ {
+        result := ""
+        for j := 0; j &lt; 1000; j++ {
+            result += "a"
+        }
+        _ = result // Предотвращаем оптимизацию
+    }
+}
+
+func BenchmarkStringsBuilder(b *testing.B) {
+    for i := 0; i &lt; b.N; i++ {
+        var builder strings.Builder
+        for j := 0; j &lt; 1000; j++ {
+            builder.WriteString("a")
+        }
+        _ = builder.String()
+    }
+}
+</code></pre>
+<pre><code class="language-bash"># Запуск benchmarks
+go test -bench=.
+
+# С выделением памяти
+go test -bench=. -benchmem
+</code></pre>
+<p><strong>Вывод</strong>:</p>
+<pre><code>BenchmarkConcatenation-8         1000    1234567 ns/op   500000 B/op    1000 allocs/op
+BenchmarkStringsBuilder-8       50000      25678 ns/op     1024 B/op       1 allocs/op
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# BenchmarkDotNet</th><th>Go testing</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Установка</strong></td><td>NuGet пакет</td><td>Встроенный</td></tr>
+<tr><td><strong>Атрибуты</strong></td><td><code>[Benchmark]</code></td><td><code>func BenchmarkXxx(b *testing.B)</code></td></tr>
+<tr><td><strong>Memory</strong></td><td><code>[MemoryDiagnoser]</code></td><td><code>-benchmem</code> flag</td></tr>
+<tr><td><strong>Запуск</strong></td><td>Отдельная программа</td><td><code>go test -bench=.</code></td></tr>
+<tr><td><strong>b.N</strong></td><td>Автоматически</td><td>Автоматически (iterations)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h3 id="52-оптимизация-benchmarks"><a class="header" href="#52-оптимизация-benchmarks">5.2 Оптимизация benchmarks</a></h3>
+<h4 id="bn-iterations"><a class="header" href="#bn-iterations">b.N iterations</a></h4>
+<p><code>b.N</code> — автоматически подбирается для стабильных результатов (минимум 1 секунда).</p>
+<pre><code class="language-go">func BenchmarkExample(b *testing.B) {
+    // Дорогая инициализация
+    data := generateTestData()
+
+    b.ResetTimer() // ⬅ Сбрасываем таймер после setup
+
+    for i := 0; i &lt; b.N; i++ {
+        process(data)
+    }
+}
+</code></pre>
+<h4 id="breportallocs--профилирование-памяти"><a class="header" href="#breportallocs--профилирование-памяти">b.ReportAllocs() — профилирование памяти</a></h4>
+<pre><code class="language-go">func BenchmarkJSON(b *testing.B) {
+    b.ReportAllocs() // Включает детальную статистику аллокаций
+
+    data := `{"name":"Alice","age":30}`
+
+    for i := 0; i &lt; b.N; i++ {
+        var user User
+        json.Unmarshal([]byte(data), &amp;user)
+    }
+}
+</code></pre>
+<p><strong>Вывод</strong>:</p>
+<pre><code>BenchmarkJSON-8    500000    2345 ns/op    384 B/op    7 allocs/op
+                                           ↑           ↑
+                                       bytes/op    allocs/op
+</code></pre>
+<h4 id="предотвращение-оптимизаций-компилятора"><a class="header" href="#предотвращение-оптимизаций-компилятора">Предотвращение оптимизаций компилятора</a></h4>
+<pre><code class="language-go">var result int // Глобальная переменная
+
+func BenchmarkSum(b *testing.B) {
+    var r int
+
+    for i := 0; i &lt; b.N; i++ {
+        r = Sum(1, 2, 3, 4, 5)
+    }
+
+    result = r // ⬅ Запись в глобальную предотвращает dead code elimination
+}
+</code></pre>
+<hr>
+<h3 id="53-анализ-результатов"><a class="header" href="#53-анализ-результатов">5.3 Анализ результатов</a></h3>
+<h4 id="метрики"><a class="header" href="#метрики">Метрики</a></h4>
+<pre><code>BenchmarkName-8    1000000    1234 ns/op    256 B/op    3 allocs/op
+               ↑         ↑         ↑          ↑           ↑
+             CPU      b.N     time/op   bytes/op    allocs/op
+</code></pre>
+<ul>
+<li><strong>ns/op</strong>: наносекунд на операцию</li>
+<li><strong>B/op</strong>: байт выделено на операцию</li>
+<li><strong>allocs/op</strong>: количество аллокаций на операцию</li>
+</ul>
+<h4 id="benchstat--сравнение-допосле"><a class="header" href="#benchstat--сравнение-допосле">benchstat — сравнение до/после</a></h4>
+<pre><code class="language-bash"># Запускаем до изменений
+go test -bench=. -count=10 &gt; old.txt
+
+# Вносим изменения, запускаем снова
+go test -bench=. -count=10 &gt; new.txt
+
+# Устанавливаем benchstat
+go install golang.org/x/perf/cmd/benchstat@latest
+
+# Сравниваем
+benchstat old.txt new.txt
+</code></pre>
+<p><strong>Вывод</strong>:</p>
+<pre><code>name        old time/op    new time/op    delta
+Sum-8         245ns ± 2%     123ns ± 1%   -49.80%  (p=0.000)
+
+name        old alloc/op   new alloc/op   delta
+Sum-8          256B ± 0%       0B         -100.00%  (p=0.000)
+</code></pre>
+<hr>
+<h3 id="54-memory-benchmarks"><a class="header" href="#54-memory-benchmarks">5.4 Memory benchmarks</a></h3>
+<h4 id="связь-с-разделом-23-gc"><a class="header" href="#связь-с-разделом-23-gc">Связь с разделом 2.3 (GC)</a></h4>
+<p>Из <a href="./03_gc.html#sync-pool-для-переиспользования-объектов">раздела 2.3</a> мы знаем про <code>sync.Pool</code>.</p>
+<p><strong>Пример: JSON парсинг с/без sync.Pool</strong></p>
+<pre><code class="language-go">// Без sync.Pool
+func BenchmarkJSONWithoutPool(b *testing.B) {
+    b.ReportAllocs()
+
+    data := []byte(`{"name":"Alice","age":30}`)
+
+    for i := 0; i &lt; b.N; i++ {
+        var user User
+        json.Unmarshal(data, &amp;user)
+    }
+}
+
+// С sync.Pool (из раздела 2.3)
+var userPool = sync.Pool{
+    New: func() interface{} {
+        return new(User)
+    },
+}
+
+func BenchmarkJSONWithPool(b *testing.B) {
+    b.ReportAllocs()
+
+    data := []byte(`{"name":"Alice","age":30}`)
+
+    for i := 0; i &lt; b.N; i++ {
+        user := userPool.Get().(*User)
+        json.Unmarshal(data, user)
+        userPool.Put(user) // Возвращаем в pool
+    }
+}
+</code></pre>
+<p><strong>Результаты</strong>:</p>
+<pre><code>BenchmarkJSONWithoutPool-8    500000    2345 ns/op    384 B/op    7 allocs/op
+BenchmarkJSONWithPool-8       800000    1456 ns/op     48 B/op    2 allocs/op
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Используйте benchmarks для проверки влияния оптимизаций. Связь с GC (раздел 2.3): меньше аллокаций → меньше работы для GC → меньше пауз.</p>
+</blockquote>
+<hr>
+<h2 id="6-fuzzing-go-118"><a class="header" href="#6-fuzzing-go-118">6. Fuzzing (Go 1.18+)</a></h2>
+<h3 id="61-введение-в-fuzzing"><a class="header" href="#61-введение-в-fuzzing">6.1 Введение в fuzzing</a></h3>
+<p><strong>Fuzzing</strong> — автоматическая генерация входных данных для поиска багов. Go 1.18+ имеет встроенный fuzzing.</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В C# нет встроенного fuzzing (есть сторонние: Microsoft.CodeAnalysis.FuzzTesting, SharpFuzz). В Go это часть стандартной библиотеки.</p>
+</blockquote>
+<h4 id="сигнатура-fuzz-теста"><a class="header" href="#сигнатура-fuzz-теста">Сигнатура fuzz-теста</a></h4>
+<pre><code class="language-go">func FuzzXxx(f *testing.F) {
+    // ...
+}
+</code></pre>
+<hr>
+<h3 id="62-написание-fuzz-тестов"><a class="header" href="#62-написание-fuzz-тестов">6.2 Написание fuzz-тестов</a></h3>
+<pre><code class="language-go">func FuzzURLParse(f *testing.F) {
+    // Seed corpus (начальные данные)
+    f.Add("https://example.com/path?query=value")
+    f.Add("http://localhost:8080")
+    f.Add("ftp://ftp.example.com")
+
+    // Fuzz callback
+    f.Fuzz(func(t *testing.T, url string) {
+        // Go будет генерировать различные строки
+        parsed, err := ParseCustomURL(url)
+
+        // Проверяем, что не было паники
+        if err != nil {
+            return // Ошибка — нормально
+        }
+
+        // Проверяем инварианты
+        if parsed.Scheme == "" &amp;&amp; parsed.Host != "" {
+            t.Errorf("invalid state: host without scheme")
+        }
+    })
+}
+</code></pre>
+<p><strong>Запуск fuzzing</strong>:</p>
+<pre><code class="language-bash"># Fuzzing (запускается до первой ошибки или Ctrl+C)
+go test -fuzz=FuzzURLParse
+
+# Fuzzing 30 секунд
+go test -fuzz=FuzzURLParse -fuzztime=30s
+
+# Только unit-тесты (без fuzzing)
+go test
+</code></pre>
+<p><strong>Corpus</strong> (найденные inputs) сохраняется в <code>testdata/fuzz/FuzzURLParse/</code>:</p>
+<pre><code>testdata/fuzz/FuzzURLParse/
+├── corpus
+│   └── 8f3e... (hex-encoded inputs)
+└── seed (начальные данные)
+</code></pre>
+<hr>
+<h3 id="63-когда-использовать"><a class="header" href="#63-когда-использовать">6.3 Когда использовать</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Задача</th><th>Использовать fuzzing?</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Парсеры</strong> (JSON, XML, custom)</td><td>✅ Да, находит edge cases</td></tr>
+<tr><td><strong>Валидаторы</strong> (email, URL)</td><td>✅ Да, проверяет граничные случаи</td></tr>
+<tr><td><strong>Криптография</strong></td><td>✅ Да, находит уязвимости</td></tr>
+<tr><td><strong>Бизнес-логика</strong></td><td>⚠️ Редко (сложно проверять инварианты)</td></tr>
+<tr><td><strong>CRUD операции</strong></td><td>❌ Нет (лучше property-based testing)</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Краткий пример</strong>:</p>
+<pre><code class="language-go">func FuzzEmailValidator(f *testing.F) {
+    f.Add("test@example.com")
+
+    f.Fuzz(func(t *testing.T, email string) {
+        valid := IsValidEmail(email)
+
+        // Инвариант: если валидный, должен содержать @
+        if valid &amp;&amp; !strings.Contains(email, "@") {
+            t.Errorf("email %q valid but no @", email)
+        }
+    })
+}
+</code></pre>
+<hr>
+<h2 id="7-integration-tests"><a class="header" href="#7-integration-tests">7. Integration Tests</a></h2>
+<h3 id="71-httptest-тестирование-http-handlers"><a class="header" href="#71-httptest-тестирование-http-handlers">7.1 httptest: тестирование HTTP handlers</a></h3>
+<p><strong>httptest</strong> — встроенный пакет для тестирования HTTP. Аналог TestServer в ASP.NET Core.</p>
+<h4 id="сравнение-aspnet-core-testserver-vs-go-httptest"><a class="header" href="#сравнение-aspnet-core-testserver-vs-go-httptest">Сравнение: ASP.NET Core TestServer vs Go httptest</a></h4>
+<p><strong>C# (ASP.NET Core)</strong>:</p>
+<pre><code class="language-csharp">public class UserControllerTests : IClassFixture&lt;WebApplicationFactory&lt;Program&gt;&gt;
+{
+    private readonly HttpClient _client;
+
+    public UserControllerTests(WebApplicationFactory&lt;Program&gt; factory)
+    {
+        _client = factory.CreateClient();
+    }
+
+    [Fact]
+    public async Task GetUser_ValidId_ReturnsOk()
+    {
+        var response = await _client.GetAsync("/api/users/1");
+        response.EnsureSuccessStatusCode();
+
+        var user = await response.Content.ReadFromJsonAsync&lt;User&gt;();
+        Assert.Equal("Alice", user.Name);
+    }
+}
+</code></pre>
+<p><strong>Go (httptest)</strong>:</p>
+<pre><code class="language-go">func TestUserHandler(t *testing.T) {
+    // Создаём handler
+    handler := http.HandlerFunc(GetUserHandler)
+
+    // Создаём request
+    req := httptest.NewRequest("GET", "/api/users/1", nil)
+
+    // ResponseRecorder для захвата ответа
+    rr := httptest.NewRecorder()
+
+    // Выполняем запрос
+    handler.ServeHTTP(rr, req)
+
+    // Проверки
+    if rr.Code != http.StatusOK {
+        t.Errorf("expected 200, got %d", rr.Code)
+    }
+
+    var user User
+    json.Unmarshal(rr.Body.Bytes(), &amp;user)
+
+    if user.Name != "Alice" {
+        t.Errorf("expected Alice, got %s", user.Name)
+    }
+}
+</code></pre>
+<p><strong>httptest.Server</strong> (для реальных HTTP вызовов):</p>
+<pre><code class="language-go">func TestAPIIntegration(t *testing.T) {
+    // Создаём тестовый сервер
+    ts := httptest.NewServer(http.HandlerFunc(GetUserHandler))
+    defer ts.Close()
+
+    // Делаем реальный HTTP запрос
+    resp, err := http.Get(ts.URL + "/api/users/1")
+    if err != nil {
+        t.Fatal(err)
+    }
+    defer resp.Body.Close()
+
+    if resp.StatusCode != 200 {
+        t.Errorf("expected 200, got %d", resp.StatusCode)
+    }
+}
+</code></pre>
+<hr>
+<h3 id="72-тестирование-бд"><a class="header" href="#72-тестирование-бд">7.2 Тестирование БД</a></h3>
+<h4 id="sqlite-in-memory"><a class="header" href="#sqlite-in-memory">SQLite (in-memory)</a></h4>
+<pre><code class="language-go">func setupTestDB(t *testing.T) *sql.DB {
+    db, err := sql.Open("sqlite3", ":memory:")
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    // Миграции
+    _, err = db.Exec(`
+        CREATE TABLE users (
+            id INTEGER PRIMARY KEY,
+            name TEXT,
+            email TEXT
+        )
+    `)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    return db
+}
+
+func TestUserRepository(t *testing.T) {
+    db := setupTestDB(t)
+    defer db.Close()
+
+    repo := NewUserRepository(db)
+
+    // Test Create
+    user := &amp;User{Name: "Alice", Email: "alice@example.com"}
+    err := repo.Create(user)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    // Test Get
+    fetched, err := repo.GetByID(user.ID)
+    if err != nil || fetched.Name != "Alice" {
+        t.Error("failed to get user")
+    }
+}
+</code></pre>
+<h4 id="testcontainers-go-postgresql-в-docker"><a class="header" href="#testcontainers-go-postgresql-в-docker">testcontainers-go (PostgreSQL в Docker)</a></h4>
+<pre><code class="language-bash">go get github.com/testcontainers/testcontainers-go
+</code></pre>
+<pre><code class="language-go">//go:build integration
+
+func TestWithPostgres(t *testing.T) {
+    ctx := context.Background()
+
+    // Запускаем PostgreSQL container
+    postgres, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
+        ContainerRequest: testcontainers.ContainerRequest{
+            Image:        "postgres:15",
+            ExposedPorts: []string{"5432/tcp"},
+            Env: map[string]string{
+                "POSTGRES_PASSWORD": "test",
+                "POSTGRES_DB":       "testdb",
+            },
+            WaitingFor: wait.ForLog("database system is ready"),
+        },
+        Started: true,
+    })
+    if err != nil {
+        t.Fatal(err)
+    }
+    defer postgres.Terminate(ctx)
+
+    // Получаем DSN
+    host, _ := postgres.Host(ctx)
+    port, _ := postgres.MappedPort(ctx, "5432")
+    dsn := fmt.Sprintf("host=%s port=%s user=postgres password=test dbname=testdb sslmode=disable",
+        host, port.Port())
+
+    // Подключаемся
+    db, err := sql.Open("postgres", dsn)
+    if err != nil {
+        t.Fatal(err)
+    }
+    defer db.Close()
+
+    // Тесты...
+}
+</code></pre>
+<hr>
+<h3 id="73-внешние-зависимости"><a class="header" href="#73-внешние-зависимости">7.3 Внешние зависимости</a></h3>
+<h4 id="testmain-для-setupteardown"><a class="header" href="#testmain-для-setupteardown">TestMain для setup/teardown</a></h4>
+<pre><code class="language-go">var testDB *sql.DB
+
+func TestMain(m *testing.M) {
+    // Setup
+    var err error
+    testDB, err = setupDatabase()
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // Run tests
+    code := m.Run()
+
+    // Teardown
+    testDB.Close()
+
+    os.Exit(code)
+}
+</code></pre>
+<hr>
+<h2 id="8-race-detector"><a class="header" href="#8-race-detector">8. Race Detector</a></h2>
+<h3 id="81-что-такое-data-race"><a class="header" href="#81-что-такое-data-race">8.1 Что такое data race</a></h3>
+<p><strong>Data race</strong> — когда несколько горутин одновременно обращаются к одной переменной, и хотя бы одна из них пишет.</p>
+<pre><code class="language-go">// ❌ Data race
+var counter int
+
+func increment() {
+    counter++ // Не атомарно!
+}
+
+func main() {
+    for i := 0; i &lt; 1000; i++ {
+        go increment()
+    }
+    time.Sleep(time.Second)
+    fmt.Println(counter) // Undefined behavior!
+}
+</code></pre>
+<hr>
+<h3 id="82-go-test--race"><a class="header" href="#82-go-test--race">8.2 go test -race</a></h3>
+<pre><code class="language-bash">go test -race
+</code></pre>
+<p><strong>Вывод при race</strong>:</p>
+<pre><code>==================
+WARNING: DATA RACE
+Write at 0x00c000100000 by goroutine 7:
+  main.increment()
+      /path/to/file.go:5 +0x3c
+
+Previous write at 0x00c000100000 by goroutine 6:
+  main.increment()
+      /path/to/file.go:5 +0x3c
+==================
+</code></pre>
+<p><strong>⚠️ Overhead</strong>: 5-10x медленнее, 10x больше памяти. Используйте в CI/CD, но не в production.</p>
+<hr>
+<h3 id="83-типичные-race-conditions"><a class="header" href="#83-типичные-race-conditions">8.3 Типичные race conditions</a></h3>
+<h4 id="race-1-map-без-синхронизации"><a class="header" href="#race-1-map-без-синхронизации">Race 1: Map без синхронизации</a></h4>
+<pre><code class="language-go">// ❌ Race
+var cache = make(map[string]string)
+
+func Set(key, value string) {
+    cache[key] = value // RACE!
+}
+
+// ✅ Исправление: sync.RWMutex или sync.Map
+var (
+    cache = make(map[string]string)
+    mu    sync.RWMutex
+)
+
+func Set(key, value string) {
+    mu.Lock()
+    cache[key] = value
+    mu.Unlock()
+}
+</code></pre>
+<h4 id="race-2-loop-variable-в-горутине-до-go-122"><a class="header" href="#race-2-loop-variable-в-горутине-до-go-122">Race 2: Loop variable в горутине (до Go 1.22)</a></h4>
+<pre><code class="language-go">// ❌ Race (до Go 1.22)
+for i := 0; i &lt; 10; i++ {
+    go func() {
+        fmt.Println(i) // Читает общую переменную i
+    }()
+}
+
+// ✅ Исправление
+for i := 0; i &lt; 10; i++ {
+    i := i // Копируем
+    go func() {
+        fmt.Println(i)
+    }()
+}
+
+// ✅ Go 1.22+: автоматически
+for i := 0; i &lt; 10; i++ {
+    go func() {
+        fmt.Println(i) // Безопасно!
+    }()
+}
+</code></pre>
+<hr>
+<h2 id="9-coverage-покрытие-кода"><a class="header" href="#9-coverage-покрытие-кода">9. Coverage (покрытие кода)</a></h2>
+<h3 id="91-go-test--cover"><a class="header" href="#91-go-test--cover">9.1 go test -cover</a></h3>
+<pre><code class="language-bash"># Процент покрытия
+go test -cover
+
+# Детальный отчёт
+go test -coverprofile=coverage.out
+
+# По пакетам
+go test -cover ./...
+</code></pre>
+<p><strong>Вывод</strong>:</p>
+<pre><code>ok      myapp/user    0.123s  coverage: 78.5% of statements
+</code></pre>
+<hr>
+<h3 id="92-визуализация-покрытия"><a class="header" href="#92-визуализация-покрытия">9.2 Визуализация покрытия</a></h3>
+<pre><code class="language-bash"># HTML отчёт
+go tool cover -html=coverage.out
+
+# Открывается в браузере, показывает:
+# - Зелёные строки: покрыты
+# - Красные строки: не покрыты
+# - Серые строки: не исполняемый код
+</code></pre>
+<p><strong>IDE интеграция</strong>:</p>
+<ul>
+<li><strong>VS Code</strong>: Go extension автоматически показывает покрытие</li>
+<li><strong>GoLand</strong>: Run with Coverage</li>
+</ul>
+<hr>
+<h3 id="93-целевые-метрики"><a class="header" href="#93-целевые-метрики">9.3 Целевые метрики</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Тип кода</th><th>Целевое покрытие</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Business logic</strong></td><td>80-90%</td></tr>
+<tr><td><strong>Handlers</strong></td><td>70-80%</td></tr>
+<tr><td><strong>Utils</strong></td><td>90%+</td></tr>
+<tr><td><strong>Generated code</strong></td><td>Не требуется</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Не гонитесь за 100%. Лучше 80% хорошо протестированного кода, чем 100% с бессмысленными тестами.</p>
+</blockquote>
+<hr>
+<h2 id="10-идиоматичные-паттерны-тестирования"><a class="header" href="#10-идиоматичные-паттерны-тестирования">10. Идиоматичные паттерны тестирования</a></h2>
+<h3 id="101-helper-functions"><a class="header" href="#101-helper-functions">10.1 Helper functions</a></h3>
+<p><code>t.Helper()</code> помечает функцию как вспомогательную. Ошибки будут указывать на вызывающий код, а не на helper.</p>
+<pre><code class="language-go">func assertNoError(t *testing.T, err error) {
+    t.Helper() // ⬅ Важно!
+
+    if err != nil {
+        t.Fatalf("unexpected error: %v", err)
+    }
+}
+
+func TestExample(t *testing.T) {
+    err := DoSomething()
+    assertNoError(t, err) // Ошибка укажет на эту строку
+}
+</code></pre>
+<hr>
+<h3 id="102-golden-files"><a class="header" href="#102-golden-files">10.2 Golden files</a></h3>
+<p><strong>Golden files</strong> — сохранённые эталонные выводы для сложных структур.</p>
+<pre><code class="language-go">func TestRenderHTML(t *testing.T) {
+    data := &amp;Page{Title: "Test", Body: "Content"}
+    output := RenderHTML(data)
+
+    goldenFile := "testdata/golden/page.html"
+
+    // Обновление golden file (при необходимости)
+    if *update {
+        os.WriteFile(goldenFile, []byte(output), 0644)
+    }
+
+    // Сравнение
+    expected, _ := os.ReadFile(goldenFile)
+    if output != string(expected) {
+        t.Errorf("output mismatch")
+    }
+}
+</code></pre>
+<pre><code class="language-bash">go test -update  # Обновить golden files
+</code></pre>
+<hr>
+<h3 id="103-testable-examples"><a class="header" href="#103-testable-examples">10.3 Testable Examples</a></h3>
+<p><code>func ExampleXxx()</code> — примеры, которые компилируются и проверяются тестами.</p>
+<pre><code class="language-go">func ExampleSum() {
+    result := Sum(1, 2, 3)
+    fmt.Println(result)
+    // Output: 6
+}
+</code></pre>
+<p>Отображаются в <code>godoc</code> как примеры использования.</p>
+<hr>
+<h3 id="104-build-tags"><a class="header" href="#104-build-tags">10.4 Build tags</a></h3>
+<p>Разделение unit/integration тестов:</p>
+<pre><code class="language-go">//go:build integration
+
+package myapp
+
+import "testing"
+
+func TestDatabaseIntegration(t *testing.T) {
+    // ...
+}
+</code></pre>
+<pre><code class="language-bash"># Только unit-тесты
+go test
+
+# С integration тестами
+go test -tags=integration
+</code></pre>
+<hr>
+<h2 id="11-тестирование-конкурентного-кода"><a class="header" href="#11-тестирование-конкурентного-кода">11. Тестирование конкурентного кода</a></h2>
+<h3 id="111-проблемы-тестирования-горутин"><a class="header" href="#111-проблемы-тестирования-горутин">11.1 Проблемы тестирования горутин</a></h3>
+<ul>
+<li><strong>Non-determinism</strong>: порядок выполнения непредсказуем</li>
+<li><strong>Race conditions</strong>: data races</li>
+<li><strong>Deadlocks</strong>: взаимные блокировки</li>
+</ul>
+<hr>
+<h3 id="112-стратегии"><a class="header" href="#112-стратегии">11.2 Стратегии</a></h3>
+<h4 id="waitgroup-для-синхронизации"><a class="header" href="#waitgroup-для-синхронизации">WaitGroup для синхронизации</a></h4>
+<pre><code class="language-go">func TestConcurrentWorkers(t *testing.T) {
+    var wg sync.WaitGroup
+    results := make([]int, 0)
+    mu := sync.Mutex{}
+
+    for i := 0; i &lt; 10; i++ {
+        wg.Add(1)
+        go func(val int) {
+            defer wg.Done()
+
+            result := Process(val)
+
+            mu.Lock()
+            results = append(results, result)
+            mu.Unlock()
+        }(i)
+    }
+
+    wg.Wait()
+
+    if len(results) != 10 {
+        t.Errorf("expected 10 results, got %d", len(results))
+    }
+}
+</code></pre>
+<h4 id="context-для-таймаутов"><a class="header" href="#context-для-таймаутов">Context для таймаутов</a></h4>
+<pre><code class="language-go">func TestWithTimeout(t *testing.T) {
+    ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+    defer cancel()
+
+    result := make(chan int)
+
+    go func() {
+        result &lt;- SlowOperation()
+    }()
+
+    select {
+    case r := &lt;-result:
+        // OK
+    case &lt;-ctx.Done():
+        t.Fatal("operation timed out")
+    }
+}
+</code></pre>
+<hr>
+<h3 id="113-goleak-обнаружение-утечек"><a class="header" href="#113-goleak-обнаружение-утечек">11.3 goleak: обнаружение утечек</a></h3>
+<pre><code class="language-bash">go get go.uber.org/goleak
+</code></pre>
+<pre><code class="language-go">import "go.uber.org/goleak"
+
+func TestNoGoroutineLeak(t *testing.T) {
+    defer goleak.VerifyNone(t) // Проверяет утечки в конце
+
+    StartWorkers()
+    StopWorkers() // Должен остановить все горутины
+}
+</code></pre>
+<p>Связь с <a href="./01_goroutines_channels.html#предотвращение-утечек-горутин">разделом 2.1</a>.</p>
+<hr>
+<h2 id="12-новые-возможности-тестирования-go-124-125"><a class="header" href="#12-новые-возможности-тестирования-go-124-125">12. Новые возможности тестирования (Go 1.24-1.25)</a></h2>
+<h3 id="121-testingtcontext--контекст-теста-go-124"><a class="header" href="#121-testingtcontext--контекст-теста-go-124">12.1 testing.T.Context() — контекст теста (Go 1.24)</a></h3>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Аналог <code>CancellationToken</code>, автоматически отменяемый по завершении теста.</p>
+</blockquote>
+<p>Go 1.24 добавил <code>t.Context()</code> — метод, возвращающий <code>context.Context</code>, который <strong>автоматически отменяется</strong> при завершении теста (успешном, провальном или с <code>t.Cleanup()</code>).</p>
+<p><strong>До Go 1.24 (вручную):</strong></p>
+<pre><code class="language-go">func TestWithContext(t *testing.T) {
+    ctx, cancel := context.WithCancel(context.Background())
+    defer cancel() // Легко забыть!
+
+    result, err := fetchData(ctx, "https://example.com")
+    if err != nil {
+        t.Fatal(err)
+    }
+    _ = result
+}
+</code></pre>
+<p><strong>Go 1.24+ с <code>t.Context()</code> (идиоматично):</strong></p>
+<pre><code class="language-go">func TestWithContext(t *testing.T) {
+    ctx := t.Context() // Отменяется автоматически при завершении теста
+
+    result, err := fetchData(ctx, "https://example.com")
+    if err != nil {
+        t.Fatal(err)
+    }
+    _ = result
+}
+</code></pre>
+<p><strong>Применение — integration тесты с БД:</strong></p>
+<pre><code class="language-go">func TestDatabase(t *testing.T) {
+    ctx := t.Context() // Автоматически отменит in-flight запросы при t.Fatal
+
+    db, err := sql.Open("postgres", testDSN)
+    if err != nil {
+        t.Fatal(err)
+    }
+    t.Cleanup(func() { db.Close() })
+
+    // Если тест завершится (t.Fatal/t.FailNow), ctx отменяется,
+    // прерывая зависшие запросы к БД
+    rows, err := db.QueryContext(ctx, "SELECT id FROM users")
+    if err != nil {
+        t.Fatal(err)
+    }
+    defer rows.Close()
+}
+</code></pre>
+<p><strong>Сравнение с C#:</strong></p>
+<pre><code class="language-csharp">// C# — CancellationTokenSource для тестов (xUnit/NUnit)
+[Fact]
+public async Task TestWithCancellation()
+{
+    using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+    var result = await FetchDataAsync(cts.Token);
+    Assert.NotNull(result);
+}
+</code></pre>
+<pre><code class="language-go">// Go 1.24 — t.Context() автоматически
+func TestWithCancellation(t *testing.T) {
+    ctx := t.Context() // Deadline можно добавить через context.WithTimeout
+    result, err := fetchData(ctx, url)
+    if err != nil {
+        t.Fatal(err)
+    }
+}
+</code></pre>
+<hr>
+<h3 id="122-testingbloop--надёжные-бенчмарки-go-124"><a class="header" href="#122-testingbloop--надёжные-бенчмарки-go-124">12.2 testing.B.Loop() — надёжные бенчмарки (Go 1.24)</a></h3>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Аналог <code>[Benchmark]</code> от BenchmarkDotNet с автоматической защитой от оптимизации компилятора.</p>
+</blockquote>
+<p>Go 1.24 добавил <code>b.Loop()</code> — замену классическому <code>for i := 0; i &lt; b.N; i++</code>. Новый метод решает проблему <strong>оптимизации пустого цикла</strong> компилятором.</p>
+<p><strong>До Go 1.24 (проблема с оптимизацией):</strong></p>
+<pre><code class="language-go">var result int
+
+func BenchmarkSum(b *testing.B) {
+    for i := 0; i &lt; b.N; i++ {
+        // Компилятор может оптимизировать цикл, если result не используется
+        result = computeSum(largeSlice)
+    }
+    _ = result // Попытка предотвратить оптимизацию (не всегда надёжно)
+}
+</code></pre>
+<p><strong>Go 1.24+ с <code>b.Loop()</code> (надёжно):</strong></p>
+<pre><code class="language-go">func BenchmarkSum(b *testing.B) {
+    for b.Loop() { // Компилятор не оптимизирует тело цикла
+        result := computeSum(largeSlice)
+        _ = result
+    }
+}
+</code></pre>
+<p><strong>Отличия <code>b.Loop()</code> от <code>for i &lt; b.N</code>:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th><code>for i &lt; b.N</code></th><th><code>b.Loop()</code></th></tr>
+</thead>
+<tbody>
+<tr><td>Защита от оптимизации</td><td>Ненадёжная (нужен <code>_ = result</code>)</td><td>Встроенная</td></tr>
+<tr><td>Инициализация таймера</td><td><code>b.ResetTimer()</code> вручную</td><td>Автоматически</td></tr>
+<tr><td>Cleanup между итерациями</td><td>Невозможен</td><td><code>b.Cleanup(func())</code></td></tr>
+<tr><td>Читаемость</td><td>Стандартная</td><td>Более явная</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-go">// Бенчмарк с setup per-iteration
+func BenchmarkJSONEncode(b *testing.B) {
+    data := &amp;MyStruct{Name: "Alice", Age: 30}
+
+    for b.Loop() {
+        buf, err := json.Marshal(data)
+        if err != nil {
+            b.Fatal(err)
+        }
+        _ = buf
+    }
+}
+</code></pre>
+<hr>
+<h3 id="123-testingsynctest--детерминированное-тестирование-конкурентности-go-125"><a class="header" href="#123-testingsynctest--детерминированное-тестирование-конкурентности-go-125">12.3 testing/synctest — детерминированное тестирование конкурентности (Go 1.25)</a></h3>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Аналог концепции Virtual Time в .NET тестировании — контролируемое время для воспроизводимых тестов горутин.</p>
+</blockquote>
+<p><code>testing/synctest</code> (экспериментальный в Go 1.24, стабильный в Go 1.25) позволяет тестировать конкурентный код <strong>детерминированно</strong>, используя виртуальные часы.</p>
+<p><strong>Проблема тестирования кода с таймаутами:</strong></p>
+<pre><code class="language-go">// Функция с таймером — сложно тестировать
+func ProcessWithTimeout(ctx context.Context, timeout time.Duration) error {
+    timer := time.NewTimer(timeout)
+    defer timer.Stop()
+
+    select {
+    case &lt;-ctx.Done():
+        return ctx.Err()
+    case &lt;-timer.C:
+        return errors.New("timeout exceeded")
+    }
+}
+
+// Тест без synctest — нужно реально ждать
+func TestTimeout_Slow(t *testing.T) {
+    ctx := context.Background()
+    start := time.Now()
+    err := ProcessWithTimeout(ctx, 100*time.Millisecond) // Реальное ожидание!
+    t.Logf("elapsed: %v", time.Since(start))
+    if err == nil {
+        t.Error("expected timeout error")
+    }
+}
+</code></pre>
+<p><strong>С <code>testing/synctest</code> — мгновенно:</strong></p>
+<pre><code class="language-go">import "testing/synctest"
+
+func TestTimeout_Fast(t *testing.T) {
+    synctest.Run(func() {
+        ctx := context.Background()
+
+        // Запускаем тестируемую функцию в горутине
+        var err error
+        go func() {
+            err = ProcessWithTimeout(ctx, 100*time.Millisecond)
+        }()
+
+        // Продвигаем виртуальное время на 200ms — мгновенно!
+        synctest.Wait() // Ждём пока все горутины заблокируются
+        // time.Sleep(200*time.Millisecond) в виртуальном времени
+
+        // err теперь содержит "timeout exceeded"
+    })
+}
+</code></pre>
+<p><strong>Ключевые концепции <code>testing/synctest</code>:</strong></p>
+<ul>
+<li><code>synctest.Run(func())</code> — запускает функцию в изолированном «bubble» с виртуальным временем</li>
+<li><code>synctest.Wait()</code> — продвигает виртуальное время пока все горутины не заблокируются</li>
+<li>Горутины внутри bubble видят виртуальное время (<code>time.Now()</code>, <code>time.Sleep()</code>, таймеры)</li>
+<li>Горутины вне bubble работают с реальным временем</li>
+</ul>
+<p><strong>Применение:</strong></p>
+<pre><code class="language-go">// Тестирование retry-логики без реальных задержек
+func TestRetryPolicy(t *testing.T) {
+    synctest.Run(func() {
+        attempts := 0
+        client := &amp;Client{
+            MaxRetries: 3,
+            Backoff:    100 * time.Millisecond,
+        }
+
+        go func() {
+            client.Do(func() error {
+                attempts++
+                if attempts &lt; 3 {
+                    return errors.New("temporary error")
+                }
+                return nil
+            })
+        }()
+
+        synctest.Wait() // Время автоматически продвигается через backoff-паузы
+        // attempts == 3, но тест завершился мгновенно
+    })
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Статус</strong>: <code>testing/synctest</code> стабилен в Go 1.25. Для Go 1.24 требует <code>GOEXPERIMENT=synctest</code>.</p>
+</blockquote>
+<hr>
+<h2 id="практические-примеры"><a class="header" href="#практические-примеры">Практические примеры</a></h2>
+<blockquote>
+<p>💡 Примеры демонстрируют комбинацию изученных техник: table-driven tests, subtests, моки, benchmarks, integration tests.</p>
+</blockquote>
+<h3 id="пример-1-userservice-с-полным-покрытием"><a class="header" href="#пример-1-userservice-с-полным-покрытием">Пример 1: UserService с полным покрытием</a></h3>
+<p><strong>Задача</strong>: Протестировать многослойное приложение (Repository → Service → HTTP Handler).</p>
+<p><strong>Структура</strong>:</p>
+<pre><code>user/
+  user.go              // Модель
+  repository.go        // Interface + реализация
+  repository_test.go   // Unit-тесты repository
+  service.go           // Бизнес-логика
+  service_test.go      // Тесты с gomock
+  handler.go           // HTTP handlers
+  handler_test.go      // httptest
+</code></pre>
+<details>
+<summary>📄 Полный код (кликните чтобы развернуть)</summary>
+<pre><code class="language-go">// user.go
+package user
+
+type User struct {
+    ID    int
+    Name  string
+    Email string
+}
+
+// repository.go
+type Repository interface {
+    GetByID(id int) (*User, error)
+    Create(user *User) error
+}
+
+// service.go
+type Service struct {
+    repo Repository
+}
+
+func NewService(repo Repository) *Service {
+    return &amp;Service{repo: repo}
+}
+
+func (s *Service) GetUser(id int) (*User, error) {
+    if id &lt;= 0 {
+        return nil, errors.New("invalid ID")
+    }
+    return s.repo.GetByID(id)
+}
+
+// service_test.go (с gomock)
+func TestService_GetUser(t *testing.T) {
+    ctrl := gomock.NewController(t)
+    defer ctrl.Finish()
+
+    mockRepo := mocks.NewMockRepository(ctrl)
+
+    tests := []struct {
+        name      string
+        id        int
+        setupMock func()
+        wantErr   bool
+    }{
+        {
+            name: "valid ID",
+            id:   1,
+            setupMock: func() {
+                mockRepo.EXPECT().
+                    GetByID(1).
+                    Return(&amp;User{ID: 1, Name: "Alice"}, nil)
+            },
+            wantErr: false,
+        },
+        {
+            name:      "invalid ID",
+            id:        -1,
+            setupMock: func() {},
+            wantErr:   true,
+        },
+    }
+
+    for _, tt := range tests {
+        t.Run(tt.name, func(t *testing.T) {
+            tt.setupMock()
+
+            service := NewService(mockRepo)
+            user, err := service.GetUser(tt.id)
+
+            if (err != nil) != tt.wantErr {
+                t.Errorf("wantErr=%v, got err=%v", tt.wantErr, err)
+            }
+
+            if !tt.wantErr &amp;&amp; user == nil {
+                t.Error("expected user, got nil")
+            }
+        })
+    }
+}
+
+// handler_test.go (httptest)
+func TestUserHandler(t *testing.T) {
+    mockRepo := &amp;MockRepository{
+        GetByIDFunc: func(id int) (*User, error) {
+            return &amp;User{ID: id, Name: "Alice"}, nil
+        },
+    }
+
+    service := NewService(mockRepo)
+    handler := NewHandler(service)
+
+    req := httptest.NewRequest("GET", "/users/1", nil)
+    rr := httptest.NewRecorder()
+
+    handler.ServeHTTP(rr, req)
+
+    if rr.Code != 200 {
+        t.Errorf("expected 200, got %d", rr.Code)
+    }
+}
+</code></pre>
+</details>
+<p><strong>Выводы</strong>:</p>
+<ul>
+<li>Table-driven tests для валидации</li>
+<li>gomock для изоляции слоёв</li>
+<li>httptest для HTTP endpoints</li>
+<li>Coverage: 85%+</li>
+</ul>
+<hr>
+<h3 id="пример-2-rate-limiter-с-concurrent-тестами"><a class="header" href="#пример-2-rate-limiter-с-concurrent-тестами">Пример 2: Rate Limiter с concurrent тестами</a></h3>
+<p><strong>Задача</strong>: Протестировать thread-safe rate limiter с множеством горутин.</p>
+<p><strong>Связь с разделами</strong>: <a href="./01_goroutines_channels.html">2.1 (горутины)</a>, <a href="./04_sync_primitives.html">2.4 (atomic/mutex)</a></p>
+<details>
+<summary>📄 Полный код (кликните чтобы развернуть)</summary>
+<pre><code class="language-go">// ratelimiter.go
+package ratelimiter
+
+import (
+    "sync"
+    "time"
+)
+
+type RateLimiter struct {
+    tokens    int
+    capacity  int
+    mu        sync.Mutex
+    lastRefill time.Time
+}
+
+func New(capacity int) *RateLimiter {
+    return &amp;RateLimiter{
+        tokens:     capacity,
+        capacity:   capacity,
+        lastRefill: time.Now(),
+    }
+}
+
+func (r *RateLimiter) Allow() bool {
+    r.mu.Lock()
+    defer r.mu.Unlock()
+
+    // Refill tokens
+    now := time.Now()
+    elapsed := now.Sub(r.lastRefill)
+    tokensToAdd := int(elapsed.Seconds())
+
+    if tokensToAdd &gt; 0 {
+        r.tokens = min(r.capacity, r.tokens+tokensToAdd)
+        r.lastRefill = now
+    }
+
+    // Check and consume
+    if r.tokens &gt; 0 {
+        r.tokens--
+        return true
+    }
+    return false
+}
+
+// ratelimiter_test.go (unit tests)
+func TestRateLimiter_Allow(t *testing.T) {
+    tests := []struct {
+        name     string
+        capacity int
+        calls    int
+        want     int // Сколько должно пройти
+    }{
+        {"single", 5, 3, 3},
+        {"exceeds capacity", 5, 10, 5},
+        {"zero capacity", 0, 5, 0},
+    }
+
+    for _, tt := range tests {
+        t.Run(tt.name, func(t *testing.T) {
+            rl := New(tt.capacity)
+
+            allowed := 0
+            for i := 0; i &lt; tt.calls; i++ {
+                if rl.Allow() {
+                    allowed++
+                }
+            }
+
+            if allowed != tt.want {
+                t.Errorf("expected %d, got %d", tt.want, allowed)
+            }
+        })
+    }
+}
+
+// ratelimiter_concurrent_test.go
+func TestRateLimiter_Concurrent(t *testing.T) {
+    rl := New(100)
+
+    var wg sync.WaitGroup
+    allowed := int32(0)
+
+    // 1000 горутин пытаются взять токены
+    for i := 0; i &lt; 1000; i++ {
+        wg.Add(1)
+        go func() {
+            defer wg.Done()
+
+            if rl.Allow() {
+                atomic.AddInt32(&amp;allowed, 1)
+            }
+        }()
+    }
+
+    wg.Wait()
+
+    // Должно пройти максимум 100
+    if allowed &gt; 100 {
+        t.Errorf("expected &lt;=100, got %d", allowed)
+    }
+}
+
+// ratelimiter_bench_test.go
+func BenchmarkRateLimiter(b *testing.B) {
+    rl := New(1000000)
+
+    b.RunParallel(func(pb *testing.PB) {
+        for pb.Next() {
+            rl.Allow()
+        }
+    })
+}
+
+// Test with race detector:
+// go test -race
+</code></pre>
+</details>
+<p><strong>Выводы</strong>:</p>
+<ul>
+<li>Table-driven для unit тестов</li>
+<li>WaitGroup для синхронизации в concurrent тестах</li>
+<li><code>go test -race</code> для обнаружения data races</li>
+<li>Benchmarks для производительности</li>
+</ul>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part2-advanced/06_error_handling.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part2-advanced/08_profiling_optimization.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part2-advanced/06_error_handling.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part2-advanced/08_profiling_optimization.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

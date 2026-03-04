@@ -1,0 +1,1718 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Аллокатор памяти Go - Переход с C# на Go</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-66c694bb.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-1a7de78a.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Переход с C# на Go</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part2-advanced/03_memory_allocator.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="аллокатор-памяти-go-memory-allocator-internals"><a class="header" href="#аллокатор-памяти-go-memory-allocator-internals">Аллокатор памяти Go (Memory Allocator Internals)</a></h1>
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<p>Go runtime включает в себя <strong>собственный аллокатор памяти</strong>, который эффективно управляет выделением и освобождением памяти без обращения к системному malloc() для каждой аллокации.</p>
+<h3 id="почему-это-важно"><a class="header" href="#почему-это-важно">Почему это важно?</a></h3>
+<p><strong>C# разработчики</strong> привыкли к тому, что:</p>
+<ul>
+<li>CLR управляет памятью через Managed Heap</li>
+<li>Есть разделение на SOH (Small Object Heap) и LOH (Large Object Heap)</li>
+<li>GC компактирует память (перемещает объекты)</li>
+<li>Аллокация — это просто сдвиг указателя (bump pointer)</li>
+</ul>
+<p><strong>В Go</strong>:</p>
+<ul>
+<li>Runtime использует <strong>TCMalloc-подобный</strong> аллокатор</li>
+<li>Память организована в <strong>spans</strong> фиксированных size classes</li>
+<li>GC <strong>не компактирует</strong> память (объекты не перемещаются)</li>
+<li>Каждый P (процессор) имеет <strong>локальный кеш</strong> (mcache) для быстрых аллокаций</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Ключевое отличие</strong>: В .NET аллокация — это bump pointer (сдвиг указателя). В Go — это выбор объекта из free list соответствующего size class.</p>
+</blockquote>
+<h3 id="что-вы-узнаете"><a class="header" href="#что-вы-узнаете">Что вы узнаете</a></h3>
+<p>После изучения этого раздела вы будете понимать:</p>
+<ul>
+<li>Как виртуальная память отображается на физическую</li>
+<li>Как Go организует heap через mheap, mcentral, mcache</li>
+<li>Что такое size classes и почему они важны</li>
+<li>Как оптимизировать структуры для минимизации потерь памяти</li>
+</ul>
+<hr>
+<h2 id="1-virtual-memory-vs-physical-memory"><a class="header" href="#1-virtual-memory-vs-physical-memory">1. Virtual Memory vs Physical Memory</a></h2>
+<h3 id="11-основы-виртуальной-памяти"><a class="header" href="#11-основы-виртуальной-памяти">1.1 Основы виртуальной памяти</a></h3>
+<p>Современные операционные системы используют <strong>виртуальную память</strong> — абстракцию, которая даёт каждому процессу иллюзию собственного непрерывного адресного пространства.</p>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                    Virtual Address Space                     │
+│                    (процесс видит это)                       │
+├─────────────────────────────────────────────────────────────┤
+│  0x0000...  │  Stack  │  Heap  │  Data  │  Code  │  ...     │
+└─────────────────────────────────────────────────────────────┘
+                          │
+                          │ Page Table (MMU)
+                          ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    Physical Memory (RAM)                     │
+│                    (реальная память)                         │
+├─────────────────────────────────────────────────────────────┤
+│  Frame 0  │  Frame 1  │  Frame 2  │  ...  │  Frame N        │
+└─────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Ключевые концепции</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Термин</th><th>Описание</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Virtual Address</strong></td><td>Адрес, который видит программа (0x00007fff…)</td></tr>
+<tr><td><strong>Physical Address</strong></td><td>Реальный адрес в RAM</td></tr>
+<tr><td><strong>Page</strong></td><td>Блок виртуальной памяти (обычно 4 KB)</td></tr>
+<tr><td><strong>Frame</strong></td><td>Блок физической памяти (соответствует page)</td></tr>
+<tr><td><strong>Page Table</strong></td><td>Таблица соответствия virtual → physical</td></tr>
+<tr><td><strong>TLB</strong></td><td>Кеш page table для быстрого преобразования адресов</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Преимущества виртуальной памяти</strong>:</p>
+<ul>
+<li><strong>Изоляция</strong>: процессы не видят память друг друга</li>
+<li><strong>Overcommit</strong>: можно выделить больше памяти, чем есть физически</li>
+<li><strong>Ленивая аллокация</strong>: физическая память выделяется при первом доступе</li>
+<li><strong>Memory-mapped files</strong>: файлы отображаются в адресное пространство</li>
+</ul>
+<h3 id="12-сравнение-с-net-clr"><a class="header" href="#12-сравнение-с-net-clr">1.2 Сравнение с .NET CLR</a></h3>
+<p><strong>.NET CLR</strong> также работает с виртуальной памятью, но с важными отличиями:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>.NET CLR</th><th>Go Runtime</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Резервирование</strong></td><td>VirtualAlloc (Windows)</td><td>mmap (Unix) / VirtualAlloc (Windows)</td></tr>
+<tr><td><strong>Heap структура</strong></td><td>Segments (SOH, LOH, POH)</td><td>Arenas и spans</td></tr>
+<tr><td><strong>Компактирование</strong></td><td>Да (SOH)</td><td>Нет (объекты не перемещаются)</td></tr>
+<tr><td><strong>Pinning</strong></td><td>Нужен для FFI</td><td>Не нужен (объекты не двигаются)</td></tr>
+<tr><td><strong>Fragmentation</strong></td><td>Решается компактированием</td><td>Решается size classes</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>C# пример работы с памятью</strong>:</p>
+<pre><code class="language-csharp">// C#: выделение памяти через CLR
+var buffer = new byte[1024]; // CLR резервирует через VirtualAlloc
+
+// Pinning для interop (объект не будет перемещён GC)
+fixed (byte* ptr = buffer)
+{
+    // Передача указателя в native код
+    NativeMethod(ptr);
+}
+
+// Unmanaged память (напрямую через ОС)
+IntPtr unmanagedPtr = Marshal.AllocHGlobal(1024);
+Marshal.FreeHGlobal(unmanagedPtr);
+</code></pre>
+<p><strong>Go эквивалент</strong>:</p>
+<pre><code class="language-go">// Go: выделение памяти через runtime
+buffer := make([]byte, 1024) // Go runtime выделяет через mmap
+
+// Указатель можно передавать в cgo без pinning
+// (объекты не перемещаются GC)
+// #include &lt;string.h&gt;
+// void process(void* ptr, int len);
+import "C"
+import "unsafe"
+
+C.process(unsafe.Pointer(&amp;buffer[0]), C.int(len(buffer)))
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Важно</strong>: В Go объекты <strong>не перемещаются</strong> GC, поэтому нет необходимости в <code>fixed</code> или <code>GCHandle.Alloc</code>.</p>
+</blockquote>
+<h3 id="13-mmap-и-резервирование-памяти"><a class="header" href="#13-mmap-и-резервирование-памяти">1.3 mmap и резервирование памяти</a></h3>
+<p>Go runtime использует системные вызовы для работы с памятью:</p>
+<p><strong>Linux/macOS</strong>:</p>
+<pre><code class="language-go">// Упрощённо — как Go резервирует память
+// runtime/mem_linux.go
+
+func sysReserve(v unsafe.Pointer, n uintptr) unsafe.Pointer {
+    // mmap с PROT_NONE — резервируем адресное пространство
+    // без выделения физической памяти
+    p, err := mmap(v, n, _PROT_NONE, _MAP_ANON|_MAP_PRIVATE, -1, 0)
+    if err != 0 {
+        return nil
+    }
+    return p
+}
+
+func sysMap(v unsafe.Pointer, n uintptr) {
+    // mprotect — делаем память доступной для чтения/записи
+    // Это вызывает выделение физических страниц при первом доступе
+    mprotect(v, n, _PROT_READ|_PROT_WRITE)
+}
+</code></pre>
+<p><strong>Windows</strong>:</p>
+<pre><code class="language-go">// runtime/mem_windows.go (упрощённо)
+
+func sysReserve(v unsafe.Pointer, n uintptr) unsafe.Pointer {
+    // VirtualAlloc с MEM_RESERVE — резервируем адресное пространство
+    return VirtualAlloc(v, n, _MEM_RESERVE, _PAGE_READWRITE)
+}
+
+func sysMap(v unsafe.Pointer, n uintptr) {
+    // VirtualAlloc с MEM_COMMIT — выделяем физическую память
+    VirtualAlloc(v, n, _MEM_COMMIT, _PAGE_READWRITE)
+}
+</code></pre>
+<p><strong>Двухфазное выделение памяти</strong>:</p>
+<pre><code>Фаза 1: Reserve (резервирование)
+┌────────────────────────────────────────┐
+│ Virtual Address Space                  │
+│ ████████████████████ Reserved          │ ← Адреса заняты
+│ (физическая память НЕ выделена)        │
+└────────────────────────────────────────┘
+
+Фаза 2: Commit (фиксация)
+┌────────────────────────────────────────┐
+│ Virtual Address Space                  │
+│ ████████░░░░░░░░░░░░ Committed         │ ← Часть подкреплена RAM
+│ ████████ = физическая память выделена  │
+│ ░░░░░░░░ = только зарезервировано      │
+└────────────────────────────────────────┘
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Runtime резервирует большие блоки адресного пространства заранее, но физическую память выделяет лениво (при первом доступе через page fault).</p>
+</blockquote>
+<hr>
+<h2 id="2-страницы-памяти-memory-pages"><a class="header" href="#2-страницы-памяти-memory-pages">2. Страницы памяти (Memory Pages)</a></h2>
+<h3 id="21-page-и-page-fault"><a class="header" href="#21-page-и-page-fault">2.1 Page и page fault</a></h3>
+<p><strong>Page (страница)</strong> — минимальная единица управления памятью в ОС.</p>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                    Virtual Memory                            │
+├──────┬──────┬──────┬──────┬──────┬──────┬──────┬──────┬─────┤
+│ Page │ Page │ Page │ Page │ Page │ Page │ Page │ Page │ ... │
+│  0   │  1   │  2   │  3   │  4   │  5   │  6   │  7   │     │
+│ 4KB  │ 4KB  │ 4KB  │ 4KB  │ 4KB  │ 4KB  │ 4KB  │ 4KB  │     │
+└──────┴──────┴──────┴──────┴──────┴──────┴──────┴──────┴─────┘
+</code></pre>
+<p><strong>Стандартные размеры страниц</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Платформа</th><th>Стандартный размер</th><th>Huge Pages</th></tr>
+</thead>
+<tbody>
+<tr><td>x86-64 Linux</td><td>4 KB</td><td>2 MB, 1 GB</td></tr>
+<tr><td>ARM64 Linux</td><td>4 KB (или 16 KB, 64 KB)</td><td>2 MB, 1 GB</td></tr>
+<tr><td>Windows x64</td><td>4 KB</td><td>2 MB</td></tr>
+<tr><td>macOS</td><td>4 KB (Intel), 16 KB (Apple Silicon)</td><td>—</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Page Fault</strong> — прерывание при доступе к странице, не загруженной в RAM:</p>
+<pre><code>Программа обращается к адресу 0x7fff1234
+         │
+         ▼
+┌─────────────────────┐
+│ MMU проверяет       │
+│ Page Table          │
+└─────────────────────┘
+         │
+    ┌────┴────┐
+    │         │
+    ▼         ▼
+  Valid    Invalid
+  (в RAM)  (Page Fault)
+    │         │
+    │         ▼
+    │    ┌─────────────────┐
+    │    │ Ядро ОС:        │
+    │    │ 1. Выделяет     │
+    │    │    физ. страницу│
+    │    │ 2. Обновляет    │
+    │    │    Page Table   │
+    │    │ 3. Возвращает   │
+    │    │    управление   │
+    │    └─────────────────┘
+    │         │
+    ▼         ▼
+  Доступ к данным
+</code></pre>
+<p><strong>Типы page fault</strong>:</p>
+<ul>
+<li><strong>Minor (soft)</strong>: страница в RAM, но не в page table (быстро)</li>
+<li><strong>Major (hard)</strong>: нужно загрузить с диска (медленно — swap)</li>
+</ul>
+<p><strong>Проверка page fault в Go</strong>:</p>
+<pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "runtime"
+    "syscall"
+)
+
+func main() {
+    var rusage syscall.Rusage
+
+    // Выделяем большой slice
+    data := make([]byte, 100*1024*1024) // 100 MB
+
+    // Читаем rusage до и после доступа к памяти
+    syscall.Getrusage(syscall.RUSAGE_SELF, &amp;rusage)
+    minorBefore := rusage.Minflt
+    majorBefore := rusage.Majflt
+
+    // Трогаем каждую страницу (вызываем page faults)
+    pageSize := 4096
+    for i := 0; i &lt; len(data); i += pageSize {
+        data[i] = 1
+    }
+
+    syscall.Getrusage(syscall.RUSAGE_SELF, &amp;rusage)
+    fmt.Printf("Minor page faults: %d\n", rusage.Minflt-minorBefore)
+    fmt.Printf("Major page faults: %d\n", rusage.Majflt-majorBefore)
+
+    runtime.KeepAlive(data)
+}
+</code></pre>
+<h3 id="22-huge-pages-в-go"><a class="header" href="#22-huge-pages-в-go">2.2 Huge Pages в Go</a></h3>
+<p><strong>Huge Pages</strong> (Large Pages) — страницы большего размера (2 MB или 1 GB вместо 4 KB).</p>
+<p><strong>Преимущества</strong>:</p>
+<ul>
+<li>Меньше записей в Page Table</li>
+<li>Лучше TLB hit rate</li>
+<li>Меньше page faults</li>
+</ul>
+<p><strong>Недостатки</strong>:</p>
+<ul>
+<li>Больше внутренняя фрагментация</li>
+<li>Сложнее управление</li>
+</ul>
+<p><strong>Go и Huge Pages</strong> (Go 1.21+):</p>
+<pre><code class="language-bash"># Linux: включение transparent huge pages для Go
+echo madvise &gt; /sys/kernel/mm/transparent_hugepage/enabled
+
+# Запуск Go программы с подсказкой для THP
+GODEBUG=madvdontneed=0 ./myapp
+</code></pre>
+<pre><code class="language-go">// Go runtime автоматически использует madvise(MADV_HUGEPAGE)
+// для больших аллокаций на Linux
+
+// Проверка размера страницы
+import "os"
+
+func getPageSize() int {
+    return os.Getpagesize() // 4096 на x86-64 Linux
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В .NET Large Pages настраиваются через GC config (<code>GCLargePages</code>), в Go это происходит автоматически через transparent huge pages.</p>
+</blockquote>
+<h3 id="23-сравнение-с-net-gc-regions"><a class="header" href="#23-сравнение-с-net-gc-regions">2.3 Сравнение с .NET GC Regions</a></h3>
+<p><strong>.NET 7+</strong> представил <strong>Regions</strong> — новый способ организации heap:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>.NET Regions</th><th>Go Spans</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Размер</strong></td><td>Переменный (обычно 4 MB)</td><td>Кратен 8 KB (Go page)</td></tr>
+<tr><td><strong>Назначение</strong></td><td>Один регион = несколько объектов</td><td>Один span = объекты одного size class</td></tr>
+<tr><td><strong>Освобождение</strong></td><td>Регион освобождается целиком</td><td>Span возвращается в mcentral</td></tr>
+<tr><td><strong>Компактирование</strong></td><td>Да (внутри региона)</td><td>Нет</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>C# (концептуально)</strong>:</p>
+<pre><code class="language-csharp">// .NET Regions (внутренняя реализация)
+// Регион содержит объекты разных размеров
+[Region: 4 MB]
+├── Object 24 bytes
+├── Object 128 bytes
+├── Object 56 bytes
+└── Object 1024 bytes
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">// Go Spans — объекты одного размера
+// Span для size class 32 bytes
+[Span: 8 KB]
+├── Object 32 bytes (slot 0)
+├── Object 32 bytes (slot 1)
+├── Object 32 bytes (slot 2)
+├── ... (всего 256 slots)
+└── Object 32 bytes (slot 255)
+</code></pre>
+<hr>
+<h2 id="3-архитектура-аллокатора-go"><a class="header" href="#3-архитектура-аллокатора-go">3. Архитектура аллокатора Go</a></h2>
+<h3 id="31-общая-схема-mheap--mcentral--mcache"><a class="header" href="#31-общая-схема-mheap--mcentral--mcache">3.1 Общая схема: mheap → mcentral → mcache</a></h3>
+<p>Go использует <strong>иерархический аллокатор</strong> на основе TCMalloc (Thread-Caching Malloc от Google):</p>
+<pre><code>┌─────────────────────────────────────────────────────────────────────┐
+│                              mheap                                   │
+│                    (глобальная куча, одна на процесс)               │
+│  ┌─────────────────────────────────────────────────────────────┐    │
+│  │                         Arenas                               │    │
+│  │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐           │    │
+│  │  │ Arena 0 │ │ Arena 1 │ │ Arena 2 │ │ Arena N │           │    │
+│  │  │  64 MB  │ │  64 MB  │ │  64 MB  │ │  64 MB  │           │    │
+│  │  └─────────┘ └─────────┘ └─────────┘ └─────────┘           │    │
+│  └─────────────────────────────────────────────────────────────┘    │
+│                                                                      │
+│  ┌─────────────────────────────────────────────────────────────┐    │
+│  │                       mcentral[67]                           │    │
+│  │  (один mcentral на каждый size class)                        │    │
+│  │  ┌──────────┐ ┌──────────┐ ┌──────────┐      ┌──────────┐   │    │
+│  │  │mcentral 0│ │mcentral 1│ │mcentral 2│ ... │mcentral 66│   │    │
+│  │  │ 8 bytes  │ │ 16 bytes │ │ 24 bytes │     │ 32 KB    │   │    │
+│  │  └──────────┘ └──────────┘ └──────────┘      └──────────┘   │    │
+│  └─────────────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────────────┘
+                                   │
+                                   │ spans
+                                   ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                           mcache (per-P)                             │
+│  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐   │
+│  │    mcache P0     │  │    mcache P1     │  │    mcache P2     │   │
+│  │  ┌────────────┐  │  │  ┌────────────┐  │  │  ┌────────────┐  │   │
+│  │  │ alloc[67]  │  │  │  │ alloc[67]  │  │  │  │ alloc[67]  │  │   │
+│  │  │ spans for  │  │  │  │ spans for  │  │  │  │ spans for  │  │   │
+│  │  │ each class │  │  │  │ each class │  │  │  │ each class │  │   │
+│  │  └────────────┘  │  │  └────────────┘  │  │  └────────────┘  │   │
+│  │  ┌────────────┐  │  │  ┌────────────┐  │  │  ┌────────────┐  │   │
+│  │  │   tiny     │  │  │  │   tiny     │  │  │  │   tiny     │  │   │
+│  │  │ allocator  │  │  │  │ allocator  │  │  │  │ allocator  │  │   │
+│  │  └────────────┘  │  │  └────────────┘  │  │  └────────────┘  │   │
+│  └──────────────────┘  └──────────────────┘  └──────────────────┘   │
+└─────────────────────────────────────────────────────────────────────┘
+                                   │
+                                   │ объекты
+                                   ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                        Горутины (Goroutines)                         │
+│  ┌───────────┐  ┌───────────┐  ┌───────────┐  ┌───────────┐        │
+│  │ Goroutine │  │ Goroutine │  │ Goroutine │  │ Goroutine │        │
+│  │     1     │  │     2     │  │     3     │  │     N     │        │
+│  └───────────┘  └───────────┘  └───────────┘  └───────────┘        │
+└─────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Иерархия (от медленного к быстрому)</strong>:</p>
+<ol>
+<li><strong>mheap</strong> — глобальный heap, обращение требует блокировки</li>
+<li><strong>mcentral</strong> — центральный кеш для каждого size class, частичная блокировка</li>
+<li><strong>mcache</strong> — локальный кеш на каждом P, <strong>без блокировки</strong> (lock-free)</li>
+</ol>
+<h3 id="32-сравнение-с-net-sohlohpoh"><a class="header" href="#32-сравнение-с-net-sohlohpoh">3.2 Сравнение с .NET SOH/LOH/POH</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Компонент Go</th><th>Аналог .NET</th><th>Описание</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>mheap</strong></td><td>Managed Heap</td><td>Глобальное хранилище</td></tr>
+<tr><td><strong>Arena (64 MB)</strong></td><td>GC Segment (~4 MB)</td><td>Единица резервирования у ОС</td></tr>
+<tr><td><strong>mspan</strong></td><td>Region (.NET 7+)</td><td>Блок памяти для объектов</td></tr>
+<tr><td><strong>mcache</strong></td><td>Thread Allocation Context</td><td>Быстрая аллокация без блокировок</td></tr>
+<tr><td><strong>Size classes</strong></td><td>—</td><td>В .NET объекты любого размера</td></tr>
+<tr><td><strong>Large objects (&gt;32KB)</strong></td><td>LOH (&gt;85KB)</td><td>Отдельная обработка больших объектов</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>C# аллокация</strong>:</p>
+<pre><code class="language-csharp">// .NET: аллокация через bump pointer
+// Внутри CLR (упрощённо):
+// 1. Проверяем, есть ли место в allocation context
+// 2. Если да — сдвигаем указатель (очень быстро)
+// 3. Если нет — получаем новый сегмент от GC
+
+var obj = new MyClass(); // Bump pointer allocation
+</code></pre>
+<p><strong>Go аллокация</strong>:</p>
+<pre><code class="language-go">// Go: аллокация через free list
+// Внутри runtime (упрощённо):
+// 1. Определяем size class для размера объекта
+// 2. Берём объект из mcache.alloc[sizeClass]
+// 3. Если mcache пуст — пополняем из mcentral
+// 4. Если mcentral пуст — запрашиваем span у mheap
+
+obj := new(MyStruct) // Free list allocation
+</code></pre>
+<blockquote>
+<p>💡 <strong>Ключевое отличие</strong>: .NET использует <strong>bump pointer</strong> (простой, но требует компактирования). Go использует <strong>segregated free lists</strong> (сложнее, но не требует компактирования).</p>
+</blockquote>
+<hr>
+<h2 id="4-mheap-глобальная-куча"><a class="header" href="#4-mheap-глобальная-куча">4. mheap: Глобальная куча</a></h2>
+<h3 id="41-структура-и-назначение"><a class="header" href="#41-структура-и-назначение">4.1 Структура и назначение</a></h3>
+<p><strong>mheap</strong> — единственный глобальный объект, управляющий всей heap памятью в Go.</p>
+<pre><code class="language-go">// runtime/mheap.go (упрощённо)
+type mheap struct {
+    lock      mutex           // Глобальная блокировка
+
+    // Arenas — блоки виртуальной памяти
+    arenas    [1 &lt;&lt; 22]*heapArena  // До 4 миллионов арен
+
+    // Центральные кеши для каждого size class
+    central   [numSpanClasses]mcentral
+
+    // Свободные spans разных размеров
+    free      mTreap          // Treap (tree + heap) свободных spans
+
+    // Статистика
+    pagesInUse    uint64      // Страницы, используемые для heap
+    pagesSwept    uint64      // Страницы, просканированные GC
+
+    // Для GC
+    sweepgen      uint32      // Поколение sweep
+    sweepers      uint32      // Количество активных sweepers
+}
+</code></pre>
+<p><strong>Основные операции mheap</strong>:</p>
+<pre><code class="language-go">// Выделение span (внутренний API runtime)
+func (h *mheap) alloc(npages uintptr, spanclass spanClass) *mspan {
+    // 1. Пробуем найти свободный span нужного размера
+    // 2. Если нет — выделяем новые страницы через sysAlloc
+    // 3. Создаём mspan и возвращаем
+}
+
+// Освобождение span
+func (h *mheap) freeSpan(s *mspan) {
+    // 1. Добавляем span в free treap
+    // 2. Пробуем объединить со смежными свободными spans
+    // 3. При достаточном размере — возвращаем ОС через madvise
+}
+</code></pre>
+<h3 id="42-arena-и-heap-growth"><a class="header" href="#42-arena-и-heap-growth">4.2 Arena и heap growth</a></h3>
+<p><strong>Arena</strong> — большой блок виртуальной памяти (64 MB на 64-bit системах).</p>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                    heapArena (64 MB)                         │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │                    Pages (8192 pages × 8 KB)          │   │
+│  │  ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐         ┌─────┐     │   │
+│  │  │ 8KB │ │ 8KB │ │ 8KB │ │ 8KB │   ...   │ 8KB │     │   │
+│  │  └─────┘ └─────┘ └─────┘ └─────┘         └─────┘     │   │
+│  └──────────────────────────────────────────────────────┘   │
+│                                                              │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │                    Bitmap                             │   │
+│  │  (2 бита на каждый указатель — для GC)               │   │
+│  └──────────────────────────────────────────────────────┘   │
+│                                                              │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │                    Spans table                        │   │
+│  │  (указатель на mspan для каждой страницы)            │   │
+│  └──────────────────────────────────────────────────────┘   │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+</code></pre>
+<pre><code class="language-go">// runtime/mheap.go
+type heapArena struct {
+    // Bitmap для GC: каждый бит указывает, является ли слово указателем
+    bitmap     [heapArenaBitmapBytes]byte
+
+    // Spans: указатель на mspan для каждой страницы
+    spans      [pagesPerArena]*mspan
+
+    // Метаданные для GC
+    pageInUse  [pagesPerArena / 8]uint8
+    pageMarks  [pagesPerArena / 8]uint8
+}
+
+const (
+    heapArenaBytes = 64 &lt;&lt; 20  // 64 MB
+    pagesPerArena  = heapArenaBytes / pageSize  // 8192 pages (pageSize = 8 KB)
+)
+</code></pre>
+<p><strong>Рост heap</strong>:</p>
+<pre><code class="language-go">// Как Go увеличивает heap (упрощённо)
+func (h *mheap) grow(npage uintptr) bool {
+    // 1. Вычисляем нужный размер (кратный arena)
+    ask := alignUp(npage*pageSize, heapArenaBytes)
+
+    // 2. Резервируем виртуальную память
+    v := sysReserve(nil, ask)
+    if v == nil {
+        return false
+    }
+
+    // 3. Создаём heapArena
+    arena := (*heapArena)(sysAlloc(unsafe.Sizeof(heapArena{})))
+
+    // 4. Регистрируем в mheap.arenas
+    h.arenas[arenaIndex(v)] = arena
+
+    return true
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В .NET heap растёт сегментами (~4 MB для SOH). В Go — аренами по 64 MB, но физическая память выделяется лениво.</p>
+</blockquote>
+<hr>
+<h2 id="5-mspan-единица-управления-памятью"><a class="header" href="#5-mspan-единица-управления-памятью">5. mspan: Единица управления памятью</a></h2>
+<h3 id="51-структура-mspan"><a class="header" href="#51-структура-mspan">5.1 Структура mspan</a></h3>
+<p><strong>mspan</strong> — основная структура для управления блоком памяти.</p>
+<pre><code class="language-go">// runtime/mheap.go (упрощённо)
+type mspan struct {
+    next       *mspan     // Следующий span в списке
+    prev       *mspan     // Предыдущий span в списке
+
+    startAddr  uintptr    // Начальный адрес span
+    npages     uintptr    // Количество страниц (× 8 KB)
+
+    // Для управления объектами
+    freeindex  uintptr    // Индекс первого возможно свободного объекта
+    nelems     uintptr    // Количество объектов в span
+
+    // Free list (bitmap свободных объектов)
+    allocCache uint64     // Кеш для быстрого поиска
+    allocBits  *gcBits    // Bitmap аллоцированных объектов
+    gcmarkBits *gcBits    // Bitmap для GC marking
+
+    // Size class
+    spanclass  spanClass  // Size class + noscan flag
+    elemsize   uintptr    // Размер одного объекта
+
+    // Состояние
+    state      mSpanState // free, in use, manual, etc.
+
+    // Статистика
+    allocCount uint16     // Количество аллоцированных объектов
+}
+</code></pre>
+<p><strong>Визуализация mspan</strong>:</p>
+<pre><code>mspan для size class 32 (elemsize = 32 bytes, npages = 1)
+┌─────────────────────────────────────────────────────────────┐
+│                        8 KB page                             │
+├─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────────────┤
+│  0  │  1  │  2  │  3  │  4  │  5  │  6  │ ... │    255      │
+│ 32B │ 32B │ 32B │ 32B │ 32B │ 32B │ 32B │     │    32B      │
+│     │ ███ │     │ ███ │     │ ███ │     │     │             │
+└─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────────────┘
+  │     │     │     │     │     │
+  ▼     ▼     ▼     ▼     ▼     ▼
+ free  used  free  used  free  used
+
+allocBits:  0 1 0 1 0 1 0 0 0 0 ... (1 = занят, 0 = свободен)
+allocCount: 3 (три объекта аллоцировано)
+freeindex:  0 (начинаем поиск с индекса 0)
+</code></pre>
+<h3 id="52-bitmap-для-отслеживания-объектов"><a class="header" href="#52-bitmap-для-отслеживания-объектов">5.2 Bitmap для отслеживания объектов</a></h3>
+<p><strong>allocBits</strong> — bitmap, где каждый бит соответствует одному слоту в span:</p>
+<pre><code class="language-go">// Аллокация объекта из span (упрощённо)
+func (s *mspan) nextFreeIndex() uintptr {
+    // Используем allocCache для быстрого поиска
+    // (64-битное слово из allocBits)
+
+    for s.freeindex &lt; s.nelems {
+        // Ищем первый нулевой бит (свободный слот)
+        if s.allocCache != 0 {
+            // ctz (count trailing zeros) — находим первый свободный
+            i := sys.Ctz64(s.allocCache)
+            s.allocCache &gt;&gt;= (i + 1)
+            s.freeindex += uintptr(i) + 1
+            return s.freeindex - 1
+        }
+
+        // Загружаем следующее слово из allocBits
+        s.refillAllocCache()
+    }
+
+    return s.nelems // Span полон
+}
+</code></pre>
+<h3 id="53-состояния-span"><a class="header" href="#53-состояния-span">5.3 Состояния span</a></h3>
+<pre><code class="language-go">type mSpanState uint8
+
+const (
+    mSpanDead   mSpanState = iota  // Не используется
+    mSpanInUse                      // Содержит объекты
+    mSpanManual                     // Ручное управление (стеки)
+    mSpanFree                       // В свободном списке mheap
+)
+</code></pre>
+<p><strong>Жизненный цикл span</strong>:</p>
+<pre><code>                    ┌───────────┐
+                    │  mSpanFree │◄────────────────────┐
+                    │  (в mheap) │                     │
+                    └─────┬─────┘                      │
+                          │                            │
+                          │ mheap.alloc()              │ mheap.freeSpan()
+                          ▼                            │
+                    ┌───────────┐                      │
+              ┌────►│mSpanInUse │──────────────────────┘
+              │     │(в mcache) │
+              │     └─────┬─────┘
+              │           │
+              │           │ все объекты освобождены (GC sweep)
+              │           │
+              │           ▼
+              │     ┌───────────┐
+              │     │mSpanInUse │
+              └─────│ (пустой)  │
+   пополнение       └───────────┘
+   из mcentral
+</code></pre>
+<hr>
+<h2 id="6-mcentral-центральный-кеш"><a class="header" href="#6-mcentral-центральный-кеш">6. mcentral: Центральный кеш</a></h2>
+<h3 id="61-роль-в-многопоточной-аллокации"><a class="header" href="#61-роль-в-многопоточной-аллокации">6.1 Роль в многопоточной аллокации</a></h3>
+<p><strong>mcentral</strong> — промежуточный уровень между mheap и mcache. Один mcentral на каждый size class.</p>
+<pre><code class="language-go">// runtime/mcentral.go (упрощённо)
+type mcentral struct {
+    spanclass spanClass  // Size class этого mcentral
+
+    // Spans с свободными объектами
+    partial [2]spanSet   // [0] = swept, [1] = unswept
+
+    // Полностью заполненные spans
+    full    [2]spanSet   // [0] = swept, [1] = unswept
+}
+</code></pre>
+<p><strong>Зачем нужен mcentral?</strong></p>
+<p>Без mcentral:</p>
+<pre><code>mcache P0 ──┐
+mcache P1 ──┼──► mheap (глобальная блокировка!)
+mcache P2 ──┘
+</code></pre>
+<p>С mcentral:</p>
+<pre><code>mcache P0 ──► mcentral[class] ──┐
+mcache P1 ──► mcentral[class] ──┼──► mheap
+mcache P2 ──► mcentral[class] ──┘
+                   ▲
+            частичная блокировка
+            (только для одного size class)
+</code></pre>
+<h3 id="62-partial-и-full-span-списки"><a class="header" href="#62-partial-и-full-span-списки">6.2 Partial и Full span списки</a></h3>
+<pre><code>mcentral для size class 32
+┌─────────────────────────────────────────────────────────────┐
+│                                                              │
+│  partial[swept]:     spans с свободными слотами             │
+│  ┌─────┐   ┌─────┐   ┌─────┐                                │
+│  │span1│──►│span2│──►│span3│                                │
+│  │50%  │   │25%  │   │75%  │                                │
+│  └─────┘   └─────┘   └─────┘                                │
+│                                                              │
+│  full[swept]:        полностью заполненные spans            │
+│  ┌─────┐   ┌─────┐                                          │
+│  │span4│──►│span5│                                          │
+│  │100% │   │100% │                                          │
+│  └─────┘   └─────┘                                          │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Операции mcentral</strong>:</p>
+<pre><code class="language-go">// Получение span для mcache
+func (c *mcentral) cacheSpan() *mspan {
+    // 1. Пробуем взять из partial[swept]
+    if s := c.partial[swept].pop(); s != nil {
+        return s
+    }
+
+    // 2. Пробуем взять и sweep из partial[unswept]
+    if s := c.partial[unswept].pop(); s != nil {
+        s.sweep(true)  // Sweep перед использованием
+        return s
+    }
+
+    // 3. Пробуем full[unswept] (могут освободиться объекты после sweep)
+    if s := c.full[unswept].pop(); s != nil {
+        s.sweep(true)
+        if s.allocCount &lt; s.nelems {
+            return s  // После sweep появились свободные слоты
+        }
+        c.full[swept].push(s)  // Всё ещё полон
+    }
+
+    // 4. Запрашиваем новый span у mheap
+    return c.grow()
+}
+
+// Возврат span от mcache
+func (c *mcentral) uncacheSpan(s *mspan) {
+    if s.allocCount == 0 {
+        // Span пуст — возвращаем в mheap
+        mheap_.freeSpan(s)
+        return
+    }
+
+    if s.allocCount &lt; s.nelems {
+        // Есть свободные слоты
+        c.partial[swept].push(s)
+    } else {
+        // Полностью заполнен
+        c.full[swept].push(s)
+    }
+}
+</code></pre>
+<hr>
+<h2 id="7-mcache-per-p-кеш"><a class="header" href="#7-mcache-per-p-кеш">7. mcache: Per-P кеш</a></h2>
+<h3 id="71-связь-с-p-processor"><a class="header" href="#71-связь-с-p-processor">7.1 Связь с P (Processor)</a></h3>
+<p><strong>mcache</strong> — локальный кеш, привязанный к P (не к потоку!). Аллокация из mcache не требует блокировок.</p>
+<pre><code class="language-go">// runtime/mcache.go (упрощённо)
+type mcache struct {
+    // Spans для каждого size class
+    alloc [numSpanClasses]*mspan
+
+    // Tiny allocator (для объектов &lt; 16 bytes)
+    tiny       uintptr  // Адрес текущего tiny block
+    tinyoffset uintptr  // Смещение в tiny block
+    tinyAllocs uintptr  // Количество tiny аллокаций
+
+    // Статистика
+    local_largefree  uintptr  // Освобождено large объектов
+    local_nlargefree uintptr  // Количество освобождённых large
+    local_nsmallfree [67]uintptr  // Освобождено small объектов по классам
+}
+</code></pre>
+<p><strong>Связь P ↔ mcache</strong>:</p>
+<pre><code class="language-go">// runtime/proc.go
+type p struct {
+    // ...
+    mcache *mcache  // Локальный кеш памяти
+    // ...
+}
+
+// Получение mcache для текущей горутины
+func getMCache() *mcache {
+    return getg().m.p.ptr().mcache
+}
+</code></pre>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                         GMP Model                            │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  Goroutine ──► M (OS Thread) ──► P (Processor)              │
+│                                     │                        │
+│                                     ▼                        │
+│                              ┌──────────┐                   │
+│                              │  mcache  │                   │
+│                              │ alloc[67]│                   │
+│                              │   tiny   │                   │
+│                              └──────────┘                   │
+│                                                              │
+│  • mcache привязан к P, а не к M                            │
+│  • Горутина на P аллоцирует из mcache этого P               │
+│  • Нет блокировок — только один P имеет доступ              │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+</code></pre>
+<h3 id="72-tiny-allocator"><a class="header" href="#72-tiny-allocator">7.2 Tiny allocator</a></h3>
+<p><strong>Tiny allocator</strong> — специальная оптимизация для очень маленьких объектов (&lt; 16 bytes), не содержащих указателей.</p>
+<pre><code class="language-go">// Примеры tiny объектов:
+var a int8   // 1 byte
+var b int16  // 2 bytes
+var c bool   // 1 byte
+// Все три могут быть упакованы в один 16-byte блок!
+</code></pre>
+<p><strong>Как работает tiny allocator</strong>:</p>
+<pre><code>Без tiny allocator (каждый объект в своём слоте):
+┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐
+│ 1B  │ 2B  │ 1B  │     │     │     │     │     │  ← 3 слота по 16B = 48B
+│ ███ │ ███ │ ███ │     │     │     │     │     │     (потеря 44B!)
+└─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘
+  slot   slot   slot
+
+С tiny allocator (объекты упакованы):
+┌─────────────────────────────────────────────────┐
+│ ███ ███ ███ │                                   │  ← 1 блок 16B
+│ 1B  2B  1B  │      tiny block (16 bytes)        │     (потеря 12B)
+└─────────────────────────────────────────────────┘
+     offset: 0  1  3  4
+</code></pre>
+<pre><code class="language-go">// Аллокация tiny объекта (упрощённо)
+func mallocgc(size uintptr, typ *_type, needzero bool) unsafe.Pointer {
+    if size &lt;= maxTinySize &amp;&amp; noscan(typ) {
+        c := getMCache()
+
+        // Пробуем упаковать в текущий tiny block
+        off := c.tinyoffset
+        if off+size &lt;= maxTinySize {
+            // Есть место — используем
+            x := unsafe.Pointer(c.tiny + off)
+            c.tinyoffset = alignUp(off+size, 2)  // Выравнивание на 2
+            c.tinyAllocs++
+            return x
+        }
+
+        // Нет места — аллоцируем новый tiny block
+        s := c.alloc[tinySpanClass]
+        // ... получаем новый слот из span ...
+        c.tiny = uintptr(v)
+        c.tinyoffset = size
+    }
+
+    // Обычная аллокация для больших объектов
+    // ...
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Оптимизация</strong>: Tiny allocator экономит до 87.5% памяти для мелких объектов (1 byte в 16-byte слоте → 6.25% использования, но с tiny упаковкой несколько объектов делят один слот).</p>
+</blockquote>
+<h3 id="73-сравнение-с-net-thread-allocation-context"><a class="header" href="#73-сравнение-с-net-thread-allocation-context">7.3 Сравнение с .NET Thread allocation context</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>Go mcache</th><th>.NET Thread Allocation Context</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Привязка</strong></td><td>К P (Processor)</td><td>К потоку</td></tr>
+<tr><td><strong>Количество</strong></td><td>GOMAXPROCS штук</td><td>По количеству потоков</td></tr>
+<tr><td><strong>Размер</strong></td><td>~67 spans (по size class)</td><td>Один указатель + лимит</td></tr>
+<tr><td><strong>Механизм</strong></td><td>Free list (выбор из span)</td><td>Bump pointer (сдвиг указателя)</td></tr>
+<tr><td><strong>При исчерпании</strong></td><td>Пополнение из mcentral</td><td>Получение нового региона от GC</td></tr>
+<tr><td><strong>Фрагментация</strong></td><td>Нет (size classes)</td><td>Решается компактированием</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>C# allocation context</strong>:</p>
+<pre><code class="language-csharp">// .NET (концептуально)
+// Каждый поток имеет:
+class ThreadAllocationContext {
+    IntPtr alloc_ptr;    // Текущий указатель
+    IntPtr alloc_limit;  // Конец региона
+}
+
+// Аллокация:
+if (alloc_ptr + size &lt;= alloc_limit) {
+    var result = alloc_ptr;
+    alloc_ptr += size;  // Bump pointer
+    return result;
+} else {
+    // Запрос нового региона у GC
+}
+</code></pre>
+<p><strong>Go mcache</strong>:</p>
+<pre><code class="language-go">// Go
+// Каждый P имеет mcache с spans
+
+// Аллокация:
+span := c.alloc[sizeClass]
+slot := span.nextFreeIndex()  // Поиск в free list
+if slot &lt; span.nelems {
+    return span.base() + slot*span.elemsize
+} else {
+    // Получаем новый span из mcentral
+}
+</code></pre>
+<hr>
+<h2 id="8-size-classes"><a class="header" href="#8-size-classes">8. Size Classes</a></h2>
+<h3 id="81-что-такое-size-class"><a class="header" href="#81-что-такое-size-class">8.1 Что такое size class</a></h3>
+<p><strong>Size class</strong> — фиксированный размер слота в span. Go округляет размер объекта до ближайшего size class.</p>
+<pre><code>Запрошено: 20 bytes
+Size class: 24 bytes (ближайший &gt;= 20)
+Потеря: 4 bytes (16.7%)
+
+Запрошено: 100 bytes
+Size class: 112 bytes
+Потеря: 12 bytes (10.7%)
+</code></pre>
+<p><strong>Почему size classes?</strong></p>
+<ol>
+<li><strong>Нет внешней фрагментации</strong>: все слоты в span одинакового размера</li>
+<li><strong>Быстрый поиск</strong>: не нужно искать подходящий блок</li>
+<li><strong>Простое освобождение</strong>: слот просто помечается свободным</li>
+</ol>
+<h3 id="82-таблица-size-classes-в-go"><a class="header" href="#82-таблица-size-classes-в-go">8.2 Таблица size classes в Go</a></h3>
+<p>Go использует <strong>67 size classes</strong> (+ 1 для больших объектов):</p>
+<pre><code class="language-go">// runtime/sizeclasses.go (сгенерировано)
+// class  bytes/obj  bytes/span  objects  tail waste  max waste
+//     1          8        8192     1024           0     87.50%
+//     2         16        8192      512           0     43.75%
+//     3         24        8192      341           8     29.24%
+//     4         32        8192      256           0     21.88%
+//     5         48        8192      170          32     31.52%
+//     6         64        8192      128           0     23.44%
+//     7         80        8192      102          32     19.07%
+//     8         96        8192       85          32     15.95%
+//     9        112        8192       73          16     13.56%
+//    10        128        8192       64           0     11.72%
+//    ...
+//    66      28672       57344        2           0      4.91%
+//    67      32768       32768        1           0     12.50%
+</code></pre>
+<p><strong>Визуализация size classes</strong>:</p>
+<pre><code>Size class progression (первые 20):
+┌────────────────────────────────────────────────────────────────────┐
+│ Class │ Size    │ Class │ Size    │ Class │ Size    │ Class │ Size│
+├───────┼─────────┼───────┼─────────┼───────┼─────────┼───────┼─────┤
+│   1   │    8 B  │   6   │   64 B  │  11   │  144 B  │  16   │ 256B│
+│   2   │   16 B  │   7   │   80 B  │  12   │  160 B  │  17   │ 288B│
+│   3   │   24 B  │   8   │   96 B  │  13   │  176 B  │  18   │ 320B│
+│   4   │   32 B  │   9   │  112 B  │  14   │  192 B  │  19   │ 352B│
+│   5   │   48 B  │  10   │  128 B  │  15   │  224 B  │  20   │ 384B│
+└────────────────────────────────────────────────────────────────────┘
+
+Прогрессия: ~12.5% между соседними классами
+Max waste: ~12.5% (в худшем случае объект 33B → класс 48B)
+</code></pre>
+<p><strong>Получение size class по размеру</strong>:</p>
+<pre><code class="language-go">// runtime/msize.go
+func roundupsize(size uintptr) uintptr {
+    if size &lt; _MaxSmallSize {
+        if size &lt;= smallSizeMax-8 {
+            return uintptr(class_to_size[size_to_class8[divRoundUp(size, smallSizeDiv)]])
+        } else {
+            return uintptr(class_to_size[size_to_class128[divRoundUp(size-smallSizeMax, largeSizeDiv)]])
+        }
+    }
+    // Large allocation (&gt; 32KB)
+    return alignUp(size, _PageSize)
+}
+</code></pre>
+<h3 id="83-оптимизация-структур-под-size-classes"><a class="header" href="#83-оптимизация-структур-под-size-classes">8.3 Оптимизация структур под size classes</a></h3>
+<p><strong>Плохо</strong> — структура попадает в больший size class:</p>
+<pre><code class="language-go">// 33 bytes → size class 48 (потеря 31%)
+type Bad struct {
+    ID        int64     // 8 bytes
+    Timestamp int64     // 8 bytes
+    Value     float64   // 8 bytes
+    Flag      bool      // 1 byte
+    Name      [8]byte   // 8 bytes
+    // Total: 33 bytes → rounded to 48
+}
+
+func BenchmarkBadAlloc(b *testing.B) {
+    for i := 0; i &lt; b.N; i++ {
+        _ = new(Bad)
+    }
+}
+// BenchmarkBadAlloc-8    50000000    25.3 ns/op    48 B/op    1 allocs/op
+</code></pre>
+<p><strong>Хорошо</strong> — структура точно попадает в size class:</p>
+<pre><code class="language-go">// 32 bytes → size class 32 (потеря 0%)
+type Good struct {
+    ID        int64     // 8 bytes
+    Timestamp int64     // 8 bytes
+    Value     float64   // 8 bytes
+    Flag      bool      // 1 byte
+    _         [7]byte   // 7 bytes padding (явный)
+    // Total: 32 bytes → exact fit
+}
+
+// Или реорганизуем поля:
+type Better struct {
+    ID        int64     // 8 bytes
+    Timestamp int64     // 8 bytes
+    Value     float64   // 8 bytes
+    Name      [7]byte   // 7 bytes
+    Flag      bool      // 1 byte
+    // Total: 32 bytes
+}
+
+func BenchmarkGoodAlloc(b *testing.B) {
+    for i := 0; i &lt; b.N; i++ {
+        _ = new(Good)
+    }
+}
+// BenchmarkGoodAlloc-8    50000000    24.1 ns/op    32 B/op    1 allocs/op
+</code></pre>
+<p><strong>Инструмент для анализа</strong>:</p>
+<pre><code class="language-bash"># Установка fieldalignment
+go install golang.org/x/tools/go/analysis/passes/fieldalignment/cmd/fieldalignment@latest
+
+# Анализ структур
+fieldalignment -fix ./...
+</code></pre>
+<pre><code class="language-go">// fieldalignment подскажет оптимальный порядок полей
+// До:
+type Unoptimized struct {
+    a bool    // 1 byte
+    b int64   // 8 bytes (7 bytes padding перед b!)
+    c bool    // 1 byte
+    d int32   // 4 bytes (3 bytes padding перед d!)
+}
+// Размер: 24 bytes (много padding)
+
+// После fieldalignment -fix:
+type Optimized struct {
+    b int64   // 8 bytes
+    d int32   // 4 bytes
+    a bool    // 1 byte
+    c bool    // 1 byte
+    // 2 bytes padding в конце
+}
+// Размер: 16 bytes
+</code></pre>
+<hr>
+<h2 id="9-путь-аллокации-от-new-до-памяти"><a class="header" href="#9-путь-аллокации-от-new-до-памяти">9. Путь аллокации: от new() до памяти</a></h2>
+<h3 id="91-mallocgc-пошагово"><a class="header" href="#91-mallocgc-пошагово">9.1 mallocgc() пошагово</a></h3>
+<p><strong>mallocgc</strong> — центральная функция аллокации в Go runtime.</p>
+<pre><code class="language-go">// runtime/malloc.go (упрощённо)
+func mallocgc(size uintptr, typ *_type, needzero bool) unsafe.Pointer {
+    // 1. Проверка на нулевой размер
+    if size == 0 {
+        return unsafe.Pointer(&amp;zerobase)
+    }
+
+    // 2. Получаем mcache текущего P
+    c := getMCache()
+
+    // 3. Выбираем путь аллокации
+    var x unsafe.Pointer
+    noscan := typ == nil || !typ.ptrdata
+
+    if size &lt;= maxSmallSize {
+        if noscan &amp;&amp; size &lt; maxTinySize {
+            // Tiny allocation (&lt; 16 bytes, без указателей)
+            x = tinyAlloc(c, size)
+        } else {
+            // Small allocation (16 bytes - 32 KB)
+            x = smallAlloc(c, size, noscan)
+        }
+    } else {
+        // Large allocation (&gt; 32 KB)
+        x = largeAlloc(size, noscan)
+    }
+
+    // 4. Зануление (если нужно)
+    if needzero &amp;&amp; x != nil {
+        memclrNoHeapPointers(x, size)
+    }
+
+    // 5. Уведомление GC
+    if gcphase != _GCoff {
+        gcmarknewobject(x, size)
+    }
+
+    return x
+}
+</code></pre>
+<h3 id="92-fast-path-vs-slow-path"><a class="header" href="#92-fast-path-vs-slow-path">9.2 Fast path vs Slow path</a></h3>
+<pre><code>                        mallocgc(size)
+                              │
+                              ▼
+                    ┌─────────────────────┐
+                    │ size &lt;= 32KB ?      │
+                    └─────────────────────┘
+                         │           │
+                        Yes          No
+                         │           │
+                         ▼           ▼
+              ┌──────────────┐  ┌──────────────┐
+              │ Small/Tiny   │  │    Large     │
+              │  allocation  │  │  allocation  │
+              └──────────────┘  └──────────────┘
+                    │                  │
+                    ▼                  ▼
+         ┌────────────────────┐  ┌──────────────┐
+         │ mcache.alloc[class]│  │   mheap      │
+         │ (FAST PATH)        │  │  (SLOW PATH) │
+         └────────────────────┘  └──────────────┘
+                    │
+            есть свободный слот?
+                 │        │
+                Yes       No
+                 │        │
+                 ▼        ▼
+         ┌──────────┐  ┌──────────────┐
+         │ Готово!  │  │  mcentral    │
+         │ (FAST)   │  │ cacheSpan() │
+         └──────────┘  └──────────────┘
+                              │
+                       есть span?
+                        │        │
+                       Yes       No
+                        │        │
+                        ▼        ▼
+                ┌──────────┐  ┌──────────┐
+                │ Готово!  │  │  mheap   │
+                │ (MEDIUM) │  │  grow()  │
+                └──────────┘  └──────────┘
+                                   │
+                                   ▼
+                            ┌──────────┐
+                            │  sysMap  │
+                            │  (SLOW)  │
+                            └──────────┘
+</code></pre>
+<p><strong>Стоимость каждого пути</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Путь</th><th>Операция</th><th>Примерное время</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Fast</strong></td><td>mcache → span → slot</td><td>~25 ns</td></tr>
+<tr><td><strong>Medium</strong></td><td>+ mcentral.cacheSpan</td><td>~100 ns</td></tr>
+<tr><td><strong>Slow</strong></td><td>+ mheap.alloc</td><td>~1 μs</td></tr>
+<tr><td><strong>Very Slow</strong></td><td>+ sysMap (mmap)</td><td>~10 μs</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="93-tiny-small-и-large-аллокации"><a class="header" href="#93-tiny-small-и-large-аллокации">9.3 Tiny, Small и Large аллокации</a></h3>
+<p><strong>Tiny allocation (&lt; 16 bytes, noscan)</strong>:</p>
+<pre><code class="language-go">// Объекты упаковываются в один 16-byte блок
+var a int8  = 1  // ─┐
+var b int16 = 2  // ─┼─► один tiny block
+var c bool  = true // ─┘
+</code></pre>
+<p><strong>Small allocation (16 bytes - 32 KB)</strong>:</p>
+<pre><code class="language-go">// Стандартная аллокация через size classes
+type User struct {
+    ID   int64
+    Name string
+    Age  int
+}
+user := new(User)  // ~40 bytes → size class 48
+</code></pre>
+<p><strong>Large allocation (&gt; 32 KB)</strong>:</p>
+<pre><code class="language-go">// Напрямую из mheap, кратно размеру страницы
+data := make([]byte, 100*1024)  // 100 KB → 13 pages (104 KB)
+</code></pre>
+<pre><code class="language-go">// runtime/malloc.go
+func largeAlloc(size uintptr, noscan bool) unsafe.Pointer {
+    // Округляем до страницы
+    npages := size &gt;&gt; pageShift
+    if size&amp;(pageSize-1) != 0 {
+        npages++
+    }
+
+    // Выделяем span напрямую из mheap
+    s := mheap_.alloc(npages, makeSpanClass(0, noscan))
+
+    return unsafe.Pointer(s.base())
+}
+</code></pre>
+<hr>
+<h2 id="10-диагностика-и-мониторинг"><a class="header" href="#10-диагностика-и-мониторинг">10. Диагностика и мониторинг</a></h2>
+<h3 id="101-runtimememstats-детально"><a class="header" href="#101-runtimememstats-детально">10.1 runtime.MemStats детально</a></h3>
+<p><strong>MemStats</strong> — основной источник информации о памяти.</p>
+<pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "runtime"
+)
+
+func printMemStats() {
+    var m runtime.MemStats
+    runtime.ReadMemStats(&amp;m)
+
+    fmt.Println("=== Общая информация ===")
+    fmt.Printf("Alloc:       %d MB (текущий heap)\n", m.Alloc/1024/1024)
+    fmt.Printf("TotalAlloc:  %d MB (всего аллоцировано за время работы)\n", m.TotalAlloc/1024/1024)
+    fmt.Printf("Sys:         %d MB (всего получено от ОС)\n", m.Sys/1024/1024)
+    fmt.Printf("NumGC:       %d (количество GC циклов)\n", m.NumGC)
+
+    fmt.Println("\n=== Heap ===")
+    fmt.Printf("HeapAlloc:   %d MB (живые объекты)\n", m.HeapAlloc/1024/1024)
+    fmt.Printf("HeapSys:     %d MB (получено от ОС для heap)\n", m.HeapSys/1024/1024)
+    fmt.Printf("HeapIdle:    %d MB (неиспользуемые spans)\n", m.HeapIdle/1024/1024)
+    fmt.Printf("HeapInuse:   %d MB (используемые spans)\n", m.HeapInuse/1024/1024)
+    fmt.Printf("HeapReleased:%d MB (возвращено ОС)\n", m.HeapReleased/1024/1024)
+    fmt.Printf("HeapObjects: %d (количество объектов)\n", m.HeapObjects)
+
+    fmt.Println("\n=== Структуры аллокатора ===")
+    fmt.Printf("MSpanInuse:  %d KB (память для mspan структур)\n", m.MSpanInuse/1024)
+    fmt.Printf("MSpanSys:    %d KB (получено от ОС для mspan)\n", m.MSpanSys/1024)
+    fmt.Printf("MCacheInuse: %d KB (память для mcache)\n", m.MCacheInuse/1024)
+    fmt.Printf("MCacheSys:   %d KB (получено от ОС для mcache)\n", m.MCacheSys/1024)
+
+    fmt.Println("\n=== Аллокации по размерам ===")
+    for i, count := range m.BySize {
+        if count.Mallocs &gt; 0 {
+            fmt.Printf("Size %5d: mallocs=%d, frees=%d, live=%d\n",
+                m.BySize[i].Size,
+                count.Mallocs,
+                count.Frees,
+                count.Mallocs-count.Frees)
+        }
+    }
+}
+</code></pre>
+<p><strong>Ключевые метрики для мониторинга</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Метрика</th><th>Описание</th><th>Что смотреть</th></tr>
+</thead>
+<tbody>
+<tr><td><code>HeapAlloc</code></td><td>Живые объекты</td><td>Должно быть стабильным</td></tr>
+<tr><td><code>HeapSys</code></td><td>Всего heap памяти</td><td>Рост = возможная утечка</td></tr>
+<tr><td><code>HeapIdle</code></td><td>Неиспользуемые spans</td><td>Высокое значение = фрагментация</td></tr>
+<tr><td><code>HeapReleased</code></td><td>Возвращено ОС</td><td>Должно расти при idle</td></tr>
+<tr><td><code>NumGC</code></td><td>Количество GC</td><td>Частота GC</td></tr>
+<tr><td><code>PauseTotalNs</code></td><td>Суммарные паузы GC</td><td>Влияние на latency</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="102-godebug-флаги"><a class="header" href="#102-godebug-флаги">10.2 GODEBUG флаги</a></h3>
+<p><strong>Отладка аллокатора</strong>:</p>
+<pre><code class="language-bash"># Трассировка каждой аллокации и освобождения
+GODEBUG=allocfreetrace=1 ./myapp
+
+# Вывод:
+# tracealloc(0xc0000a0000, 0x18, main.User)
+# tracefree(0xc0000a0000, 0x18)
+
+# Статистика планировщика и памяти каждые 5 секунд
+GODEBUG=schedtrace=5000,gctrace=1 ./myapp
+
+# Вывод GC:
+# gc 1 @0.012s 2%: 0.018+1.2+0.019 ms clock, 0.14+0.25/1.0/0+0.15 ms cpu, 4-&gt;4-&gt;1 MB, 5 MB goal, 8 P
+#    │    │    │   │                    │                           │           │         │
+#    │    │    │   │                    │                           │           │         └─ P count
+#    │    │    │   │                    │                           │           └─ Target heap
+#    │    │    │   │                    │                           └─ Heap: before→after→live
+#    │    │    │   │                    └─ CPU time (assist/bg/idle)
+#    │    │    │   └─ Wall clock time (sweep+mark+mark term)
+#    │    │    └─ CPU % spent in GC
+#    │    └─ Time since start
+#    └─ GC number
+</code></pre>
+<p><strong>Полезные GODEBUG флаги для памяти</strong>:</p>
+<pre><code class="language-bash"># Проверка double-free
+GODEBUG=invalidptr=1 ./myapp
+
+# Отключение возврата памяти ОС (для отладки)
+GODEBUG=madvdontneed=0 ./myapp
+
+# Дополнительные проверки scavenger
+GODEBUG=scavtrace=1 ./myapp
+</code></pre>
+<h3 id="103-pprof-визуализация"><a class="header" href="#103-pprof-визуализация">10.3 pprof визуализация</a></h3>
+<p><strong>Heap profile</strong>:</p>
+<pre><code class="language-go">import (
+    "net/http"
+    _ "net/http/pprof"
+)
+
+func main() {
+    go func() {
+        http.ListenAndServe("localhost:6060", nil)
+    }()
+
+    // ... ваш код ...
+}
+</code></pre>
+<pre><code class="language-bash"># Heap в использовании
+go tool pprof http://localhost:6060/debug/pprof/heap
+
+# Все аллокации (включая освобождённые)
+go tool pprof http://localhost:6060/debug/pprof/allocs
+
+# Интерактивные команды:
+(pprof) top          # Топ потребителей памяти
+(pprof) list main.   # Построчный анализ функций main.*
+(pprof) web          # Визуализация в браузере
+(pprof) tree         # Дерево вызовов
+</code></pre>
+<p><strong>Сравнение с .NET</strong>:</p>
+<pre><code class="language-csharp">// C#: аналогичный анализ через dotMemory или PerfView
+// Heap snapshot
+// Allocation recording
+// Object retention graph
+</code></pre>
+<hr>
+<h2 id="практические-примеры"><a class="header" href="#практические-примеры">Практические примеры</a></h2>
+<h3 id="пример-1-анализ-size-class-через-benchmark"><a class="header" href="#пример-1-анализ-size-class-через-benchmark">Пример 1: Анализ size class через benchmark</a></h3>
+<pre><code class="language-go">package main
+
+import (
+    "testing"
+    "unsafe"
+)
+
+// Структуры разных размеров
+type Size31 struct{ data [31]byte }   // 31 → class 32
+type Size32 struct{ data [32]byte }   // 32 → class 32 (ideal)
+type Size33 struct{ data [33]byte }   // 33 → class 48 (waste!)
+
+func BenchmarkAlloc31(b *testing.B) {
+    for i := 0; i &lt; b.N; i++ {
+        _ = new(Size31)
+    }
+}
+
+func BenchmarkAlloc32(b *testing.B) {
+    for i := 0; i &lt; b.N; i++ {
+        _ = new(Size32)
+    }
+}
+
+func BenchmarkAlloc33(b *testing.B) {
+    for i := 0; i &lt; b.N; i++ {
+        _ = new(Size33)
+    }
+}
+
+func TestSizes(t *testing.T) {
+    t.Logf("Size31: %d bytes", unsafe.Sizeof(Size31{}))
+    t.Logf("Size32: %d bytes", unsafe.Sizeof(Size32{}))
+    t.Logf("Size33: %d bytes", unsafe.Sizeof(Size33{}))
+}
+</code></pre>
+<pre><code class="language-bash">go test -bench=. -benchmem
+
+# Результат:
+# BenchmarkAlloc31-8    50000000    24.2 ns/op    32 B/op    1 allocs/op
+# BenchmarkAlloc32-8    50000000    24.1 ns/op    32 B/op    1 allocs/op
+# BenchmarkAlloc33-8    50000000    25.3 ns/op    48 B/op    1 allocs/op
+#                                                  ^^
+#                                     Size33 использует 48B вместо 33B!
+</code></pre>
+<h3 id="пример-2-мониторинг-аллокатора-в-runtime"><a class="header" href="#пример-2-мониторинг-аллокатора-в-runtime">Пример 2: Мониторинг аллокатора в runtime</a></h3>
+<pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "runtime"
+    "time"
+)
+
+func monitorAllocator(interval time.Duration) {
+    var prevStats runtime.MemStats
+    runtime.ReadMemStats(&amp;prevStats)
+
+    ticker := time.NewTicker(interval)
+    defer ticker.Stop()
+
+    for range ticker.C {
+        var m runtime.MemStats
+        runtime.ReadMemStats(&amp;m)
+
+        // Дельта с предыдущим измерением
+        allocRate := float64(m.TotalAlloc-prevStats.TotalAlloc) / interval.Seconds()
+
+        fmt.Printf("[Allocator] HeapInuse: %d MB, HeapIdle: %d MB, "+
+            "AllocRate: %.2f MB/s, Objects: %d\n",
+            m.HeapInuse/1024/1024,
+            m.HeapIdle/1024/1024,
+            allocRate/1024/1024,
+            m.HeapObjects)
+
+        // Эффективность использования spans
+        if m.HeapInuse &gt; 0 {
+            efficiency := float64(m.HeapAlloc) / float64(m.HeapInuse) * 100
+            fmt.Printf("[Efficiency] %.1f%% (HeapAlloc/HeapInuse)\n", efficiency)
+        }
+
+        prevStats = m
+    }
+}
+
+func main() {
+    go monitorAllocator(2 * time.Second)
+
+    // Симуляция нагрузки
+    var data [][]byte
+    for i := 0; i &lt; 100; i++ {
+        data = append(data, make([]byte, 1024*1024)) // 1 MB
+        time.Sleep(100 * time.Millisecond)
+    }
+
+    // Освобождаем
+    data = nil
+    runtime.GC()
+
+    time.Sleep(10 * time.Second)
+}
+</code></pre>
+<h3 id="пример-3-prometheus-метрики-аллокатора"><a class="header" href="#пример-3-prometheus-метрики-аллокатора">Пример 3: Prometheus метрики аллокатора</a></h3>
+<pre><code class="language-go">package main
+
+import (
+    "net/http"
+    "runtime"
+
+    "github.com/prometheus/client_golang/prometheus"
+    "github.com/prometheus/client_golang/prometheus/promhttp"
+)
+
+var (
+    heapAllocGauge = prometheus.NewGauge(prometheus.GaugeOpts{
+        Name: "go_heap_alloc_bytes",
+        Help: "Current heap allocation in bytes",
+    })
+
+    heapIdleGauge = prometheus.NewGauge(prometheus.GaugeOpts{
+        Name: "go_heap_idle_bytes",
+        Help: "Heap memory not in use",
+    })
+
+    heapInuseGauge = prometheus.NewGauge(prometheus.GaugeOpts{
+        Name: "go_heap_inuse_bytes",
+        Help: "Heap memory in use",
+    })
+
+    heapObjectsGauge = prometheus.NewGauge(prometheus.GaugeOpts{
+        Name: "go_heap_objects",
+        Help: "Number of heap objects",
+    })
+
+    mspanInuseGauge = prometheus.NewGauge(prometheus.GaugeOpts{
+        Name: "go_mspan_inuse_bytes",
+        Help: "Memory used by mspan structures",
+    })
+
+    mcacheInuseGauge = prometheus.NewGauge(prometheus.GaugeOpts{
+        Name: "go_mcache_inuse_bytes",
+        Help: "Memory used by mcache structures",
+    })
+)
+
+func init() {
+    prometheus.MustRegister(heapAllocGauge)
+    prometheus.MustRegister(heapIdleGauge)
+    prometheus.MustRegister(heapInuseGauge)
+    prometheus.MustRegister(heapObjectsGauge)
+    prometheus.MustRegister(mspanInuseGauge)
+    prometheus.MustRegister(mcacheInuseGauge)
+}
+
+func updateMetrics() {
+    var m runtime.MemStats
+    runtime.ReadMemStats(&amp;m)
+
+    heapAllocGauge.Set(float64(m.HeapAlloc))
+    heapIdleGauge.Set(float64(m.HeapIdle))
+    heapInuseGauge.Set(float64(m.HeapInuse))
+    heapObjectsGauge.Set(float64(m.HeapObjects))
+    mspanInuseGauge.Set(float64(m.MSpanInuse))
+    mcacheInuseGauge.Set(float64(m.MCacheInuse))
+}
+
+func main() {
+    // Периодическое обновление метрик
+    go func() {
+        for {
+            updateMetrics()
+            time.Sleep(time.Second)
+        }
+    }()
+
+    http.Handle("/metrics", promhttp.Handler())
+    http.ListenAndServe(":9090", nil)
+}
+</code></pre>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part2-advanced/02_runtime_scheduler.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part2-advanced/04_gc.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part2-advanced/02_runtime_scheduler.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part2-advanced/04_gc.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
