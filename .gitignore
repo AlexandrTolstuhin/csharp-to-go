@@ -57,3 +57,6 @@ logs/
 
 # Project specific
 /examples/**/main
+
+# mdBook output
+book/
