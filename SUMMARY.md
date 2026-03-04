@@ -6,19 +6,19 @@
 
 - [Установка и настройка окружения](part1-basics/01_setup_environment.md)
 - [Синтаксис и базовые концепции](part1-basics/02_syntax_basics.md)
-  - [Коллекции и производительность: шпаргалка](part1-basics/02a_collections_performance_cheatsheet.md)
-- [Ключевые отличия от C#](part1-basics/03_key_differences.md)
+- [Коллекции и производительность: шпаргалка](part1-basics/03_collections_performance_cheatsheet.md)
+- [Ключевые отличия от C#](part1-basics/04_key_differences.md)
 
 # Часть 2: Углублённые темы
 
 - [Горутины и каналы](part2-advanced/01_goroutines_channels.md)
 - [Go Runtime и планировщик](part2-advanced/02_runtime_scheduler.md)
-  - [Аллокатор памяти Go](part2-advanced/02a_memory_allocator.md)
-- [Сборка мусора (GC)](part2-advanced/03_gc.md)
-- [Примитивы синхронизации](part2-advanced/04_sync_primitives.md)
-- [Обработка ошибок](part2-advanced/05_error_handling.md)
-- [Тестирование и бенчмаркинг](part2-advanced/06_testing_benchmarking.md)
-- [Профилирование и оптимизация](part2-advanced/07_profiling_optimization.md)
+- [Аллокатор памяти Go](part2-advanced/03_memory_allocator.md)
+- [Сборка мусора (GC)](part2-advanced/04_gc.md)
+- [Примитивы синхронизации](part2-advanced/05_sync_primitives.md)
+- [Обработка ошибок](part2-advanced/06_error_handling.md)
+- [Тестирование и бенчмаркинг](part2-advanced/07_testing_benchmarking.md)
+- [Профилирование и оптимизация](part2-advanced/08_profiling_optimization.md)
 
 # Часть 3: Web API
 
