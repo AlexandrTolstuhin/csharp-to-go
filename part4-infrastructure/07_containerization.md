@@ -2,9 +2,6 @@
 
 ## Содержание
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 - [Введение](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5)
 - [Экосистема: C# vs Go](#%D1%8D%D0%BA%D0%BE%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0-c-vs-go)
 - [Docker для Go приложений](#docker-%D0%B4%D0%BB%D1%8F-go-%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B9)
@@ -76,8 +73,6 @@
   - [Пример 1: Production Dockerfile с multi-stage и distroless](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-production-dockerfile-%D1%81-multi-stage-%D0%B8-distroless)
   - [Пример 2: Docker Compose для микросервисов](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-docker-compose-%D0%B4%D0%BB%D1%8F-%D0%BC%D0%B8%D0%BA%D1%80%D0%BE%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%BE%D0%B2)
   - [Пример 3: Kubernetes Deployment с health checks и HPA](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-kubernetes-deployment-%D1%81-health-checks-%D0%B8-hpa)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 
@@ -4123,9 +4118,3 @@ kubectl -n myapp rollout undo deployment/myapp
 ```
 
 ---
-
-<!-- AUTO: NAV -->
-**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
-
-[← Назад: Конфигурация: Управление настройками в Go](./06_config.md) | [Вперёд: Проект 1: URL Shortener →](../part5-project1-url-shortener/)
-<!-- /AUTO: NAV -->

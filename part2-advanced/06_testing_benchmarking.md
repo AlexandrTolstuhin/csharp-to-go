@@ -2,9 +2,6 @@
 
 ## Содержание
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 - [Введение](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5)
   - [Сравнительная таблица: C# vs Go тестирование](#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-c-vs-go-%D1%82%D0%B5%D1%81%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5)
 - [1. testing package: основы](#1-testing-package-%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D1%8B)
@@ -102,8 +99,6 @@
 - [Практические примеры](#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B)
   - [Пример 1: UserService с полным покрытием](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-userservice-%D1%81-%D0%BF%D0%BE%D0%BB%D0%BD%D1%8B%D0%BC-%D0%BF%D0%BE%D0%BA%D1%80%D1%8B%D1%82%D0%B8%D0%B5%D0%BC)
   - [Пример 2: Rate Limiter с concurrent тестами](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-rate-limiter-%D1%81-concurrent-%D1%82%D0%B5%D1%81%D1%82%D0%B0%D0%BC%D0%B8)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 
@@ -2720,9 +2715,3 @@ func BenchmarkRateLimiter(b *testing.B) {
 - Benchmarks для производительности
 
 ---
-
-<!-- AUTO: NAV -->
-**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
-
-[← Назад: Обработка ошибок (продвинутый уровень)](./05_error_handling.md) | [Вперёд: Профилирование и оптимизация →](./07_profiling_optimization.md)
-<!-- /AUTO: NAV -->

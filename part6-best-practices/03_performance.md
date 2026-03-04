@@ -2,9 +2,6 @@
 
 ## Содержание
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 - [Введение](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5)
   - [Для кого этот раздел](#%D0%B4%D0%BB%D1%8F-%D0%BA%D0%BE%D0%B3%D0%BE-%D1%8D%D1%82%D0%BE%D1%82-%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB)
   - [C# vs Go: культура производительности](#c-vs-go-%D0%BA%D1%83%D0%BB%D1%8C%D1%82%D1%83%D1%80%D0%B0-%D0%BF%D1%80%D0%BE%D0%B8%D0%B7%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D0%B8)
@@ -45,8 +42,6 @@
   - [Пример 1: Zero-Allocation HTTP Service](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-zero-allocation-http-service)
   - [Пример 2: Memory-Efficient Data Pipeline](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-memory-efficient-data-pipeline)
   - [Пример 3: Production Performance Audit](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-production-performance-audit)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 
@@ -2908,9 +2903,3 @@ jobs:
 ```
 
 ---
-
-<!-- AUTO: NAV -->
-**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
-
-[← Назад: Инструменты](./02_tools.md) | [Вперёд: Production Checklist →](./04_production_checklist.md)
-<!-- /AUTO: NAV -->

@@ -2,9 +2,6 @@
 
 ## Содержание
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 - [Обзор](#%D0%BE%D0%B1%D0%B7%D0%BE%D1%80)
   - [Структура пакетов](#%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%B0-%D0%BF%D0%B0%D0%BA%D0%B5%D1%82%D0%BE%D0%B2)
 - [Структура и routing](#%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%B0-%D0%B8-routing)
@@ -18,8 +15,6 @@
   - [API Gateway: YARP vs chi + gobreaker](#api-gateway-yarp-vs-chi--gobreaker)
   - [Circuit Breaker: Polly vs gobreaker](#circuit-breaker-polly-vs-gobreaker)
   - [gRPC → HTTP маппинг](#grpc-%E2%86%92-http-%D0%BC%D0%B0%D0%BF%D0%BF%D0%B8%D0%BD%D0%B3)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 
@@ -982,9 +977,3 @@ Go-подход: больше кода, но полный контроль на�
 В Go — явная трансляция в каждом хэндлере через `writeGRPCError()`.
 
 ---
-
-<!-- AUTO: NAV -->
-**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
-
-[← Назад: 5. Payment Service и Notification Service](./05_payment_notification.md) | [Вперёд: 7. Деплой и наблюдаемость →](./07_deployment.md)
-<!-- /AUTO: NAV -->

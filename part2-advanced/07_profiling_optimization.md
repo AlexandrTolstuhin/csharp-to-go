@@ -2,9 +2,6 @@
 
 ## Содержание
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 - [Введение](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5)
   - [Сравнительная таблица: .NET Profiling vs Go Profiling](#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-net-profiling-vs-go-profiling)
   - [Золотое правило профилирования](#%D0%B7%D0%BE%D0%BB%D0%BE%D1%82%D0%BE%D0%B5-%D0%BF%D1%80%D0%B0%D0%B2%D0%B8%D0%BB%D0%BE-%D0%BF%D1%80%D0%BE%D1%84%D0%B8%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F)
@@ -105,8 +102,6 @@
   - [Пример 4: CI/CD pipeline для производительности](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-4-cicd-pipeline-%D0%B4%D0%BB%D1%8F-%D0%BF%D1%80%D0%BE%D0%B8%D0%B7%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D0%B8)
     - [GitHub Actions workflow](#github-actions-workflow)
     - [Результат в PR](#%D1%80%D0%B5%D0%B7%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%82-%D0%B2-pr)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 
@@ -2456,9 +2451,3 @@ Handler-8           48.2kB ± 0%    72.1kB ± 0%   +49.6%  ⚠️
 ```
 
 ---
-
-<!-- AUTO: NAV -->
-**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
-
-[← Назад: Тестирование и бенчмаркинг](./06_testing_benchmarking.md) | [Вперёд: Часть 3: Web API разработка →](../part3-web-api/)
-<!-- /AUTO: NAV -->

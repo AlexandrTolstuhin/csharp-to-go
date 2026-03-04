@@ -2,9 +2,6 @@
 
 ## Содержание
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 - [Введение](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5)
 - [Экосистема: C# vs Go](#%D1%8D%D0%BA%D0%BE%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0-c-vs-go)
 - [Столп 1: Structured Logging](#%D1%81%D1%82%D0%BE%D0%BB%D0%BF-1-structured-logging)
@@ -99,8 +96,6 @@
   - [Пример 1: Full Observability Setup для HTTP сервиса](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-full-observability-setup-%D0%B4%D0%BB%D1%8F-http-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%B0)
   - [Пример 2: Distributed Tracing между микросервисами](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-distributed-tracing-%D0%BC%D0%B5%D0%B6%D0%B4%D1%83-%D0%BC%D0%B8%D0%BA%D1%80%D0%BE%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%B0%D0%BC%D0%B8)
   - [Пример 3: Grafana Stack с Docker Compose](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-grafana-stack-%D1%81-docker-compose)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 
@@ -4031,9 +4026,3 @@ datasources:
 В Grafana настроен автоматический переход из логов (Loki) в трейсы (Jaeger) по `trace_id`.
 
 ---
-
-<!-- AUTO: NAV -->
-**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
-
-[← Назад: gRPC](./04_grpc.md) | [Вперёд: Конфигурация: Управление настройками в Go →](./06_config.md)
-<!-- /AUTO: NAV -->

@@ -2,9 +2,6 @@
 
 ## Содержание
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 - [Философия языков](#%D1%84%D0%B8%D0%BB%D0%BE%D1%81%D0%BE%D1%84%D0%B8%D1%8F-%D1%8F%D0%B7%D1%8B%D0%BA%D0%BE%D0%B2)
   - [C# философия](#c-%D1%84%D0%B8%D0%BB%D0%BE%D1%81%D0%BE%D1%84%D0%B8%D1%8F)
   - [Go философия](#go-%D1%84%D0%B8%D0%BB%D0%BE%D1%81%D0%BE%D1%84%D0%B8%D1%8F)
@@ -60,8 +57,6 @@
   - [Что остаётся похожим](#%D1%87%D1%82%D0%BE-%D0%BE%D1%81%D1%82%D0%B0%D1%91%D1%82%D1%81%D1%8F-%D0%BF%D0%BE%D1%85%D0%BE%D0%B6%D0%B8%D0%BC)
   - [Что радикально отличается](#%D1%87%D1%82%D0%BE-%D1%80%D0%B0%D0%B4%D0%B8%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE-%D0%BE%D1%82%D0%BB%D0%B8%D1%87%D0%B0%D0%B5%D1%82%D1%81%D1%8F)
   - [Ключевые идиомы Go для C# разработчиков](#%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5-%D0%B8%D0%B4%D0%B8%D0%BE%D0%BC%D1%8B-go-%D0%B4%D0%BB%D1%8F-c-%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%87%D0%B8%D0%BA%D0%BE%D0%B2)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 
@@ -2550,11 +2545,4 @@ func (r *UserRepository) GetActiveUsers(ctx context.Context) ([]*User, error) {
 5. **"Clear is better than clever"** - понятный код > умный код
 6. **"Don't communicate by sharing memory, share memory by communicating"** - каналы > locks
 
-
 ---
-
-<!-- AUTO: NAV -->
-**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
-
-[← Назад: Коллекции и производительность: Шпаргалка для C# разработчика](./02a_collections_performance_cheatsheet.md) | [Вперёд: Часть 2: Продвинутые темы →](../part2-advanced/)
-<!-- /AUTO: NAV -->

@@ -2,9 +2,6 @@
 
 ## Содержание
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 - [Введение](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5)
 - [Mutex: взаимное исключение](#mutex-%D0%B2%D0%B7%D0%B0%D0%B8%D0%BC%D0%BD%D0%BE%D0%B5-%D0%B8%D1%81%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5)
   - [sync.Mutex vs C# lock](#syncmutex-vs-c-lock)
@@ -40,8 +37,6 @@
   - [semaphore: взвешенный семафор](#semaphore-%D0%B2%D0%B7%D0%B2%D0%B5%D1%88%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9-%D1%81%D0%B5%D0%BC%D0%B0%D1%84%D0%BE%D1%80)
   - [singleflight: дедупликация вызовов](#singleflight-%D0%B4%D0%B5%D0%B4%D1%83%D0%BF%D0%BB%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D1%8F-%D0%B2%D1%8B%D0%B7%D0%BE%D0%B2%D0%BE%D0%B2)
   - [Сравнительная таблица: golang.org/x/sync](#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-golangorgxsync)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 
@@ -1671,9 +1666,3 @@ public class SingleFlight<TKey, TValue>
 | `singleflight.Group` | Дедупликация вызовов | Нет (реализовать вручную) | Защита от cache stampede |
 
 ---
-
-<!-- AUTO: NAV -->
-**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
-
-[← Назад: Сборка мусора (GC)](./03_gc.md) | [Вперёд: Обработка ошибок (продвинутый уровень) →](./05_error_handling.md)
-<!-- /AUTO: NAV -->

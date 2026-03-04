@@ -2,9 +2,6 @@
 
 ## Содержание
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 - [Введение](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5)
   - [Enterprise C# mindset vs Go mindset](#enterprise-c-mindset-vs-go-mindset)
   - [Что вы узнаете](#%D1%87%D1%82%D0%BE-%D0%B2%D1%8B-%D1%83%D0%B7%D0%BD%D0%B0%D0%B5%D1%82%D0%B5)
@@ -62,8 +59,6 @@
   - [Пример 1: Рефакторинг Repository](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-%D1%80%D0%B5%D1%84%D0%B0%D0%BA%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3-repository)
   - [Пример 2: Миграция DI-сервиса](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-%D0%BC%D0%B8%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D1%8F-di-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%B0)
   - [Пример 3: Организация микросервиса](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-%D0%BE%D1%80%D0%B3%D0%B0%D0%BD%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%BC%D0%B8%D0%BA%D1%80%D0%BE%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%B0)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 
@@ -2185,9 +2180,3 @@ func (s *Service) CreateUser(ctx context.Context, req CreateRequest) (*User, err
 ```
 
 ---
-
-<!-- AUTO: NAV -->
-**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
-
-[← Назад к оглавлению](./README.md) | [Вперёд: Инструменты →](./02_tools.md)
-<!-- /AUTO: NAV -->

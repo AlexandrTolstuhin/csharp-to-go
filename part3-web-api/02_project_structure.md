@@ -2,9 +2,6 @@
 
 ## Содержание
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 - [Введение](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5)
   - [Что вы узнаете](#%D1%87%D1%82%D0%BE-%D0%B2%D1%8B-%D1%83%D0%B7%D0%BD%D0%B0%D0%B5%D1%82%D0%B5)
 - [Философия структуры в Go](#%D1%84%D0%B8%D0%BB%D0%BE%D1%81%D0%BE%D1%84%D0%B8%D1%8F-%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D1%8B-%D0%B2-go)
@@ -45,8 +42,6 @@
   - [Пример 1: Flat structure для микросервиса](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-flat-structure-%D0%B4%D0%BB%D1%8F-%D0%BC%D0%B8%D0%BA%D1%80%D0%BE%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%B0)
   - [Пример 2: Clean Architecture](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-clean-architecture)
   - [Пример 3: DI с Wire](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-di-%D1%81-wire)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 
@@ -1498,9 +1493,3 @@ func main() {
 ```
 
 ---
-
-<!-- AUTO: NAV -->
-**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
-
-[← Назад: HTTP в Go: Создание веб-серверов](./01_http_server.md) | [Вперёд: Работа с данными (PostgreSQL) →](./03_database.md)
-<!-- /AUTO: NAV -->

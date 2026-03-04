@@ -2,9 +2,6 @@
 
 ## Содержание
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 - [Введение](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5)
   - [Экосистема кэширования: C# vs Go](#%D1%8D%D0%BA%D0%BE%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0-%D0%BA%D1%8D%D1%88%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F-c-vs-go)
   - [Ключевое отличие от C#](#%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D0%BE%D0%B5-%D0%BE%D1%82%D0%BB%D0%B8%D1%87%D0%B8%D0%B5-%D0%BE%D1%82-c)
@@ -61,8 +58,6 @@
   - [Пример 1: Production-Ready Redis Cache Layer](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-production-ready-redis-cache-layer)
   - [Пример 2: Multi-Level Cache с singleflight](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-multi-level-cache-%D1%81-singleflight)
   - [Пример 3: Session Storage с Redis](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-session-storage-%D1%81-redis)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 
@@ -2496,9 +2491,3 @@ func main() {
 ```
 
 ---
-
-<!-- AUTO: NAV -->
-**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
-
-[← Назад: Production PostgreSQL](./01_production_postgresql.md) | [Вперёд: Очереди сообщений →](./03_message_queues.md)
-<!-- /AUTO: NAV -->

@@ -2,9 +2,6 @@
 
 ## Содержание
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 - [Анализ требований](#%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7-%D1%82%D1%80%D0%B5%D0%B1%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B9)
 - [Доменная модель](#%D0%B4%D0%BE%D0%BC%D0%B5%D0%BD%D0%BD%D0%B0%D1%8F-%D0%BC%D0%BE%D0%B4%D0%B5%D0%BB%D1%8C)
   - [C# подход](#c-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4)
@@ -23,8 +20,6 @@
   - [Go подход](#go-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4-3)
 - [Точка входа: main.go](#%D1%82%D0%BE%D1%87%D0%BA%D0%B0-%D0%B2%D1%85%D0%BE%D0%B4%D0%B0-maingo)
 - [Сравнительная таблица](#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 
@@ -715,9 +710,3 @@ func getEnv(key, defaultValue string) string {
 | Логирование | Serilog / NLog | `log/slog` (stdlib) |
 
 ---
-
-<!-- AUTO: NAV -->
-**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
-
-[← Назад к оглавлению](./README.md) | [Вперёд: 2. Хранилище: PostgreSQL и Redis →](./02_storage.md)
-<!-- /AUTO: NAV -->

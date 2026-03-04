@@ -2,9 +2,6 @@
 
 ## Содержание
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 - [Введение](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5)
   - [Что вы узнаете](#%D1%87%D1%82%D0%BE-%D0%B2%D1%8B-%D1%83%D0%B7%D0%BD%D0%B0%D0%B5%D1%82%D0%B5)
 - [JSON в Go](#json-%D0%B2-go)
@@ -37,8 +34,6 @@
   - [Пример 1: REST API с валидацией](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-rest-api-%D1%81-%D0%B2%D0%B0%D0%BB%D0%B8%D0%B4%D0%B0%D1%86%D0%B8%D0%B5%D0%B9)
   - [Пример 2: Оптимизация JSON](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-%D0%BE%D0%BF%D1%82%D0%B8%D0%BC%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-json)
   - [Пример 3: Protobuf для микросервисов](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-protobuf-%D0%B4%D0%BB%D1%8F-%D0%BC%D0%B8%D0%BA%D1%80%D0%BE%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%BE%D0%B2)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 
@@ -1297,9 +1292,3 @@ func (c *ProductClient) GetProduct(ctx context.Context, id int) (*pb.Product, er
 ```
 
 ---
-
-<!-- AUTO: NAV -->
-**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
-
-[← Назад: Работа с данными (PostgreSQL)](./03_database.md) | [Вперёд: Документация API →](./05_api_documentation.md)
-<!-- /AUTO: NAV -->

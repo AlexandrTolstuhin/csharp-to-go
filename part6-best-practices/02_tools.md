@@ -2,9 +2,6 @@
 
 ## Содержание
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 - [Введение](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5)
   - [Философия Go tooling](#%D1%84%D0%B8%D0%BB%D0%BE%D1%81%D0%BE%D1%84%D0%B8%D1%8F-go-tooling)
   - [Что мы изучим](#%D1%87%D1%82%D0%BE-%D0%BC%D1%8B-%D0%B8%D0%B7%D1%83%D1%87%D0%B8%D0%BC)
@@ -59,8 +56,6 @@
   - [Пример 1: Production-ready .golangci.yml](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-production-ready-golangciyml)
   - [Пример 2: CI/CD Pipeline](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-cicd-pipeline)
   - [Пример 3: Makefile для Go проекта](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-makefile-%D0%B4%D0%BB%D1%8F-go-%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B0)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 
@@ -2361,9 +2356,3 @@ make install-tools
 ```
 
 ---
-
-<!-- AUTO: NAV -->
-**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
-
-[← Назад: Код и архитектура](./01_code_architecture.md) | [Вперёд: Производительность →](./03_performance.md)
-<!-- /AUTO: NAV -->

@@ -2,9 +2,6 @@
 
 ## Содержание
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 - [Введение](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5)
   - [Что изменится в вашем подходе](#%D1%87%D1%82%D0%BE-%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B8%D1%82%D1%81%D1%8F-%D0%B2-%D0%B2%D0%B0%D1%88%D0%B5%D0%BC-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4%D0%B5)
 - [Экосистема: C# vs Go](#%D1%8D%D0%BA%D0%BE%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0-c-vs-go)
@@ -79,8 +76,6 @@
   - [Пример 1: Event-Driven Order Processing (Kafka)](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-event-driven-order-processing-kafka)
   - [Пример 2: Task Queue с RabbitMQ](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-task-queue-%D1%81-rabbitmq)
   - [Пример 3: Real-Time Notifications (NATS)](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-real-time-notifications-nats)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 
@@ -3676,9 +3671,3 @@ func main() {
 > 💡 **Для C# разработчиков**: Этот пример — аналог SignalR с backplane на Azure Service Bus. В C# вы бы использовали `IHubContext<NotificationHub>` для отправки сообщений клиентам. В Go — gorilla/websocket (или nhooyr.io/websocket) + NATS JetStream.
 
 ---
-
-<!-- AUTO: NAV -->
-**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
-
-[← Назад: Кэширование](./02_caching.md) | [Вперёд: gRPC →](./04_grpc.md)
-<!-- /AUTO: NAV -->

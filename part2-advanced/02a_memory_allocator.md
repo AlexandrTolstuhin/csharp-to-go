@@ -2,9 +2,6 @@
 
 ## Содержание
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 - [Введение](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5)
   - [Почему это важно?](#%D0%BF%D0%BE%D1%87%D0%B5%D0%BC%D1%83-%D1%8D%D1%82%D0%BE-%D0%B2%D0%B0%D0%B6%D0%BD%D0%BE)
   - [Что вы узнаете](#%D1%87%D1%82%D0%BE-%D0%B2%D1%8B-%D1%83%D0%B7%D0%BD%D0%B0%D0%B5%D1%82%D0%B5)
@@ -49,8 +46,6 @@
   - [Пример 1: Анализ size class через benchmark](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7-size-class-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-benchmark)
   - [Пример 2: Мониторинг аллокатора в runtime](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3-%D0%B0%D0%BB%D0%BB%D0%BE%D0%BA%D0%B0%D1%82%D0%BE%D1%80%D0%B0-%D0%B2-runtime)
   - [Пример 3: Prometheus метрики аллокатора](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-prometheus-%D0%BC%D0%B5%D1%82%D1%80%D0%B8%D0%BA%D0%B8-%D0%B0%D0%BB%D0%BB%D0%BE%D0%BA%D0%B0%D1%82%D0%BE%D1%80%D0%B0)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 
@@ -1694,9 +1689,3 @@ func main() {
 ```
 
 ---
-
-<!-- AUTO: NAV -->
-**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
-
-[← Назад: Go Runtime и планировщик](./02_runtime_scheduler.md) | [Вперёд: Сборка мусора (GC) →](./03_gc.md)
-<!-- /AUTO: NAV -->

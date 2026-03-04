@@ -2,9 +2,6 @@
 
 ## Содержание
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 - [Введение: что проверяют](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5-%D1%87%D1%82%D0%BE-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D1%8F%D1%8E%D1%82)
   - [Модель памяти Go (кратко)](#%D0%BC%D0%BE%D0%B4%D0%B5%D0%BB%D1%8C-%D0%BF%D0%B0%D0%BC%D1%8F%D1%82%D0%B8-go-%D0%BA%D1%80%D0%B0%D1%82%D0%BA%D0%BE)
 - [Задача 1: Concurrent Cache](#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-1-concurrent-cache)
@@ -35,8 +32,6 @@
   - [Когда это полезно](#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D1%8D%D1%82%D0%BE-%D0%BF%D0%BE%D0%BB%D0%B5%D0%B7%D0%BD%D0%BE)
   - [Trade-offs](#trade-offs)
 - [Итоги](#%D0%B8%D1%82%D0%BE%D0%B3%D0%B8)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 
@@ -779,9 +774,3 @@ func (f *FeatureFlags) Reload(newFlags map[string]int) {
 | COW Map | Immutable data + atomic pointer | Senior |
 
 ---
-
-<!-- AUTO: NAV -->
-**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
-
-[← Назад: Задачи на горутины и каналы](./02_goroutines_channels.md) | [Вперёд: Алгоритмические задачи →](./04_algorithms.md)
-<!-- /AUTO: NAV -->

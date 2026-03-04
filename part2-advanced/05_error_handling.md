@@ -2,9 +2,6 @@
 
 ## Содержание
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 - [Введение](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5)
   - [Сравнительная таблица: C# Enterprise vs Go Production-ready](#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-c-enterprise-vs-go-production-ready)
 - [Sentinel Errors vs Typed Errors](#sentinel-errors-vs-typed-errors)
@@ -43,8 +40,6 @@
   - [Пример 2: Background Job с retry и DLQ](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-background-job-%D1%81-retry-%D0%B8-dlq)
   - [Пример 3: gRPC сервис с error details](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-grpc-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81-%D1%81-error-details)
   - [Пример 4: Observability — distributed tracing](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-4-observability--distributed-tracing)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 
@@ -2089,9 +2084,3 @@ func ProcessOrder(ctx context.Context, orderID int) error {
 </details>
 
 ---
-
-<!-- AUTO: NAV -->
-**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
-
-[← Назад: Примитивы синхронизации](./04_sync_primitives.md) | [Вперёд: Тестирование и бенчмаркинг →](./06_testing_benchmarking.md)
-<!-- /AUTO: NAV -->

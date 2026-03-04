@@ -2,9 +2,6 @@
 
 ## Содержание
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 - [Введение](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5)
   - [Что вы узнаете](#%D1%87%D1%82%D0%BE-%D0%B2%D1%8B-%D1%83%D0%B7%D0%BD%D0%B0%D0%B5%D1%82%D0%B5)
 - [Философия: net/http vs ASP.NET Core](#%D1%84%D0%B8%D0%BB%D0%BE%D1%81%D0%BE%D1%84%D0%B8%D1%8F-nethttp-vs-aspnet-core)
@@ -57,8 +54,6 @@
   - [Пример 1: REST API с net/http](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-rest-api-%D1%81-nethttp)
   - [Пример 2: REST API с chi](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-rest-api-%D1%81-chi)
   - [Пример 3: Middleware chain](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-middleware-chain)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 
@@ -2145,9 +2140,3 @@ curl http://localhost:8080/panic
 ```
 
 ---
-
-<!-- AUTO: NAV -->
-**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
-
-[← Назад к оглавлению](./README.md) | [Вперёд: Структура проекта Go →](./02_project_structure.md)
-<!-- /AUTO: NAV -->

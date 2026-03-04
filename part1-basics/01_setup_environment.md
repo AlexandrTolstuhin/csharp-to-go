@@ -1,51 +1,5 @@
 # 1.1 Установка и настройка окружения Go
 
-## Содержание
-
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-- [Введение](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5)
-- [Цель](#%D1%86%D0%B5%D0%BB%D1%8C)
-- [Шаг 1: Установка Go (версия 1.26+)](#%D1%88%D0%B0%D0%B3-1-%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-go-%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D1%8F-126)
-  - [Windows](#windows)
-  - [Альтернативный способ (через winget)](#%D0%B0%D0%BB%D1%8C%D1%82%D0%B5%D1%80%D0%BD%D0%B0%D1%82%D0%B8%D0%B2%D0%BD%D1%8B%D0%B9-%D1%81%D0%BF%D0%BE%D1%81%D0%BE%D0%B1-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-winget)
-  - [Linux](#linux)
-  - [macOS](#macos)
-- [Шаг 2: Настройка переменных окружения](#%D1%88%D0%B0%D0%B3-2-%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0-%D0%BF%D0%B5%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D1%8B%D1%85-%D0%BE%D0%BA%D1%80%D1%83%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F)
-  - [Основные переменные](#%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D0%BD%D1%8B%D0%B5-%D0%BF%D0%B5%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5)
-    - [GOROOT](#goroot)
-    - [GOPATH](#gopath)
-    - [GO111MODULE](#go111module)
-  - [Go Modules (современный подход)](#go-modules-%D1%81%D0%BE%D0%B2%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4)
-- [Шаг 3: Настройка IDE](#%D1%88%D0%B0%D0%B3-3-%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0-ide)
-  - [Вариант 1: GoLand (JetBrains) — Рекомендуется для C# разработчиков](#%D0%B2%D0%B0%D1%80%D0%B8%D0%B0%D0%BD%D1%82-1-goland-jetbrains--%D1%80%D0%B5%D0%BA%D0%BE%D0%BC%D0%B5%D0%BD%D0%B4%D1%83%D0%B5%D1%82%D1%81%D1%8F-%D0%B4%D0%BB%D1%8F-c-%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%87%D0%B8%D0%BA%D0%BE%D0%B2)
-  - [Вариант 2: Visual Studio Code + Go Extension](#%D0%B2%D0%B0%D1%80%D0%B8%D0%B0%D0%BD%D1%82-2-visual-studio-code--go-extension)
-- [Шаг 4: Настройка инструментов](#%D1%88%D0%B0%D0%B3-4-%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0-%D0%B8%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%BE%D0%B2)
-  - [go fmt — Форматирование кода](#go-fmt--%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BA%D0%BE%D0%B4%D0%B0)
-  - [go vet — Статический анализ](#go-vet--%D1%81%D1%82%D0%B0%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9-%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7)
-  - [golangci-lint — Мета-линтер (обязательно!)](#golangci-lint--%D0%BC%D0%B5%D1%82%D0%B0-%D0%BB%D0%B8%D0%BD%D1%82%D0%B5%D1%80-%D0%BE%D0%B1%D1%8F%D0%B7%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE)
-- [Шаг 5: Создание первого проекта](#%D1%88%D0%B0%D0%B3-5-%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BF%D0%B5%D1%80%D0%B2%D0%BE%D0%B3%D0%BE-%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B0)
-  - [Структура простого проекта](#%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%B0-%D0%BF%D1%80%D0%BE%D1%81%D1%82%D0%BE%D0%B3%D0%BE-%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B0)
-  - [Создайте файл main.go](#%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D0%B9%D1%82%D0%B5-%D1%84%D0%B0%D0%B9%D0%BB-maingo)
-  - [Запустите программу](#%D0%B7%D0%B0%D0%BF%D1%83%D1%81%D1%82%D0%B8%D1%82%D0%B5-%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D1%83)
-  - [Проверьте инструменты](#%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D1%8C%D1%82%D0%B5-%D0%B8%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B)
-- [Шаг 6: Дополнительные инструменты (опционально, но рекомендуется)](#%D1%88%D0%B0%D0%B3-6-%D0%B4%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%B8%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B-%D0%BE%D0%BF%D1%86%D0%B8%D0%BE%D0%BD%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE-%D0%BD%D0%BE-%D1%80%D0%B5%D0%BA%D0%BE%D0%BC%D0%B5%D0%BD%D0%B4%D1%83%D0%B5%D1%82%D1%81%D1%8F)
-  - [staticcheck — Мощный статический анализатор](#staticcheck--%D0%BC%D0%BE%D1%89%D0%BD%D1%8B%D0%B9-%D1%81%D1%82%D0%B0%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9-%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%82%D0%BE%D1%80)
-  - [govulncheck — Проверка уязвимостей](#govulncheck--%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%BA%D0%B0-%D1%83%D1%8F%D0%B7%D0%B2%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D0%B5%D0%B9)
-  - [air — Hot reload для разработки](#air--hot-reload-%D0%B4%D0%BB%D1%8F-%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B8)
-- [Проверка готовности окружения](#%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%BA%D0%B0-%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BD%D0%BE%D1%81%D1%82%D0%B8-%D0%BE%D0%BA%D1%80%D1%83%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F)
-- [Полезные команды Go](#%D0%BF%D0%BE%D0%BB%D0%B5%D0%B7%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%B0%D0%BD%D0%B4%D1%8B-go)
-- [Типичные проблемы и решения](#%D1%82%D0%B8%D0%BF%D0%B8%D1%87%D0%BD%D1%8B%D0%B5-%D0%BF%D1%80%D0%BE%D0%B1%D0%BB%D0%B5%D0%BC%D1%8B-%D0%B8-%D1%80%D0%B5%D1%88%D0%B5%D0%BD%D0%B8%D1%8F)
-  - [1. "go: command not found"](#1-go-command-not-found)
-  - [2. "cannot find package"](#2-cannot-find-package)
-  - [3. Проблемы с GOPATH](#3-%D0%BF%D1%80%D0%BE%D0%B1%D0%BB%D0%B5%D0%BC%D1%8B-%D1%81-gopath)
-  - [4. Проблемы с прокси (в корпоративной сети)](#4-%D0%BF%D1%80%D0%BE%D0%B1%D0%BB%D0%B5%D0%BC%D1%8B-%D1%81-%D0%BF%D1%80%D0%BE%D0%BA%D1%81%D0%B8-%D0%B2-%D0%BA%D0%BE%D1%80%D0%BF%D0%BE%D1%80%D0%B0%D1%82%D0%B8%D0%B2%D0%BD%D0%BE%D0%B9-%D1%81%D0%B5%D1%82%D0%B8)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
----
-
 ## Введение
 
 Для работы с Go вам понадобится установить компилятор, настроить окружение и выбрать подходящую IDE. Этот процесс значительно проще, чем в C#.
@@ -679,9 +633,3 @@ go env -w GOPROXY=https://yourproxy.com
 ```
 
 ---
-
-<!-- AUTO: NAV -->
-**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
-
-[← Назад к оглавлению](./README.md) | [Вперёд: Синтаксис и базовые концепции (сравнение с C#) →](./02_syntax_basics.md)
-<!-- /AUTO: NAV -->

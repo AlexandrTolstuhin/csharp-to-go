@@ -2,9 +2,6 @@
 
 ## Содержание
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 - [Введение](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5)
   - [Что отличает production от development](#%D1%87%D1%82%D0%BE-%D0%BE%D1%82%D0%BB%D0%B8%D1%87%D0%B0%D0%B5%D1%82-production-%D0%BE%D1%82-development)
   - [Что вы узнаете](#%D1%87%D1%82%D0%BE-%D0%B2%D1%8B-%D1%83%D0%B7%D0%BD%D0%B0%D0%B5%D1%82%D0%B5)
@@ -86,8 +83,6 @@
   - [Пример 1: Production-Ready Connection Setup](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-production-ready-connection-setup)
   - [Пример 2: Zero-Downtime Migration](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-zero-downtime-migration)
   - [Пример 3: Read Replica Routing](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-read-replica-routing)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 
@@ -4192,9 +4187,3 @@ func (s *OrderService) List(ctx context.Context, limit, offset int) ([]Order, er
 ```
 
 ---
-
-<!-- AUTO: NAV -->
-**Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
-
-[← Назад к оглавлению](./README.md) | [Вперёд: Кэширование →](./02_caching.md)
-<!-- /AUTO: NAV -->
