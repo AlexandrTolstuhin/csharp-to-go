@@ -34,7 +34,6 @@
 - [Синтаксис и базовые концепции (сравнение с C#)](./part1-basics/02_syntax_basics.md)
 - [Коллекции и производительность: Шпаргалка для C# разработчика](./part1-basics/02a_collections_performance_cheatsheet.md)
 - [Ключевые отличия от C#](./part1-basics/03_key_differences.md)
-- [Практика: Закрепление основ](./part1-basics/04_practice.md)
 
 ---
 

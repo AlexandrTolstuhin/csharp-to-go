@@ -2556,5 +2556,5 @@ func (r *UserRepository) GetActiveUsers(ctx context.Context) ([]*User, error) {
 <!-- AUTO: NAV -->
 **Вопросы?** Открой issue на [GitHub](https://github.com/AlexandrTolstuhin/csharp-to-go/issues)
 
-[← Назад: Коллекции и производительность: Шпаргалка для C# разработчика](./02a_collections_performance_cheatsheet.md) | [Вперёд: Практика: Закрепление основ →](./04_practice.md)
+[← Назад: Коллекции и производительность: Шпаргалка для C# разработчика](./02a_collections_performance_cheatsheet.md) | [Вперёд: Часть 2: Продвинутые темы →](../part2-advanced/)
 <!-- /AUTO: NAV -->
