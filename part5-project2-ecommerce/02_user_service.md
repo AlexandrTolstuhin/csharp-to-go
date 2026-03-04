@@ -1,24 +1,5 @@
 # 2. User Service
 
-## Содержание
-
-- [Обзор сервиса](#%D0%BE%D0%B1%D0%B7%D0%BE%D1%80-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%B0)
-  - [Структура пакетов](#%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%B0-%D0%BF%D0%B0%D0%BA%D0%B5%D1%82%D0%BE%D0%B2)
-- [Конфигурация](#%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F)
-- [Доменный сервис](#%D0%B4%D0%BE%D0%BC%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81)
-- [JWT токены](#jwt-%D1%82%D0%BE%D0%BA%D0%B5%D0%BD%D1%8B)
-- [PostgreSQL репозиторий](#postgresql-%D1%80%D0%B5%D0%BF%D0%BE%D0%B7%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%B9)
-- [gRPC сервер](#grpc-%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80)
-- [Точка входа: main.go](#%D1%82%D0%BE%D1%87%D0%BA%D0%B0-%D0%B2%D1%85%D0%BE%D0%B4%D0%B0-maingo)
-- [Миграции](#%D0%BC%D0%B8%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D0%B8)
-- [Тестирование](#%D1%82%D0%B5%D1%81%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5)
-  - [Unit тест UserService](#unit-%D1%82%D0%B5%D1%81%D1%82-userservice)
-  - [Интеграционный тест с testcontainers](#%D0%B8%D0%BD%D1%82%D0%B5%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D0%BE%D0%BD%D0%BD%D1%8B%D0%B9-%D1%82%D0%B5%D1%81%D1%82-%D1%81-testcontainers)
-- [Сравнение с C#](#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-c)
-  - [DI контейнер vs явная инициализация](#di-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80-vs-%D1%8F%D0%B2%D0%BD%D0%B0%D1%8F-%D0%B8%D0%BD%D0%B8%D1%86%D0%B8%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F)
-  - [bcrypt в C# vs Go](#bcrypt-%D0%B2-c-vs-go)
-  - [Ошибки vs Exceptions](#%D0%BE%D1%88%D0%B8%D0%B1%D0%BA%D0%B8-vs-exceptions)
-
 ---
 
 ## Обзор сервиса

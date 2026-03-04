@@ -1,48 +1,5 @@
 # 3.2 Структура проекта Go
 
-## Содержание
-
-- [Введение](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5)
-  - [Что вы узнаете](#%D1%87%D1%82%D0%BE-%D0%B2%D1%8B-%D1%83%D0%B7%D0%BD%D0%B0%D0%B5%D1%82%D0%B5)
-- [Философия структуры в Go](#%D1%84%D0%B8%D0%BB%D0%BE%D1%81%D0%BE%D1%84%D0%B8%D1%8F-%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D1%8B-%D0%B2-go)
-  - [Ключевые принципы](#%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%B2%D1%8B%D0%B5-%D0%BF%D1%80%D0%B8%D0%BD%D1%86%D0%B8%D0%BF%D1%8B)
-  - [C# vs Go: организация кода](#c-vs-go-%D0%BE%D1%80%D0%B3%D0%B0%D0%BD%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%BA%D0%BE%D0%B4%D0%B0)
-  - [Правило: усложняй только когда нужно](#%D0%BF%D1%80%D0%B0%D0%B2%D0%B8%D0%BB%D0%BE-%D1%83%D1%81%D0%BB%D0%BE%D0%B6%D0%BD%D1%8F%D0%B9-%D1%82%D0%BE%D0%BB%D1%8C%D0%BA%D0%BE-%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%BD%D1%83%D0%B6%D0%BD%D0%BE)
-- [Flat Structure (плоская структура)](#flat-structure-%D0%BF%D0%BB%D0%BE%D1%81%D0%BA%D0%B0%D1%8F-%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%B0)
-  - [Когда использовать](#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C)
-  - [Пример структуры](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D1%8B)
-  - [Преимущества](#%D0%BF%D1%80%D0%B5%D0%B8%D0%BC%D1%83%D1%89%D0%B5%D1%81%D1%82%D0%B2%D0%B0)
-  - [Недостатки](#%D0%BD%D0%B5%D0%B4%D0%BE%D1%81%D1%82%D0%B0%D1%82%D0%BA%D0%B8)
-  - [Пример кода (flat structure)](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-%D0%BA%D0%BE%D0%B4%D0%B0-flat-structure)
-- [Standard Go Project Layout](#standard-go-project-layout)
-  - [Основные директории](#%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D0%BD%D1%8B%D0%B5-%D0%B4%D0%B8%D1%80%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%B8%D0%B8)
-  - [Описание директорий](#%D0%BE%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5-%D0%B4%D0%B8%D1%80%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%B8%D0%B9)
-  - [internal/ — ваш лучший друг](#internal--%D0%B2%D0%B0%D1%88-%D0%BB%D1%83%D1%87%D1%88%D0%B8%D0%B9-%D0%B4%D1%80%D1%83%D0%B3)
-  - [Когда НЕ нужен этот layout](#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%BD%D0%B5-%D0%BD%D1%83%D0%B6%D0%B5%D0%BD-%D1%8D%D1%82%D0%BE%D1%82-layout)
-- [Clean Architecture в Go](#clean-architecture-%D0%B2-go)
-  - [Слои и зависимости](#%D1%81%D0%BB%D0%BE%D0%B8-%D0%B8-%D0%B7%D0%B0%D0%B2%D0%B8%D1%81%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D0%B8)
-  - [Реализация в Go](#%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%B2-go)
-  - [Пример кода (Clean Architecture)](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-%D0%BA%D0%BE%D0%B4%D0%B0-clean-architecture)
-    - [Domain Layer](#domain-layer)
-    - [Application Layer (Use Cases)](#application-layer-use-cases)
-    - [Adapter Layer (HTTP Handler)](#adapter-layer-http-handler)
-    - [Adapter Layer (Repository)](#adapter-layer-repository)
-  - [Сравнение с C#](#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-c)
-- [Dependency Injection](#dependency-injection)
-  - [Manual DI (идиоматичный Go)](#manual-di-%D0%B8%D0%B4%D0%B8%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%BD%D1%8B%D0%B9-go)
-  - [Wire (Google)](#wire-google)
-  - [Fx (Uber)](#fx-uber)
-  - [Сравнение подходов](#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4%D0%BE%D0%B2)
-  - [Рекомендации](#%D1%80%D0%B5%D0%BA%D0%BE%D0%BC%D0%B5%D0%BD%D0%B4%D0%B0%D1%86%D0%B8%D0%B8)
-- [Configuration](#configuration)
-  - [Environment variables](#environment-variables)
-  - [Viper для сложных конфигов](#viper-%D0%B4%D0%BB%D1%8F-%D1%81%D0%BB%D0%BE%D0%B6%D0%BD%D1%8B%D1%85-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D0%BE%D0%B2)
-  - [Сравнение с C#](#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-c-1)
-- [Практические примеры](#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B)
-  - [Пример 1: Flat structure для микросервиса](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-flat-structure-%D0%B4%D0%BB%D1%8F-%D0%BC%D0%B8%D0%BA%D1%80%D0%BE%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%B0)
-  - [Пример 2: Clean Architecture](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-clean-architecture)
-  - [Пример 3: DI с Wire](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-di-%D1%81-wire)
-
 ---
 
 ## Введение

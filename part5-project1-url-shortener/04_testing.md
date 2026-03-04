@@ -1,19 +1,5 @@
 # 4. Тестирование и бенчмарки
 
-## Содержание
-
-- [Стратегия тестирования](#%D1%81%D1%82%D1%80%D0%B0%D1%82%D0%B5%D0%B3%D0%B8%D1%8F-%D1%82%D0%B5%D1%81%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F)
-- [Unit тесты сервисного слоя](#unit-%D1%82%D0%B5%D1%81%D1%82%D1%8B-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%BD%D0%BE%D0%B3%D0%BE-%D1%81%D0%BB%D0%BE%D1%8F)
-  - [Мок репозитория](#%D0%BC%D0%BE%D0%BA-%D1%80%D0%B5%D0%BF%D0%BE%D0%B7%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D1%8F)
-  - [Тесты CreateURL](#%D1%82%D0%B5%D1%81%D1%82%D1%8B-createurl)
-  - [Тест Redirect (cache-aside)](#%D1%82%D0%B5%D1%81%D1%82-redirect-cache-aside)
-  - [Тест генерации кода](#%D1%82%D0%B5%D1%81%D1%82-%D0%B3%D0%B5%D0%BD%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D0%B8-%D0%BA%D0%BE%D0%B4%D0%B0)
-- [Тесты HTTP хэндлеров](#%D1%82%D0%B5%D1%81%D1%82%D1%8B-http-%D1%85%D1%8D%D0%BD%D0%B4%D0%BB%D0%B5%D1%80%D0%BE%D0%B2)
-- [Integration тесты с testcontainers-go](#integration-%D1%82%D0%B5%D1%81%D1%82%D1%8B-%D1%81-testcontainers-go)
-- [Бенчмарки](#%D0%B1%D0%B5%D0%BD%D1%87%D0%BC%D0%B0%D1%80%D0%BA%D0%B8)
-- [Покрытие кода](#%D0%BF%D0%BE%D0%BA%D1%80%D1%8B%D1%82%D0%B8%D0%B5-%D0%BA%D0%BE%D0%B4%D0%B0)
-- [Сравнительная таблица](#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0)
-
 ---
 
 ## Стратегия тестирования

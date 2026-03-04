@@ -1,28 +1,5 @@
 # 7.5 Системный дизайн на Go
 
-## Содержание
-
-- [Введение](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5)
-  - [Что ожидается от кандидата](#%D1%87%D1%82%D0%BE-%D0%BE%D0%B6%D0%B8%D0%B4%D0%B0%D0%B5%D1%82%D1%81%D1%8F-%D0%BE%D1%82-%D0%BA%D0%B0%D0%BD%D0%B4%D0%B8%D0%B4%D0%B0%D1%82%D0%B0)
-- [Задача 1: In-Memory Cache с TTL](#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-1-in-memory-cache-%D1%81-ttl)
-  - [Формулировка](#%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0)
-  - [Что проверяют](#%D1%87%D1%82%D0%BE-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D1%8F%D1%8E%D1%82)
-  - [Разбор](#%D1%80%D0%B0%D0%B7%D0%B1%D0%BE%D1%80)
-  - [Дополнительные вопросы](#%D0%B4%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%D1%8B)
-- [Задача 2: Token Bucket Rate Limiter](#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-2-token-bucket-rate-limiter)
-  - [Формулировка](#%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-1)
-  - [Алгоритм Token Bucket](#%D0%B0%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC-token-bucket)
-  - [Per-IP Rate Limiting](#per-ip-rate-limiting)
-- [Задача 3: Очередь задач с приоритетами](#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-3-%D0%BE%D1%87%D0%B5%D1%80%D0%B5%D0%B4%D1%8C-%D0%B7%D0%B0%D0%B4%D0%B0%D1%87-%D1%81-%D0%BF%D1%80%D0%B8%D0%BE%D1%80%D0%B8%D1%82%D0%B5%D1%82%D0%B0%D0%BC%D0%B8)
-  - [Формулировка](#%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-2)
-  - [Go решение через container/heap](#go-%D1%80%D0%B5%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-containerheap)
-- [Задача 4: Event Bus (брокер событий)](#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-4-event-bus-%D0%B1%D1%80%D0%BE%D0%BA%D0%B5%D1%80-%D1%81%D0%BE%D0%B1%D1%8B%D1%82%D0%B8%D0%B9)
-  - [Формулировка](#%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-3)
-- [Задача 5: Circuit Breaker](#%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B0-5-circuit-breaker)
-  - [Формулировка](#%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-4)
-- [Диаграмма переходов Circuit Breaker](#%D0%B4%D0%B8%D0%B0%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B0-%D0%BF%D0%B5%D1%80%D0%B5%D1%85%D0%BE%D0%B4%D0%BE%D0%B2-circuit-breaker)
-- [Итоги: типичные вопросы на системном дизайне](#%D0%B8%D1%82%D0%BE%D0%B3%D0%B8-%D1%82%D0%B8%D0%BF%D0%B8%D1%87%D0%BD%D1%8B%D0%B5-%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%D1%8B-%D0%BD%D0%B0-%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%BD%D0%BE%D0%BC-%D0%B4%D0%B8%D0%B7%D0%B0%D0%B9%D0%BD%D0%B5)
-
 ---
 
 ## Введение

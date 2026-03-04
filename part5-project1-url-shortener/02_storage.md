@@ -1,21 +1,5 @@
 # 2. Хранилище: PostgreSQL и Redis
 
-## Содержание
-
-- [Схема базы данных](#%D1%81%D1%85%D0%B5%D0%BC%D0%B0-%D0%B1%D0%B0%D0%B7%D1%8B-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85)
-  - [Миграции](#%D0%BC%D0%B8%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D0%B8)
-- [PostgreSQL с pgx v5](#postgresql-%D1%81-pgx-v5)
-  - [C# подход (EF Core / Dapper)](#c-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4-ef-core--dapper)
-  - [Go подход: инициализация пула](#go-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4-%D0%B8%D0%BD%D0%B8%D1%86%D0%B8%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%BF%D1%83%D0%BB%D0%B0)
-- [Реализация URLRepository](#%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-urlrepository)
-  - [Работа с транзакциями](#%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0-%D1%81-%D1%82%D1%80%D0%B0%D0%BD%D0%B7%D0%B0%D0%BA%D1%86%D0%B8%D1%8F%D0%BC%D0%B8)
-- [Redis кэш](#redis-%D0%BA%D1%8D%D1%88)
-  - [C# подход (IDistributedCache / StackExchange.Redis)](#c-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4-idistributedcache--stackexchangeredis)
-  - [Go подход (go-redis/v9)](#go-%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4-go-redisv9)
-- [Паттерн cache-aside](#%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD-cache-aside)
-- [Обработка ошибок хранилища](#%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0-%D0%BE%D1%88%D0%B8%D0%B1%D0%BE%D0%BA-%D1%85%D1%80%D0%B0%D0%BD%D0%B8%D0%BB%D0%B8%D1%89%D0%B0)
-- [Сравнительная таблица](#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0)
-
 ---
 
 ## Схема базы данных

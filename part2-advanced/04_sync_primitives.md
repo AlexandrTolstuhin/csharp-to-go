@@ -1,43 +1,5 @@
 # 2.4 Примитивы синхронизации
 
-## Содержание
-
-- [Введение](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5)
-- [Mutex: взаимное исключение](#mutex-%D0%B2%D0%B7%D0%B0%D0%B8%D0%BC%D0%BD%D0%BE%D0%B5-%D0%B8%D1%81%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5)
-  - [sync.Mutex vs C# lock](#syncmutex-vs-c-lock)
-    - [Сравнительная таблица: Mutex vs lock](#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-mutex-vs-lock)
-    - [Распространённые ошибки](#%D1%80%D0%B0%D1%81%D0%BF%D1%80%D0%BE%D1%81%D1%82%D1%80%D0%B0%D0%BD%D1%91%D0%BD%D0%BD%D1%8B%D0%B5-%D0%BE%D1%88%D0%B8%D0%B1%D0%BA%D0%B8)
-  - [sync.RWMutex vs ReaderWriterLockSlim](#syncrwmutex-vs-readerwriterlockslim)
-    - [Когда использовать RWMutex?](#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C-rwmutex)
-  - [Deadlock и как его избежать](#deadlock-%D0%B8-%D0%BA%D0%B0%D0%BA-%D0%B5%D0%B3%D0%BE-%D0%B8%D0%B7%D0%B1%D0%B5%D0%B6%D0%B0%D1%82%D1%8C)
-    - [1. Рекурсивный lock](#1-%D1%80%D0%B5%D0%BA%D1%83%D1%80%D1%81%D0%B8%D0%B2%D0%BD%D1%8B%D0%B9-lock)
-    - [2. Circular wait (циклическое ожидание)](#2-circular-wait-%D1%86%D0%B8%D0%BA%D0%BB%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B5-%D0%BE%D0%B6%D0%B8%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5)
-- [WaitGroup: ожидание завершения горутин](#waitgroup-%D0%BE%D0%B6%D0%B8%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-%D0%B7%D0%B0%D0%B2%D0%B5%D1%80%D1%88%D0%B5%D0%BD%D0%B8%D1%8F-%D0%B3%D0%BE%D1%80%D1%83%D1%82%D0%B8%D0%BD)
-  - [WaitGroup vs errgroup](#waitgroup-vs-errgroup)
-  - [WaitGroup.Go() — новый API (Go 1.25)](#waitgroupgo--%D0%BD%D0%BE%D0%B2%D1%8B%D0%B9-api-go-125)
-- [Once: однократное выполнение](#once-%D0%BE%D0%B4%D0%BD%D0%BE%D0%BA%D1%80%D0%B0%D1%82%D0%BD%D0%BE%D0%B5-%D0%B2%D1%8B%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5)
-  - [Практическое применение](#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5)
-    - [1. Инициализация singleton](#1-%D0%B8%D0%BD%D0%B8%D1%86%D0%B8%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-singleton)
-    - [2. Ленивая инициализация с ошибками](#2-%D0%BB%D0%B5%D0%BD%D0%B8%D0%B2%D0%B0%D1%8F-%D0%B8%D0%BD%D0%B8%D1%86%D0%B8%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D1%81-%D0%BE%D1%88%D0%B8%D0%B1%D0%BA%D0%B0%D0%BC%D0%B8)
-- [Cond: условные переменные](#cond-%D1%83%D1%81%D0%BB%D0%BE%D0%B2%D0%BD%D1%8B%D0%B5-%D0%BF%D0%B5%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5)
-- [Atomic операции](#atomic-%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D0%B8)
-  - [Поддерживаемые типы](#%D0%BF%D0%BE%D0%B4%D0%B4%D0%B5%D1%80%D0%B6%D0%B8%D0%B2%D0%B0%D0%B5%D0%BC%D1%8B%D0%B5-%D1%82%D0%B8%D0%BF%D1%8B)
-  - [atomic.Value: хранение произвольных типов](#atomicvalue-%D1%85%D1%80%D0%B0%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BF%D1%80%D0%BE%D0%B8%D0%B7%D0%B2%D0%BE%D0%BB%D1%8C%D0%BD%D1%8B%D1%85-%D1%82%D0%B8%D0%BF%D0%BE%D0%B2)
-  - [Mutex vs Atomic: что выбрать?](#mutex-vs-atomic-%D1%87%D1%82%D0%BE-%D0%B2%D1%8B%D0%B1%D1%80%D0%B0%D1%82%D1%8C)
-- [sync.Map: потокобезопасная карта](#syncmap-%D0%BF%D0%BE%D1%82%D0%BE%D0%BA%D0%BE%D0%B1%D0%B5%D0%B7%D0%BE%D0%BF%D0%B0%D1%81%D0%BD%D0%B0%D1%8F-%D0%BA%D0%B0%D1%80%D1%82%D0%B0)
-  - [Когда использовать sync.Map?](#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C-syncmap)
-  - [sync.Map и Swiss Tables (Go 1.24)](#syncmap-%D0%B8-swiss-tables-go-124)
-- [Выбор правильного примитива](#%D0%B2%D1%8B%D0%B1%D0%BE%D1%80-%D0%BF%D1%80%D0%B0%D0%B2%D0%B8%D0%BB%D1%8C%D0%BD%D0%BE%D0%B3%D0%BE-%D0%BF%D1%80%D0%B8%D0%BC%D0%B8%D1%82%D0%B8%D0%B2%D0%B0)
-- [Практические примеры](#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B)
-  - [Пример 1: Rate Limiter (ограничение частоты запросов)](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-rate-limiter-%D0%BE%D0%B3%D1%80%D0%B0%D0%BD%D0%B8%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D1%87%D0%B0%D1%81%D1%82%D0%BE%D1%82%D1%8B-%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2)
-  - [Пример 2: Метрики с low contention](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-%D0%BC%D0%B5%D1%82%D1%80%D0%B8%D0%BA%D0%B8-%D1%81-low-contention)
-  - [Пример 3: Connection Pool](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-connection-pool)
-- [golang.org/x/sync: расширенные примитивы](#golangorgxsync-%D1%80%D0%B0%D1%81%D1%88%D0%B8%D1%80%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B8%D1%82%D0%B8%D0%B2%D1%8B)
-  - [errgroup: WaitGroup с обработкой ошибок](#errgroup-waitgroup-%D1%81-%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%BE%D0%B9-%D0%BE%D1%88%D0%B8%D0%B1%D0%BE%D0%BA)
-  - [semaphore: взвешенный семафор](#semaphore-%D0%B2%D0%B7%D0%B2%D0%B5%D1%88%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9-%D1%81%D0%B5%D0%BC%D0%B0%D1%84%D0%BE%D1%80)
-  - [singleflight: дедупликация вызовов](#singleflight-%D0%B4%D0%B5%D0%B4%D1%83%D0%BF%D0%BB%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D1%8F-%D0%B2%D1%8B%D0%B7%D0%BE%D0%B2%D0%BE%D0%B2)
-  - [Сравнительная таблица: golang.org/x/sync](#%D1%81%D1%80%D0%B0%D0%B2%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-golangorgxsync)
-
 ---
 
 ## Введение

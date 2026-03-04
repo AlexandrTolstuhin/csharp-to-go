@@ -1,48 +1,5 @@
 # 6.3 Производительность
 
-## Содержание
-
-- [Введение](#%D0%B2%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5)
-  - [Для кого этот раздел](#%D0%B4%D0%BB%D1%8F-%D0%BA%D0%BE%D0%B3%D0%BE-%D1%8D%D1%82%D0%BE%D1%82-%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB)
-  - [C# vs Go: культура производительности](#c-vs-go-%D0%BA%D1%83%D0%BB%D1%8C%D1%82%D1%83%D1%80%D0%B0-%D0%BF%D1%80%D0%BE%D0%B8%D0%B7%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D0%B8)
-- [1. Философия оптимизации](#1-%D1%84%D0%B8%D0%BB%D0%BE%D1%81%D0%BE%D1%84%D0%B8%D1%8F-%D0%BE%D0%BF%D1%82%D0%B8%D0%BC%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8)
-  - [1.1 Premature optimization](#11-premature-optimization)
-  - [1.2 Cost/Benefit анализ](#12-costbenefit-%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7)
-  - [1.3 Когда оптимизировать](#13-%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%BE%D0%BF%D1%82%D0%B8%D0%BC%D0%B8%D0%B7%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D1%82%D1%8C)
-- [2. Zero-Allocation Patterns](#2-zero-allocation-patterns)
-  - [2.1 HTTP Handlers без аллокаций](#21-http-handlers-%D0%B1%D0%B5%D0%B7-%D0%B0%D0%BB%D0%BB%D0%BE%D0%BA%D0%B0%D1%86%D0%B8%D0%B9)
-  - [2.2 Работа с []byte вместо string](#22-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0-%D1%81-byte-%D0%B2%D0%BC%D0%B5%D1%81%D1%82%D0%BE-string)
-  - [2.3 sync.Pool: продвинутые паттерны](#23-syncpool-%D0%BF%D1%80%D0%BE%D0%B4%D0%B2%D0%B8%D0%BD%D1%83%D1%82%D1%8B%D0%B5-%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD%D1%8B)
-  - [2.4 Stack-allocated buffers](#24-stack-allocated-buffers)
-- [3. Контроль Escape Analysis](#3-%D0%BA%D0%BE%D0%BD%D1%82%D1%80%D0%BE%D0%BB%D1%8C-escape-analysis)
-  - [3.1 Правила размещения](#31-%D0%BF%D1%80%D0%B0%D0%B2%D0%B8%D0%BB%D0%B0-%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%89%D0%B5%D0%BD%D0%B8%D1%8F)
-  - [3.2 Паттерны предотвращения escape](#32-%D0%BF%D0%B0%D1%82%D1%82%D0%B5%D1%80%D0%BD%D1%8B-%D0%BF%D1%80%D0%B5%D0%B4%D0%BE%D1%82%D0%B2%D1%80%D0%B0%D1%89%D0%B5%D0%BD%D0%B8%D1%8F-escape)
-  - [3.3 Измерение и CI интеграция](#33-%D0%B8%D0%B7%D0%BC%D0%B5%D1%80%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B8-ci-%D0%B8%D0%BD%D1%82%D0%B5%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D1%8F)
-- [4. Memory Layout и Alignment](#4-memory-layout-%D0%B8-alignment)
-  - [4.1 Struct padding в Go](#41-struct-padding-%D0%B2-go)
-  - [4.2 fieldalignment линтер](#42-fieldalignment-%D0%BB%D0%B8%D0%BD%D1%82%D0%B5%D1%80)
-  - [4.3 Cache-friendly структуры](#43-cache-friendly-%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D1%8B)
-- [5. Compiler Optimizations](#5-compiler-optimizations)
-  - [5.1 Inlining](#51-inlining)
-  - [5.2 Bounds Check Elimination](#52-bounds-check-elimination)
-  - [5.3 Dead Code Elimination](#53-dead-code-elimination)
-  - [5.4 Как помочь компилятору](#54-%D0%BA%D0%B0%D0%BA-%D0%BF%D0%BE%D0%BC%D0%BE%D1%87%D1%8C-%D0%BA%D0%BE%D0%BC%D0%BF%D0%B8%D0%BB%D1%8F%D1%82%D0%BE%D1%80%D1%83)
-- [6. Runtime в контейнерах](#6-runtime-%D0%B2-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80%D0%B0%D1%85)
-  - [6.1 GOMAXPROCS и cgroups](#61-gomaxprocs-%D0%B8-cgroups)
-  - [6.2 uber-go/automaxprocs](#62-uber-goautomaxprocs)
-  - [6.3 GOMEMLIMIT в Kubernetes](#63-gomemlimit-%D0%B2-kubernetes)
-- [7. Production Memory Patterns](#7-production-memory-patterns)
-  - [7.1 Backpressure через bounded channels](#71-backpressure-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-bounded-channels)
-  - [7.2 Rate limiting memory usage](#72-rate-limiting-memory-usage)
-  - [7.3 Graceful degradation](#73-graceful-degradation)
-- [8. Real-World Case Studies](#8-real-world-case-studies)
-  - [8.1 High-throughput JSON API](#81-high-throughput-json-api)
-  - [8.2 Memory-efficient batch processing](#82-memory-efficient-batch-processing)
-- [Практические примеры](#%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B)
-  - [Пример 1: Zero-Allocation HTTP Service](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-1-zero-allocation-http-service)
-  - [Пример 2: Memory-Efficient Data Pipeline](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-2-memory-efficient-data-pipeline)
-  - [Пример 3: Production Performance Audit](#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-3-production-performance-audit)
-
 ---
 
 ## Введение
