@@ -1,4 +1,4 @@
-# 4. Order Service (Saga Pattern)
+# Order Service (Saga Pattern)
 
 ---
 

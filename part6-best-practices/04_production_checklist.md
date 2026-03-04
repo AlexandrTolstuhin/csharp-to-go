@@ -1,4 +1,4 @@
-# 6.4 Production Checklist
+# Production Checklist
 
 ---
 

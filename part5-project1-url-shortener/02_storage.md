@@ -1,4 +1,4 @@
-# 2. Хранилище: PostgreSQL и Redis
+# Хранилище: PostgreSQL и Redis
 
 ---
 

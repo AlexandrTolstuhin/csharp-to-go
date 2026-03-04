@@ -1,4 +1,4 @@
-# 4.7 Контейнеризация: Docker, Compose и Kubernetes для Go
+# Контейнеризация: Docker, Compose и Kubernetes для Go
 
 ---
 

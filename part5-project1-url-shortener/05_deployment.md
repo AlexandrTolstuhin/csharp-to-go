@@ -1,4 +1,4 @@
-# 5. Деплой: Docker Compose и Production
+# Деплой: Docker Compose и Production
 
 ---
 

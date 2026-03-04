@@ -1,4 +1,4 @@
-# 3. HTTP слой: net/http и chi
+# HTTP слой: net/http и chi
 
 ---
 

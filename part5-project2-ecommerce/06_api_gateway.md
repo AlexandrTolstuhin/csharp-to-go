@@ -1,4 +1,4 @@
-# 6. API Gateway
+# API Gateway
 
 ---
 

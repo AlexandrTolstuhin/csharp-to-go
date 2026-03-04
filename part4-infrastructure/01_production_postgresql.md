@@ -1,4 +1,4 @@
-# 4.1 Production PostgreSQL
+# Production PostgreSQL
 
 ---
 

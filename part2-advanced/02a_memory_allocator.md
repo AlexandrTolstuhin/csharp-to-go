@@ -1,4 +1,4 @@
-# 2.2a Аллокатор памяти Go (Memory Allocator Internals)
+# Аллокатор памяти Go (Memory Allocator Internals)
 
 ---
 

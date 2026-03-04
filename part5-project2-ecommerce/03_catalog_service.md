@@ -1,4 +1,4 @@
-# 3. Catalog Service (CQRS)
+# Catalog Service (CQRS)
 
 ---
 
