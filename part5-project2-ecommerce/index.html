@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-ea8e0f35.js";
+            window.path_to_searchindex_js = "../searchindex-9fb8a2cc.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-30443d92.js"></script>
@@ -483,88 +483,7 @@ Queries (Read): GetProduct, ListProducts, SearchProducts
 );
 -- INSERT ON CONFLICT DO NOTHING → безопасный retry
 </code></pre>
-<hr><!-- AUTO: MATERIALS -->
-<h2 id="материалы"><a class="header" href="#материалы">Материалы</a></h2>
-<h3 id="1-доменная-модель-и-контракты"><a class="header" href="#1-доменная-модель-и-контракты">1. <a href="./01_domain.html">Доменная модель и контракты</a></a></h3>
-<ul>
-<li>Обзор доменов</li>
-<li>Protobuf контракты</li>
-<li>Go доменные модели</li>
-<li>Kafka события</li>
-<li>Shared пакеты</li>
-<li>Сравнение с C#</li>
-<li>Генерация кода</li>
-</ul>
-<h3 id="2-user-service"><a class="header" href="#2-user-service">2. <a href="./02_user_service.html">User Service</a></a></h3>
-<ul>
-<li>Обзор сервиса</li>
-<li>Конфигурация</li>
-<li>Доменный сервис</li>
-<li>JWT токены</li>
-<li>PostgreSQL репозиторий</li>
-<li>gRPC сервер</li>
-<li>Точка входа: main.go</li>
-<li>Миграции</li>
-<li>Тестирование</li>
-<li>Сравнение с C#</li>
-</ul>
-<h3 id="3-catalog-service-cqrs"><a class="header" href="#3-catalog-service-cqrs">3. <a href="./03_catalog_service.html">Catalog Service (CQRS)</a></a></h3>
-<ul>
-<li>Обзор и CQRS</li>
-<li>Доменная модель</li>
-<li>Command Side (Write)</li>
-<li>Query Side (Read)</li>
-<li>Резервирование склада</li>
-<li>gRPC сервер</li>
-<li>Kafka: инвалидация кэша</li>
-<li>Миграции</li>
-<li>Тестирование</li>
-<li>Сравнение с C#</li>
-</ul>
-<h3 id="4-order-service-saga-pattern"><a class="header" href="#4-order-service-saga-pattern">4. <a href="./04_order_service.html">Order Service (Saga Pattern)</a></a></h3>
-<ul>
-<li>Обзор и Saga Pattern</li>
-<li>State Machine заказа</li>
-<li>gRPC: создание заказа</li>
-<li>Kafka Consumer: обработка событий</li>
-<li>Kafka Producer: публикация событий</li>
-<li>PostgreSQL репозиторий</li>
-<li>gRPC сервер и клиент Catalog Service</li>
-<li>main.go — запуск сервиса</li>
-<li>Миграции</li>
-<li>Тестирование</li>
-<li>Сравнение с C#</li>
-</ul>
-<h3 id="5-payment-service-и-notification-service"><a class="header" href="#5-payment-service-и-notification-service">5. <a href="./05_payment_notification.html">Payment Service и Notification Service</a></a></h3>
-<ul>
-<li>Payment Service</li>
-<li>Notification Service</li>
-<li>Тестирование</li>
-<li>Сравнение с C#</li>
-</ul>
-<h3 id="6-api-gateway"><a class="header" href="#6-api-gateway">6. <a href="./06_api_gateway.html">API Gateway</a></a></h3>
-<ul>
-<li>Обзор</li>
-<li>Структура и routing</li>
-<li>JWT middleware</li>
-<li>gRPC клиенты с Circuit Breaker</li>
-<li>HTTP хэндлеры</li>
-<li>Rate limiting</li>
-<li>main.go</li>
-<li>Тестирование</li>
-<li>Сравнение с C#</li>
-</ul>
-<h3 id="7-деплой-и-наблюдаемость"><a class="header" href="#7-деплой-и-наблюдаемость">7. <a href="./07_deployment.html">Деплой и наблюдаемость</a></a></h3>
-<ul>
-<li>Docker Compose</li>
-<li>Dockerfiles</li>
-<li>Makefile</li>
-<li>OpenTelemetry</li>
-<li>Health Checks</li>
-<li>Kubernetes</li>
-<li>Итоги проекта</li>
-</ul>
-<!-- /AUTO: MATERIALS -->
+<hr>
 <hr>
 <h2 id="требования"><a class="header" href="#требования">Требования</a></h2>
 <ul>
@@ -635,10 +554,7 @@ open http://localhost:16686
 <li>Настраивать <strong>распределённый трейсинг</strong> через OpenTelemetry</li>
 <li>Деплоить <strong>многосервисное приложение</strong> в Docker Compose и Kubernetes</li>
 </ul>
-<hr><!-- AUTO: NAV -->
-<p><a href="../README.html">← Назад к оглавлению</a> | <a href="../part5-project1-url-shortener/">Предыдущая часть: Проект 1: URL Shortener</a> | <a href="../part6-best-practices/">Следующая часть: Часть 6: Best Practices Go →</a></p>
-<!-- /AUTO: NAV -->
-
+<hr>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">

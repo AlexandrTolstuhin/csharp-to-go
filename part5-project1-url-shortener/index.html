@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-ea8e0f35.js";
+            window.path_to_searchindex_js = "../searchindex-9fb8a2cc.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-30443d92.js"></script>
@@ -339,59 +339,7 @@ require (
 <li><code>internal/</code> = встроенная защита от случайного импорта</li>
 <li>Конфигурация через переменные окружения, не XML/JSON файл</li>
 </ul>
-<hr><!-- AUTO: MATERIALS -->
-<h2 id="материалы"><a class="header" href="#материалы">Материалы</a></h2>
-<h3 id="1-доменная-модель-и-сервисный-слой"><a class="header" href="#1-доменная-модель-и-сервисный-слой">1. <a href="./01_domain.html">Доменная модель и сервисный слой</a></a></h3>
-<ul>
-<li>Анализ требований</li>
-<li>Доменная модель</li>
-<li>Кастомные ошибки</li>
-<li>Интерфейс репозитория</li>
-<li>Алгоритм генерации кода (Base62)</li>
-<li>Сервисный слой</li>
-<li>Точка входа: main.go</li>
-<li>Сравнительная таблица</li>
-</ul>
-<h3 id="2-хранилище-postgresql-и-redis"><a class="header" href="#2-хранилище-postgresql-и-redis">2. <a href="./02_storage.html">Хранилище: PostgreSQL и Redis</a></a></h3>
-<ul>
-<li>Схема базы данных</li>
-<li>PostgreSQL с pgx v5</li>
-<li>Реализация URLRepository</li>
-<li>Redis кэш</li>
-<li>Паттерн cache-aside</li>
-<li>Обработка ошибок хранилища</li>
-<li>Сравнительная таблица</li>
-</ul>
-<h3 id="3-http-слой-nethttp-и-chi"><a class="header" href="#3-http-слой-nethttp-и-chi">3. <a href="./03_http.html">HTTP слой: net/http и chi</a></a></h3>
-<ul>
-<li>Архитектура HTTP слоя</li>
-<li>Часть 1: net/http (Go 1.22+)</li>
-<li>Часть 2: Миграция на chi</li>
-<li>Сравнительная таблица</li>
-</ul>
-<h3 id="4-тестирование-и-бенчмарки"><a class="header" href="#4-тестирование-и-бенчмарки">4. <a href="./04_testing.html">Тестирование и бенчмарки</a></a></h3>
-<ul>
-<li>Стратегия тестирования</li>
-<li>Unit тесты сервисного слоя</li>
-<li>Тесты HTTP хэндлеров</li>
-<li>Integration тесты с testcontainers-go</li>
-<li>Бенчмарки</li>
-<li>Покрытие кода</li>
-<li>Сравнительная таблица</li>
-</ul>
-<h3 id="5-деплой-docker-compose-и-production"><a class="header" href="#5-деплой-docker-compose-и-production">5. <a href="./05_deployment.html">Деплой: Docker Compose и Production</a></a></h3>
-<ul>
-<li>Dockerfile</li>
-<li>Docker Compose</li>
-<li>Конфигурация через переменные окружения</li>
-<li>Graceful shutdown</li>
-<li>Health checks</li>
-<li>Структурированное логирование</li>
-<li>Production чек-лист</li>
-<li>Сравнительная таблица</li>
-<li>Итоги проекта</li>
-</ul>
-<!-- /AUTO: MATERIALS -->
+<hr>
 <hr>
 <h2 id="требования"><a class="header" href="#требования">Требования</a></h2>
 <ul>
@@ -420,10 +368,7 @@ curl -X POST http://localhost:8080/api/urls \
 curl -L http://localhost:8080/aB3xY9
 # 301 → https://go.dev/doc/effective_go
 </code></pre>
-<hr><!-- AUTO: NAV -->
-<p><a href="../README.html">← Назад к оглавлению</a> | <a href="../part4-infrastructure/">Предыдущая часть: Часть 4: Инфраструктура и интеграции</a> | <a href="../part5-project2-ecommerce/">Следующая часть: Проект 2: E-commerce Platform →</a></p>
-<!-- /AUTO: NAV -->
-
+<hr>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
