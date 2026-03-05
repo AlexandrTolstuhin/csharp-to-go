@@ -160,7 +160,7 @@
 - WebSocket + горутины
 - NATS для low-latency
 - TimescaleDB
-- Redis Streams
+- Redis Streams  <!-- TODO: пересмотреть — NATS JetStream покрывает те же сценарии; Redis Streams оправдан только если Redis уже в стеке ради кэша/rate limiting -->
 - Kubernetes + HPA
 
 **Фокус**:
