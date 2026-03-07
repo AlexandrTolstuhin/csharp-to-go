@@ -8,6 +8,7 @@
 - [Синтаксис и базовые концепции](part1-basics/02_syntax_basics.md)
 - [Коллекции и производительность: шпаргалка](part1-basics/03_collections_performance_cheatsheet.md)
 - [Ключевые отличия от C#](part1-basics/04_key_differences.md)
+- [Дженерики](part1-basics/05_generics.md)
 
 # Часть 2: Углублённые темы
 
