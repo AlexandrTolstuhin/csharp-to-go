@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Валидация и сериализация - Переход с C# на Go</title>
+        <title>Валидация и сериализация - Go для C# разработчиков</title>
 
 
         <!-- Custom HTML head -->
@@ -35,10 +35,10 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-36e8f7fd.js";
+            window.path_to_searchindex_js = "../searchindex-b145a30a.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-1a7de78a.js"></script>
+        <script src="../toc-a74b6836.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -137,7 +137,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">Переход с C# на Go</h1>
+                    <h1 class="menu-title">Go для C# разработчиков</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -190,7 +190,9 @@
 <h3 id="что-вы-узнаете"><a class="header" href="#что-вы-узнаете">Что вы узнаете</a></h3>
 <ul>
 <li>Стандартный <code>encoding/json</code> и его ограничения</li>
-<li>Быстрые альтернативы: easyjson, sonic</li>
+<li>json.Number и потоковая обработка больших JSON</li>
+<li>Быстрые альтернативы: easyjson, sonic, go-json</li>
+<li>gjson для быстрого извлечения полей без парсинга структуры</li>
 <li>Валидация с go-playground/validator</li>
 <li>Паттерны Request/Response DTO</li>
 <li>Protocol Buffers для высокопроизводительной сериализации</li>
@@ -421,6 +423,145 @@ func handleResponse(data []byte) error {
     return nil
 }
 </code></pre>
+<h3 id="jsonnumber-точность-для-больших-чисел"><a class="header" href="#jsonnumber-точность-для-больших-чисел">json.Number: точность для больших чисел</a></h3>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: <code>System.Text.Json</code> хранит числа в оригинальном виде через <code>JsonElement.GetInt64()</code>. В Go <code>encoding/json</code> по умолчанию конвертирует все числа в <code>float64</code> при десериализации в <code>any</code>, что ведёт к потере точности для больших <code>int64</code>.</p>
+</blockquote>
+<p><code>float64</code> имеет 53 бита мантиссы — точно хранит целые числа до 2^53 (≈9·10^15). Twitter ID, bank transaction ID, UUID-подобные <code>int64</code> легко превышают этот порог.</p>
+<pre><code class="language-go">// ❌ Ловушка: все числа в map[string]any → float64
+data := []byte(`{"id":9223372036854775807}`) // math.MaxInt64
+
+var result map[string]any
+json.Unmarshal(data, &amp;result)
+
+id := result["id"].(float64)
+fmt.Println(int64(id)) // 9223372036854775808 — НЕВЕРНО! (off-by-one)
+</code></pre>
+<pre><code class="language-go">// ✅ Решение: json.Decoder.UseNumber()
+dec := json.NewDecoder(bytes.NewReader(data))
+dec.UseNumber() // числа остаются как строки — json.Number
+
+var result map[string]any
+dec.Decode(&amp;result)
+
+num := result["id"].(json.Number)
+id, err := num.Int64()   // 9223372036854775807 — верно
+f64, _ := num.Float64()  // → float64
+str := num.String()      // → "9223372036854775807"
+</code></pre>
+<pre><code class="language-go">// json.Number в структурах — явное поле
+type Payload struct {
+    ID      json.Number `json:"id"`
+    Balance json.Number `json:"balance"`
+    Name    string      `json:"name"`
+}
+
+var p Payload
+json.Unmarshal(data, &amp;p)
+userID, _ := p.ID.Int64()
+</code></pre>
+<p><strong>Сравнение с C#:</strong></p>
+<pre><code class="language-csharp">// System.Text.Json — точные типы из коробки
+using var doc = JsonDocument.Parse(json);
+var id = doc.RootElement.GetProperty("id").GetInt64(); // точно, без float64
+
+// Newtonsoft.Json — аналог json.Number
+var token = JObject.Parse(json)["id"];
+var id = token.Value&lt;long&gt;(); // точно
+</code></pre>
+<p><strong>Когда использовать:</strong></p>
+<ul>
+<li>Fintech: ID транзакций, номера счетов</li>
+<li>Социальные сети: user ID &gt; 2^53 (Twitter/X использует 64-битные ID)</li>
+<li>Интеграция с внешними API без строгой схемы</li>
+<li>Обработка webhook-payload с числовыми ID</li>
+</ul>
+<hr>
+<h3 id="потоковая-обработка-больших-json-decodertoken"><a class="header" href="#потоковая-обработка-больших-json-decodertoken">Потоковая обработка больших JSON (Decoder.Token())</a></h3>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Аналог <code>Utf8JsonReader</code> (System.Text.Json) и <code>JsonTextReader</code> (Newtonsoft.Json) — ручной low-level парсинг без загрузки всего документа в память.</p>
+</blockquote>
+<p><strong>Когда использовать streaming:</strong></p>
+<ul>
+<li>Файлы &gt; 10 MB</li>
+<li>Неограниченные массивы (пагинация недоступна)</li>
+<li>NDJSON-потоки (одна JSON-строка на событие)</li>
+<li>Ограниченная память (контейнеры с лимитом)</li>
+</ul>
+<pre><code class="language-go">// Паттерн: итерация по массиву без загрузки всего в память
+func processOrdersStream(r io.Reader) (int, error) {
+    dec := json.NewDecoder(r)
+
+    // Читаем '[' — начало массива
+    tok, err := dec.Token()
+    if err != nil {
+        return 0, fmt.Errorf("read open bracket: %w", err)
+    }
+    if tok != json.Delim('[') {
+        return 0, fmt.Errorf("expected '[', got %v", tok)
+    }
+
+    count := 0
+    for dec.More() { // есть ещё элементы?
+        var order Order
+        if err := dec.Decode(&amp;order); err != nil {
+            return count, fmt.Errorf("decode order %d: %w", count, err)
+        }
+        // Обрабатываем немедленно — предыдущий заказ уже GC-eligible
+        if err := processOrder(order); err != nil {
+            return count, err
+        }
+        count++
+    }
+
+    // Читаем ']' — конец массива
+    if _, err := dec.Token(); err != nil {
+        return count, fmt.Errorf("read close bracket: %w", err)
+    }
+    return count, nil
+}
+</code></pre>
+<pre><code class="language-go">// NDJSON (Newline-Delimited JSON) — популярный формат для логов и data export
+// {"event":"click","user_id":1,"ts":1709812345}
+// {"event":"view","user_id":2,"ts":1709812346}
+func processNDJSON(r io.Reader) error {
+    dec := json.NewDecoder(r)
+    for dec.More() {
+        var event AnalyticsEvent
+        if err := dec.Decode(&amp;event); err != nil {
+            return fmt.Errorf("decode event: %w", err)
+        }
+        handleEvent(event)
+    }
+    return nil
+}
+</code></pre>
+<p><strong>Сравнение подходов:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Подход</th><th>Память</th><th>Когда</th></tr>
+</thead>
+<tbody>
+<tr><td><code>json.Unmarshal(data, &amp;v)</code></td><td>Весь JSON + структура</td><td>Файлы &lt; 1 MB</td></tr>
+<tr><td><code>Decoder.Decode(&amp;v)</code></td><td>Буфер + структура</td><td>HTTP body, io.Reader</td></tr>
+<tr><td><code>Decoder.Token()</code></td><td>Минимум (один объект)</td><td>Файлы &gt; 10 MB, NDJSON</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-csharp">// C# аналог — JsonSerializer.DeserializeAsyncEnumerable
+await foreach (var order in JsonSerializer.DeserializeAsyncEnumerable&lt;Order&gt;(stream))
+{
+    await ProcessOrder(order);
+}
+
+// C# низкоуровневый — Utf8JsonReader
+var reader = new Utf8JsonReader(jsonBytes);
+while (reader.Read())
+{
+    if (reader.TokenType == JsonTokenType.StartObject) { /* ... */ }
+}
+</code></pre>
 <hr>
 <h2 id="быстрые-json-библиотеки"><a class="header" href="#быстрые-json-библиотеки">Быстрые JSON библиотеки</a></h2>
 <p>Стандартный <code>encoding/json</code> использует reflection, что медленно. Для production рекомендуются альтернативы.</p>
@@ -471,23 +612,107 @@ api := sonic.Config{
 
 data, _ = api.Marshal(user)
 </code></pre>
+<h3 id="go-json"><a class="header" href="#go-json">go-json</a></h3>
+<p><a href="https://github.com/goccy/go-json">go-json</a> — drop-in замена без кодогенерации. Единственная быстрая библиотека, которая работает на всех платформах включая 32-bit и WASM.</p>
+<pre><code class="language-go">import "github.com/goccy/go-json"
+
+// API идентичен encoding/json — замена одним import
+data, err := json.Marshal(user)
+err = json.Unmarshal(data, &amp;user)
+
+// Streaming — то же
+json.NewEncoder(w).Encode(user)
+json.NewDecoder(r).Decode(&amp;user)
+</code></pre>
+<p><strong>Преимущества перед sonic и easyjson:</strong></p>
+<ul>
+<li>Не требует кодогенерации (в отличие от easyjson)</li>
+<li>Работает на arm32, MIPS, WASM (sonic требует x86/arm64)</li>
+<li>Активно используется в production: Grafana, consul, многие k8s-утилиты</li>
+</ul>
 <h3 id="benchmarks"><a class="header" href="#benchmarks">Benchmarks</a></h3>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Библиотека</th><th>Marshal (ns/op)</th><th>Unmarshal (ns/op)</th><th>Allocations</th></tr>
+<tr><th>Библиотека</th><th>Marshal (ns/op)</th><th>Unmarshal (ns/op)</th><th>Allocs</th><th>Кодогенерация</th><th>Платформы</th></tr>
 </thead>
 <tbody>
-<tr><td>encoding/json</td><td>1500</td><td>2800</td><td>8</td></tr>
-<tr><td>easyjson</td><td>300</td><td>450</td><td>1</td></tr>
-<tr><td>sonic</td><td>200</td><td>350</td><td>1</td></tr>
-<tr><td>jsoniter</td><td>400</td><td>600</td><td>2</td></tr>
+<tr><td>encoding/json</td><td>1500</td><td>2800</td><td>8</td><td>Нет</td><td>Все</td></tr>
+<tr><td>go-json</td><td>650</td><td>1100</td><td>3</td><td>Нет</td><td>Все</td></tr>
+<tr><td>easyjson</td><td>300</td><td>450</td><td>1</td><td>Да</td><td>Все</td></tr>
+<tr><td>sonic</td><td>200</td><td>350</td><td>1</td><td>Нет (JIT)</td><td>x86/arm64</td></tr>
 </tbody>
 </table>
 </div>
 <blockquote>
-<p>💡 <strong>Рекомендация</strong>: Используйте easyjson или sonic для hot paths. Для редких операций <code>encoding/json</code> достаточно.</p>
+<p>💡 <strong>Выбор библиотеки:</strong></p>
+<ul>
+<li><strong>encoding/json</strong> — дефолт, нет требований к производительности</li>
+<li><strong>go-json</strong> — нужна скорость без codegen, любые платформы</li>
+<li><strong>easyjson</strong> — максимальная скорость + кросс-платформенность, OK с codegen</li>
+<li><strong>sonic</strong> — абсолютный максимум на x86/arm64 (ByteDance, TikTok backend)</li>
+</ul>
 </blockquote>
+<h3 id="gjson--быстрое-извлечение-полей"><a class="header" href="#gjson--быстрое-извлечение-полей">gjson — быстрое извлечение полей</a></h3>
+<p><a href="https://github.com/tidwall/gjson">gjson</a> — парсит только нужные поля, не декодирует весь JSON. Аналог <code>JObject.SelectToken()</code> / JsonPath в Newtonsoft.Json.</p>
+<pre><code class="language-go">import "github.com/tidwall/gjson"
+
+payload := `{
+    "user": {
+        "id": 12345,
+        "name": "Alice",
+        "roles": ["admin", "editor"],
+        "address": {"city": "Moscow"}
+    },
+    "event": "login",
+    "timestamp": 1709812345
+}`
+
+// Точечная нотация — как JPath
+name := gjson.Get(payload, "user.name").String()         // "Alice"
+id   := gjson.Get(payload, "user.id").Int()              // 12345
+city := gjson.Get(payload, "user.address.city").String() // "Moscow"
+
+// Массивы
+role0 := gjson.Get(payload, "user.roles.0").String() // "admin"
+count := gjson.Get(payload, "user.roles.#").Int()    // 2
+
+// Множественное извлечение — один проход по JSON
+results := gjson.GetMany(payload, "user.id", "user.name", "event")
+// results[0].Int()    == 12345
+// results[1].String() == "Alice"
+// results[2].String() == "login"
+
+// Итерация по массиву
+gjson.Get(payload, "user.roles").ForEach(func(_, val gjson.Result) bool {
+    fmt.Println(val.String()) // "admin", "editor"
+    return true               // продолжить итерацию
+})
+</code></pre>
+<pre><code class="language-csharp">// C# Newtonsoft.Json — ближайший аналог
+var obj = JObject.Parse(json);
+var name = obj.SelectToken("user.name")?.Value&lt;string&gt;(); // "Alice"
+
+// C# System.Text.Json — нет SelectToken, только путь через GetProperty
+using var doc = JsonDocument.Parse(json);
+var name = doc.RootElement
+    .GetProperty("user")
+    .GetProperty("name")
+    .GetString(); // "Alice"
+</code></pre>
+<p><strong>Когда уместно:</strong></p>
+<ul>
+<li>Middleware: извлечь <code>user_id</code> для логирования/трейсинга до полного парсинга</li>
+<li>Webhook: обработать payload с переменной схемой без определения struct</li>
+<li>Feature flags: быстро прочитать значение из config-JSON</li>
+<li>Логирование: вытащить несколько полей из большого события</li>
+</ul>
+<p><strong>Когда не использовать:</strong></p>
+<ul>
+<li>Полная десериализация в struct (используйте encoding/json / easyjson)</li>
+<li>Изменение JSON (используйте <a href="https://github.com/tidwall/sjson">sjson</a> — сиблинг-библиотека)</li>
+<li>Схемная валидация</li>
+</ul>
 <hr>
 <h2 id="валидация-go-playgroundvalidator"><a class="header" href="#валидация-go-playgroundvalidator">Валидация: go-playground/validator</a></h2>
 <p><a href="https://github.com/go-playground/validator">go-playground/validator</a> — стандартная библиотека валидации в Go.</p>
@@ -949,21 +1174,20 @@ func main() {
 // Разница: ~10x быстрее, ~3x компактнее
 </code></pre>
 <hr>
-<h2 id="json-v2-и-производительность-ioreadall-go-125-126"><a class="header" href="#json-v2-и-производительность-ioreadall-go-125-126">JSON v2 и производительность io.ReadAll (Go 1.25-1.26)</a></h2>
-<h3 id="encodingjsonv2--экспериментальный-go-125"><a class="header" href="#encodingjsonv2--экспериментальный-go-125">encoding/json/v2 — экспериментальный (Go 1.25)</a></h3>
+<h2 id="encodingjsonv2-и-производительность-ioreadall-go-125-126"><a class="header" href="#encodingjsonv2-и-производительность-ioreadall-go-125-126">encoding/json/v2 и производительность io.ReadAll (Go 1.25-1.26)</a></h2>
+<h3 id="encodingjsonv2--статус-на-март-2026"><a class="header" href="#encodingjsonv2--статус-на-март-2026">encoding/json/v2 — статус на март 2026</a></h3>
 <blockquote>
 <p>💡 <strong>Для C# разработчиков</strong>: Аналог миграции с <code>Newtonsoft.Json</code> на <code>System.Text.Json</code> — новый, более быстрый и строгий JSON API.</p>
 </blockquote>
-<p>Go 1.25 добавил экспериментальный <code>encoding/json/v2</code> (включается через <code>GOEXPERIMENT=jsonv2</code>). Пакет решает давние проблемы <code>encoding/json</code>:</p>
-<p><strong>Ключевые улучшения JSON v2:</strong></p>
-<ul>
-<li><strong>Быстрее</strong>: ~2x ускорение decode за счёт отказа от reflection в hot paths</li>
-<li><strong>Строже</strong>: ошибки для unknown fields по умолчанию (в v1 игнорируются)</li>
-<li><strong>Правильная обработка null</strong>: различие между <code>null</code> и отсутствующим полем</li>
-<li><strong>Streaming</strong>: нативная поддержка потоковой обработки</li>
-</ul>
-<pre><code class="language-go">// Go 1.25+ (GOEXPERIMENT=jsonv2)
-import "encoding/json/v2"
+<p><strong>Два способа использования v2:</strong></p>
+<ol>
+<li><strong>Standalone пакет</strong> <code>github.com/go-json-experiment/json</code> — доступен прямо сейчас, без флагов</li>
+<li><strong>В stdlib</strong> — <code>GOEXPERIMENT=jsonv2</code> в Go 1.25/1.26, пока нестабилен в стандартной библиотеке</li>
+</ol>
+<pre><code class="language-bash"># Установка standalone пакета (март 2026)
+go get github.com/go-json-experiment/json
+</code></pre>
+<pre><code class="language-go">import jsonv2 "github.com/go-json-experiment/json"
 
 type User struct {
     Name  string `json:"name"`
@@ -973,35 +1197,54 @@ type User struct {
 
 user := User{Name: "Alice", Email: "alice@example.com", Age: 30}
 
-// Marshal — аналогичный API
-data, err := json.Marshal(user)
-if err != nil {
-    return err
-}
+// Marshal — совместимый API
+data, err := jsonv2.Marshal(user)
 
-// Unmarshal — строже по умолчанию
+// Unmarshal — строже по умолчанию (unknown fields → ошибка)
 var parsed User
-if err := json.Unmarshal(data, &amp;parsed); err != nil {
-    // v2: ошибка при unknown fields (по умолчанию)
+if err := jsonv2.Unmarshal(data, &amp;parsed); err != nil {
     return err
 }
 
 // Разрешить unknown fields явно
-if err := json.UnmarshalOptions{RejectUnknownMembers: false}.Unmarshal(data, &amp;parsed); err != nil {
+if err := jsonv2.UnmarshalOptions{RejectUnknownMembers: false}.Unmarshal(data, &amp;parsed); err != nil {
     return err
 }
 </code></pre>
-<p><strong>Сравнение v1 vs v2:</strong></p>
-<pre><code class="language-go">// encoding/json (v1) — тихо игнорирует unknown fields
-var result map[string]any
-json.Unmarshal([]byte(`{"name":"Alice","unknown":"field"}`), &amp;result)
-// OK, "unknown" в result
+<p><strong>Новые теги v2:</strong></p>
+<pre><code class="language-go">type Config struct {
+    // omitzero — omit если IsZero() возвращает true (или == zero value)
+    // Работает без указателя, в отличие от omitempty для struct
+    Timeout time.Duration `json:"timeout,omitzero"`
 
-// encoding/json/v2 — ошибка при unknown fields (по умолчанию)
-json.Unmarshal([]byte(`{"name":"Alice","unknown":"field"}`), &amp;User{})
-// Error: unknown field "unknown"
+    // format — подсказка формата для кастомных типов
+    StartDate time.Time `json:"start_date,format:date"`        // "2024-01-15"
+    CreatedAt time.Time `json:"created_at,format:RFC3339Nano"` // полный timestamp
+
+    // unknown — поле для захвата неизвестных полей (вместо map или RawMessage)
+    Extra jsonv2.RawValue `json:",unknown"`
+}
+
+type Response struct {
+    Status string `json:"status"`
+    // Все неизвестные поля попадут в Extra
+    Extra  map[string]jsonv2.RawValue `json:",unknown"`
+}
 </code></pre>
-<p><strong>Benchmarks v1 vs v2 (предварительные):</strong></p>
+<p><strong>Ключевые отличия от v1:</strong></p>
+<pre><code class="language-go">// v1: тихо игнорирует unknown fields
+json.Unmarshal([]byte(`{"name":"Alice","newField":"value"}`), &amp;User{})
+// OK, newField проигнорирован
+
+// v2: ошибка при unknown fields по умолчанию — безопаснее для API
+jsonv2.Unmarshal([]byte(`{"name":"Alice","newField":"value"}`), &amp;User{})
+// Error: unknown name "newField"
+
+// v2: различие null и absent field
+// null → pointer = nil
+// absent → pointer не тронут (сохраняет предыдущее значение)
+</code></pre>
+<p><strong>Benchmarks v1 vs v2:</strong></p>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -1014,16 +1257,28 @@ json.Unmarshal([]byte(`{"name":"Alice","unknown":"field"}`), &amp;User{})
 </tbody>
 </table>
 </div>
-<blockquote>
-<p>⚠️ <strong>Статус</strong>: Экспериментальный в Go 1.25. API может измениться. Включение: <code>GOEXPERIMENT=jsonv2 go build ./...</code></p>
-<p>Для продакшна в Go 1.25 используйте <code>easyjson</code> или <code>sonic</code>. JSON v2 станет стабильным в будущих версиях.</p>
-</blockquote>
-<p><strong>Миграция в перспективе:</strong></p>
-<pre><code class="language-go">// Сейчас (стабильно)
+<p><strong>Рекомендация (март 2026):</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Сценарий</th><th>Выбор</th></tr>
+</thead>
+<tbody>
+<tr><td>Стабильный production</td><td>encoding/json + easyjson/sonic</td></tr>
+<tr><td>Новый сервис, можно обновить зависимость</td><td><code>github.com/go-json-experiment/json</code></td></tr>
+<tr><td>Нужен <code>omitzero</code>, <code>format</code>, <code>unknown</code> тег</td><td><code>github.com/go-json-experiment/json</code></td></tr>
+<tr><td>Ждёте стабилизации в stdlib</td><td>Следите за Go 1.27+</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-go">// Сейчас (стабильно, без кодогенерации)
 import "encoding/json"
 
-// Будущая миграция (v2 stable)
-// import json "encoding/json/v2"  // Drop-in replacement (почти)
+// Уже можно (standalone, API может корректироваться)
+import jsonv2 "github.com/go-json-experiment/json"
+
+// Будущее (в stdlib, ожидается Go 1.27+)
+// import "encoding/json/v2"
 </code></pre>
 <hr>
 <h3 id="ioreadall--2x-быстрее-go-126"><a class="header" href="#ioreadall--2x-быстрее-go-126">io.ReadAll — 2x быстрее (Go 1.26)</a></h3>

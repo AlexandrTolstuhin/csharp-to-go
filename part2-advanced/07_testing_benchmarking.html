@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Тестирование и бенчмаркинг - Переход с C# на Go</title>
+        <title>Тестирование и бенчмаркинг - Go для C# разработчиков</title>
 
 
         <!-- Custom HTML head -->
@@ -35,10 +35,10 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-36e8f7fd.js";
+            window.path_to_searchindex_js = "../searchindex-b145a30a.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-1a7de78a.js"></script>
+        <script src="../toc-a74b6836.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -137,7 +137,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">Переход с C# на Go</h1>
+                    <h1 class="menu-title">Go для C# разработчиков</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -1199,7 +1199,10 @@ func (m *MockCache) Set(key, value string) {
 <h3 id="43-gomock-code-generation"><a class="header" href="#43-gomock-code-generation">4.3 gomock (code generation)</a></h3>
 <p>Для сложных интерфейсов удобно использовать <strong>gomock</strong>.</p>
 <h4 id="установка"><a class="header" href="#установка">Установка</a></h4>
-<pre><code class="language-bash">go install github.com/golang/mock/mockgen@latest
+<blockquote>
+<p>⚠️ <code>github.com/golang/mock</code> заархивирован в 2023. Используй <code>go.uber.org/mock</code> — его форк с активной поддержкой.</p>
+</blockquote>
+<pre><code class="language-bash">go install go.uber.org/mock/mockgen@latest
 </code></pre>
 <h4 id="генерация-моков"><a class="header" href="#генерация-моков">Генерация моков</a></h4>
 <pre><code class="language-go">//go:generate mockgen -destination=mocks/mock_repository.go -package=mocks . UserRepository
@@ -1214,7 +1217,7 @@ type UserRepository interface {
 <h4 id="использование"><a class="header" href="#использование">Использование</a></h4>
 <pre><code class="language-go">import (
     "testing"
-    "github.com/golang/mock/gomock"
+    "go.uber.org/mock/gomock"
     "myapp/mocks"
 }
 

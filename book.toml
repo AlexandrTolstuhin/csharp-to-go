@@ -1,5 +1,5 @@
 [book]
-title = "Переход с C# на Go"
+title = "Go для C# разработчиков"
 authors = ["Alexandr Tolstukhin"]
 description = "Комплексный курс по изучению Go для опытного C# разработчика"
 language = "ru"

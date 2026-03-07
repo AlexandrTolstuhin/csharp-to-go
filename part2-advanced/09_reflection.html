@@ -1,0 +1,1356 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Reflection - Go для C# разработчиков</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-b145a30a.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-a74b6836.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Go для C# разработчиков</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part2-advanced/09_reflection.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="reflection-в-go"><a class="header" href="#reflection-в-go">Reflection в Go</a></h1>
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Reflection в Go (<code>reflect</code> пакет) концептуально похож на C# Reflection, но значительно скромнее. Нет генерации кода в рантайме (Emit), нет dynamic-типов, нет Expression Trees. Зато есть принципиальное отличие: в Go reflection используется редко и считается последним средством — там, где C# разработчики привычно тянутся к <code>Type.GetProperties()</code>, идиоматичный Go предпочитает явный код или кодогенерацию.</p>
+</blockquote>
+<h3 id="что-вы-узнаете"><a class="header" href="#что-вы-узнаете">Что вы узнаете</a></h3>
+<ul>
+<li><code>reflect.Type</code> и <code>reflect.Value</code>: основы работы с типами в рантайме</li>
+<li>Инспекция struct-тегов — как <code>encoding/json</code> работает под капотом</li>
+<li>Динамический вызов методов через <code>Value.Call()</code></li>
+<li>Создание и изменение значений через reflect</li>
+<li>Когда reflect оправдан: сериализаторы, DI, codegen</li>
+<li>Антипаттерны и альтернативы через кодогенерацию</li>
+<li><code>reflect.Select</code>: динамический <code>select</code> по каналам</li>
+<li><code>go/ast</code> как инструмент статического анализа для codegen</li>
+</ul>
+<hr>
+<h2 id="reflecttype-и-reflectvalue-основы"><a class="header" href="#reflecttype-и-reflectvalue-основы">reflect.Type и reflect.Value: основы</a></h2>
+<p>Пакет <code>reflect</code> работает через два центральных типа:</p>
+<ul>
+<li><code>reflect.Type</code> — описание типа (структура, поля, методы)</li>
+<li><code>reflect.Value</code> — конкретное значение с возможностью его читать и изменять</li>
+</ul>
+<pre><code class="language-go">import "reflect"
+
+type User struct {
+    ID    int64  `json:"id"`
+    Name  string `json:"name"`
+    Email string `json:"email,omitempty"`
+}
+
+func main() {
+    u := User{ID: 1, Name: "Alice", Email: "alice@example.com"}
+
+    // reflect.TypeOf — тип значения
+    t := reflect.TypeOf(u)
+    fmt.Println(t.Name())    // User
+    fmt.Println(t.Kind())    // struct
+    fmt.Println(t.PkgPath()) // main (или полный путь пакета)
+
+    // reflect.ValueOf — значение
+    v := reflect.ValueOf(u)
+    fmt.Println(v.Kind())         // struct
+    fmt.Println(v.Field(0).Int()) // 1
+
+    // Через указатель
+    pt := reflect.TypeOf(&amp;u)
+    fmt.Println(pt.Kind())       // ptr
+    fmt.Println(pt.Elem().Kind()) // struct
+}
+</code></pre>
+<h3 id="kind-vs-type"><a class="header" href="#kind-vs-type">Kind vs Type</a></h3>
+<p><code>Kind</code> — категория типа (<code>struct</code>, <code>ptr</code>, <code>slice</code>, <code>map</code>, <code>int</code>, …).
+<code>Type</code> — конкретный именованный тип (<code>User</code>, <code>int64</code>, <code>[]string</code>).</p>
+<pre><code class="language-go">type MyInt int
+
+var x MyInt = 42
+t := reflect.TypeOf(x)
+
+fmt.Println(t.Name()) // MyInt
+fmt.Println(t.Kind()) // int  ← базовый вид, не MyInt
+</code></pre>
+<h3 id="основные-методы-type"><a class="header" href="#основные-методы-type">Основные методы Type</a></h3>
+<pre><code class="language-go">t := reflect.TypeOf(User{})
+
+// Информация о типе
+t.Name()        // "User"
+t.Kind()        // reflect.Struct
+t.PkgPath()     // "main"
+t.Size()        // размер в байтах
+
+// Поля struct
+t.NumField()    // 3
+f := t.Field(0)
+f.Name          // "ID"
+f.Type          // reflect.Type для int64
+f.Tag           // reflect.StructTag (`json:"id"`)
+f.Anonymous     // true для встроенных полей (embedding)
+f.Index         // []int{0}
+
+// Методы
+t.NumMethod()   // количество методов на типе (не указателе)
+m := t.Method(0)
+m.Name          // имя метода
+m.Type          // сигнатура метода
+
+// Поиск
+t.FieldByName("Name")    // (StructField, bool)
+t.MethodByName("String") // (Method, bool)
+</code></pre>
+<h3 id="основные-методы-value"><a class="header" href="#основные-методы-value">Основные методы Value</a></h3>
+<pre><code class="language-go">v := reflect.ValueOf(u)
+
+// Базовые
+v.Type()  // reflect.Type
+v.Kind()  // reflect.Kind
+
+// Проверки
+v.IsValid() // false если v == reflect.Value{}
+v.IsNil()   // только для chan/func/interface/map/ptr/slice
+
+// Получение Go-значения
+v.Interface()      // any — универсально
+v.String()         // для string
+v.Int()            // для int*
+v.Float()          // для float*
+v.Bool()           // для bool
+v.Bytes()          // для []byte
+
+// Поля struct
+v.NumField()
+v.Field(0)
+v.FieldByName("Name")
+
+// Срезы и карты
+v.Len()
+v.Index(0)
+v.MapKeys()
+v.MapIndex(key)
+</code></pre>
+<h3 id="сравнение-с-c"><a class="header" href="#сравнение-с-c">Сравнение с C#</a></h3>
+<p><strong>C#:</strong></p>
+<pre><code class="language-csharp">var type_ = typeof(User);
+var properties = type_.GetProperties();
+foreach (var prop in properties)
+{
+    Console.WriteLine($"{prop.Name}: {prop.PropertyType.Name}");
+    var attr = prop.GetCustomAttribute&lt;JsonPropertyNameAttribute&gt;();
+    if (attr != null)
+        Console.WriteLine($"  JSON: {attr.Name}");
+}
+
+// Получить значение
+var user = new User { ID = 1, Name = "Alice" };
+var nameValue = type_.GetProperty("Name")?.GetValue(user);
+</code></pre>
+<p><strong>Go:</strong></p>
+<pre><code class="language-go">t := reflect.TypeOf(User{})
+v := reflect.ValueOf(u)
+
+for i := 0; i &lt; t.NumField(); i++ {
+    field := t.Field(i)
+    value := v.Field(i)
+    fmt.Printf("%s (%s) = %v\n", field.Name, field.Type.Name(), value.Interface())
+
+    jsonTag := field.Tag.Get("json")
+    if jsonTag != "" {
+        fmt.Printf("  JSON: %s\n", jsonTag)
+    }
+}
+</code></pre>
+<hr>
+<h2 id="инспекция-struct-тегов"><a class="header" href="#инспекция-struct-тегов">Инспекция struct-тегов</a></h2>
+<p>Struct tags — это строковые метаданные полей, доступные через <code>reflect.StructTag</code>. Именно так работают <code>encoding/json</code>, <code>validate</code>, <code>db</code> и другие библиотеки.</p>
+<pre><code class="language-go">type Product struct {
+    ID       int64   `json:"id"                  db:"product_id" validate:"required"`
+    Name     string  `json:"name"                db:"name"       validate:"required,min=1,max=255"`
+    Price    float64 `json:"price"               db:"price"      validate:"gte=0"`
+    Internal string  `json:"-"`                                   // игнорировать в JSON
+    Optional *string `json:"description,omitempty" db:"description"`
+}
+</code></pre>
+<h3 id="чтение-тегов"><a class="header" href="#чтение-тегов">Чтение тегов</a></h3>
+<pre><code class="language-go">func inspectTags(v any) {
+    t := reflect.TypeOf(v)
+    if t.Kind() == reflect.Ptr {
+        t = t.Elem()
+    }
+    if t.Kind() != reflect.Struct {
+        return
+    }
+
+    for i := 0; i &lt; t.NumField(); i++ {
+        field := t.Field(i)
+        tag := field.Tag
+
+        // Get — возвращает "" если тег отсутствует
+        jsonName := tag.Get("json")
+        dbName   := tag.Get("db")
+        validate := tag.Get("validate")
+
+        // Lookup — различает "" и отсутствие тега
+        val, ok := tag.Lookup("json")
+        if !ok {
+            fmt.Printf("Поле %s не имеет json-тега\n", field.Name)
+        }
+        _ = val
+
+        fmt.Printf("%-12s json:%-20s db:%-15s validate:%s\n",
+            field.Name, jsonName, dbName, validate)
+    }
+}
+</code></pre>
+<h3 id="парсинг-json-тега-с-опциями"><a class="header" href="#парсинг-json-тега-с-опциями">Парсинг json-тега с опциями</a></h3>
+<p><code>encoding/json</code> парсит теги вида <code>"name,omitempty"</code> — можно воспроизвести:</p>
+<pre><code class="language-go">// parseJSONTag разбирает тег вида "name,omitempty" или "-"
+func parseJSONTag(field reflect.StructField) (name string, omitempty bool, skip bool) {
+    tag := field.Tag.Get("json")
+    if tag == "-" {
+        return "", false, true
+    }
+
+    parts := strings.SplitN(tag, ",", 2)
+    name = parts[0]
+    if name == "" {
+        name = field.Name // по умолчанию — имя поля
+    }
+
+    if len(parts) &gt; 1 {
+        for _, opt := range strings.Split(parts[1], ",") {
+            if opt == "omitempty" {
+                omitempty = true
+            }
+        }
+    }
+    return name, omitempty, false
+}
+</code></pre>
+<h3 id="мини-сериализатор-как-работает-encodingjson"><a class="header" href="#мини-сериализатор-как-работает-encodingjson">Мини-сериализатор: как работает encoding/json</a></h3>
+<pre><code class="language-go">// Упрощённый JSON-сериализатор через reflect
+// Только для понимания — в production используйте encoding/json
+func marshalSimple(v any) (string, error) {
+    val := reflect.ValueOf(v)
+    if val.Kind() == reflect.Ptr {
+        if val.IsNil() {
+            return "null", nil
+        }
+        val = val.Elem()
+    }
+
+    switch val.Kind() {
+    case reflect.Struct:
+        return marshalStruct(val)
+    case reflect.String:
+        return fmt.Sprintf("%q", val.String()), nil
+    case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+        return fmt.Sprintf("%d", val.Int()), nil
+    case reflect.Float32, reflect.Float64:
+        return fmt.Sprintf("%g", val.Float()), nil
+    case reflect.Bool:
+        return fmt.Sprintf("%t", val.Bool()), nil
+    default:
+        return "null", nil
+    }
+}
+
+func marshalStruct(val reflect.Value) (string, error) {
+    t := val.Type()
+    var parts []string
+
+    for i := 0; i &lt; t.NumField(); i++ {
+        field := t.Field(i)
+        fieldVal := val.Field(i)
+
+        // Пропустить неэкспортированные
+        if !field.IsExported() {
+            continue
+        }
+
+        jsonName, omitempty, skip := parseJSONTag(field)
+        if skip {
+            continue
+        }
+
+        // omitempty: пропустить zero-value
+        if omitempty &amp;&amp; fieldVal.IsZero() {
+            continue
+        }
+
+        valueStr, err := marshalSimple(fieldVal.Interface())
+        if err != nil {
+            return "", err
+        }
+
+        parts = append(parts, fmt.Sprintf("%q:%s", jsonName, valueStr))
+    }
+
+    return "{" + strings.Join(parts, ",") + "}", nil
+}
+</code></pre>
+<hr>
+<h2 id="динамический-вызов-методов"><a class="header" href="#динамический-вызов-методов">Динамический вызов методов</a></h2>
+<h3 id="methodbyname-и-call"><a class="header" href="#methodbyname-и-call">MethodByName и Call</a></h3>
+<pre><code class="language-go">type Calculator struct {
+    value float64
+}
+
+func (c *Calculator) Add(x float64) float64 { return c.value + x }
+func (c *Calculator) Mul(x float64) float64 { return c.value * x }
+func (c *Calculator) String() string          { return fmt.Sprintf("%.2f", c.value) }
+
+func callMethod(obj any, methodName string, args ...any) ([]any, error) {
+    v := reflect.ValueOf(obj)
+
+    method := v.MethodByName(methodName)
+    if !method.IsValid() {
+        return nil, fmt.Errorf("метод %s не найден", methodName)
+    }
+
+    // Подготовить аргументы
+    in := make([]reflect.Value, len(args))
+    for i, arg := range args {
+        in[i] = reflect.ValueOf(arg)
+    }
+
+    // Вызов
+    results := method.Call(in)
+
+    // Извлечь результаты
+    out := make([]any, len(results))
+    for i, r := range results {
+        out[i] = r.Interface()
+    }
+    return out, nil
+}
+
+func main() {
+    calc := &amp;Calculator{value: 10}
+
+    result, err := callMethod(calc, "Add", 5.0)
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Println(result[0]) // 15
+
+    // Метод без аргументов
+    result, _ = callMethod(calc, "String")
+    fmt.Println(result[0]) // 10.00
+}
+</code></pre>
+<h3 id="проверка-сигнатуры-метода"><a class="header" href="#проверка-сигнатуры-метода">Проверка сигнатуры метода</a></h3>
+<pre><code class="language-go">// Перед вызовом — проверить сигнатуру
+func validateMethod(t reflect.Type, methodName string, numIn, numOut int) error {
+    method, ok := t.MethodByName(methodName)
+    if !ok {
+        return fmt.Errorf("метод %s не найден в %s", methodName, t.Name())
+    }
+
+    mt := method.Type
+    // Для методов на значении: первый параметр — receiver
+    // Для методов на указателе через interface: receiver уже не считается
+    if mt.NumIn() != numIn {
+        return fmt.Errorf("ожидается %d аргументов, есть %d", numIn, mt.NumIn())
+    }
+    if mt.NumOut() != numOut {
+        return fmt.Errorf("ожидается %d возвращаемых значений, есть %d", numOut, mt.NumOut())
+    }
+    return nil
+}
+</code></pre>
+<h3 id="сравнение-с-c-1"><a class="header" href="#сравнение-с-c-1">Сравнение с C#</a></h3>
+<p><strong>C#:</strong></p>
+<pre><code class="language-csharp">var obj = new Calculator(10);
+var method = obj.GetType().GetMethod("Add")!;
+var result = method.Invoke(obj, new object[] { 5.0 });
+Console.WriteLine(result); // 15
+
+// Проверка сигнатуры
+var parameters = method.GetParameters();
+Console.WriteLine(parameters[0].ParameterType.Name); // Double
+</code></pre>
+<p><strong>Go:</strong></p>
+<pre><code class="language-go">v := reflect.ValueOf(&amp;calc)
+method := v.MethodByName("Add")
+mt := method.Type()
+
+// Проверка типа аргумента
+fmt.Println(mt.In(0)) // float64
+
+result := method.Call([]reflect.Value{reflect.ValueOf(5.0)})
+fmt.Println(result[0].Float()) // 15
+</code></pre>
+<hr>
+<h2 id="создание-значений-и-изменение-через-reflect"><a class="header" href="#создание-значений-и-изменение-через-reflect">Создание значений и изменение через reflect</a></h2>
+<h3 id="reflectnew-и-адресуемые-значения"><a class="header" href="#reflectnew-и-адресуемые-значения">reflect.New и адресуемые значения</a></h3>
+<pre><code class="language-go">// reflect.New аналогичен new(T)
+t := reflect.TypeOf(User{})
+ptr := reflect.New(t)       // *User, инициализированный zero-value
+elem := ptr.Elem()          // User — адресуемый, можно Set
+
+// Установка полей
+elem.FieldByName("ID").SetInt(42)
+elem.FieldByName("Name").SetString("Bob")
+elem.FieldByName("Email").SetString("bob@example.com")
+
+user := elem.Interface().(User)
+fmt.Println(user) // {42 Bob bob@example.com}
+</code></pre>
+<h3 id="canset--когда-можно-изменять"><a class="header" href="#canset--когда-можно-изменять">CanSet — когда можно изменять</a></h3>
+<pre><code class="language-go">u := User{ID: 1}
+
+// Неадресуемое значение — нельзя изменить
+v := reflect.ValueOf(u)
+fmt.Println(v.Field(0).CanSet()) // false
+
+// Через указатель — можно
+pv := reflect.ValueOf(&amp;u).Elem()
+fmt.Println(pv.Field(0).CanSet()) // true
+pv.Field(0).SetInt(99)
+fmt.Println(u.ID) // 99
+
+// Неэкспортированное поле — нельзя даже через указатель
+type secret struct{ hidden string }
+s := secret{hidden: "private"}
+sv := reflect.ValueOf(&amp;s).Elem()
+fmt.Println(sv.Field(0).CanSet()) // false — неэкспортированное
+</code></pre>
+<h3 id="паттерн-универсальный-mapper-struct--map"><a class="header" href="#паттерн-универсальный-mapper-struct--map">Паттерн: универсальный mapper struct → map</a></h3>
+<pre><code class="language-go">// StructToMap конвертирует struct в map[string]any по json-тегам
+func StructToMap(v any) map[string]any {
+    val := reflect.ValueOf(v)
+    if val.Kind() == reflect.Ptr {
+        val = val.Elem()
+    }
+    if val.Kind() != reflect.Struct {
+        return nil
+    }
+
+    t := val.Type()
+    result := make(map[string]any, t.NumField())
+
+    for i := 0; i &lt; t.NumField(); i++ {
+        field := t.Field(i)
+        if !field.IsExported() {
+            continue
+        }
+
+        key := field.Tag.Get("json")
+        if key == "" || key == "-" {
+            key = field.Name
+        } else {
+            key = strings.SplitN(key, ",", 2)[0]
+        }
+
+        result[key] = val.Field(i).Interface()
+    }
+    return result
+}
+</code></pre>
+<hr>
+<h2 id="reflectselect-динамический-select"><a class="header" href="#reflectselect-динамический-select">reflect.Select: динамический select</a></h2>
+<p><code>reflect.Select</code> позволяет построить <code>select</code> с набором каналов, известным только в рантайме. В статическом Go количество каналов в <code>select</code> фиксировано на этапе компиляции.</p>
+<h3 id="базовый-пример"><a class="header" href="#базовый-пример">Базовый пример</a></h3>
+<pre><code class="language-go">func fanIn(channels ...&lt;-chan int) &lt;-chan int {
+    out := make(chan int)
+
+    go func() {
+        defer close(out)
+
+        // Строим набор SelectCase динамически
+        cases := make([]reflect.SelectCase, len(channels)+1)
+
+        // Канал завершения (первый)
+        done := make(chan struct{})
+        cases[0] = reflect.SelectCase{
+            Dir:  reflect.SelectRecv,
+            Chan: reflect.ValueOf(done),
+        }
+
+        for i, ch := range channels {
+            cases[i+1] = reflect.SelectCase{
+                Dir:  reflect.SelectRecv,
+                Chan: reflect.ValueOf(ch),
+            }
+        }
+
+        remaining := len(channels)
+        for remaining &gt; 0 {
+            chosen, value, ok := reflect.Select(cases)
+            if chosen == 0 {
+                return // done-канал
+            }
+            if !ok {
+                // Канал закрыт — убрать его из набора
+                cases[chosen] = reflect.SelectCase{Dir: reflect.SelectDefault}
+                remaining--
+                continue
+            }
+            out &lt;- int(value.Int())
+        }
+    }()
+
+    return out
+}
+</code></pre>
+<h3 id="мультиплексор-с-таймаутом"><a class="header" href="#мультиплексор-с-таймаутом">Мультиплексор с таймаутом</a></h3>
+<pre><code class="language-go">// SelectFirst читает из нескольких каналов, возвращает первое значение
+func SelectFirst[T any](timeout time.Duration, channels ...&lt;-chan T) (T, bool) {
+    cases := make([]reflect.SelectCase, len(channels)+1)
+
+    // Таймаут через time.After
+    cases[0] = reflect.SelectCase{
+        Dir:  reflect.SelectRecv,
+        Chan: reflect.ValueOf(time.After(timeout)),
+    }
+    for i, ch := range channels {
+        cases[i+1] = reflect.SelectCase{
+            Dir:  reflect.SelectRecv,
+            Chan: reflect.ValueOf(ch),
+        }
+    }
+
+    chosen, value, ok := reflect.Select(cases)
+    if chosen == 0 || !ok {
+        var zero T
+        return zero, false
+    }
+    return value.Interface().(T), true
+}
+</code></pre>
+<h3 id="reflectselectcase-поля"><a class="header" href="#reflectselectcase-поля">reflect.SelectCase поля</a></h3>
+<pre><code class="language-go">// Отправка в канал
+reflect.SelectCase{
+    Dir:  reflect.SelectSend,
+    Chan: reflect.ValueOf(ch),    // chan T
+    Send: reflect.ValueOf(value), // значение T
+}
+
+// Получение из канала
+reflect.SelectCase{
+    Dir:  reflect.SelectRecv,
+    Chan: reflect.ValueOf(ch), // &lt;-chan T или chan T
+}
+
+// Default ветка (non-blocking)
+reflect.SelectCase{
+    Dir: reflect.SelectDefault,
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Когда нужен reflect.Select</strong>: динамическое количество источников данных — например, агрегатор данных с переменным числом upstream-сервисов, или fan-in для N каналов где N неизвестно на этапе компиляции.</p>
+</blockquote>
+<hr>
+<h2 id="когда-reflect-оправдан"><a class="header" href="#когда-reflect-оправдан">Когда reflect оправдан</a></h2>
+<h3 id="1-сериализаторы-и-orm"><a class="header" href="#1-сериализаторы-и-orm">1. Сериализаторы и ORM</a></h3>
+<pre><code class="language-go">// encoding/json, encoding/xml, encoding/gob — все используют reflect
+// GORM, sqlx, ent (до кодогенерации) — тоже
+
+// Пример: sqlx Scan в struct через reflect
+// sqlx читает теги `db:"column_name"` и маппит результат запроса
+type Order struct {
+    ID         int64     `db:"id"`
+    UserID     int64     `db:"user_id"`
+    TotalPrice float64   `db:"total_price"`
+    CreatedAt  time.Time `db:"created_at"`
+}
+
+// sqlx.Get автоматически маппит через reflect
+var order Order
+err := db.Get(&amp;order, "SELECT * FROM orders WHERE id = $1", orderID)
+</code></pre>
+<h3 id="2-универсальные-di-контейнеры"><a class="header" href="#2-универсальные-di-контейнеры">2. Универсальные DI-контейнеры</a></h3>
+<pre><code class="language-go">// Упрощённый DI: регистрация и резолвинг зависимостей
+type Container struct {
+    factories map[reflect.Type]any
+}
+
+func (c *Container) Register(factory any) {
+    ft := reflect.TypeOf(factory)
+    // factory: func() T или func(deps...) T
+    returnType := ft.Out(0)
+    c.factories[returnType] = factory
+}
+
+func (c *Container) Resolve(target any) error {
+    t := reflect.TypeOf(target)
+    if t.Kind() != reflect.Ptr {
+        return fmt.Errorf("target должен быть указателем")
+    }
+    elemType := t.Elem()
+
+    factory, ok := c.factories[elemType]
+    if !ok {
+        return fmt.Errorf("нет регистрации для %s", elemType)
+    }
+
+    result := reflect.ValueOf(factory).Call(nil)
+    reflect.ValueOf(target).Elem().Set(result[0])
+    return nil
+}
+</code></pre>
+<h3 id="3-валидаторы"><a class="header" href="#3-валидаторы">3. Валидаторы</a></h3>
+<pre><code class="language-go">// go-playground/validator использует reflect для проверки тегов
+// Упрощённый валидатор required-полей
+func ValidateRequired(v any) []string {
+    val := reflect.ValueOf(v)
+    if val.Kind() == reflect.Ptr {
+        val = val.Elem()
+    }
+    t := val.Type()
+
+    var errors []string
+    for i := 0; i &lt; t.NumField(); i++ {
+        field := t.Field(i)
+        tag := field.Tag.Get("validate")
+        if !strings.Contains(tag, "required") {
+            continue
+        }
+        if val.Field(i).IsZero() {
+            errors = append(errors, fmt.Sprintf("поле %s обязательно", field.Name))
+        }
+    }
+    return errors
+}
+</code></pre>
+<h3 id="4-инструменты-разработки"><a class="header" href="#4-инструменты-разработки">4. Инструменты разработки</a></h3>
+<pre><code class="language-go">// fmt.Printf("%v", x) — reflect под капотом
+// testing.DeepEqual — reflect.DeepEqual
+// text/template — reflect для доступа к полям
+
+// Типичный паттерн в инструментах: инспекция без изменения
+func PrintStruct(v any) {
+    val := reflect.ValueOf(v)
+    if val.Kind() == reflect.Ptr {
+        val = val.Elem()
+    }
+    t := val.Type()
+
+    fmt.Printf("=== %s ===\n", t.Name())
+    for i := 0; i &lt; t.NumField(); i++ {
+        field := t.Field(i)
+        value := val.Field(i)
+        fmt.Printf("  %-15s = %v\n", field.Name, value.Interface())
+    }
+}
+</code></pre>
+<hr>
+<h2 id="антипаттерны-и-альтернативы"><a class="header" href="#антипаттерны-и-альтернативы">Антипаттерны и альтернативы</a></h2>
+<h3 id="reflect-в-hot-path"><a class="header" href="#reflect-в-hot-path">reflect в hot path</a></h3>
+<pre><code class="language-go">// ❌ Медленно: reflect в цикле обработки запросов
+func SerializeUserSlow(u User) string {
+    val := reflect.ValueOf(u)
+    t := val.Type()
+    // ... reflection каждый раз
+    return result
+}
+
+// ✅ Быстро: кодогенерация (easyjson, jsoniter)
+// Или явный маршалинг:
+func SerializeUser(u User) string {
+    return fmt.Sprintf(`{"id":%d,"name":%q}`, u.ID, u.Name)
+}
+</code></pre>
+<p><strong>Бенчмарк:</strong></p>
+<pre><code class="language-go">func BenchmarkReflectMarshal(b *testing.B) {
+    u := User{ID: 1, Name: "Alice", Email: "alice@example.com"}
+    b.ReportAllocs()
+    b.ResetTimer()
+    for i := 0; i &lt; b.N; i++ {
+        _ = reflectMarshal(u) // ~2000 ns/op, 8 allocs/op
+    }
+}
+
+func BenchmarkDirectMarshal(b *testing.B) {
+    u := User{ID: 1, Name: "Alice", Email: "alice@example.com"}
+    b.ReportAllocs()
+    b.ResetTimer()
+    for i := 0; i &lt; b.N; i++ {
+        _ = fmt.Sprintf(`{"id":%d,"name":%q,"email":%q}`, u.ID, u.Name, u.Email)
+    }
+    // ~400 ns/op, 1 alloc/op
+}
+</code></pre>
+<h3 id="syncmap-вместо-reflect-для-type-registry"><a class="header" href="#syncmap-вместо-reflect-для-type-registry">sync.Map вместо reflect для type registry</a></h3>
+<pre><code class="language-go">// ❌ Не нужен reflect для реестра типов
+type HandlerRegistry struct{}
+func (r *HandlerRegistry) Register(name string, handler any) { ... }
+func (r *HandlerRegistry) Call(name string, args ...any)     { ... }
+
+// ✅ Явный реестр с конкретными типами
+type HandlerFunc func(ctx context.Context, payload []byte) error
+
+type HandlerRegistry struct {
+    handlers map[string]HandlerFunc
+}
+func (r *HandlerRegistry) Register(name string, handler HandlerFunc) {
+    r.handlers[name] = handler
+}
+func (r *HandlerRegistry) Call(ctx context.Context, name string, payload []byte) error {
+    h, ok := r.handlers[name]
+    if !ok {
+        return fmt.Errorf("обработчик %s не найден", name)
+    }
+    return h(ctx, payload)
+}
+</code></pre>
+<h3 id="кэширование-reflect-информации"><a class="header" href="#кэширование-reflect-информации">Кэширование reflect-информации</a></h3>
+<pre><code class="language-go">// Если reflect необходим — кэшировать TypeOf результаты
+var (
+    typeCache   sync.Map // map[reflect.Type]*typeInfo
+)
+
+type typeInfo struct {
+    fields []fieldInfo
+}
+
+type fieldInfo struct {
+    index   int
+    name    string
+    jsonKey string
+    kind    reflect.Kind
+}
+
+func getTypeInfo(t reflect.Type) *typeInfo {
+    if cached, ok := typeCache.Load(t); ok {
+        return cached.(*typeInfo)
+    }
+
+    info := buildTypeInfo(t) // reflect вызывается один раз
+    typeCache.Store(t, info)
+    return info
+}
+
+// buildTypeInfo вызывается при первом обращении к типу
+// Последующие вызовы используют кэш — reflect только при инициализации
+func buildTypeInfo(t reflect.Type) *typeInfo {
+    fields := make([]fieldInfo, 0, t.NumField())
+    for i := 0; i &lt; t.NumField(); i++ {
+        f := t.Field(i)
+        if !f.IsExported() {
+            continue
+        }
+        key := f.Tag.Get("json")
+        if key == "-" {
+            continue
+        }
+        if key == "" {
+            key = f.Name
+        } else {
+            key = strings.SplitN(key, ",", 2)[0]
+        }
+        fields = append(fields, fieldInfo{
+            index:   i,
+            name:    f.Name,
+            jsonKey: key,
+            kind:    f.Type.Kind(),
+        })
+    }
+    return &amp;typeInfo{fields: fields}
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Правило</strong>: Если reflect нужен в hot path — кэшируй <code>typeInfo</code> при запуске. <code>encoding/json</code> делает именно это через внутренний кэш кодировщиков.</p>
+</blockquote>
+<hr>
+<h2 id="goast-статический-анализ-как-альтернатива-reflect"><a class="header" href="#goast-статический-анализ-как-альтернатива-reflect">go/ast: статический анализ как альтернатива reflect</a></h2>
+<p><code>go/ast</code> — анализ исходного кода на этапе компиляции / генерации. Не требует рантайма, не влияет на производительность.</p>
+<h3 id="разбор-файла"><a class="header" href="#разбор-файла">Разбор файла</a></h3>
+<pre><code class="language-go">import (
+    "go/ast"
+    "go/parser"
+    "go/token"
+)
+
+func parseFile(filename string) (*ast.File, *token.FileSet) {
+    fset := token.NewFileSet()
+    file, err := parser.ParseFile(fset, filename, nil, parser.ParseComments)
+    if err != nil {
+        log.Fatal(err)
+    }
+    return file, fset
+}
+</code></pre>
+<h3 id="поиск-всех-struct-типов-в-файле"><a class="header" href="#поиск-всех-struct-типов-в-файле">Поиск всех struct-типов в файле</a></h3>
+<pre><code class="language-go">func findStructs(file *ast.File) []string {
+    var structs []string
+
+    // ast.Inspect обходит AST в глубину
+    ast.Inspect(file, func(n ast.Node) bool {
+        // TypeSpec — объявление типа: type Foo struct{}
+        ts, ok := n.(*ast.TypeSpec)
+        if !ok {
+            return true // продолжить обход
+        }
+
+        // Проверить, что это struct
+        if _, isStruct := ts.Type.(*ast.StructType); isStruct {
+            structs = append(structs, ts.Name.Name)
+        }
+        return true
+    })
+
+    return structs
+}
+
+// Использование
+func main() {
+    file, _ := parseFile("models.go")
+    structs := findStructs(file)
+    fmt.Println(structs) // [User Order Product ...]
+}
+</code></pre>
+<h3 id="извлечение-полей-struct-с-тегами"><a class="header" href="#извлечение-полей-struct-с-тегами">Извлечение полей struct с тегами</a></h3>
+<pre><code class="language-go">type FieldMeta struct {
+    Name    string
+    Type    string
+    JSONTag string
+    DBTag   string
+}
+
+func extractFields(file *ast.File, structName string) []FieldMeta {
+    var fields []FieldMeta
+
+    ast.Inspect(file, func(n ast.Node) bool {
+        ts, ok := n.(*ast.TypeSpec)
+        if !ok || ts.Name.Name != structName {
+            return true
+        }
+
+        st, ok := ts.Type.(*ast.StructType)
+        if !ok {
+            return false
+        }
+
+        for _, field := range st.Fields.List {
+            for _, name := range field.Names {
+                meta := FieldMeta{Name: name.Name}
+
+                // Тип поля — может быть *ast.Ident или *ast.StarExpr (указатель)
+                switch ft := field.Type.(type) {
+                case *ast.Ident:
+                    meta.Type = ft.Name
+                case *ast.StarExpr:
+                    if id, ok := ft.X.(*ast.Ident); ok {
+                        meta.Type = "*" + id.Name
+                    }
+                }
+
+                // Теги
+                if field.Tag != nil {
+                    tag := reflect.StructTag(
+                        strings.Trim(field.Tag.Value, "`"),
+                    )
+                    meta.JSONTag = tag.Get("json")
+                    meta.DBTag = tag.Get("db")
+                }
+
+                fields = append(fields, meta)
+            }
+        }
+        return false
+    })
+
+    return fields
+}
+</code></pre>
+<h3 id="генерация-кода-через-goast--texttemplate"><a class="header" href="#генерация-кода-через-goast--texttemplate">Генерация кода через go/ast + text/template</a></h3>
+<pre><code class="language-go">// go generate: нет рантайм-reflect, генерируем код один раз
+// Типичный workflow:
+//
+// 1. Читаем исходный Go-файл через go/ast
+// 2. Извлекаем метаданные (типы, поля, теги)
+// 3. Генерируем код через text/template
+// 4. Форматируем через go/format
+// 5. Пишем в *_gen.go файл
+
+const tmpl = `// Code generated by mycodegen. DO NOT EDIT.
+package {{ .Package }}
+
+{{ range .Structs }}
+func (s {{ .Name }}) ToMap() map[string]any {
+    return map[string]any{
+        {{ range .Fields }}"{{ .JSONKey }}": s.{{ .Name }},
+        {{ end }}
+    }
+}
+{{ end }}`
+
+type TemplateData struct {
+    Package string
+    Structs []StructData
+}
+
+type StructData struct {
+    Name   string
+    Fields []FieldData
+}
+
+type FieldData struct {
+    Name    string
+    JSONKey string
+}
+
+func generate(data TemplateData) ([]byte, error) {
+    t := template.Must(template.New("").Parse(tmpl))
+
+    var buf bytes.Buffer
+    if err := t.Execute(&amp;buf, data); err != nil {
+        return nil, err
+    }
+
+    // Форматирование — как gofmt
+    formatted, err := format.Source(buf.Bytes())
+    if err != nil {
+        return nil, fmt.Errorf("ошибка форматирования: %w\n%s", err, buf.String())
+    }
+    return formatted, nil
+}
+</code></pre>
+<h3 id="сравнение-reflect-vs-goast"><a class="header" href="#сравнение-reflect-vs-goast">Сравнение reflect vs go/ast</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th><code>reflect</code></th><th><code>go/ast</code></th></tr>
+</thead>
+<tbody>
+<tr><td>Когда работает</td><td>Рантайм</td><td>Compile time / go generate</td></tr>
+<tr><td>Производительность</td><td>Медленнее (рантайм-проверки)</td><td>Нет влияния на рантайм</td></tr>
+<tr><td>Доступ к информации</td><td>Значения + типы</td><td>Только синтаксис, не значения</td></tr>
+<tr><td>Изменение данных</td><td>Да (<code>CanSet</code>)</td><td>Нет</td></tr>
+<tr><td>Использование</td><td>Общий код для любых типов</td><td>Кодогенерация</td></tr>
+<tr><td>Примеры</td><td>encoding/json, validator</td><td>stringer, mockgen, sqlc</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="полное-сравнение-с-c-reflection"><a class="header" href="#полное-сравнение-с-c-reflection">Полное сравнение с C# Reflection</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C#</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>Получить тип</td><td><code>typeof(T)</code>, <code>obj.GetType()</code></td><td><code>reflect.TypeOf(v)</code></td></tr>
+<tr><td>Список полей</td><td><code>Type.GetProperties()</code>, <code>GetFields()</code></td><td><code>Type.NumField()</code>, <code>Type.Field(i)</code></td></tr>
+<tr><td>Список методов</td><td><code>Type.GetMethods()</code></td><td><code>Type.NumMethod()</code>, <code>Type.Method(i)</code></td></tr>
+<tr><td>Вызов метода</td><td><code>MethodInfo.Invoke(obj, args)</code></td><td><code>Value.MethodByName(name).Call(args)</code></td></tr>
+<tr><td>Создание экземпляра</td><td><code>Activator.CreateInstance(type)</code></td><td><code>reflect.New(type)</code></td></tr>
+<tr><td>Чтение атрибутов</td><td><code>MemberInfo.GetCustomAttributes()</code></td><td><code>StructField.Tag.Get("key")</code></td></tr>
+<tr><td>Установка поля</td><td><code>PropertyInfo.SetValue(obj, val)</code></td><td><code>Value.Field(i).SetInt(v)</code></td></tr>
+<tr><td>Генерация кода в рантайме</td><td><code>System.Reflection.Emit</code></td><td>Не поддерживается</td></tr>
+<tr><td>Expression Trees</td><td><code>Expression&lt;Func&lt;T,R&gt;&gt;</code></td><td>Нет</td></tr>
+<tr><td>Source Generators</td><td><code>ISourceGenerator</code> (Roslyn)</td><td><code>go/ast</code> + <code>go generate</code></td></tr>
+<tr><td>Атрибуты/теги</td><td><code>[JsonPropertyName("x")]</code></td><td><code>`json:"x"`</code> в struct</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Ключевые отличия:</strong></p>
+<ol>
+<li>
+<p><strong>Теги vs атрибуты</strong>: Go-теги — строки, читаемые через <code>StructTag.Get()</code>. C# атрибуты — типизированные классы с параметрами.</p>
+</li>
+<li>
+<p><strong>Нет Emit</strong>: В Go нельзя генерировать IL/байткод в рантайме. Для динамического поведения — <code>reflect.Call()</code> или кодогенерация.</p>
+</li>
+<li>
+<p><strong>Нет dynamic</strong>: Тип <code>dynamic</code> в C# компилятор преобразует в вызовы через DLR. В Go аналог — <code>any</code> (<code>interface{}</code>), но без автоматической диспетчеризации.</p>
+</li>
+<li>
+<p><strong>Generics vs reflect</strong>: Многие паттерны, требовавшие reflect до Go 1.18, теперь решаются через дженерики без рантайм-затрат.</p>
+</li>
+</ol>
+<hr>
+<h2 id="практические-примеры"><a class="header" href="#практические-примеры">Практические примеры</a></h2>
+<h3 id="пример-1-реестр-обработчиков-событий"><a class="header" href="#пример-1-реестр-обработчиков-событий">Пример 1: Реестр обработчиков событий</a></h3>
+<p><strong>Задача</strong>: Диспетчер событий — разные типы событий в одной очереди, обработчики регистрируются по типу.</p>
+<pre><code class="language-go">type EventDispatcher struct {
+    handlers map[reflect.Type][]reflect.Value
+}
+
+func NewEventDispatcher() *EventDispatcher {
+    return &amp;EventDispatcher{handlers: make(map[reflect.Type][]reflect.Value)}
+}
+
+// Register принимает func(EventT) — тип события определяется через reflect
+func (d *EventDispatcher) Register(handler any) {
+    ht := reflect.TypeOf(handler)
+    if ht.Kind() != reflect.Func || ht.NumIn() != 1 {
+        panic("обработчик должен быть func(T)")
+    }
+    eventType := ht.In(0)
+    d.handlers[eventType] = append(d.handlers[eventType], reflect.ValueOf(handler))
+}
+
+// Dispatch вызывает все обработчики для типа события
+func (d *EventDispatcher) Dispatch(event any) {
+    et := reflect.TypeOf(event)
+    handlers, ok := d.handlers[et]
+    if !ok {
+        return
+    }
+    args := []reflect.Value{reflect.ValueOf(event)}
+    for _, h := range handlers {
+        h.Call(args)
+    }
+}
+
+// Использование
+type OrderCreated struct{ OrderID int64 }
+type UserRegistered struct{ Email string }
+
+func main() {
+    d := NewEventDispatcher()
+
+    d.Register(func(e OrderCreated) {
+        fmt.Printf("Новый заказ: %d\n", e.OrderID)
+    })
+    d.Register(func(e UserRegistered) {
+        fmt.Printf("Новый пользователь: %s\n", e.Email)
+    })
+
+    d.Dispatch(OrderCreated{OrderID: 42})
+    d.Dispatch(UserRegistered{Email: "alice@example.com"})
+}
+</code></pre>
+<h3 id="пример-2-копирование-полей-между-структурами"><a class="header" href="#пример-2-копирование-полей-между-структурами">Пример 2: Копирование полей между структурами</a></h3>
+<p><strong>Задача</strong>: Скопировать поля с совпадающими именами из DTO в доменную модель.</p>
+<pre><code class="language-go">// CopyFields копирует поля с совпадающими именами из src в dst
+// dst должен быть указателем
+func CopyFields(dst, src any) {
+    dstVal := reflect.ValueOf(dst)
+    if dstVal.Kind() != reflect.Ptr {
+        panic("dst должен быть указателем")
+    }
+    dstVal = dstVal.Elem()
+    srcVal := reflect.ValueOf(src)
+    if srcVal.Kind() == reflect.Ptr {
+        srcVal = srcVal.Elem()
+    }
+
+    srcType := srcVal.Type()
+    for i := 0; i &lt; srcType.NumField(); i++ {
+        srcField := srcType.Field(i)
+        if !srcField.IsExported() {
+            continue
+        }
+
+        dstField := dstVal.FieldByName(srcField.Name)
+        if !dstField.IsValid() || !dstField.CanSet() {
+            continue
+        }
+
+        srcValue := srcVal.Field(i)
+        // Проверить совместимость типов
+        if srcValue.Type().AssignableTo(dstField.Type()) {
+            dstField.Set(srcValue)
+        }
+    }
+}
+
+// Использование
+type CreateUserRequest struct {
+    Name  string
+    Email string
+    Age   int
+}
+
+type User struct {
+    ID    int64  // нет в Request — не тронем
+    Name  string
+    Email string
+    Age   int
+}
+
+func main() {
+    req := CreateUserRequest{Name: "Alice", Email: "alice@example.com", Age: 30}
+    var user User
+    user.ID = 99 // установим вручную
+
+    CopyFields(&amp;user, req)
+    fmt.Println(user) // {99 Alice alice@example.com 30}
+}
+</code></pre>
+<h3 id="пример-3-инспектор-конфигурации"><a class="header" href="#пример-3-инспектор-конфигурации">Пример 3: Инспектор конфигурации</a></h3>
+<p><strong>Задача</strong>: Вывести все поля конфигурации с их текущими значениями и тегами.</p>
+<pre><code class="language-go">type Config struct {
+    Host     string        `env:"HOST"     default:"localhost"`
+    Port     int           `env:"PORT"     default:"8080"`
+    Debug    bool          `env:"DEBUG"    default:"false"`
+    Timeout  time.Duration `env:"TIMEOUT"  default:"30s"`
+    LogLevel string        `env:"LOG_LEVEL" default:"info"`
+}
+
+func PrintConfig(cfg any) {
+    val := reflect.ValueOf(cfg)
+    if val.Kind() == reflect.Ptr {
+        val = val.Elem()
+    }
+    t := val.Type()
+
+    fmt.Printf("%-15s %-15s %-20s %s\n", "Field", "EnvVar", "Default", "Current")
+    fmt.Println(strings.Repeat("-", 65))
+
+    for i := 0; i &lt; t.NumField(); i++ {
+        field := t.Field(i)
+        value := val.Field(i)
+
+        envVar  := field.Tag.Get("env")
+        defVal  := field.Tag.Get("default")
+        current := fmt.Sprintf("%v", value.Interface())
+
+        fmt.Printf("%-15s %-15s %-20s %s\n", field.Name, envVar, defVal, current)
+    }
+}
+</code></pre>
+<hr>
+<h2 id="итоговые-рекомендации"><a class="header" href="#итоговые-рекомендации">Итоговые рекомендации</a></h2>
+<pre><code>reflect оправдан:             reflect НЕ нужен:
+─────────────────────────     ─────────────────────────
+Сериализаторы/десериализаторы Конкретные типы известны
+Универсальные маппперы        Дженерики решают задачу
+DI-контейнеры                 Явная регистрация типов
+Валидаторы по тегам           Ручная валидация полей
+Инструменты/CLI               Бизнес-логика
+Тестовые утилиты              Hot path (&gt; 10K req/s)
+</code></pre>
+<p><strong>Принцип выбора</strong>:</p>
+<ol>
+<li>Может ли задача быть решена дженериками? → Используй дженерики</li>
+<li>Нужен ли код один раз при генерации? → Используй <code>go/ast</code> + <code>go generate</code></li>
+<li>Нужна динамичность в рантайме для общего кода? → Используй <code>reflect</code> с кэшем</li>
+<li>Всё остальное → Пиши явный код</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part2-advanced/08_profiling_optimization.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part3-web-api/01_http_server.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part2-advanced/08_profiling_optimization.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part3-web-api/01_http_server.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

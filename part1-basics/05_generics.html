@@ -1,0 +1,870 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Дженерики - Go для C# разработчиков</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-b145a30a.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-a74b6836.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Go для C# разработчиков</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part1-basics/05_generics.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="дженерики-generics"><a class="header" href="#дженерики-generics">Дженерики (Generics)</a></h1>
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Go получил дженерики в версии 1.18 (2022). Синтаксис и модель отличаются от C#: нет <code>where T : class</code>, нет <code>new()</code>, нет variance (<code>IEnumerable&lt;out T&gt;</code>), нет specialization. Зато есть <code>interface</code> как constraint — любой тип, включая встроенный.</p>
+</blockquote>
+<p>Дженерики в Go решают ту же задачу, что и в C#: писать код, который работает с разными типами без дублирования. Но реализация другая.</p>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">public T Max&lt;T&gt;(T a, T b) where T : IComparable&lt;T&gt;
+    =&gt; a.CompareTo(b) &gt;= 0 ? a : b;
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">import "cmp"
+
+func Max[T cmp.Ordered](a, b T) T {
+    if a &gt;= b {
+        return a
+    }
+    return b
+}
+</code></pre>
+<hr>
+<h2 id="синтаксис-type-parameters"><a class="header" href="#синтаксис-type-parameters">Синтаксис type parameters</a></h2>
+<p>Type parameters объявляются в квадратных скобках <code>[T constraint]</code> сразу после имени функции или типа.</p>
+<pre><code class="language-go">// Функция с одним type parameter
+func Identity[T any](v T) T {
+    return v
+}
+
+// Функция с несколькими type parameters
+func Map[T, U any](slice []T, fn func(T) U) []U {
+    result := make([]U, len(slice))
+    for i, v := range slice {
+        result[i] = fn(v)
+    }
+    return result
+}
+</code></pre>
+<h3 id="вывод-типов-type-inference"><a class="header" href="#вывод-типов-type-inference">Вывод типов (Type Inference)</a></h3>
+<p>Go часто выводит тип автоматически — как <code>var x = 42</code> выводит <code>int</code>:</p>
+<pre><code class="language-go">// Явное указание типа
+nums := Map[int, string]([]int{1, 2, 3}, strconv.Itoa)
+
+// Вывод типа — компилятор сам определяет T=int, U=string
+nums := Map([]int{1, 2, 3}, strconv.Itoa)
+</code></pre>
+<p><strong>Сравнение с C#:</strong></p>
+<pre><code class="language-csharp">// C# тоже выводит типы
+var result = list.Select(x =&gt; x.ToString()); // T выведен из list
+
+// Явное указание — редко нужно
+var result = list.Select&lt;int, string&gt;(x =&gt; x.ToString());
+</code></pre>
+<hr>
+<h2 id="constraints-ограничения-типов"><a class="header" href="#constraints-ограничения-типов">Constraints (ограничения типов)</a></h2>
+<p>Constraint — это интерфейс, который описывает, что умеет тип.</p>
+<h3 id="встроенные-constraints"><a class="header" href="#встроенные-constraints">Встроенные constraints</a></h3>
+<pre><code class="language-go">// any — любой тип (псевдоним для interface{})
+func Print[T any](v T) { fmt.Println(v) }
+
+// comparable — типы, которые можно сравнивать через == и !=
+// (числа, строки, указатели, массивы фиксированного размера, struct из comparable полей)
+func Contains[T comparable](slice []T, target T) bool {
+    for _, v := range slice {
+        if v == target {
+            return true
+        }
+    }
+    return false
+}
+</code></pre>
+<h3 id="пакет-constraints-устарел-и-cmpordered"><a class="header" href="#пакет-constraints-устарел-и-cmpordered">Пакет constraints (устарел) и cmp.Ordered</a></h3>
+<p>До Go 1.21 использовался отдельный пакет <code>golang.org/x/exp/constraints</code>. Начиная с Go 1.21 встроен в stdlib пакет <code>cmp</code>:</p>
+<pre><code class="language-go">import "cmp"
+
+// cmp.Ordered — числовые типы и строки (поддерживают &lt;, &gt;, &lt;=, &gt;=)
+func Min[T cmp.Ordered](a, b T) T {
+    if a &lt; b {
+        return a
+    }
+    return b
+}
+
+// Использование
+fmt.Println(Min(3, 5))       // 3
+fmt.Println(Min(3.14, 2.71)) // 2.71
+fmt.Println(Min("b", "a"))   // "a"
+</code></pre>
+<p>Определение <code>cmp.Ordered</code> в stdlib:</p>
+<pre><code class="language-go">type Ordered interface {
+    ~int | ~int8 | ~int16 | ~int32 | ~int64 |
+    ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr |
+    ~float32 | ~float64 |
+    ~string
+}
+</code></pre>
+<h3 id="тильда---тип-множество-с-underlying-type"><a class="header" href="#тильда---тип-множество-с-underlying-type">Тильда <code>~</code> — тип-множество с underlying type</a></h3>
+<p><code>~int</code> означает “любой тип, у которого underlying type — int”:</p>
+<pre><code class="language-go">type UserID int
+type ProductID int
+
+func Double[T ~int](v T) T {
+    return v * 2
+}
+
+var uid UserID = 42
+var pid ProductID = 10
+
+fmt.Println(Double(uid)) // 84 — работает, UserID underlying type = int
+fmt.Println(Double(pid)) // 20 — работает
+</code></pre>
+<p><strong>Аналог в C#</strong> — нет прямого аналога. Ближайшее: <code>where T : struct</code> или numeric interfaces из .NET 7+ (<code>INumber&lt;T&gt;</code>).</p>
+<h3 id="собственные-constraints"><a class="header" href="#собственные-constraints">Собственные constraints</a></h3>
+<pre><code class="language-go">// Constraint через interface
+type Stringer interface {
+    String() string
+}
+
+func PrintAll[T Stringer](items []T) {
+    for _, item := range items {
+        fmt.Println(item.String())
+    }
+}
+
+// Constraint с type set (union)
+type Integer interface {
+    ~int | ~int8 | ~int16 | ~int32 | ~int64
+}
+
+func Sum[T Integer](nums []T) T {
+    var total T
+    for _, n := range nums {
+        total += n
+    }
+    return total
+}
+
+// Комбинированный constraint: и методы, и тип
+type Numeric interface {
+    ~int | ~float64
+    String() string  // должен иметь метод String()
+}
+</code></pre>
+<p><strong>Сравнение с C#:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C#</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td><code>where T : IComparable&lt;T&gt;</code></td><td><code>[T interface{ ... }]</code> или <code>[T cmp.Ordered]</code></td></tr>
+<tr><td><code>where T : class</code></td><td>нет аналога</td></tr>
+<tr><td><code>where T : struct</code></td><td>нет прямого аналога</td></tr>
+<tr><td><code>where T : new()</code></td><td>нет аналога</td></tr>
+<tr><td><code>where T : INumber&lt;T&gt;</code> (.NET 7+)</td><td><code>[T cmp.Ordered]</code> или <code>[T Integer]</code></td></tr>
+<tr><td>Несколько: <code>where T : class, IFoo</code></td><td><code>[T interface{ ~int; Foo() }]</code></td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="generic-функции"><a class="header" href="#generic-функции">Generic функции</a></h2>
+<h3 id="стандартные-паттерны"><a class="header" href="#стандартные-паттерны">Стандартные паттерны</a></h3>
+<pre><code class="language-go">// Map — преобразование элементов
+func Map[T, U any](slice []T, fn func(T) U) []U {
+    result := make([]U, len(slice))
+    for i, v := range slice {
+        result[i] = fn(v)
+    }
+    return result
+}
+
+// Filter — фильтрация
+func Filter[T any](slice []T, pred func(T) bool) []T {
+    var result []T
+    for _, v := range slice {
+        if pred(v) {
+            result = append(result, v)
+        }
+    }
+    return result
+}
+
+// Reduce — свёртка
+func Reduce[T, U any](slice []T, initial U, fn func(U, T) U) U {
+    acc := initial
+    for _, v := range slice {
+        acc = fn(acc, v)
+    }
+    return acc
+}
+</code></pre>
+<pre><code class="language-go">// Использование
+nums := []int{1, 2, 3, 4, 5}
+
+doubled := Map(nums, func(n int) int { return n * 2 })
+// [2, 4, 6, 8, 10]
+
+evens := Filter(nums, func(n int) bool { return n%2 == 0 })
+// [2, 4]
+
+sum := Reduce(nums, 0, func(acc, n int) int { return acc + n })
+// 15
+
+// Цепочка: сумма квадратов чётных чисел
+result := Reduce(
+    Map(
+        Filter(nums, func(n int) bool { return n%2 == 0 }),
+        func(n int) int { return n * n },
+    ),
+    0,
+    func(acc, n int) int { return acc + n },
+)
+// 20 (= 4 + 16)
+</code></pre>
+<p><strong>Сравнение с C# LINQ:</strong></p>
+<pre><code class="language-csharp">var result = nums
+    .Where(n =&gt; n % 2 == 0)
+    .Select(n =&gt; n * n)
+    .Sum();
+// 20
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: В Go нет встроенного LINQ. Generic-хелперы пишутся вручную или берутся из библиотек (<code>samber/lo</code>). С Go 1.23 появились <code>slices.Collect</code> и iterators — паттерны меняются. Для простых случаев цикл <code>for</code> читается лучше, чем вложенные Map/Filter.</p>
+</blockquote>
+<h3 id="keys-и-values-для-map"><a class="header" href="#keys-и-values-для-map">Keys и Values для map</a></h3>
+<pre><code class="language-go">func Keys[K comparable, V any](m map[K]V) []K {
+    keys := make([]K, 0, len(m))
+    for k := range m {
+        keys = append(keys, k)
+    }
+    return keys
+}
+
+func Values[K comparable, V any](m map[K]V) []V {
+    vals := make([]V, 0, len(m))
+    for _, v := range m {
+        vals = append(vals, v)
+    }
+    return vals
+}
+
+// Pointer
+func Ptr[T any](v T) *T {
+    return &amp;v
+}
+</code></pre>
+<h3 id="must--panic-wrapper-для-тестов"><a class="header" href="#must--panic-wrapper-для-тестов">Must — panic wrapper для тестов</a></h3>
+<pre><code class="language-go">// Must — для случаев, когда ошибка не ожидается (тесты, init)
+func Must[T any](v T, err error) T {
+    if err != nil {
+        panic(err)
+    }
+    return v
+}
+
+// Использование
+cfg := Must(config.Load("app.yaml"))  // паникует если ошибка
+</code></pre>
+<hr>
+<h2 id="generic-типы-параметризованные-структуры"><a class="header" href="#generic-типы-параметризованные-структуры">Generic типы (параметризованные структуры)</a></h2>
+<pre><code class="language-go">// Stack — типобезопасный стек
+type Stack[T any] struct {
+    items []T
+}
+
+func (s *Stack[T]) Push(v T) {
+    s.items = append(s.items, v)
+}
+
+func (s *Stack[T]) Pop() (T, bool) {
+    if len(s.items) == 0 {
+        var zero T
+        return zero, false
+    }
+    last := len(s.items) - 1
+    v := s.items[last]
+    s.items = s.items[:last]
+    return v, true
+}
+
+func (s *Stack[T]) Len() int {
+    return len(s.items)
+}
+</code></pre>
+<pre><code class="language-go">// Использование
+s := Stack[int]{}
+s.Push(1)
+s.Push(2)
+v, ok := s.Pop() // 2, true
+</code></pre>
+<p><strong>Сравнение с C#:</strong></p>
+<pre><code class="language-csharp">var stack = new Stack&lt;int&gt;();
+stack.Push(1);
+stack.Push(2);
+var v = stack.Pop(); // 2
+</code></pre>
+<h3 id="result--обёртка-для-возврата-значения-или-ошибки"><a class="header" href="#result--обёртка-для-возврата-значения-или-ошибки">Result — обёртка для возврата значения или ошибки</a></h3>
+<pre><code class="language-go">// Альтернатива множественному возврату в API
+type Result[T any] struct {
+    value T
+    err   error
+}
+
+func Ok[T any](v T) Result[T]       { return Result[T]{value: v} }
+func Err[T any](err error) Result[T] { return Result[T]{err: err} }
+
+func (r Result[T]) Unwrap() (T, error) { return r.value, r.err }
+func (r Result[T]) IsOk() bool          { return r.err == nil }
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: В реальном коде этот паттерн не распространён — идиоматично возвращать <code>(T, error)</code> напрямую. <code>Result[T]</code> уместен как тип в канале или слайсе результатов параллельных операций.</p>
+</blockquote>
+<h3 id="pair-и-optional"><a class="header" href="#pair-и-optional">Pair и Optional</a></h3>
+<pre><code class="language-go">type Pair[A, B any] struct {
+    First  A
+    Second B
+}
+
+func Zip[A, B any](as []A, bs []B) []Pair[A, B] {
+    n := min(len(as), len(bs))
+    result := make([]Pair[A, B], n)
+    for i := range n {
+        result[i] = Pair[A, B]{as[i], bs[i]}
+    }
+    return result
+}
+
+// Optional — для случаев когда нужно отличить "нет значения" от zero value
+type Optional[T any] struct {
+    value    T
+    hasValue bool
+}
+
+func Some[T any](v T) Optional[T]    { return Optional[T]{value: v, hasValue: true} }
+func None[T any]() Optional[T]       { return Optional[T]{} }
+func (o Optional[T]) Get() (T, bool) { return o.value, o.hasValue }
+</code></pre>
+<h3 id="typed-set"><a class="header" href="#typed-set">Typed Set</a></h3>
+<pre><code class="language-go">type Set[T comparable] struct {
+    items map[T]struct{}
+}
+
+func NewSet[T comparable](items ...T) Set[T] {
+    s := Set[T]{items: make(map[T]struct{}, len(items))}
+    for _, item := range items {
+        s.items[item] = struct{}{}
+    }
+    return s
+}
+
+func (s *Set[T]) Add(v T)          { s.items[v] = struct{}{} }
+func (s *Set[T]) Remove(v T)       { delete(s.items, v) }
+func (s *Set[T]) Contains(v T) bool { _, ok := s.items[v]; return ok }
+func (s *Set[T]) Len() int          { return len(s.items) }
+
+func (s *Set[T]) Intersect(other Set[T]) Set[T] {
+    result := NewSet[T]()
+    for k := range s.items {
+        if other.Contains(k) {
+            result.Add(k)
+        }
+    }
+    return result
+}
+</code></pre>
+<pre><code class="language-go">// Использование
+roles := NewSet("admin", "editor")
+roles.Add("viewer")
+fmt.Println(roles.Contains("admin")) // true
+fmt.Println(roles.Len())             // 3
+</code></pre>
+<p><strong>Сравнение с C#:</strong></p>
+<pre><code class="language-csharp">var roles = new HashSet&lt;string&gt; { "admin", "editor" };
+roles.Add("viewer");
+Console.WriteLine(roles.Contains("admin")); // True
+
+var intersection = roles.Intersect(otherRoles).ToHashSet();
+</code></pre>
+<hr>
+<h2 id="ограничения-go-generics"><a class="header" href="#ограничения-go-generics">Ограничения Go generics</a></h2>
+<h3 id="нет-specialization"><a class="header" href="#нет-specialization">Нет specialization</a></h3>
+<p>В C# компилятор может генерировать специализированный IL для value types. В Go дженерики работают через GC Shape Stenciling — типы с одинаковым “shape” (указатель vs не-указатель) используют одну реализацию.</p>
+<pre><code class="language-csharp">// C# — JIT создаёт отдельный код для List&lt;int&gt; и List&lt;string&gt;
+var ints = new List&lt;int&gt;();    // specialized for int
+var strs = new List&lt;string&gt;(); // specialized for string
+</code></pre>
+<pre><code class="language-go">// Go — нет гарантии отдельной реализации для каждого типа
+// Производительность: могут быть небольшие накладные расходы
+s1 := Stack[int]{}
+s2 := Stack[string]{}
+</code></pre>
+<blockquote>
+<p>💡 На практике разница в производительности минимальна. Для hot path с primitive types лучше написать конкретную реализацию вручную.</p>
+</blockquote>
+<h3 id="нет-variance-ковариантность--контравариантность"><a class="header" href="#нет-variance-ковариантность--контравариантность">Нет variance (ковариантность / контравариантность)</a></h3>
+<pre><code class="language-csharp">// C# — IEnumerable&lt;T&gt; ковариантен (out T)
+IEnumerable&lt;Animal&gt; animals = new List&lt;Dog&gt;(); // OK
+
+// C# — Action&lt;T&gt; контравариантен (in T)
+Action&lt;Animal&gt; act = (Dog d) =&gt; { };  // OK
+</code></pre>
+<pre><code class="language-go">// Go — нет variance
+// Stack[Dog] нельзя присвоить Stack[Animal], даже если Dog реализует Animal
+type Animal interface{ Sound() string }
+type Dog struct{}
+func (d Dog) Sound() string { return "Woof" }
+
+var dogs Stack[Dog]
+// var animals Stack[Animal] = dogs  // ❌ не компилируется
+</code></pre>
+<p>Обходной путь — явное преобразование или использование <code>[]Animal</code>:</p>
+<pre><code class="language-go">func ToAnimalSlice[T Animal](items []T) []Animal {
+    result := make([]Animal, len(items))
+    for i, v := range items {
+        result[i] = v
+    }
+    return result
+}
+</code></pre>
+<h3 id="нет-new-constraint-и-дженерик-методов-с-доп-параметрами"><a class="header" href="#нет-new-constraint-и-дженерик-методов-с-доп-параметрами">Нет <code>new()</code> constraint и дженерик-методов с доп. параметрами</a></h3>
+<pre><code class="language-csharp">// C# — можно создать экземпляр T
+T Create&lt;T&gt;() where T : new() =&gt; new T();
+</code></pre>
+<pre><code class="language-go">// Go — нет способа вызвать "конструктор" T напрямую
+// Решение: принять фабричную функцию
+func Create[T any](factory func() T) T {
+    return factory()
+}
+
+user := Create(func() User { return User{Name: "Alice"} })
+</code></pre>
+<h3 id="нет-дженерик-методов-на-типах"><a class="header" href="#нет-дженерик-методов-на-типах">Нет дженерик-методов на типах</a></h3>
+<p>В Go нельзя добавить type parameter к методу (только к функции или типу):</p>
+<pre><code class="language-go">type Container struct{}
+
+// ❌ Не компилируется — методы не могут иметь свои type parameters
+// func (c *Container) Get[T any]() T { ... }
+
+// ✅ Решение 1: вынести в функцию
+func Get[T any](c *Container) T { ... }
+
+// ✅ Решение 2: параметризовать тип
+type TypedContainer[T any] struct{ value T }
+func (c *TypedContainer[T]) Get() T { return c.value }
+</code></pre>
+<hr>
+<h2 id="когда-generics-когда-interface"><a class="header" href="#когда-generics-когда-interface">Когда generics, когда <code>interface{}</code></a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Ситуация</th><th>Выбор</th></tr>
+</thead>
+<tbody>
+<tr><td>Типобезопасная коллекция (<code>Stack[int]</code>)</td><td>Generics</td></tr>
+<tr><td>Алгоритм над разными типами (<code>Sort</code>, <code>Map</code>)</td><td>Generics</td></tr>
+<tr><td>Поведение через интерфейс (<code>io.Writer</code>, <code>http.Handler</code>)</td><td>Interface</td></tr>
+<tr><td>Разнородные типы в runtime (<code>any</code>, reflection)</td><td><code>interface{}</code> / <code>any</code></td></tr>
+<tr><td>Конвертация типов в compile time</td><td>Generics</td></tr>
+<tr><td>Plugin-архитектура, динамическая диспетчеризация</td><td>Interface</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-go">// ✅ Generics — compile-time safety, нет boxing
+func Sum[T cmp.Ordered](nums []T) T {
+    var total T
+    for _, n := range nums {
+        total += n
+    }
+    return total
+}
+
+// ✅ Interface — поведенческий полиморфизм
+type Writer interface {
+    Write([]byte) (int, error)
+}
+
+func WriteAll(w Writer, data [][]byte) error {
+    for _, chunk := range data {
+        if _, err := w.Write(chunk); err != nil {
+            return err
+        }
+    }
+    return nil
+}
+
+// ❌ Не стоит — interface{} теряет типы, дешевле написать конкретный тип
+func BadSum(nums []interface{}) interface{} { ... }
+</code></pre>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: Предпочитай конкретные типы. Используй generics, если алгоритм действительно не зависит от типа. Используй interface, если важно поведение. Избегай <code>any</code> там, где можно получить compile-time safety.</p>
+</blockquote>
+<hr>
+<h2 id="сравнительная-таблица-c-generics-vs-go-generics"><a class="header" href="#сравнительная-таблица-c-generics-vs-go-generics">Сравнительная таблица: C# generics vs Go generics</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C#</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>Синтаксис</td><td><code>List&lt;T&gt;</code>, <code>Func&lt;T, TResult&gt;</code></td><td><code>[]T</code>, <code>func(T) U</code></td></tr>
+<tr><td>Constraints</td><td><code>where T : IComparable&lt;T&gt;</code></td><td><code>[T cmp.Ordered]</code></td></tr>
+<tr><td>Type union</td><td>нет (до C# 9)</td><td><code>~int | ~string</code></td></tr>
+<tr><td>Variance</td><td><code>IEnumerable&lt;out T&gt;</code>, <code>Action&lt;in T&gt;</code></td><td>нет</td></tr>
+<tr><td>Specialization</td><td>есть (JIT для value types)</td><td>GC Shape Stenciling</td></tr>
+<tr><td><code>new()</code> constraint</td><td><code>where T : new()</code></td><td>нет, нужна фабрика</td></tr>
+<tr><td>Generic методы</td><td><code>T Foo&lt;T&gt;(...)</code> на любом классе</td><td>только функции и типы</td></tr>
+<tr><td>Stdlib generics</td><td><code>List&lt;T&gt;</code>, <code>Dictionary&lt;K,V&gt;</code>, LINQ</td><td><code>slices</code>, <code>maps</code>, <code>cmp</code></td></tr>
+<tr><td>Inference</td><td>полный вывод в большинстве случаев</td><td>вывод из аргументов функции</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="практические-примеры"><a class="header" href="#практические-примеры">Практические примеры</a></h2>
+<h3 id="пример-1-типобезопасный-кэш"><a class="header" href="#пример-1-типобезопасный-кэш">Пример 1: Типобезопасный кэш</a></h3>
+<pre><code class="language-go">type Cache[K comparable, V any] struct {
+    mu    sync.RWMutex
+    items map[K]V
+}
+
+func NewCache[K comparable, V any]() *Cache[K, V] {
+    return &amp;Cache[K, V]{items: make(map[K]V)}
+}
+
+func (c *Cache[K, V]) Set(key K, val V) {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+    c.items[key] = val
+}
+
+func (c *Cache[K, V]) Get(key K) (V, bool) {
+    c.mu.RLock()
+    defer c.mu.RUnlock()
+    v, ok := c.items[key]
+    return v, ok
+}
+
+func (c *Cache[K, V]) GetOrSet(key K, factory func() V) V {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+    if v, ok := c.items[key]; ok {
+        return v
+    }
+    v := factory()
+    c.items[key] = v
+    return v
+}
+</code></pre>
+<pre><code class="language-go">// Использование
+userCache := NewCache[int, User]()
+userCache.Set(1, User{Name: "Alice"})
+
+user, ok := userCache.Get(1) // User{Name: "Alice"}, true
+</code></pre>
+<h3 id="пример-2-batch-processor"><a class="header" href="#пример-2-batch-processor">Пример 2: Batch processor</a></h3>
+<pre><code class="language-go">// Обработка элементов пачками — частый паттерн при работе с БД/API
+func Batch[T any](items []T, size int, fn func([]T) error) error {
+    for i := 0; i &lt; len(items); i += size {
+        end := min(i+size, len(items))
+        if err := fn(items[i:end]); err != nil {
+            return fmt.Errorf("batch starting at %d: %w", i, err)
+        }
+    }
+    return nil
+}
+
+// Использование: вставка в БД пачками по 100
+users := fetchUsers()
+err := Batch(users, 100, func(batch []User) error {
+    return db.InsertUsers(ctx, batch)
+})
+</code></pre>
+<p><strong>C# аналог:</strong></p>
+<pre><code class="language-csharp">// C# — через Chunk (LINQ, .NET 6+)
+foreach (var batch in users.Chunk(100))
+{
+    await db.InsertUsersAsync(batch);
+}
+</code></pre>
+<h3 id="пример-3-pipeline-с-каналами"><a class="header" href="#пример-3-pipeline-с-каналами">Пример 3: Pipeline с каналами</a></h3>
+<pre><code class="language-go">// Типобезопасный pipeline через каналы
+func Generate[T any](ctx context.Context, items ...T) &lt;-chan T {
+    out := make(chan T)
+    go func() {
+        defer close(out)
+        for _, item := range items {
+            select {
+            case out &lt;- item:
+            case &lt;-ctx.Done():
+                return
+            }
+        }
+    }()
+    return out
+}
+
+func Transform[T, U any](ctx context.Context, in &lt;-chan T, fn func(T) U) &lt;-chan U {
+    out := make(chan U)
+    go func() {
+        defer close(out)
+        for v := range in {
+            select {
+            case out &lt;- fn(v):
+            case &lt;-ctx.Done():
+                return
+            }
+        }
+    }()
+    return out
+}
+
+// Использование
+ctx := context.Background()
+nums := Generate(ctx, 1, 2, 3, 4, 5)
+doubled := Transform(ctx, nums, func(n int) int { return n * 2 })
+for v := range doubled {
+    fmt.Println(v) // 2, 4, 6, 8, 10
+}
+</code></pre>
+<hr>
+<h2 id="ссылки"><a class="header" href="#ссылки">Ссылки</a></h2>
+<ul>
+<li><a href="https://go.dev/blog/intro-generics">Go Blog: An Introduction to Generics</a></li>
+<li><a href="https://go.dev/blog/when-generics">Go Blog: When To Use Generics</a></li>
+<li><a href="https://pkg.go.dev/cmp">Пакет cmp</a></li>
+<li><a href="https://pkg.go.dev/slices">Пакет slices</a></li>
+<li><a href="https://pkg.go.dev/maps">Пакет maps</a></li>
+<li><a href="https://pkg.go.dev/iter">Пакет iter (Go 1.23+)</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part1-basics/04_key_differences.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part2-advanced/01_goroutines_channels.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part1-basics/04_key_differences.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part2-advanced/01_goroutines_channels.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
