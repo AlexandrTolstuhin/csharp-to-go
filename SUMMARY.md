@@ -20,6 +20,7 @@
 - [Обработка ошибок](part2-advanced/06_error_handling.md)
 - [Тестирование и бенчмаркинг](part2-advanced/07_testing_benchmarking.md)
 - [Профилирование и оптимизация](part2-advanced/08_profiling_optimization.md)
+- [Reflection](part2-advanced/09_reflection.md)
 
 # Часть 3: Web API
 

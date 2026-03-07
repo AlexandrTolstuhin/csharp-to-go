@@ -1,23 +1,5 @@
 ## Доработки существующих частей
 
-### Part 2: Reflection (новый файл)
-
-**Файл**: `part2-advanced/08_reflection.md`
-
-**Обоснование**: В курсе reflection встречается вскользь (reflect.Select в задаче на каналы, reflect.Type в конфиге), с акцентом на антипаттерны. Нет систематического раздела для C# разработчиков, привыкших к богатому Reflection API.
-
-**Содержание**:
-- reflect.Type и reflect.Value: основы
-- Инспекция struct-тегов (как работает encoding/json внутри)
-- Динамический вызов методов
-- Сравнение с C# Reflection: Type.GetProperties, MethodInfo.Invoke
-- Когда reflect оправдан: сериализаторы, ORM, DI-контейнеры, codegen
-- Антипаттерны: reflect в hot path, альтернативы через codegen
-- reflect.Select: динамический select по каналам
-- go/ast как альтернатива для codegen
-
----
-
 ### Part 6: Code generation (расширение существующего файла)
 
 **Файл**: `part6-best-practices/02_tools.md` — добавить разделы
