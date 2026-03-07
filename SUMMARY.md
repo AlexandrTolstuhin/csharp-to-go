@@ -28,6 +28,7 @@
 - [Работа с данными (PostgreSQL)](part3-web-api/03_database.md)
 - [Валидация и сериализация](part3-web-api/04_validation_serialization.md)
 - [Документация API](part3-web-api/05_api_documentation.md)
+- [Аутентификация и авторизация](part3-web-api/06_auth.md)
 
 # Часть 4: Инфраструктура
 

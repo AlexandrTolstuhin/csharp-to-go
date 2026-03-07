@@ -1,22 +1,5 @@
 ## Доработки существующих частей
 
-### Part 3: Аутентификация и авторизация (новый файл)
-
-**Файл**: `part3-web-api/06_auth.md`
-
-**Обоснование**: В курсе Auth упоминается в 7 файлах (~50-100 строк суммарно), но нет полного раздела. C# разработчики знают ASP.NET Identity, [Authorize], JWT Bearer — нужна прямая проекция на Go.
-
-**Содержание**:
-- JWT: генерация, подпись, проверка (golang-jwt/jwt)
-- Middleware для аутентификации в net/http и популярных роутерах
-- Access token + Refresh token: реализация и хранение
-- OAuth2: client credentials и authorization code flow (golang.org/x/oauth2)
-- RBAC: простая ролевая модель
-- Сравнение с C#: [Authorize], ClaimsPrincipal, IAuthenticationHandler
-- Типичные ошибки: хранение секрета в коде, отсутствие проверки alg
-
----
-
 ### Part 2: Reflection (новый файл)
 
 **Файл**: `part2-advanced/08_reflection.md`
