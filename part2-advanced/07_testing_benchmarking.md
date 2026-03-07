@@ -1128,8 +1128,11 @@ func (m *MockCache) Set(key, value string) {
 Для сложных интерфейсов удобно использовать **gomock**.
 
 #### Установка
+
+> ⚠️ `github.com/golang/mock` заархивирован в 2023. Используй `go.uber.org/mock` — его форк с активной поддержкой.
+
 ```bash
-go install github.com/golang/mock/mockgen@latest
+go install go.uber.org/mock/mockgen@latest
 ```
 
 #### Генерация моков
@@ -1150,7 +1153,7 @@ go generate ./...
 ```go
 import (
     "testing"
-    "github.com/golang/mock/gomock"
+    "go.uber.org/mock/gomock"
     "myapp/mocks"
 }
 

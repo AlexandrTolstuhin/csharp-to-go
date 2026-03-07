@@ -559,10 +559,12 @@ r.Get("/swagger/*", httpSwagger.WrapHandler)
 
 ### oapi-codegen
 
-[oapi-codegen](https://github.com/deepmap/oapi-codegen) генерирует Go код из OpenAPI спецификации.
+[oapi-codegen](https://github.com/oapi-codegen/oapi-codegen) генерирует Go код из OpenAPI спецификации.
+
+> ⚠️ Пакет переехал: `deepmap/oapi-codegen` → `oapi-codegen/oapi-codegen` (с v2, 2023).
 
 ```bash
-go install github.com/deepmap/oapi-codegen/v2/cmd/oapi-codegen@latest
+go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
 ```
 
 ```yaml

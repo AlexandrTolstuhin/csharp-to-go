@@ -1164,6 +1164,865 @@ go generate -v ./...
 | `oapi-codegen` | Код из OpenAPI spec |
 | `protoc` | Код из .proto файлов |
 
+---
+
+### stringer — String() для enum-констант
+
+> 💡 **Для C# разработчиков**: Аналог переопределения `ToString()` или `[JsonStringEnumConverter]` — только генерируется автоматически по `go:generate`, не требует ручной поддержки.
+
+```bash
+go install golang.org/x/tools/cmd/stringer@latest
+```
+
+**Без stringer — ручная поддержка:**
+
+```go
+type Status int
+
+const (
+    StatusPending  Status = iota
+    StatusActive
+    StatusCompleted
+    StatusFailed
+)
+
+// Нужно обновлять вручную при каждом добавлении константы
+func (s Status) String() string {
+    switch s {
+    case StatusPending:   return "Pending"
+    case StatusActive:    return "Active"
+    case StatusCompleted: return "Completed"
+    case StatusFailed:    return "Failed"
+    default:              return fmt.Sprintf("Status(%d)", int(s))
+    }
+}
+```
+
+**С stringer — декларативно:**
+
+```go
+//go:generate stringer -type=Status -linecomment
+package order
+
+type Status int
+
+const (
+    StatusPending   Status = iota // pending
+    StatusActive                  // active
+    StatusCompleted               // completed
+    StatusFailed                  // failed
+)
+```
+
+```bash
+go generate ./...
+# Создаёт status_string.go с методом String()
+```
+
+**Флаги stringer:**
+
+```bash
+# -type: тип для обработки (обязательно)
+stringer -type=Status
+
+# -linecomment: строка берётся из комментария, не имени константы
+stringer -type=Status -linecomment
+# StatusPending → "pending", а не "StatusPending"
+
+# -trimprefix: убрать общий префикс
+stringer -type=Status -trimprefix=Status
+# StatusPending → "Pending"
+
+# -output: путь файла (по умолчанию {type}_string.go)
+stringer -type=Status -output=internal/status_string.go
+```
+
+---
+
+### enumer — расширенная генерация для enum
+
+[enumer](https://github.com/dmarkham/enumer) расширяет stringer: добавляет `Values()`, `IsValid()`, поддержку JSON/SQL/GraphQL.
+
+```bash
+go install github.com/dmarkham/enumer@latest
+```
+
+```go
+//go:generate enumer -type=Direction -json -sql -linecomment
+package geo
+
+type Direction int
+
+const (
+    North Direction = iota // north
+    South                  // south
+    East                   // east
+    West                   // west
+)
+```
+
+**Что генерирует enumer:**
+
+```go
+// String() — как stringer
+func (i Direction) String() string { ... }
+
+// Парсинг из строки — с ошибкой при неверном значении
+func DirectionString(s string) (Direction, error) { ... }
+
+// Список всех значений
+func DirectionValues() []Direction { return []Direction{North, South, East, West} }
+
+// Валидация
+func (i Direction) IsValid() bool {
+    switch i {
+    case North, South, East, West:
+        return true
+    }
+    return false
+}
+
+// MarshalJSON / UnmarshalJSON — "north" в JSON, не 0
+func (i Direction) MarshalJSON() ([]byte, error) { return json.Marshal(i.String()) }
+func (i *Direction) UnmarshalJSON(data []byte) error { ... }
+
+// database/sql интеграция
+func (i Direction) Value() (driver.Value, error) { return i.String(), nil }
+func (i *Direction) Scan(value any) error { ... }
+```
+
+**Использование:**
+
+```go
+d := North
+fmt.Println(d)          // "north"
+fmt.Println(d.IsValid()) // true
+
+parsed, err := DirectionString("east") // parsed == East
+
+// JSON: {"direction":"north"}, не {"direction":0}
+type Request struct {
+    Dir Direction `json:"direction"`
+}
+```
+
+**Сравнение с C#:**
+
+```csharp
+// C# — атрибуты для JSON, ручная валидация
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum Direction { North, South, East, West }
+
+bool valid = Enum.IsDefined(typeof(Direction), value);
+var values = Enum.GetValues<Direction>();
+Direction parsed = Enum.Parse<Direction>("North");
+```
+
+```go
+// Go — всё генерируется enumer
+d.IsValid()
+DirectionValues()
+DirectionString("north") // с ошибкой, не panic
+```
+
+---
+
+### sqlc — типобезопасные SQL-запросы
+
+> 💡 **Для C# разработчиков**: Аналог Dapper с типобезопасностью EF Core. Вы пишете SQL вручную — sqlc генерирует Go-функции с правильными типами параметров и результатов.
+
+```bash
+go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+```
+
+**Workflow:**
+
+```
+schema.sql → queries.sql → sqlc.yaml → sqlc generate → internal/db/*.go
+```
+
+**schema.sql:**
+
+```sql
+CREATE TABLE users (
+    id         BIGSERIAL    PRIMARY KEY,
+    email      VARCHAR(255) NOT NULL UNIQUE,
+    name       VARCHAR(100) NOT NULL,
+    role       VARCHAR(50)  NOT NULL DEFAULT 'user',
+    created_at TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE posts (
+    id         BIGSERIAL    PRIMARY KEY,
+    user_id    BIGINT       NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    title      VARCHAR(500) NOT NULL,
+    content    TEXT,
+    published  BOOLEAN      NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+```
+
+**queries.sql:**
+
+```sql
+-- name: GetUser :one
+SELECT * FROM users WHERE id = $1 LIMIT 1;
+
+-- name: ListUsers :many
+SELECT * FROM users ORDER BY created_at DESC LIMIT $1 OFFSET $2;
+
+-- name: CreateUser :one
+INSERT INTO users (email, name, role) VALUES ($1, $2, $3) RETURNING *;
+
+-- name: UpdateUserName :exec
+UPDATE users SET name = $2 WHERE id = $1;
+
+-- name: DeleteUser :exec
+DELETE FROM users WHERE id = $1;
+```
+
+**sqlc.yaml:**
+
+```yaml
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "queries.sql"
+    schema:  "schema.sql"
+    gen:
+      go:
+        package:              "db"
+        out:                  "internal/db"
+        sql_package:          "pgx/v5"
+        emit_json_tags:       true
+        emit_interface:       true   # генерирует Querier интерфейс для мокирования
+        emit_empty_slices:    true   # ListUsers → [] вместо nil
+```
+
+```bash
+sqlc generate
+# Создаёт:
+#   internal/db/models.go        — Go-структуры (User, Post)
+#   internal/db/queries.sql.go   — типобезопасные функции
+#   internal/db/querier.go       — Querier интерфейс
+#   internal/db/db.go            — конструктор Queries
+```
+
+**Сгенерированные типы:**
+
+```go
+// Code generated by sqlc. DO NOT EDIT.
+
+type User struct {
+    ID        int64     `json:"id"`
+    Email     string    `json:"email"`
+    Name      string    `json:"name"`
+    Role      string    `json:"role"`
+    CreatedAt time.Time `json:"created_at"`
+}
+
+type CreateUserParams struct {
+    Email string `json:"email"`
+    Name  string `json:"name"`
+    Role  string `json:"role"`
+}
+
+type ListUsersParams struct {
+    Limit  int32 `json:"limit"`
+    Offset int32 `json:"offset"`
+}
+```
+
+**Использование в сервисе:**
+
+```go
+type UserService struct {
+    q db.Querier // интерфейс — легко мокировать в тестах
+}
+
+func (s *UserService) Create(ctx context.Context, email, name string) (db.User, error) {
+    return s.q.CreateUser(ctx, db.CreateUserParams{
+        Email: email,
+        Name:  name,
+        Role:  "user",
+    })
+}
+
+func (s *UserService) ListPaged(ctx context.Context, page, size int32) ([]db.User, error) {
+    return s.q.ListUsers(ctx, db.ListUsersParams{
+        Limit:  size,
+        Offset: (page - 1) * size,
+    })
+}
+```
+
+**Инициализация:**
+
+```go
+pool, _ := pgxpool.New(ctx, os.Getenv("DATABASE_URL"))
+queries := db.New(pool)
+svc := service.NewUserService(queries)
+```
+
+**Сравнение с C#:**
+
+```csharp
+// Dapper — ближайший аналог (hand-written SQL)
+var users = await conn.QueryAsync<User>(
+    "SELECT * FROM users ORDER BY created_at DESC LIMIT @Limit OFFSET @Offset",
+    new { Limit = limit, Offset = offset });
+
+// EF Core Database-First — scaffold-DbContext генерирует DbContext + модели
+```
+
+```go
+// sqlc — SQL вручную, Go-код генерируется
+users, err := q.ListUsers(ctx, db.ListUsersParams{Limit: limit, Offset: offset})
+```
+
+**Когда выбирать sqlc:**
+- SQL-запросы нетривиальны (JOIN, CTE, оконные функции)
+- Нужна максимальная производительность без ORM overhead
+- Команда уверенно пишет SQL
+- Для простых CRUD без JOIN — рассмотри ORM (ent, gorm)
+
+---
+
+### Моки: gomock vs testify/mock vs mockery
+
+> 💡 **Для C# разработчиков**: Аналог Moq, NSubstitute, FakeItEasy. В Go три основных подхода с разным стилем.
+
+#### gomock (go.uber.org/mock)
+
+Строгий фреймворк с явными expectations. C# аналог: Moq в strict mode.
+
+> ⚠️ **Важно**: Оригинальный `github.com/golang/mock` заархивирован в 2023. Используй `go.uber.org/mock` — активно поддерживаемый форк.
+
+```bash
+go install go.uber.org/mock/mockgen@latest
+```
+
+```go
+// user_service.go
+//go:generate mockgen -source=$GOFILE -destination=mocks/mock_$GOFILE -package=mocks
+package service
+
+type UserRepository interface {
+    FindByID(ctx context.Context, id int64) (*User, error)
+    Save(ctx context.Context, u *User) error
+}
+```
+
+```go
+// Тест
+import "go.uber.org/mock/gomock"
+
+func TestGetUser(t *testing.T) {
+    ctrl := gomock.NewController(t)
+    repo := mocks.NewMockUserRepository(ctrl)
+
+    repo.EXPECT().
+        FindByID(gomock.Any(), int64(42)).
+        Return(nil, ErrNotFound)
+
+    svc := NewUserService(repo)
+    _, err := svc.GetByID(context.Background(), 42)
+    if err != ErrNotFound {
+        t.Errorf("expected ErrNotFound, got %v", err)
+    }
+}
+```
+
+#### mockery — автогенерация testify-совместимых моков
+
+[mockery](https://github.com/vektra/mockery) автоматически находит интерфейсы и генерирует testify-совместимые моки с типобезопасным EXPECT() API.
+
+```bash
+go install github.com/vektra/mockery/v2@latest
+```
+
+**mockery.yaml (в корне проекта):**
+
+```yaml
+with-expecter: true
+dir: "{{.InterfaceDir}}/mocks"
+outpkg: mocks
+mockname: "Mock{{.InterfaceName}}"
+filename: "mock_{{.InterfaceName | snakecase}}.go"
+packages:
+  github.com/myapp/service:
+    interfaces:
+      UserRepository:
+      OrderRepository:
+  github.com/myapp/notifier:
+    interfaces:
+      EmailSender:
+```
+
+```bash
+mockery
+# Создаёт моки для всех интерфейсов из конфига
+```
+
+**Тест с mockery + EXPECT():**
+
+```go
+func TestUserService(t *testing.T) {
+    repo := mocks.NewMockUserRepository(t) // автоматически AssertExpectations
+
+    // Типобезопасный API — IDE-автодополнение работает
+    repo.EXPECT().
+        FindByID(mock.Anything, int64(1)).
+        Return(&User{ID: 1, Name: "Alice"}, nil).
+        Once()
+
+    svc := NewUserService(repo)
+    user, err := svc.GetByID(context.Background(), 1)
+
+    require.NoError(t, err)
+    assert.Equal(t, "Alice", user.Name)
+    // AssertExpectations вызывается автоматически через t.Cleanup
+}
+```
+
+#### Сравнительная таблица
+
+| Аспект | gomock (uber-go) | testify/mock | mockery |
+|--------|-----------------|--------------|---------|
+| **Кодогенерация** | Да (mockgen) | Нет / mockery | Да |
+| **Стиль** | EXPECT().Method() | On("Method").Return() | EXPECT() (testify под капотом) |
+| **IDE поддержка** | Типобезопасен | Нет (строки) | Да (with-expecter) |
+| **Незаявленные вызовы** | Panic | Не проверяет | Panic (с NewMockXxx(t)) |
+| **C# аналог** | Moq strict mode | NSubstitute | NSubstitute + codegen |
+| **Когда выбирать** | Строгие контракты | Простые тесты | Большой проект + testify |
+
+**Рекомендация**: mockery + testify — наиболее удобная комбинация для большинства проектов.
+
+---
+
+### buf — современный protobuf workflow
+
+> 💡 **Для C# разработчиков**: buf заменяет хаотичные вызовы `protoc` — как `dotnet build` для `.proto` файлов. Добавляет линтинг схем и проверку breaking changes.
+
+```bash
+go install github.com/bufbuild/buf/cmd/buf@latest
+```
+
+**Без buf — сложно и хрупко:**
+
+```bash
+protoc \
+  --proto_path=. \
+  --proto_path=$GOPATH/pkg/mod/github.com/googleapis/googleapis@v0.0.0-... \
+  --go_out=. \
+  --go_opt=paths=source_relative \
+  --go-grpc_out=. \
+  --go-grpc_opt=paths=source_relative \
+  api/v1/user.proto
+```
+
+**С buf — декларативно:**
+
+**buf.yaml** (в корне):
+
+```yaml
+version: v2
+modules:
+  - path: proto
+lint:
+  use:
+    - STANDARD
+breaking:
+  use:
+    - FILE
+```
+
+**buf.gen.yaml** (конфиг генерации):
+
+```yaml
+version: v2
+managed:
+  enabled: true
+  override:
+    - file_option: go_package_prefix
+      value: github.com/myapp/gen
+plugins:
+  - remote: buf.build/protocolbuffers/go
+    out: gen/go
+    opt: paths=source_relative
+  - remote: buf.build/grpc/go
+    out: gen/go
+    opt: paths=source_relative
+```
+
+**Команды:**
+
+```bash
+# Генерация Go-кода из .proto
+buf generate
+
+# Линтинг .proto файлов (naming, reserved fields, deprecations)
+buf lint
+
+# Проверка breaking changes относительно ветки main
+buf breaking --against '.git#branch=main'
+
+# Обновить зависимости (google/googleapis, etc.)
+buf dep update
+```
+
+**Makefile:**
+
+```makefile
+proto:          ## Сгенерировать protobuf код
+	buf generate
+
+proto-lint:     ## Проверить .proto файлы
+	buf lint
+
+proto-breaking: ## Проверить breaking changes
+	buf breaking --against '.git#branch=main'
+```
+
+---
+
+### ent — ORM с кодогенерацией
+
+> 💡 **Для C# разработчиков**: `ent` — Code-First ORM как EF Core, но схема определяется на Go, а не атрибутами. `ent generate` создаёт типобезопасный query builder — аналог EF Core LINQ.
+
+```bash
+go install entgo.io/ent/cmd/ent@latest
+```
+
+**Инициализация схемы:**
+
+```bash
+ent init User Post
+# Создаёт: ent/schema/user.go, ent/schema/post.go
+```
+
+**ent/schema/user.go:**
+
+```go
+package schema
+
+import (
+    "entgo.io/ent"
+    "entgo.io/ent/schema/edge"
+    "entgo.io/ent/schema/field"
+    "entgo.io/ent/schema/index"
+)
+
+type User struct{ ent.Schema }
+
+func (User) Fields() []ent.Field {
+    return []ent.Field{
+        field.String("email").NotEmpty().MaxLen(255).Unique(),
+        field.String("name").NotEmpty().MaxLen(100),
+        field.String("role").Default("user").In("user", "admin", "moderator"),
+        field.Time("created_at").Default(time.Now).Immutable(),
+    }
+}
+
+func (User) Edges() []ent.Edge {
+    return []ent.Edge{
+        edge.To("posts", Post.Type),
+    }
+}
+
+func (User) Indexes() []ent.Index {
+    return []ent.Index{
+        index.Fields("email").Unique(),
+        index.Fields("role", "created_at"),
+    }
+}
+```
+
+**Генерация:**
+
+```go
+//go:generate go run entgo.io/ent/cmd/ent generate ./schema
+```
+
+```bash
+go generate ./ent
+# Создаёт ~20 файлов: клиент, predicates, мутации, хуки...
+```
+
+**Типобезопасный query builder:**
+
+```go
+// CREATE — compile-time проверка всех полей
+u, err := client.User.
+    Create().
+    SetEmail(email).
+    SetName(name).
+    SetRole("user").
+    Save(ctx)
+
+// READ — typed predicates (не строки)
+admins, err := client.User.
+    Query().
+    Where(user.RoleEQ("admin")).
+    Order(ent.Asc(user.FieldCreatedAt)).
+    All(ctx)
+
+// READ с JOIN — eager loading через edges
+u, err := client.User.
+    Query().
+    Where(user.IDEQ(id)).
+    WithPosts(func(q *ent.PostQuery) {
+        q.Where(post.Published(true)).
+            Order(ent.Desc(post.FieldCreatedAt)).
+            Limit(10)
+    }).
+    Only(ctx)
+
+// UPDATE
+err = client.User.
+    UpdateOneID(id).
+    SetRole("admin").
+    Exec(ctx)
+
+// TRANSACTION
+tx, err := client.Tx(ctx)
+defer tx.Rollback()
+
+u, err = tx.User.Create().SetEmail(email).SetName("Bob").Save(ctx)
+_, err = tx.Post.Create().SetTitle(title).SetAuthor(u).Save(ctx)
+return tx.Commit()
+```
+
+**Сравнение с EF Core:**
+
+| Аспект | EF Core | ent |
+|--------|---------|-----|
+| Схема | Атрибуты / Fluent API | Go-код (Schema interface) |
+| Миграции | `dotnet ef migrations add` | `ent migrate` / Atlas |
+| Query builder | LINQ | Типобезопасные predicates |
+| Relationships | Navigation properties | Edges |
+| Транзакции | `BeginTransactionAsync` | `client.Tx(ctx)` |
+| Кодогенерация | Source Generators (EF 8+) | `ent generate` |
+| C# аналог | EF Core Code-First | — |
+
+---
+
+### Собственный генератор: go/ast + text/template
+
+> 💡 **Для C# разработчиков**: Аналог написания `ISourceGenerator` (Roslyn) или T4 Templates. Go использует `go/ast` для статического анализа и `text/template` для вывода кода.
+
+**Задача**: сгенерировать метод `Validate()` для структур с тегами `validate:`.
+
+**Структура проекта:**
+
+```
+gen/main.go          — генератор (запускается через go:generate)
+model/user.go        — исходник с validate-тегами
+model/user_validate.go — сгенерированный код (не редактировать!)
+```
+
+**gen/main.go:**
+
+```go
+package main
+
+import (
+    "bytes"
+    "go/ast"
+    "go/format"
+    "go/parser"
+    "go/token"
+    "os"
+    "reflect"
+    "strings"
+    "text/template"
+)
+
+type FieldInfo struct {
+    Name     string
+    Required bool
+    MaxLen   int
+}
+
+type StructInfo struct {
+    Name   string
+    Fields []FieldInfo
+}
+
+func parseFile(filename string) ([]StructInfo, string, error) {
+    fset := token.NewFileSet()
+    f, err := parser.ParseFile(fset, filename, nil, 0)
+    if err != nil {
+        return nil, "", err
+    }
+
+    var structs []StructInfo
+    ast.Inspect(f, func(n ast.Node) bool {
+        ts, ok := n.(*ast.TypeSpec)
+        if !ok {
+            return true
+        }
+        st, ok := ts.Type.(*ast.StructType)
+        if !ok {
+            return true
+        }
+
+        info := StructInfo{Name: ts.Name.Name}
+        for _, field := range st.Fields.List {
+            if field.Tag == nil || len(field.Names) == 0 {
+                continue
+            }
+            tag := reflect.StructTag(strings.Trim(field.Tag.Value, "`"))
+            validateTag := tag.Get("validate")
+            if validateTag == "" {
+                continue
+            }
+            fi := FieldInfo{Name: field.Names[0].Name}
+            for _, opt := range strings.Split(validateTag, ",") {
+                switch {
+                case opt == "required":
+                    fi.Required = true
+                case strings.HasPrefix(opt, "maxlen="):
+                    fmt.Sscanf(opt, "maxlen=%d", &fi.MaxLen)
+                }
+            }
+            info.Fields = append(info.Fields, fi)
+        }
+        if len(info.Fields) > 0 {
+            structs = append(structs, info)
+        }
+        return true
+    })
+
+    return structs, f.Name.Name, nil
+}
+
+const tmpl = `// Code generated by gen; DO NOT EDIT.
+package {{.Package}}
+
+import "fmt"
+{{range .Structs}}
+func (v {{.Name}}) Validate() error {
+    {{- range .Fields}}
+    {{- if .Required}}
+    if v.{{.Name}} == "" {
+        return fmt.Errorf("{{.Name}}: обязательное поле")
+    }
+    {{- end}}
+    {{- if gt .MaxLen 0}}
+    if len([]rune(v.{{.Name}})) > {{.MaxLen}} {
+        return fmt.Errorf("{{.Name}}: максимум {{.MaxLen}} символов")
+    }
+    {{- end}}
+    {{- end}}
+    return nil
+}
+{{end}}`
+
+func generate(pkg string, structs []StructInfo, outFile string) error {
+    t := template.Must(template.New("").Parse(tmpl))
+    var buf bytes.Buffer
+    if err := t.Execute(&buf, map[string]any{"Package": pkg, "Structs": structs}); err != nil {
+        return err
+    }
+    // go/format.Source — обязательно: проверяет синтаксис и форматирует
+    formatted, err := format.Source(buf.Bytes())
+    if err != nil {
+        return fmt.Errorf("синтаксическая ошибка:\n%s\n%w", buf.String(), err)
+    }
+    return os.WriteFile(outFile, formatted, 0644)
+}
+
+func main() {
+    if len(os.Args) < 2 {
+        fmt.Fprintln(os.Stderr, "usage: gen <file.go>")
+        os.Exit(1)
+    }
+    input  := os.Args[1]
+    output := strings.TrimSuffix(input, ".go") + "_validate.go"
+
+    structs, pkg, err := parseFile(input)
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "parse: %v\n", err); os.Exit(1)
+    }
+    if len(structs) == 0 {
+        return
+    }
+    if err := generate(pkg, structs, output); err != nil {
+        fmt.Fprintf(os.Stderr, "generate: %v\n", err); os.Exit(1)
+    }
+    fmt.Printf("сгенерирован %s (%d структур)\n", output, len(structs))
+}
+```
+
+**Использование через go:generate:**
+
+```go
+// model/user.go
+//go:generate go run ../gen/main.go $GOFILE
+package model
+
+type CreateUserRequest struct {
+    Email string `json:"email" validate:"required,maxlen=255"`
+    Name  string `json:"name"  validate:"required,maxlen=100"`
+}
+```
+
+```bash
+go generate ./model/...
+# → model/user_validate.go:
+#   func (v CreateUserRequest) Validate() error { ... }
+```
+
+**Ключевые паттерны:**
+
+```go
+// 1. Всегда проверять Kind перед Type assertion
+if ts, ok := n.(*ast.TypeSpec); ok {
+    if st, ok := ts.Type.(*ast.StructType); ok { ... }
+}
+
+// 2. format.Source() — обязательно: проверяет синтаксис шаблона
+formatted, err := format.Source(buf.Bytes())
+if err != nil {
+    log.Printf("raw output:\n%s", buf.String()) // для отладки
+    return err
+}
+
+// 3. Заголовок DO NOT EDIT — стандарт сгенерированных файлов
+// golangci-lint автоматически исключает файлы с этим заголовком
+
+// 4. Переменная окружения $GOFILE в go:generate
+//go:generate go run ./cmd/gen $GOFILE
+// $GOFILE → имя файла, где написан комментарий
+```
+
+---
+
+### Сравнение с C# Source Generators и T4
+
+| Аспект | C# Source Generators (Roslyn) | C# T4 Templates | Go (go generate + go/ast) |
+|--------|------------------------------|-----------------|--------------------------|
+| **Триггер** | Каждая компиляция (incremental) | Явный запуск | `go generate ./...` |
+| **Анализ кода** | Roslyn SemanticModel (полный) | Нет | `go/ast` + `go/types` |
+| **Интеграция в IDE** | Встроена (IntelliSense из генератора) | Частичная | Через LSP |
+| **Отладка** | В IDE с breakpoints | Сложно | `go run generator.go` |
+| **Производительность** | Инкрементальная | Полная перегенерация | Полная перегенерация |
+| **Распределение** | NuGet пакет | .tt файл | `go install tool@latest` |
+| **Примеры** | `System.Text.Json` codegen, EF 8+ | Entity Framework (старый) | sqlc, ent, mockery, stringer |
+
+**Когда писать собственный генератор:**
+- Повторяющийся boilerplate (Validate, Clone, String методы)
+- Типобезопасные обёртки над динамическими системами (event bus, DI)
+- Инструменты для команды — специфичные для домена паттерны
+
+**Не стоит писать генератор, если:**
+- Задачу решают generics или интерфейсы
+- Код пишется один раз и не будет масштабироваться
+- Логика проще написать вручную, чем поддерживать генератор
+
+---
+
 ### wire — compile-time DI
 
 wire — инструмент для dependency injection на этапе компиляции от Google.

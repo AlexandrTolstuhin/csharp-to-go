@@ -1,25 +1,5 @@
 ## Доработки существующих частей
 
-### Part 6: Code generation (расширение существующего файла)
-
-**Файл**: `part6-best-practices/02_tools.md` — добавить разделы
-
-**Обоснование**: Базовый раздел `go generate` с таблицей инструментов есть, но нет практических примеров. C# разработчики знают Source Generators и T4 — нужна проекция.
-
-**Что добавить**:
-- `sqlc`: полный workflow — схема → `sqlc.yaml` → генерация → использование
-- `mockgen` vs `moq`: сравнение подходов, когда что выбрать; расширить до трёх вариантов: `gomock (uber-go)` vs `testify/mock` vs `mockery`
-- `stringer` + `enumer`: генерация String()/MarshalJSON() для const-перечислений
-- `buf generate`: современный protoc workflow вместо прямого вызова protoc
-- Сравнение с C# Source Generators и T4 Templates
-- `mockery` (github.com/vektra/mockery) — testify-совместимые моки, `mockery.yaml`, автообнаружение интерфейсов; добавить в сравнительную таблицу
-- `ent` (entgo.io) — ORM с кодогенерацией: схема на Go → типобезопасный query builder; C# аналог: EF Core `Scaffold-DbContext`; нет нигде в курсе
-- Написание собственного генератора: `go/ast` для анализа → `text/template` для вывода → `go/format` для форматирования; C# аналог: Roslyn `ISourceGenerator`
-- Актуализировать путь `golang/mock` → `go.uber.org/mock` в `06_testing_benchmarking.md` (оригинал заархивирован в 2023, в тексте курса указан устаревший путь)
-- Актуализировать `oapi-codegen` в `05_api_documentation.md`: пакет переехал `deepmap/oapi-codegen` → `oapi-codegen/oapi-codegen` (с v2, 2023)
-
----
-
 ### Part 6: Публикация модуля на GitHub (расширение существующего файла)
 
 **Файл**: `part6-best-practices/02_tools.md` — добавить подраздел в секцию `go mod`
