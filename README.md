@@ -1,4 +1,4 @@
-# Переход с C# на Go: Курс для C# разработчика
+# Go для C# разработчиков
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.26+-00ADD8?logo=go)](https://go.dev/)
