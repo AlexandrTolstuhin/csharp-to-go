@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-b145a30a.js";
+            window.path_to_searchindex_js = "../searchindex-3ab6fb17.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-a74b6836.js"></script>
@@ -420,6 +420,54 @@ sub := s[1:3]  // [2 3]
 first := s[:2] // [1 2]
 last := s[3:]  // [4 5]
 </code></pre>
+<h4 id="трёхиндексный-срез-full-slice-expression"><a class="header" href="#трёхиндексный-срез-full-slice-expression">Трёхиндексный срез (Full Slice Expression)</a></h4>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В C# аналога нет. Ближайшее — <code>ArraySegment&lt;T&gt;</code> с явным заданием диапазона, но без контроля capacity.</p>
+</blockquote>
+<p>Обычный срез <code>s[low:high]</code> наследует capacity базового массива. Это значит, что <code>append</code> к подслайсу может неожиданно перезаписать данные в исходном массиве:</p>
+<pre><code class="language-go">arr := [5]int{1, 2, 3, 4, 5}
+s := arr[1:3]  // [2 3], len=2, cap=4 (до конца arr!)
+
+s = append(s, 99) // есть место в cap — перезаписывает arr[3]!
+fmt.Println(arr)  // [1 2 3 99 5] — неожиданное изменение!
+</code></pre>
+<p><strong>Трёхиндексный срез</strong> <code>s[low:high:max]</code> ограничивает capacity явно:</p>
+<pre><code class="language-go">// Синтаксис: s[low:high:max], где cap = max - low
+arr := [5]int{1, 2, 3, 4, 5}
+s := arr[1:3:3]  // [2 3], len=2, cap=2 — capacity ограничен!
+
+s = append(s, 99) // cap исчерпан → новая аллокация, arr не тронут
+fmt.Println(arr)  // [1 2 3 4 5] — оригинал не изменён
+</code></pre>
+<p><strong>Ограничения</strong>:</p>
+<ul>
+<li>Требуется: <code>0 &lt;= low &lt;= high &lt;= max &lt;= cap(исходного)</code></li>
+<li>Работает с массивами и слайсами (не со строками)</li>
+<li><code>max</code> нельзя опустить — только явное значение</li>
+</ul>
+<p><strong>Практическое применение — изоляция подслайса</strong>:</p>
+<pre><code class="language-go">// ❌ Опасно: подслайс делит capacity с оригиналом
+func head(data []byte) []byte {
+    return data[:3] // cap = cap(data), append может испортить data
+}
+
+// ✅ Безопасно: ограничиваем cap, append создаст новый массив
+func head(data []byte) []byte {
+    return data[:3:3] // len=3, cap=3 — изолирован от оригинала
+}
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Выражение</th><th>len</th><th>cap</th><th>append меняет исходный?</th></tr>
+</thead>
+<tbody>
+<tr><td><code>arr[1:3]</code></td><td>2</td><td>cap(arr)−1</td><td>Да, если есть место</td></tr>
+<tr><td><code>arr[1:3:3]</code></td><td>2</td><td>2</td><td>Нет — новая аллокация</td></tr>
+<tr><td><code>arr[1:3:5]</code></td><td>2</td><td>4</td><td>Нет до 4 элементов</td></tr>
+</tbody>
+</table>
+</div>
 <p><strong>Внимание</strong>: Слайсы — это <strong>ссылки</strong> на массив!</p>
 <pre><code class="language-go">arr := [5]int{1, 2, 3, 4, 5}
 s1 := arr[0:3] // [1 2 3]
