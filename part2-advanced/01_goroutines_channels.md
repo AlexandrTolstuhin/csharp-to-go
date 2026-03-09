@@ -871,6 +871,45 @@ func (r *UserRepo) GetUser(ctx context.Context, id int) (*User, error) {
 }
 ```
 
+### Внутреннее устройство: не map, а связный список
+
+Распространённое заблуждение — считать `WithValue` обёрткой над `map[key]value` с O(1) поиском. На деле каждый вызов создаёт новый узел, вложенный поверх предыдущего:
+
+```go
+// Упрощённая структура из стандартной библиотеки
+type valueCtx struct {
+    Context       // родительский контекст
+    key, val any  // одна пара ключ-значение
+}
+```
+
+Три вызова `WithValue` дают цепочку из трёх узлов:
+
+```go
+ctx0 := context.Background()
+ctx1 := context.WithValue(ctx0, keyA, 1) // ctx1 → ctx0
+ctx2 := context.WithValue(ctx1, keyB, 2) // ctx2 → ctx1 → ctx0
+ctx3 := context.WithValue(ctx2, keyC, 3) // ctx3 → ctx2 → ctx1 → ctx0
+```
+
+`ctx3.Value(keyA)` обходит всю цепочку от конца к началу — это **O(n)**, где n — глубина. Для 3–5 значений это несущественно, но при наивном накоплении в цикле становится проблемой:
+
+```go
+// ❌ ctx растёт с каждой итерацией — цепочка из 1000 узлов после 1000 сообщений
+for msg := range messages {
+    ctx = context.WithValue(ctx, msgIDKey, msg.ID)
+    process(ctx, msg)
+}
+
+// ✅ := вместо = — новый локальный ctx глубиной 1 от родителя
+for msg := range messages {
+    ctx := context.WithValue(ctx, msgIDKey, msg.ID)
+    process(ctx, msg)
+}
+```
+
+> 💡 **Вывод**: храните в контексте единицы значений (trace ID, request ID, auth info) — не десятки. Для передачи большого числа параметров используйте явные аргументы или структуры.
+
 ### context.Background() vs context.TODO()
 
 Обе функции возвращают пустой корневой контекст, но несут разную смысловую нагрузку:
