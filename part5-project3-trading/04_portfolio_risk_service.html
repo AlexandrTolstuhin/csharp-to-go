@@ -1,0 +1,1200 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Portfolio и Risk сервисы - Go для C# разработчиков</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-ecd4aa31.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-0879e167.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Go для C# разработчиков</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part5-project3-trading/04_portfolio_risk_service.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="portfolio-и-risk-сервисы"><a class="header" href="#portfolio-и-risk-сервисы">Portfolio и Risk сервисы</a></h1>
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<p>Portfolio и Risk — два сервиса, которые реагируют на события о совершённых сделках. Portfolio ведёт учёт позиций и PnL (Profit &amp; Loss) в реальном времени. Risk следит за лимитами, считает VaR (Value at Risk) и выдаёт алерты при нарушениях.</p>
+<blockquote>
+<p><strong>Для C# разработчиков</strong>: Оба сервиса — классические event-driven consumers. В C# это реализуется через <code>IHostedService</code> + MassTransit consumer. В Go — горутина + NATS subscriber + context для graceful shutdown. Логика одна и та же, но без фреймворкового overhead.</p>
+</blockquote>
+<hr>
+<h2 id="portfolio-service"><a class="header" href="#portfolio-service">Portfolio Service</a></h2>
+<h3 id="доменная-модель-позиции"><a class="header" href="#доменная-модель-позиции">Доменная модель позиции</a></h3>
+<pre><code class="language-go">// internal/position/model.go
+package position
+
+import (
+    "sync"
+    "time"
+
+    "github.com/shopspring/decimal"
+)
+
+// Position — позиция клиента по инструменту
+type Position struct {
+    ClientID    string
+    Symbol      string
+    Quantity    decimal.Decimal // отрицательная = short позиция
+    AvgPrice    decimal.Decimal // средняя цена открытия
+    RealizedPnL decimal.Decimal // реализованный PnL (закрытые сделки)
+    UpdatedAt   time.Time
+}
+
+// UnrealizedPnL — нереализованный PnL по текущей рыночной цене
+func (p *Position) UnrealizedPnL(currentPrice decimal.Decimal) decimal.Decimal {
+    if p.Quantity.IsZero() || p.AvgPrice.IsZero() {
+        return decimal.Zero
+    }
+    // PnL = (текущая цена - средняя цена) * количество
+    return currentPrice.Sub(p.AvgPrice).Mul(p.Quantity)
+}
+
+// TotalPnL — общий PnL
+func (p *Position) TotalPnL(currentPrice decimal.Decimal) decimal.Decimal {
+    return p.RealizedPnL.Add(p.UnrealizedPnL(currentPrice))
+}
+
+// PositionStore — хранилище позиций в памяти
+// Все позиции клиентов кэшируем в Redis и снапшотируем в PostgreSQL
+type PositionStore struct {
+    mu        sync.RWMutex
+    positions map[string]map[string]*Position // clientID → symbol → position
+}
+
+// NewPositionStore — создание хранилища
+func NewPositionStore() *PositionStore {
+    return &amp;PositionStore{
+        positions: make(map[string]map[string]*Position),
+    }
+}
+
+// Get — получение позиции (nil если нет открытой позиции)
+func (s *PositionStore) Get(clientID, symbol string) *Position {
+    s.mu.RLock()
+    defer s.mu.RUnlock()
+
+    if clientPositions, ok := s.positions[clientID]; ok {
+        if pos, ok := clientPositions[symbol]; ok {
+            // Копируем, чтобы не отдавать указатель на внутренний объект
+            cp := *pos
+            return &amp;cp
+        }
+    }
+    return nil
+}
+
+// GetAll — все позиции клиента
+func (s *PositionStore) GetAll(clientID string) []Position {
+    s.mu.RLock()
+    defer s.mu.RUnlock()
+
+    clientPositions, ok := s.positions[clientID]
+    if !ok {
+        return nil
+    }
+
+    result := make([]Position, 0, len(clientPositions))
+    for _, pos := range clientPositions {
+        result = append(result, *pos)
+    }
+    return result
+}
+
+// Update — атомарное обновление позиции по сделке
+func (s *PositionStore) Update(clientID, symbol string, fn func(*Position)) {
+    s.mu.Lock()
+    defer s.mu.Unlock()
+
+    if _, ok := s.positions[clientID]; !ok {
+        s.positions[clientID] = make(map[string]*Position)
+    }
+
+    pos, ok := s.positions[clientID][symbol]
+    if !ok {
+        pos = &amp;Position{
+            ClientID:  clientID,
+            Symbol:    symbol,
+            UpdatedAt: time.Now().UTC(),
+        }
+        s.positions[clientID][symbol] = pos
+    }
+
+    fn(pos)
+    pos.UpdatedAt = time.Now().UTC()
+}
+</code></pre>
+<h3 id="расчёт-pnl-по-сделкам"><a class="header" href="#расчёт-pnl-по-сделкам">Расчёт PnL по сделкам</a></h3>
+<pre><code class="language-go">// internal/position/calculator.go
+package position
+
+import (
+    "github.com/shopspring/decimal"
+)
+
+// TradeInfo — информация о сделке для обновления позиции
+type TradeInfo struct {
+    ClientID  string
+    Symbol    string
+    Side      string // "BUY" или "SELL"
+    Price     decimal.Decimal
+    Quantity  decimal.Decimal
+}
+
+// Calculator — калькулятор позиций
+type Calculator struct {
+    store *PositionStore
+}
+
+// NewCalculator — создание калькулятора
+func NewCalculator(store *PositionStore) *Calculator {
+    return &amp;Calculator{store: store}
+}
+
+// ApplyTrade — обновление позиции по совершённой сделке
+// Использует алгоритм средней цены (average cost basis)
+func (c *Calculator) ApplyTrade(trade TradeInfo) {
+    c.store.Update(trade.ClientID, trade.Symbol, func(pos *Position) {
+        if trade.Side == "BUY" {
+            c.applyBuy(pos, trade)
+        } else {
+            c.applySell(pos, trade)
+        }
+    })
+}
+
+// applyBuy — покупка увеличивает/открывает long позицию
+func (c *Calculator) applyBuy(pos *Position, trade TradeInfo) {
+    if pos.Quantity.IsNegative() {
+        // Закрываем short позицию
+        if trade.Quantity.LessThanOrEqual(pos.Quantity.Abs()) {
+            // Частичное закрытие short
+            realizedPnL := pos.AvgPrice.Sub(trade.Price).Mul(trade.Quantity)
+            pos.RealizedPnL = pos.RealizedPnL.Add(realizedPnL)
+            pos.Quantity = pos.Quantity.Add(trade.Quantity)
+            return
+        }
+        // Полное закрытие short + открытие long
+        shortQty := pos.Quantity.Abs()
+        realizedPnL := pos.AvgPrice.Sub(trade.Price).Mul(shortQty)
+        pos.RealizedPnL = pos.RealizedPnL.Add(realizedPnL)
+
+        remainingBuy := trade.Quantity.Sub(shortQty)
+        pos.Quantity = remainingBuy
+        pos.AvgPrice = trade.Price
+        return
+    }
+
+    // Увеличиваем long позицию — пересчитываем среднюю цену
+    // AvgPrice = (старый объём * старая цена + новый объём * новая цена) / суммарный объём
+    totalCost := pos.Quantity.Mul(pos.AvgPrice).Add(trade.Quantity.Mul(trade.Price))
+    pos.Quantity = pos.Quantity.Add(trade.Quantity)
+    if pos.Quantity.IsPositive() {
+        pos.AvgPrice = totalCost.Div(pos.Quantity)
+    }
+}
+
+// applySell — продажа уменьшает long / открывает short
+func (c *Calculator) applySell(pos *Position, trade TradeInfo) {
+    if pos.Quantity.IsPositive() {
+        // Закрываем long позицию
+        if trade.Quantity.LessThanOrEqual(pos.Quantity) {
+            // Частичное закрытие
+            realizedPnL := trade.Price.Sub(pos.AvgPrice).Mul(trade.Quantity)
+            pos.RealizedPnL = pos.RealizedPnL.Add(realizedPnL)
+            pos.Quantity = pos.Quantity.Sub(trade.Quantity)
+            if pos.Quantity.IsZero() {
+                pos.AvgPrice = decimal.Zero
+            }
+            return
+        }
+        // Полное закрытие long + открытие short
+        realizedPnL := trade.Price.Sub(pos.AvgPrice).Mul(pos.Quantity)
+        pos.RealizedPnL = pos.RealizedPnL.Add(realizedPnL)
+
+        remainingSell := trade.Quantity.Sub(pos.Quantity)
+        pos.Quantity = remainingSell.Neg()
+        pos.AvgPrice = trade.Price
+        return
+    }
+
+    // Увеличиваем short позицию
+    totalCost := pos.Quantity.Abs().Mul(pos.AvgPrice).Add(trade.Quantity.Mul(trade.Price))
+    pos.Quantity = pos.Quantity.Sub(trade.Quantity)
+    pos.AvgPrice = totalCost.Div(pos.Quantity.Abs())
+}
+</code></pre>
+<h3 id="portfolio-service-consumer"><a class="header" href="#portfolio-service-consumer">Portfolio Service: Consumer</a></h3>
+<pre><code class="language-go">// internal/service/portfolio_service.go
+package service
+
+import (
+    "context"
+    "encoding/json"
+    "fmt"
+    "log/slog"
+    "time"
+
+    "github.com/nats-io/nats.go/jetstream"
+
+    "trading/portfolio/internal/messaging"
+    "trading/portfolio/internal/position"
+    "trading/portfolio/internal/storage"
+)
+
+// PortfolioService — главный сервис
+type PortfolioService struct {
+    calculator *position.Calculator
+    store      *position.PositionStore
+    repo       *storage.PositionRepository
+    publisher  *messaging.NATSPublisher
+    logger     *slog.Logger
+}
+
+// NewPortfolioService — создание сервиса
+func NewPortfolioService(
+    store *position.PositionStore,
+    repo *storage.PositionRepository,
+    publisher *messaging.NATSPublisher,
+    logger *slog.Logger,
+) *PortfolioService {
+    return &amp;PortfolioService{
+        calculator: position.NewCalculator(store),
+        store:      store,
+        repo:       repo,
+        publisher:  publisher,
+        logger:     logger,
+    }
+}
+
+// HandleTrade — обработка события о сделке
+func (s *PortfolioService) HandleTrade(ctx context.Context, msg jetstream.Msg) {
+    var event messaging.TradeEvent
+    if err := json.Unmarshal(msg.Data(), &amp;event); err != nil {
+        s.logger.Error("unmarshal trade event", "err", err)
+        msg.Nak()
+        return
+    }
+
+    // Обновляем позиции обоих участников сделки
+    buyerTrade := position.TradeInfo{
+        ClientID: event.BuyClientID,
+        Symbol:   event.Symbol,
+        Side:     "BUY",
+        Price:    event.Price,
+        Quantity: event.Quantity,
+    }
+    sellerTrade := position.TradeInfo{
+        ClientID: event.SellClientID,
+        Symbol:   event.Symbol,
+        Side:     "SELL",
+        Price:    event.Price,
+        Quantity: event.Quantity,
+    }
+
+    s.calculator.ApplyTrade(buyerTrade)
+    s.calculator.ApplyTrade(sellerTrade)
+
+    // Асинхронное сохранение в PostgreSQL
+    go func() {
+        saveCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+        defer cancel()
+        if err := s.persistPositions(saveCtx, event); err != nil {
+            s.logger.Error("persist positions", "err", err)
+        }
+    }()
+
+    // Уведомление клиентов об обновлении портфеля
+    for _, clientID := range []string{event.BuyClientID, event.SellClientID} {
+        pos := s.store.GetAll(clientID)
+        updateEvent := messaging.PortfolioUpdateEvent{
+            ClientID:  clientID,
+            Positions: toPositionDTOs(pos),
+            UpdatedAt: time.Now().UTC(),
+        }
+        subject := fmt.Sprintf("portfolio.updated.%s", clientID)
+        if err := s.publisher.Publish(ctx, subject, updateEvent); err != nil {
+            s.logger.Warn("publish portfolio update", "err", err, "client", clientID)
+        }
+    }
+
+    msg.Ack()
+}
+
+// persistPositions — сохранение позиций в PostgreSQL + Redis
+func (s *PortfolioService) persistPositions(ctx context.Context, event messaging.TradeEvent) error {
+    // Upsert позиций в PostgreSQL
+    for _, clientID := range []string{event.BuyClientID, event.SellClientID} {
+        pos := s.store.Get(clientID, event.Symbol)
+        if pos == nil {
+            continue
+        }
+        if err := s.repo.Upsert(ctx, pos); err != nil {
+            return fmt.Errorf("upsert position %s/%s: %w", clientID, event.Symbol, err)
+        }
+    }
+    return nil
+}
+
+// toPositionDTOs — конвертация позиций в DTO
+func toPositionDTOs(positions []position.Position) []messaging.PositionDTO {
+    dtos := make([]messaging.PositionDTO, len(positions))
+    for i, p := range positions {
+        dtos[i] = messaging.PositionDTO{
+            Symbol:      p.Symbol,
+            Quantity:    p.Quantity,
+            AvgPrice:    p.AvgPrice,
+            RealizedPnL: p.RealizedPnL,
+        }
+    }
+    return dtos
+}
+</code></pre>
+<hr>
+<h2 id="risk-service"><a class="header" href="#risk-service">Risk Service</a></h2>
+<h3 id="лимиты-и-параметры-риска"><a class="header" href="#лимиты-и-параметры-риска">Лимиты и параметры риска</a></h3>
+<pre><code class="language-go">// internal/limits/limits.go
+package limits
+
+import (
+    "github.com/shopspring/decimal"
+)
+
+// RiskLimits — лимиты риска для клиента
+type RiskLimits struct {
+    ClientID         string
+    MaxPositionUSD   decimal.Decimal // максимальная позиция в USD
+    MaxDailyLossUSD  decimal.Decimal // максимальный дневной убыток
+    MaxLeverage      decimal.Decimal // максимальное плечо
+    AllowedSymbols   []string        // разрешённые инструменты (nil = все)
+}
+
+// DefaultLimits — стандартные лимиты
+func DefaultLimits(clientID string) RiskLimits {
+    return RiskLimits{
+        ClientID:       clientID,
+        MaxPositionUSD: decimal.NewFromFloat(100_000),
+        MaxDailyLossUSD: decimal.NewFromFloat(10_000),
+        MaxLeverage:    decimal.NewFromFloat(3),
+    }
+}
+
+// AlertType — тип риск-алерта
+type AlertType string
+
+const (
+    AlertMarginCall      AlertType = "MARGIN_CALL"
+    AlertPositionLimit   AlertType = "POSITION_LIMIT"
+    AlertDailyLossLimit  AlertType = "DAILY_LOSS_LIMIT"
+    AlertLeverageLimit   AlertType = "LEVERAGE_LIMIT"
+)
+
+// Alert — риск-предупреждение
+type Alert struct {
+    ClientID  string
+    Type      AlertType
+    Message   string
+    Severity  string // "WARNING" (80% лимита) или "CRITICAL" (100%)
+}
+</code></pre>
+<h3 id="расчёт-var-value-at-risk"><a class="header" href="#расчёт-var-value-at-risk">Расчёт VaR (Value at Risk)</a></h3>
+<pre><code class="language-go">// internal/var/calculator.go
+package var_calc
+
+import (
+    "math"
+    "sort"
+
+    "github.com/shopspring/decimal"
+)
+
+// HistoricalReturns — исторические доходности (для параметрического VaR)
+type HistoricalReturns []float64
+
+// VaRResult — результат расчёта VaR
+type VaRResult struct {
+    ConfidenceLevel float64         // 0.95 или 0.99
+    TimeHorizon     int             // в днях
+    VaR             decimal.Decimal // максимальный ожидаемый убыток
+}
+
+// HistoricalVaR — исторический VaR (непараметрический)
+// Самый простой и надёжный метод для небольших портфелей
+//
+// confidence = 0.95 → 95% VaR (5% worst case)
+// returns — отсортированные исторические доходности (в %)
+func HistoricalVaR(returns HistoricalReturns, positionValueUSD float64, confidence float64) VaRResult {
+    if len(returns) == 0 {
+        return VaRResult{}
+    }
+
+    // Сортируем доходности по возрастанию (худшие первые)
+    sorted := make([]float64, len(returns))
+    copy(sorted, returns)
+    sort.Float64s(sorted)
+
+    // Квантиль: для 95% confidence → 5% худших наблюдений
+    quantileIdx := int(math.Floor(float64(len(sorted)) * (1 - confidence)))
+    if quantileIdx &gt;= len(sorted) {
+        quantileIdx = len(sorted) - 1
+    }
+
+    worstReturn := sorted[quantileIdx] // отрицательное число (убыток в %)
+    varAmount := positionValueUSD * math.Abs(worstReturn) / 100
+
+    return VaRResult{
+        ConfidenceLevel: confidence,
+        TimeHorizon:     1,
+        VaR:             decimal.NewFromFloat(varAmount).Round(2),
+    }
+}
+
+// ParametricVaR — параметрический VaR (на основе нормального распределения)
+// Быстрее, но предполагает нормальное распределение доходностей
+func ParametricVaR(returns HistoricalReturns, positionValueUSD float64, confidence float64) VaRResult {
+    if len(returns) == 0 {
+        return VaRResult{}
+    }
+
+    // Среднее
+    mean := 0.0
+    for _, r := range returns {
+        mean += r
+    }
+    mean /= float64(len(returns))
+
+    // Стандартное отклонение
+    variance := 0.0
+    for _, r := range returns {
+        diff := r - mean
+        variance += diff * diff
+    }
+    variance /= float64(len(returns))
+    stdDev := math.Sqrt(variance)
+
+    // Z-score для заданного уровня доверия
+    // 95% → z = 1.645, 99% → z = 2.326
+    zScore := normalQuantile(1 - confidence)
+    varPercent := mean - zScore*stdDev
+    varAmount := positionValueUSD * math.Abs(varPercent) / 100
+
+    return VaRResult{
+        ConfidenceLevel: confidence,
+        TimeHorizon:     1,
+        VaR:             decimal.NewFromFloat(varAmount).Round(2),
+    }
+}
+
+// normalQuantile — квантиль стандартного нормального распределения
+// Приближение Beasley-Springer-Moro
+func normalQuantile(p float64) float64 {
+    // Упрощённая таблица для распространённых значений
+    switch {
+    case p &lt;= 0.01:
+        return -2.326
+    case p &lt;= 0.05:
+        return -1.645
+    case p &lt;= 0.10:
+        return -1.282
+    default:
+        return -1.645
+    }
+}
+</code></pre>
+<h3 id="risk-service-consumer-и-проверки"><a class="header" href="#risk-service-consumer-и-проверки">Risk Service: Consumer и проверки</a></h3>
+<pre><code class="language-go">// internal/service/risk_service.go
+package service
+
+import (
+    "context"
+    "encoding/json"
+    "fmt"
+    "log/slog"
+    "time"
+
+    "github.com/nats-io/nats.go/jetstream"
+    "github.com/shopspring/decimal"
+
+    "trading/risk/internal/limits"
+    "trading/risk/internal/messaging"
+    "trading/risk/internal/storage"
+    var_calc "trading/risk/internal/var"
+)
+
+// RiskService — сервис управления рисками
+type RiskService struct {
+    limitsRepo  *storage.LimitsRepository
+    historyRepo *storage.PriceHistoryRepository
+    publisher   *messaging.NATSPublisher
+    logger      *slog.Logger
+}
+
+// NewRiskService — создание сервиса
+func NewRiskService(
+    limitsRepo *storage.LimitsRepository,
+    historyRepo *storage.PriceHistoryRepository,
+    publisher *messaging.NATSPublisher,
+    logger *slog.Logger,
+) *RiskService {
+    return &amp;RiskService{
+        limitsRepo:  limitsRepo,
+        historyRepo: historyRepo,
+        publisher:   publisher,
+        logger:      logger,
+    }
+}
+
+// HandleTrade — проверка лимитов после совершения сделки
+func (s *RiskService) HandleTrade(ctx context.Context, msg jetstream.Msg) {
+    var event messaging.TradeEvent
+    if err := json.Unmarshal(msg.Data(), &amp;event); err != nil {
+        s.logger.Error("unmarshal trade", "err", err)
+        msg.Nak()
+        return
+    }
+
+    // Параллельная проверка для обоих участников
+    for _, clientID := range []string{event.BuyClientID, event.SellClientID} {
+        go s.checkClientRisk(ctx, clientID, event)
+    }
+
+    msg.Ack()
+}
+
+// checkClientRisk — полная проверка риска для клиента
+func (s *RiskService) checkClientRisk(ctx context.Context, clientID string, trade messaging.TradeEvent) {
+    // Загружаем лимиты (с кэшированием в Redis)
+    clientLimits, err := s.limitsRepo.Get(ctx, clientID)
+    if err != nil {
+        s.logger.Error("get limits", "client", clientID, "err", err)
+        return
+    }
+
+    // Загружаем текущие позиции
+    positions, err := s.limitsRepo.GetPositions(ctx, clientID)
+    if err != nil {
+        s.logger.Error("get positions", "client", clientID, "err", err)
+        return
+    }
+
+    var alerts []limits.Alert
+
+    // 1. Проверка размера позиции
+    if alert := s.checkPositionLimit(positions, clientLimits, trade.Symbol); alert != nil {
+        alerts = append(alerts, *alert)
+    }
+
+    // 2. Проверка дневного убытка
+    if alert := s.checkDailyLoss(ctx, clientID, clientLimits); alert != nil {
+        alerts = append(alerts, *alert)
+    }
+
+    // 3. Расчёт VaR
+    if alert := s.checkVaR(ctx, positions, clientLimits, trade.Symbol); alert != nil {
+        alerts = append(alerts, *alert)
+    }
+
+    // Публикация алертов
+    for _, alert := range alerts {
+        s.publishAlert(ctx, alert)
+    }
+}
+
+// checkPositionLimit — проверка максимального размера позиции
+func (s *RiskService) checkPositionLimit(
+    positions []messaging.PositionDTO,
+    clientLimits *limits.RiskLimits,
+    symbol string,
+) *limits.Alert {
+    var totalExposureUSD decimal.Decimal
+
+    for _, pos := range positions {
+        if pos.Symbol != symbol {
+            continue
+        }
+        // Экспозиция = |количество| * текущая цена
+        // В реальности: получаем текущую цену из Redis/market data
+        exposure := pos.Quantity.Abs().Mul(pos.AvgPrice)
+        totalExposureUSD = totalExposureUSD.Add(exposure)
+    }
+
+    limit := clientLimits.MaxPositionUSD
+    ratio := totalExposureUSD.Div(limit)
+
+    if ratio.GreaterThanOrEqual(decimal.NewFromFloat(1.0)) {
+        return &amp;limits.Alert{
+            ClientID: clientLimits.ClientID,
+            Type:     limits.AlertPositionLimit,
+            Message: fmt.Sprintf("Position size $%s exceeds limit $%s for %s",
+                totalExposureUSD.StringFixed(2), limit.StringFixed(2), symbol),
+            Severity: "CRITICAL",
+        }
+    }
+
+    if ratio.GreaterThanOrEqual(decimal.NewFromFloat(0.8)) {
+        return &amp;limits.Alert{
+            ClientID: clientLimits.ClientID,
+            Type:     limits.AlertPositionLimit,
+            Message: fmt.Sprintf("Position size at %.0f%% of limit for %s",
+                ratio.Mul(decimal.NewFromFloat(100)).InexactFloat64(), symbol),
+            Severity: "WARNING",
+        }
+    }
+
+    return nil
+}
+
+// checkDailyLoss — проверка дневного убытка
+func (s *RiskService) checkDailyLoss(
+    ctx context.Context,
+    clientID string,
+    clientLimits *limits.RiskLimits,
+) *limits.Alert {
+    // Загружаем реализованный PnL за сегодня из TimescaleDB
+    dailyLoss, err := s.limitsRepo.GetDailyRealizedLoss(ctx, clientID)
+    if err != nil {
+        s.logger.Error("get daily loss", "client", clientID, "err", err)
+        return nil
+    }
+
+    if dailyLoss.IsNegative() { // убыток отрицательный
+        loss := dailyLoss.Abs()
+        limit := clientLimits.MaxDailyLossUSD
+        ratio := loss.Div(limit)
+
+        if ratio.GreaterThanOrEqual(decimal.NewFromFloat(1.0)) {
+            return &amp;limits.Alert{
+                ClientID: clientID,
+                Type:     limits.AlertDailyLossLimit,
+                Message: fmt.Sprintf("Daily loss $%s exceeds limit $%s",
+                    loss.StringFixed(2), limit.StringFixed(2)),
+                Severity: "CRITICAL",
+            }
+        }
+    }
+
+    return nil
+}
+
+// checkVaR — расчёт Value at Risk
+func (s *RiskService) checkVaR(
+    ctx context.Context,
+    positions []messaging.PositionDTO,
+    clientLimits *limits.RiskLimits,
+    symbol string,
+) *limits.Alert {
+    // Загружаем исторические доходности за последние 252 торговых дня
+    returns, err := s.historyRepo.GetDailyReturns(ctx, symbol, 252)
+    if err != nil || len(returns) &lt; 30 {
+        return nil // недостаточно данных
+    }
+
+    // Считаем суммарную позицию по инструменту
+    var positionUSD float64
+    for _, pos := range positions {
+        if pos.Symbol == symbol {
+            v, _ := pos.Quantity.Abs().Mul(pos.AvgPrice).Float64()
+            positionUSD += v
+        }
+    }
+
+    // 95% VaR за 1 день
+    varResult := var_calc.HistoricalVaR(returns, positionUSD, 0.95)
+
+    // Порог: VaR &gt; 50% дневного лимита = WARNING
+    limit := clientLimits.MaxDailyLossUSD
+    if varResult.VaR.GreaterThan(limit.Mul(decimal.NewFromFloat(0.5))) {
+        return &amp;limits.Alert{
+            ClientID: clientLimits.ClientID,
+            Type:     limits.AlertMarginCall,
+            Message: fmt.Sprintf("95%% VaR ($%s) exceeds 50%% of daily limit for %s",
+                varResult.VaR.StringFixed(2), symbol),
+            Severity: "WARNING",
+        }
+    }
+
+    return nil
+}
+
+// publishAlert — публикация алерта в NATS
+func (s *RiskService) publishAlert(ctx context.Context, alert limits.Alert) {
+    event := messaging.RiskAlertEvent{
+        ClientID:  alert.ClientID,
+        AlertType: string(alert.Type),
+        Message:   alert.Message,
+        Severity:  alert.Severity,
+        At:        time.Now().UTC(),
+    }
+
+    subject := fmt.Sprintf("risk.alert.%s", alert.ClientID)
+    if err := s.publisher.Publish(ctx, subject, event); err != nil {
+        s.logger.Error("publish risk alert", "client", alert.ClientID, "err", err)
+        return
+    }
+
+    s.logger.Warn("risk alert published",
+        "client", alert.ClientID,
+        "type", alert.Type,
+        "severity", alert.Severity,
+        "message", alert.Message,
+    )
+}
+</code></pre>
+<hr>
+<h2 id="postgresql-хранилище-позиций"><a class="header" href="#postgresql-хранилище-позиций">PostgreSQL: хранилище позиций</a></h2>
+<pre><code class="language-go">// internal/storage/position_repository.go
+package storage
+
+import (
+    "context"
+    "fmt"
+
+    "github.com/jackc/pgx/v5/pgxpool"
+
+    "trading/portfolio/internal/position"
+)
+
+// PositionRepository — репозиторий позиций в PostgreSQL
+type PositionRepository struct {
+    pool *pgxpool.Pool
+}
+
+// NewPositionRepository — создание репозитория
+func NewPositionRepository(pool *pgxpool.Pool) *PositionRepository {
+    return &amp;PositionRepository{pool: pool}
+}
+
+// Upsert — создание или обновление позиции
+// INSERT ... ON CONFLICT DO UPDATE — идемпотентно
+func (r *PositionRepository) Upsert(ctx context.Context, pos *position.Position) error {
+    const query = `
+        INSERT INTO positions (client_id, symbol, quantity, avg_price, realized_pnl, updated_at)
+        VALUES ($1, $2, $3, $4, $5, NOW())
+        ON CONFLICT (client_id, symbol)
+        DO UPDATE SET
+            quantity     = EXCLUDED.quantity,
+            avg_price    = EXCLUDED.avg_price,
+            realized_pnl = EXCLUDED.realized_pnl,
+            updated_at   = EXCLUDED.updated_at
+    `
+    _, err := r.pool.Exec(ctx, query,
+        pos.ClientID,
+        pos.Symbol,
+        pos.Quantity.String(),
+        pos.AvgPrice.String(),
+        pos.RealizedPnL.String(),
+    )
+    if err != nil {
+        return fmt.Errorf("upsert position: %w", err)
+    }
+    return nil
+}
+
+// GetByClient — все позиции клиента из БД
+func (r *PositionRepository) GetByClient(ctx context.Context, clientID string) ([]position.Position, error) {
+    const query = `
+        SELECT symbol, quantity, avg_price, realized_pnl, updated_at
+        FROM positions
+        WHERE client_id = $1 AND quantity != 0
+        ORDER BY symbol
+    `
+    rows, err := r.pool.Query(ctx, query, clientID)
+    if err != nil {
+        return nil, fmt.Errorf("query positions: %w", err)
+    }
+    defer rows.Close()
+
+    var positions []position.Position
+    for rows.Next() {
+        var p position.Position
+        p.ClientID = clientID
+        var qty, avgPrice, realizedPnL string
+
+        if err := rows.Scan(&amp;p.Symbol, &amp;qty, &amp;avgPrice, &amp;realizedPnL, &amp;p.UpdatedAt); err != nil {
+            return nil, fmt.Errorf("scan position: %w", err)
+        }
+
+        // Парсинг decimal из строк
+        p.Quantity, _ = decimal.NewFromString(qty)
+        p.AvgPrice, _ = decimal.NewFromString(avgPrice)
+        p.RealizedPnL, _ = decimal.NewFromString(realizedPnL)
+
+        positions = append(positions, p)
+    }
+
+    return positions, rows.Err()
+}
+</code></pre>
+<hr>
+<h2 id="тестирование"><a class="header" href="#тестирование">Тестирование</a></h2>
+<h3 id="unit-тесты-позиций"><a class="header" href="#unit-тесты-позиций">Unit-тесты позиций</a></h3>
+<pre><code class="language-go">// internal/position/calculator_test.go
+package position_test
+
+import (
+    "testing"
+
+    "github.com/shopspring/decimal"
+
+    "trading/portfolio/internal/position"
+)
+
+func TestCalculator_BuyIncreasesLong(t *testing.T) {
+    store := position.NewPositionStore()
+    calc := position.NewCalculator(store)
+
+    // Первая покупка: 1 BTC @ 65000
+    calc.ApplyTrade(position.TradeInfo{
+        ClientID: "client-1", Symbol: "BTCUSD",
+        Side: "BUY", Price: decimal.NewFromFloat(65000), Quantity: decimal.NewFromFloat(1),
+    })
+
+    // Вторая покупка: 1 BTC @ 67000
+    calc.ApplyTrade(position.TradeInfo{
+        ClientID: "client-1", Symbol: "BTCUSD",
+        Side: "BUY", Price: decimal.NewFromFloat(67000), Quantity: decimal.NewFromFloat(1),
+    })
+
+    pos := store.Get("client-1", "BTCUSD")
+    if pos == nil {
+        t.Fatal("position not found")
+    }
+
+    // Количество = 2 BTC
+    if !pos.Quantity.Equal(decimal.NewFromFloat(2)) {
+        t.Errorf("quantity: got %s, want 2", pos.Quantity)
+    }
+
+    // Средняя цена = (65000 + 67000) / 2 = 66000
+    want := decimal.NewFromFloat(66000)
+    if !pos.AvgPrice.Equal(want) {
+        t.Errorf("avg price: got %s, want %s", pos.AvgPrice, want)
+    }
+}
+
+func TestCalculator_SellRealizesPnL(t *testing.T) {
+    store := position.NewPositionStore()
+    calc := position.NewCalculator(store)
+
+    // Купили 1 BTC @ 65000
+    calc.ApplyTrade(position.TradeInfo{
+        ClientID: "client-1", Symbol: "BTCUSD",
+        Side: "BUY", Price: decimal.NewFromFloat(65000), Quantity: decimal.NewFromFloat(1),
+    })
+
+    // Продали @ 70000 — реализованный PnL = +5000
+    calc.ApplyTrade(position.TradeInfo{
+        ClientID: "client-1", Symbol: "BTCUSD",
+        Side: "SELL", Price: decimal.NewFromFloat(70000), Quantity: decimal.NewFromFloat(1),
+    })
+
+    pos := store.Get("client-1", "BTCUSD")
+
+    // Позиция закрыта
+    if !pos.Quantity.IsZero() {
+        t.Errorf("quantity: got %s, want 0", pos.Quantity)
+    }
+
+    // Реализованный PnL = 5000
+    wantPnL := decimal.NewFromFloat(5000)
+    if !pos.RealizedPnL.Equal(wantPnL) {
+        t.Errorf("realized PnL: got %s, want %s", pos.RealizedPnL, wantPnL)
+    }
+}
+
+func TestCalculator_UnrealizedPnL(t *testing.T) {
+    pos := &amp;position.Position{
+        Quantity: decimal.NewFromFloat(2),
+        AvgPrice: decimal.NewFromFloat(65000),
+    }
+
+    currentPrice := decimal.NewFromFloat(68000)
+    pnl := pos.UnrealizedPnL(currentPrice)
+
+    // PnL = (68000 - 65000) * 2 = 6000
+    want := decimal.NewFromFloat(6000)
+    if !pnl.Equal(want) {
+        t.Errorf("unrealized PnL: got %s, want %s", pnl, want)
+    }
+}
+</code></pre>
+<h3 id="тест-var"><a class="header" href="#тест-var">Тест VaR</a></h3>
+<pre><code class="language-go">// internal/var/calculator_test.go
+package var_calc_test
+
+import (
+    "testing"
+
+    var_calc "trading/risk/internal/var"
+)
+
+func TestHistoricalVaR(t *testing.T) {
+    // 100 дней исторических доходностей (в %)
+    returns := make(var_calc.HistoricalReturns, 100)
+    for i := range returns {
+        // Нормальное распределение ~N(0, 2%)
+        returns[i] = float64(i%20-10) * 0.4
+    }
+
+    positionUSD := 100_000.0
+    result := var_calc.HistoricalVaR(returns, positionUSD, 0.95)
+
+    // VaR должен быть положительным числом
+    if result.VaR.IsNegative() {
+        t.Errorf("VaR should be positive, got %s", result.VaR)
+    }
+
+    // VaR не должен превышать размер позиции
+    if result.VaR.InexactFloat64() &gt; positionUSD {
+        t.Errorf("VaR %s exceeds position $%.0f", result.VaR, positionUSD)
+    }
+
+    t.Logf("95%% VaR for $%.0f position: $%s", positionUSD, result.VaR.StringFixed(2))
+}
+</code></pre>
+<hr>
+<h2 id="сравнение-с-c"><a class="header" href="#сравнение-с-c">Сравнение с C#</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C#</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>Event consumer</td><td>MassTransit <code>IConsumer&lt;T&gt;</code></td><td>функция <code>func(ctx, msg jetstream.Msg)</code></td></tr>
+<tr><td>Background service</td><td><code>IHostedService</code> + <code>ExecuteAsync</code></td><td>горутина + <code>context.Done()</code></td></tr>
+<tr><td>In-memory state</td><td><code>ConcurrentDictionary</code></td><td><code>sync.RWMutex</code> + map</td></tr>
+<tr><td>Decimal arithmetic</td><td>встроенный <code>decimal</code></td><td>shopspring/decimal</td></tr>
+<tr><td>DB upsert</td><td>EF Core <code>AddOrUpdate</code></td><td>pgx + <code>ON CONFLICT DO UPDATE</code></td></tr>
+<tr><td>Unit testing</td><td>xUnit + FluentAssertions</td><td>testing + ручные сравнения</td></tr>
+</tbody>
+</table>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part5-project3-trading/03_order_matching_engine.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part5-project3-trading/05_analytics_service.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part5-project3-trading/03_order_matching_engine.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part5-project3-trading/05_analytics_service.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

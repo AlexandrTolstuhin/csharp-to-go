@@ -1,0 +1,1075 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Market Data Service: WebSocket fan-out - Go для C# разработчиков</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-ecd4aa31.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-0879e167.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Go для C# разработчиков</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part5-project3-trading/02_market_data_service.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="market-data-service-websocket-fan-out"><a class="header" href="#market-data-service-websocket-fan-out">Market Data Service: WebSocket Fan-Out</a></h1>
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<p>Market Data Service — первый сервис, с которым взаимодействует трейдер. Он получает котировки от биржи (или симулятора), распределяет их по всем подключённым клиентам через WebSocket, и параллельно публикует события в NATS JetStream.</p>
+<blockquote>
+<p><strong>Для C# разработчиков</strong>: SignalR автоматически управляет группами подключений и fan-out через <code>IHubContext&lt;T&gt;</code>. В Go мы реализуем то же самое явно через горутины и каналы — это ~100 строк кода с полным контролем над поведением под нагрузкой.</p>
+</blockquote>
+<hr>
+<h2 id="архитектура-сервиса"><a class="header" href="#архитектура-сервиса">Архитектура сервиса</a></h2>
+<pre class="mermaid">graph LR
+    subgraph Market Data Service
+        FEED[Feed Reader&lt;br/&gt;goroutine] --&gt;|Tick| HUB[Hub&lt;br/&gt;manager goroutine]
+        HUB --&gt;|send| C1[Client 1&lt;br/&gt;write goroutine]
+        HUB --&gt;|send| C2[Client 2&lt;br/&gt;write goroutine]
+        HUB --&gt;|send| CN[Client N&lt;br/&gt;write goroutine]
+        HUB --&gt;|publish| NATS_PUB[NATS Publisher&lt;br/&gt;goroutine]
+    end
+
+    EXCHANGE[Биржа / Feed] --&gt;|WebSocket| FEED
+    C1 --&gt;|WebSocket| TR1[Трейдер 1]
+    C2 --&gt;|WebSocket| TR2[Трейдер 2]
+    CN --&gt;|WebSocket| TRN[Трейдер N]
+    NATS_PUB --&gt; NATS[(NATS JetStream)]
+</pre>
+
+<p>Ключевые решения:</p>
+<ul>
+<li><strong>Один Hub</strong> — единственный менеджер подключений, избегаем race conditions на map</li>
+<li><strong>Буферизованные каналы</strong> — отправка клиенту не блокирует Hub</li>
+<li><strong>Drop при переполнении</strong> — медленный клиент получает меньше тиков, но не тормозит остальных</li>
+</ul>
+<hr>
+<h2 id="hub-менеджер-подключений"><a class="header" href="#hub-менеджер-подключений">Hub: менеджер подключений</a></h2>
+<pre><code class="language-go">// internal/hub/hub.go
+package hub
+
+import (
+    "context"
+    "log/slog"
+    "sync/atomic"
+    "time"
+)
+
+// ClientMessage — сообщение для отправки клиенту
+type ClientMessage struct {
+    Data []byte
+}
+
+// Client — подключённый WebSocket клиент
+type Client struct {
+    id   string
+    send chan ClientMessage // буферизованный канал отправки
+}
+
+// Hub — центральный менеджер всех подключений
+// Единственный читатель своих каналов → нет race conditions
+type Hub struct {
+    // Каналы для управления клиентами
+    register   chan *Client
+    unregister chan *Client
+    broadcast  chan ClientMessage
+
+    // Текущие клиенты (только Hub читает/пишет этот map)
+    clients map[string]*Client
+
+    // Метрики
+    connCount atomic.Int64
+
+    logger *slog.Logger
+}
+
+// NewHub — создание Hub
+func NewHub(logger *slog.Logger) *Hub {
+    return &amp;Hub{
+        register:   make(chan *Client, 64),
+        unregister: make(chan *Client, 64),
+        broadcast:  make(chan ClientMessage, 512), // буфер для котировок
+        clients:    make(map[string]*Client),
+        logger:     logger,
+    }
+}
+
+// Run — основной цикл Hub. Запускается в отдельной горутине.
+// Единственная горутина, которая читает/пишет map clients.
+func (h *Hub) Run(ctx context.Context) {
+    for {
+        select {
+        case &lt;-ctx.Done():
+            h.logger.Info("hub shutting down", "clients", len(h.clients))
+            // Закрываем все клиентские каналы
+            for _, client := range h.clients {
+                close(client.send)
+            }
+            return
+
+        case client := &lt;-h.register:
+            h.clients[client.id] = client
+            h.connCount.Add(1)
+            h.logger.Info("client connected",
+                "id", client.id,
+                "total", h.connCount.Load())
+
+        case client := &lt;-h.unregister:
+            if _, ok := h.clients[client.id]; ok {
+                delete(h.clients, client.id)
+                close(client.send)
+                h.connCount.Add(-1)
+                h.logger.Info("client disconnected",
+                    "id", client.id,
+                    "total", h.connCount.Load())
+            }
+
+        case msg := &lt;-h.broadcast:
+            h.fanOut(msg)
+        }
+    }
+}
+
+// fanOut — раздача сообщения всем клиентам
+// Неблокирующая запись: медленный клиент получит drop, но не заблокирует Hub
+func (h *Hub) fanOut(msg ClientMessage) {
+    dropped := 0
+    for _, client := range h.clients {
+        select {
+        case client.send &lt;- msg:
+            // успешно поставлено в очередь
+        default:
+            // буфер клиента полон — drop этого тика
+            dropped++
+            h.logger.Warn("client slow, tick dropped", "client_id", client.id)
+        }
+    }
+    if dropped &gt; 0 {
+        // В prod: инкрементировать метрику dropped_ticks_total
+        _ = dropped
+    }
+}
+
+// Broadcast — публикация сообщения всем клиентам
+// Thread-safe: отправляем в канал, Hub обработает в своём цикле
+func (h *Hub) Broadcast(msg ClientMessage) {
+    select {
+    case h.broadcast &lt;- msg:
+    default:
+        // Hub перегружен — в prod логируем + метрика
+        h.logger.Error("hub broadcast channel full, dropping tick")
+    }
+}
+
+// Register — регистрация нового клиента
+func (h *Hub) Register(client *Client) {
+    h.register &lt;- client
+}
+
+// Unregister — удаление клиента
+func (h *Hub) Unregister(client *Client) {
+    h.unregister &lt;- client
+}
+
+// ConnCount — текущее число подключений (атомарно, без блокировки)
+func (h *Hub) ConnCount() int64 {
+    return h.connCount.Load()
+}
+</code></pre>
+<hr>
+<h2 id="websocket-handler"><a class="header" href="#websocket-handler">WebSocket Handler</a></h2>
+<pre><code class="language-go">// internal/server/ws_handler.go
+package server
+
+import (
+    "net/http"
+    "time"
+
+    "github.com/google/uuid"
+    "github.com/gorilla/websocket"
+    "log/slog"
+
+    "trading/market-data/internal/hub"
+)
+
+const (
+    writeWait      = 10 * time.Second  // таймаут записи в WebSocket
+    pongWait       = 60 * time.Second  // ждём pong от клиента
+    pingPeriod     = 54 * time.Second  // интервал отправки ping (&lt; pongWait)
+    maxMessageSize = 512               // максимальный размер входящего сообщения
+    sendBufferSize = 256               // размер буфера канала отправки клиента
+)
+
+var upgrader = websocket.Upgrader{
+    ReadBufferSize:  1024,
+    WriteBufferSize: 4096,
+    CheckOrigin: func(r *http.Request) bool {
+        // В prod: проверять Origin header
+        return true
+    },
+}
+
+// WSHandler — HTTP handler для WebSocket подключений
+type WSHandler struct {
+    hub    *hub.Hub
+    logger *slog.Logger
+}
+
+// ServeHTTP — апгрейд HTTP → WebSocket и запуск горутин клиента
+func (h *WSHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+    conn, err := upgrader.Upgrade(w, r, nil)
+    if err != nil {
+        h.logger.Error("websocket upgrade failed", "err", err)
+        return
+    }
+
+    clientID := uuid.New().String()
+    client := &amp;hub.Client{
+        ID:   clientID,
+        Send: make(chan hub.ClientMessage, sendBufferSize),
+    }
+
+    h.hub.Register(client)
+
+    // Каждый клиент = 2 горутины: читающая и пишущая
+    // Это стандартный паттерн gorilla/websocket
+    go h.writePump(conn, client)
+    go h.readPump(conn, client)
+}
+
+// writePump — горутина записи: берёт из канала, пишет в WebSocket
+// Одна горутина на клиента — gorilla/websocket не thread-safe для writes
+func (h *WSHandler) writePump(conn *websocket.Conn, client *hub.Client) {
+    ticker := time.NewTicker(pingPeriod)
+    defer func() {
+        ticker.Stop()
+        conn.Close()
+    }()
+
+    for {
+        select {
+        case msg, ok := &lt;-client.Send:
+            conn.SetWriteDeadline(time.Now().Add(writeWait))
+            if !ok {
+                // Hub закрыл канал — клиент отключён
+                conn.WriteMessage(websocket.CloseMessage, []byte{})
+                return
+            }
+
+            w, err := conn.NextWriter(websocket.TextMessage)
+            if err != nil {
+                return
+            }
+            w.Write(msg.Data)
+
+            // Батчинг: отправляем все накопившиеся сообщения за один write
+            // Это существенно снижает syscall overhead при высоком throughput
+            n := len(client.Send)
+            for i := 0; i &lt; n; i++ {
+                w.Write([]byte{'\n'})
+                m := &lt;-client.Send
+                w.Write(m.Data)
+            }
+
+            if err := w.Close(); err != nil {
+                return
+            }
+
+        case &lt;-ticker.C:
+            // Периодический ping для проверки живости клиента
+            conn.SetWriteDeadline(time.Now().Add(writeWait))
+            if err := conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+                return
+            }
+        }
+    }
+}
+
+// readPump — горутина чтения: обрабатывает входящие сообщения и pong
+// Также обнаруживает дисконнект через ReadMessage
+func (h *WSHandler) readPump(conn *websocket.Conn, client *hub.Client) {
+    defer func() {
+        h.hub.Unregister(client)
+        conn.Close()
+    }()
+
+    conn.SetReadLimit(maxMessageSize)
+    conn.SetReadDeadline(time.Now().Add(pongWait))
+    conn.SetPongHandler(func(string) error {
+        // Клиент жив — сдвигаем дедлайн
+        conn.SetReadDeadline(time.Now().Add(pongWait))
+        return nil
+    })
+
+    for {
+        _, message, err := conn.ReadMessage()
+        if err != nil {
+            if websocket.IsUnexpectedCloseError(err,
+                websocket.CloseGoingAway,
+                websocket.CloseAbnormalClosure) {
+                h.logger.Warn("websocket unexpected close",
+                    "client_id", client.ID, "err", err)
+            }
+            return
+        }
+
+        // Трейдер может подписаться на конкретные символы
+        // Для простоты здесь не реализовано — все получают всё
+        _ = message
+    }
+}
+</code></pre>
+<hr>
+<h2 id="feed-reader-приём-котировок"><a class="header" href="#feed-reader-приём-котировок">Feed Reader: приём котировок</a></h2>
+<pre><code class="language-go">// internal/feed/reader.go
+package feed
+
+import (
+    "context"
+    "encoding/json"
+    "fmt"
+    "log/slog"
+    "math/rand"
+    "time"
+
+    "github.com/shopspring/decimal"
+
+    "trading/market-data/internal/domain"
+)
+
+// TickHandler — функция-обработчик нового тика
+type TickHandler func(tick domain.Tick)
+
+// SimulatedReader — симулятор рыночных данных (для разработки)
+// В production заменяется на реальный WebSocket к бирже
+type SimulatedReader struct {
+    symbols  []domain.Symbol
+    handlers []TickHandler
+    logger   *slog.Logger
+}
+
+// NewSimulatedReader — создание симулятора
+func NewSimulatedReader(symbols []domain.Symbol, logger *slog.Logger) *SimulatedReader {
+    return &amp;SimulatedReader{
+        symbols: symbols,
+        logger:  logger,
+    }
+}
+
+// OnTick — регистрация обработчика тиков
+func (r *SimulatedReader) OnTick(handler TickHandler) {
+    r.handlers = append(r.handlers, handler)
+}
+
+// Run — запуск симулятора котировок
+func (r *SimulatedReader) Run(ctx context.Context) error {
+    // Начальные цены
+    prices := map[domain.Symbol]float64{
+        domain.SymbolBTCUSD: 65000.0,
+        domain.SymbolETHUSD: 3500.0,
+    }
+
+    ticker := time.NewTicker(100 * time.Millisecond) // 10 тиков/сек на символ
+    defer ticker.Stop()
+
+    r.logger.Info("simulated feed started", "symbols", r.symbols)
+
+    for {
+        select {
+        case &lt;-ctx.Done():
+            r.logger.Info("feed reader stopped")
+            return nil
+        case &lt;-ticker.C:
+            for _, symbol := range r.symbols {
+                tick := r.generateTick(symbol, prices)
+                prices[symbol], _ = tick.Price.Float64()
+                r.dispatch(tick)
+            }
+        }
+    }
+}
+
+// generateTick — генерация реалистичного тика (random walk)
+func (r *SimulatedReader) generateTick(symbol domain.Symbol, prices map[domain.Symbol]float64) domain.Tick {
+    current := prices[symbol]
+
+    // Случайное движение ±0.1%
+    change := current * (rand.Float64()*0.002 - 0.001)
+    newPrice := current + change
+    if newPrice &lt;= 0 {
+        newPrice = current
+    }
+
+    volume := rand.Float64() * 10 // 0-10 единиц
+
+    return domain.Tick{
+        Symbol:    symbol,
+        Price:     decimal.NewFromFloat(newPrice).Round(2),
+        Volume:    decimal.NewFromFloat(volume).Round(4),
+        Timestamp: time.Now().UTC(),
+    }
+}
+
+// dispatch — вызов всех обработчиков
+func (r *SimulatedReader) dispatch(tick domain.Tick) {
+    for _, h := range r.handlers {
+        h(tick)
+    }
+}
+
+// ExchangeReader — читатель реального WebSocket фида биржи
+type ExchangeReader struct {
+    url      string
+    handlers []TickHandler
+    logger   *slog.Logger
+}
+
+// NewExchangeReader — подключение к реальной бирже
+func NewExchangeReader(url string, logger *slog.Logger) *ExchangeReader {
+    return &amp;ExchangeReader{url: url, logger: logger}
+}
+
+// OnTick — регистрация обработчика
+func (r *ExchangeReader) OnTick(handler TickHandler) {
+    r.handlers = append(r.handlers, handler)
+}
+
+// Run — подключение и чтение с переподключением при ошибках
+func (r *ExchangeReader) Run(ctx context.Context) error {
+    for {
+        if err := r.connect(ctx); err != nil {
+            if ctx.Err() != nil {
+                return nil // контекст отменён — нормальное завершение
+            }
+            r.logger.Error("feed connection error, reconnecting",
+                "err", err, "url", r.url)
+            select {
+            case &lt;-ctx.Done():
+                return nil
+            case &lt;-time.After(5 * time.Second):
+                // retry
+            }
+        }
+    }
+}
+
+// connect — одна попытка подключения и чтения
+func (r *ExchangeReader) connect(ctx context.Context) error {
+    // В реальности здесь gorilla/websocket.Dial + чтение JSON
+    // Формат зависит от конкретной биржи (Binance, Kraken, etc.)
+    return fmt.Errorf("not implemented: connect to %s", r.url)
+}
+</code></pre>
+<hr>
+<h2 id="publisher-отправка-в-nats"><a class="header" href="#publisher-отправка-в-nats">Publisher: отправка в NATS</a></h2>
+<pre><code class="language-go">// internal/publisher/nats_publisher.go
+package publisher
+
+import (
+    "context"
+    "encoding/json"
+    "fmt"
+    "log/slog"
+    "time"
+
+    "github.com/nats-io/nats.go/jetstream"
+    "github.com/shopspring/decimal"
+
+    "trading/market-data/internal/domain"
+)
+
+// TickMessage — формат сообщения в NATS
+type TickMessage struct {
+    Symbol    string          `json:"symbol"`
+    Price     decimal.Decimal `json:"price"`
+    Volume    decimal.Decimal `json:"volume"`
+    Timestamp time.Time       `json:"ts"`
+}
+
+// NATSPublisher — публикация тиков в NATS JetStream
+type NATSPublisher struct {
+    js     jetstream.JetStream
+    logger *slog.Logger
+}
+
+// NewNATSPublisher — создание публикатора
+func NewNATSPublisher(js jetstream.JetStream, logger *slog.Logger) *NATSPublisher {
+    return &amp;NATSPublisher{js: js, logger: logger}
+}
+
+// Publish — публикация тика в NATS
+// Subject: market.tick.{SYMBOL}
+func (p *NATSPublisher) Publish(ctx context.Context, tick domain.Tick) error {
+    msg := TickMessage{
+        Symbol:    string(tick.Symbol),
+        Price:     tick.Price,
+        Volume:    tick.Volume,
+        Timestamp: tick.Timestamp,
+    }
+
+    data, err := json.Marshal(msg)
+    if err != nil {
+        return fmt.Errorf("marshal tick: %w", err)
+    }
+
+    subject := fmt.Sprintf("market.tick.%s", tick.Symbol)
+    _, err = p.js.Publish(ctx, subject, data)
+    if err != nil {
+        return fmt.Errorf("nats publish %s: %w", subject, err)
+    }
+
+    return nil
+}
+</code></pre>
+<hr>
+<h2 id="сборка-сервиса-maingo"><a class="header" href="#сборка-сервиса-maingo">Сборка сервиса: main.go</a></h2>
+<pre><code class="language-go">// cmd/server/main.go
+package main
+
+import (
+    "context"
+    "fmt"
+    "log/slog"
+    "net/http"
+    "os"
+    "os/signal"
+    "syscall"
+    "time"
+
+    "github.com/nats-io/nats.go"
+    "github.com/nats-io/nats.go/jetstream"
+
+    "trading/market-data/internal/domain"
+    "trading/market-data/internal/feed"
+    "trading/market-data/internal/hub"
+    "trading/market-data/internal/publisher"
+    "trading/market-data/internal/server"
+)
+
+func main() {
+    logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+
+    // Graceful shutdown
+    ctx, stop := signal.NotifyContext(context.Background(),
+        syscall.SIGTERM, syscall.SIGINT)
+    defer stop()
+
+    // NATS подключение
+    nc, err := nats.Connect(envOrDefault("NATS_URL", "nats://localhost:4222"))
+    if err != nil {
+        logger.Error("nats connect", "err", err)
+        os.Exit(1)
+    }
+    defer nc.Drain()
+
+    js, err := jetstream.New(nc)
+    if err != nil {
+        logger.Error("jetstream init", "err", err)
+        os.Exit(1)
+    }
+
+    // Создание NATS stream
+    _, err = js.CreateOrUpdateStream(ctx, jetstream.StreamConfig{
+        Name:     "MARKET",
+        Subjects: []string{"market.tick.*"},
+        MaxAge:   24 * time.Hour,
+        Storage:  jetstream.FileStorage,
+    })
+    if err != nil {
+        logger.Error("create stream", "err", err)
+        os.Exit(1)
+    }
+
+    // Создание компонентов
+    h := hub.NewHub(logger)
+    natsPublisher := publisher.NewNATSPublisher(js, logger)
+
+    symbols := []domain.Symbol{domain.SymbolBTCUSD, domain.SymbolETHUSD}
+    feedReader := feed.NewSimulatedReader(symbols, logger)
+
+    // Обработчик тиков: фанаут в Hub + NATS
+    feedReader.OnTick(func(tick domain.Tick) {
+        // Сериализация один раз — для всех клиентов
+        data, _ := marshalTick(tick)
+        h.Broadcast(hub.ClientMessage{Data: data})
+
+        // Публикация в NATS (неблокирующий вызов с таймаутом)
+        pubCtx, cancel := context.WithTimeout(ctx, 100*time.Millisecond)
+        defer cancel()
+        if err := natsPublisher.Publish(pubCtx, tick); err != nil {
+            logger.Warn("nats publish failed", "err", err)
+        }
+    })
+
+    // HTTP сервер
+    mux := http.NewServeMux()
+    wsHandler := server.NewWSHandler(h, logger)
+    mux.Handle("/ws", wsHandler)
+    mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+        fmt.Fprintf(w, `{"status":"ok","connections":%d}`, h.ConnCount())
+    })
+
+    httpServer := &amp;http.Server{
+        Addr:         envOrDefault("HTTP_ADDR", ":8080"),
+        Handler:      mux,
+        ReadTimeout:  10 * time.Second,
+        WriteTimeout: 10 * time.Second,
+        IdleTimeout:  120 * time.Second,
+    }
+
+    // Запуск всех компонентов
+    go h.Run(ctx)
+    go feedReader.Run(ctx)
+
+    go func() {
+        logger.Info("HTTP server starting", "addr", httpServer.Addr)
+        if err := httpServer.ListenAndServe(); err != http.ErrServerClosed {
+            logger.Error("http server error", "err", err)
+        }
+    }()
+
+    // Ожидание завершения
+    &lt;-ctx.Done()
+    logger.Info("shutting down market data service")
+
+    shutdownCtx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+    defer cancel()
+    httpServer.Shutdown(shutdownCtx)
+}
+
+func marshalTick(tick domain.Tick) ([]byte, error) {
+    // В prod: использовать пул байтовых буферов через sync.Pool
+    // для снижения аллокаций при высоком throughput
+    type tickJSON struct {
+        Symbol string `json:"s"`
+        Price  string `json:"p"` // строка для точности
+        Volume string `json:"v"`
+        Time   int64  `json:"t"` // unix milliseconds
+    }
+    t := tickJSON{
+        Symbol: string(tick.Symbol),
+        Price:  tick.Price.String(),
+        Volume: tick.Volume.String(),
+        Time:   tick.Timestamp.UnixMilli(),
+    }
+    return json.Marshal(t)
+}
+
+func envOrDefault(key, def string) string {
+    if v := os.Getenv(key); v != "" {
+        return v
+    }
+    return def
+}
+</code></pre>
+<hr>
+<h2 id="тестирование"><a class="header" href="#тестирование">Тестирование</a></h2>
+<h3 id="тест-hub-fan-out-и-drop-медленных-клиентов"><a class="header" href="#тест-hub-fan-out-и-drop-медленных-клиентов">Тест Hub: fan-out и drop медленных клиентов</a></h3>
+<pre><code class="language-go">// internal/hub/hub_test.go
+package hub_test
+
+import (
+    "context"
+    "log/slog"
+    "os"
+    "sync"
+    "testing"
+    "time"
+
+    "trading/market-data/internal/hub"
+)
+
+func TestHub_FanOut(t *testing.T) {
+    logger := slog.New(slog.NewTextHandler(os.Stderr, nil))
+    h := hub.NewHub(logger)
+
+    ctx, cancel := context.WithCancel(context.Background())
+    defer cancel()
+
+    go h.Run(ctx)
+
+    // Подключаем 3 клиентов
+    const numClients = 3
+    clients := make([]*hub.Client, numClients)
+    for i := range clients {
+        clients[i] = &amp;hub.Client{
+            ID:   fmt.Sprintf("client-%d", i),
+            Send: make(chan hub.ClientMessage, 10),
+        }
+        h.Register(clients[i])
+    }
+    time.Sleep(10 * time.Millisecond) // даём Hub зарегистрировать
+
+    // Broadcast 5 сообщений
+    const numMsgs = 5
+    for i := 0; i &lt; numMsgs; i++ {
+        h.Broadcast(hub.ClientMessage{Data: []byte(`{"price":"100"}`)})
+    }
+    time.Sleep(10 * time.Millisecond)
+
+    // Каждый клиент должен получить все сообщения
+    for i, client := range clients {
+        if got := len(client.Send); got != numMsgs {
+            t.Errorf("client %d: got %d messages, want %d", i, got, numMsgs)
+        }
+    }
+}
+
+func TestHub_SlowClientDrop(t *testing.T) {
+    logger := slog.New(slog.NewTextHandler(os.Stderr, nil))
+    h := hub.NewHub(logger)
+
+    ctx, cancel := context.WithCancel(context.Background())
+    defer cancel()
+
+    go h.Run(ctx)
+
+    // Медленный клиент с буфером = 1
+    slowClient := &amp;hub.Client{
+        ID:   "slow",
+        Send: make(chan hub.ClientMessage, 1),
+    }
+    h.Register(slowClient)
+    time.Sleep(10 * time.Millisecond)
+
+    // Отправляем больше сообщений, чем буфер
+    for i := 0; i &lt; 10; i++ {
+        h.Broadcast(hub.ClientMessage{Data: []byte(`{}`)})
+    }
+    time.Sleep(10 * time.Millisecond)
+
+    // Клиент получил не более 1 сообщения (буфер = 1)
+    if got := len(slowClient.Send); got &gt; 1 {
+        t.Errorf("slow client: got %d messages, expected at most 1 (drops should occur)", got)
+    }
+}
+</code></pre>
+<h3 id="бенчмарк-throughput-hub"><a class="header" href="#бенчмарк-throughput-hub">Бенчмарк: throughput Hub</a></h3>
+<pre><code class="language-go">// internal/hub/hub_bench_test.go
+package hub_test
+
+import (
+    "context"
+    "log/slog"
+    "os"
+    "testing"
+
+    "trading/market-data/internal/hub"
+)
+
+// BenchmarkHub_Broadcast — измеряем throughput при 1000 клиентах
+// go test -bench=BenchmarkHub_Broadcast -benchmem
+func BenchmarkHub_Broadcast(b *testing.B) {
+    logger := slog.New(slog.NewTextHandler(os.Stderr, &amp;slog.HandlerOptions{Level: slog.LevelError}))
+    h := hub.NewHub(logger)
+
+    ctx, cancel := context.WithCancel(context.Background())
+    defer cancel()
+    go h.Run(ctx)
+
+    // 1000 клиентов
+    const numClients = 1000
+    for i := 0; i &lt; numClients; i++ {
+        client := &amp;hub.Client{
+            ID:   fmt.Sprintf("c%d", i),
+            Send: make(chan hub.ClientMessage, 512),
+        }
+        h.Register(client)
+        // Дренируем каналы чтобы не переполнились
+        go func() {
+            for range client.Send {
+            }
+        }()
+    }
+
+    msg := hub.ClientMessage{Data: []byte(`{"s":"BTCUSD","p":"65000","v":"0.5","t":1234567890}`)}
+
+    b.ResetTimer()
+    b.ReportAllocs()
+
+    for i := 0; i &lt; b.N; i++ {
+        h.Broadcast(msg)
+    }
+}
+
+// Ожидаемый результат на современном железе:
+// BenchmarkHub_Broadcast-8   500000   2100 ns/op   0 B/op   0 allocs/op
+// 2.1µs на fan-out к 1000 клиентам = ~476K broadcasts/sec
+</code></pre>
+<hr>
+<h2 id="мониторинг"><a class="header" href="#мониторинг">Мониторинг</a></h2>
+<pre><code class="language-go">// internal/metrics/metrics.go
+package metrics
+
+import (
+    "github.com/prometheus/client_golang/prometheus"
+    "github.com/prometheus/client_golang/prometheus/promauto"
+)
+
+var (
+    WebSocketConnections = promauto.NewGauge(prometheus.GaugeOpts{
+        Name: "market_data_ws_connections_total",
+        Help: "Current number of WebSocket connections",
+    })
+
+    TicksPublished = promauto.NewCounterVec(prometheus.CounterOpts{
+        Name: "market_data_ticks_published_total",
+        Help: "Total ticks published to clients",
+    }, []string{"symbol"})
+
+    TicksDropped = promauto.NewCounterVec(prometheus.CounterOpts{
+        Name: "market_data_ticks_dropped_total",
+        Help: "Ticks dropped due to slow clients",
+    }, []string{"reason"})
+
+    BroadcastLatency = promauto.NewHistogram(prometheus.HistogramOpts{
+        Name:    "market_data_broadcast_duration_seconds",
+        Help:    "Time to broadcast one tick to all clients",
+        Buckets: []float64{0.0001, 0.0005, 0.001, 0.005, 0.01}, // 100µs - 10ms
+    })
+)
+</code></pre>
+<hr>
+<h2 id="ключевые-решения-и-их-обоснование"><a class="header" href="#ключевые-решения-и-их-обоснование">Ключевые решения и их обоснование</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Решение</th><th>Альтернатива</th><th>Обоснование</th></tr>
+</thead>
+<tbody>
+<tr><td>Один Hub goroutine</td><td>sync.RWMutex на map</td><td>Нет lock contention, детерминированный порядок</td></tr>
+<tr><td>Буферизованные каналы клиентов</td><td>Sync send</td><td>Медленный клиент не тормозит Hub</td></tr>
+<tr><td>Drop при переполнении</td><td>Блокировка отправителя</td><td>Trading: устаревшая котировка хуже пропущенной</td></tr>
+<tr><td>Батчинг WebSocket writes</td><td>Один write на тик</td><td>Снижает syscall count при высоком throughput</td></tr>
+<tr><td>JSON с int64 timestamp</td><td>time.Time в JSON</td><td>Уменьшает размер сообщений, быстрее парсинг</td></tr>
+</tbody>
+</table>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part5-project3-trading/01_architecture.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part5-project3-trading/03_order_matching_engine.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part5-project3-trading/01_architecture.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part5-project3-trading/03_order_matching_engine.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

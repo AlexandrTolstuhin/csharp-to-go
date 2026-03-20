@@ -35,10 +35,10 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-3ab6fb17.js";
+            window.path_to_searchindex_js = "../searchindex-ecd4aa31.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-a74b6836.js"></script>
+        <script src="../toc-0879e167.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -944,6 +944,36 @@ func (r *UserRepo) GetUser(ctx context.Context, id int) (*User, error) {
     return &amp;u, row.Scan(&amp;u.ID, &amp;u.Name)
 }
 </code></pre>
+<h3 id="внутреннее-устройство-не-map-а-связный-список"><a class="header" href="#внутреннее-устройство-не-map-а-связный-список">Внутреннее устройство: не map, а связный список</a></h3>
+<p>Распространённое заблуждение — считать <code>WithValue</code> обёрткой над <code>map[key]value</code> с O(1) поиском. На деле каждый вызов создаёт новый узел, вложенный поверх предыдущего:</p>
+<pre><code class="language-go">// Упрощённая структура из стандартной библиотеки
+type valueCtx struct {
+    Context       // родительский контекст
+    key, val any  // одна пара ключ-значение
+}
+</code></pre>
+<p>Три вызова <code>WithValue</code> дают цепочку из трёх узлов:</p>
+<pre><code class="language-go">ctx0 := context.Background()
+ctx1 := context.WithValue(ctx0, keyA, 1) // ctx1 → ctx0
+ctx2 := context.WithValue(ctx1, keyB, 2) // ctx2 → ctx1 → ctx0
+ctx3 := context.WithValue(ctx2, keyC, 3) // ctx3 → ctx2 → ctx1 → ctx0
+</code></pre>
+<p><code>ctx3.Value(keyA)</code> обходит всю цепочку от конца к началу — это <strong>O(n)</strong>, где n — глубина. Для 3–5 значений это несущественно, но при наивном накоплении в цикле становится проблемой:</p>
+<pre><code class="language-go">// ❌ ctx растёт с каждой итерацией — цепочка из 1000 узлов после 1000 сообщений
+for msg := range messages {
+    ctx = context.WithValue(ctx, msgIDKey, msg.ID)
+    process(ctx, msg)
+}
+
+// ✅ := вместо = — новый локальный ctx глубиной 1 от родителя
+for msg := range messages {
+    ctx := context.WithValue(ctx, msgIDKey, msg.ID)
+    process(ctx, msg)
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Вывод</strong>: храните в контексте единицы значений (trace ID, request ID, auth info) — не десятки. Для передачи большого числа параметров используйте явные аргументы или структуры.</p>
+</blockquote>
 <h3 id="contextbackground-vs-contexttodo"><a class="header" href="#contextbackground-vs-contexttodo">context.Background() vs context.TODO()</a></h3>
 <p>Обе функции возвращают пустой корневой контекст, но несут разную смысловую нагрузку:</p>
 <div class="table-wrapper">

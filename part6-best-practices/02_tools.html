@@ -35,10 +35,10 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-3ab6fb17.js";
+            window.path_to_searchindex_js = "../searchindex-ecd4aa31.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-a74b6836.js"></script>
+        <script src="../toc-0879e167.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -1017,6 +1017,429 @@ Go MVS (minimal version):
   B v1.2 (минимальная, удовлетворяющая всем требованиям)
 </code></pre>
 <p>MVS гарантирует воспроизводимость: одинаковые go.mod → одинаковые версии.</p>
+<h3 id="публикация-модуля-на-github"><a class="header" href="#публикация-модуля-на-github">Публикация модуля на GitHub</a></h3>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: NuGet workflow — <code>dotnet pack</code> → <code>nuget push</code> → nuget.org. В Go всё проще: нет отдельного реестра, нет команды «publish». Достаточно правильного module path и git-тега. GOPROXY сам скачает модуль с GitHub по URL.</p>
+</blockquote>
+<h4 id="правильный-module-path"><a class="header" href="#правильный-module-path">Правильный module path</a></h4>
+<p>Module path — это одновременно идентификатор модуля и URL, по которому <code>go get</code> его скачает.</p>
+<pre><code class="language-bash"># Создание модуля с правильным путём
+go mod init github.com/username/mylib
+</code></pre>
+<pre><code class="language-go">// go.mod
+module github.com/username/mylib
+
+go 1.22
+</code></pre>
+<p>Путь <strong>обязан совпадать</strong> с URL репозитория — иначе <code>go get github.com/username/mylib</code> не найдёт модуль.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C# (NuGet)</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td><code>&lt;PackageId&gt;MyLib&lt;/PackageId&gt;</code> в .csproj</td><td><code>module github.com/username/mylib</code> в go.mod</td></tr>
+<tr><td>ID может отличаться от пути к репозиторию</td><td>Path = URL репозитория</td></tr>
+<tr><td>Публикуется на nuget.org</td><td>Берётся напрямую с GitHub/GitLab/…</td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="структура-репозитория-библиотеки"><a class="header" href="#структура-репозитория-библиотеки">Структура репозитория-библиотеки</a></h4>
+<p>Библиотека (пакет без <code>main</code>) отличается от бинарного проекта:</p>
+<pre><code>mylib/                        # корень репозитория
+├── go.mod                    # module github.com/username/mylib
+├── go.sum
+├── LICENSE                   # обязателен для open source
+├── README.md
+├── doc.go                    # package comment (опционально)
+├── mylib.go                  # основной код пакета
+├── mylib_test.go
+├── internal/                 # приватный код (не экспортируется)
+│   └── helper.go
+└── example/                  # примеры использования (опционально)
+    └── main.go
+</code></pre>
+<p>Сравнение со структурой бинарного проекта:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>Библиотека</th><th>Бинарный проект</th></tr>
+</thead>
+<tbody>
+<tr><td><code>package main</code></td><td>Нет</td><td>Да (в <code>cmd/</code>)</td></tr>
+<tr><td>Точка входа</td><td>Нет</td><td><code>main()</code></td></tr>
+<tr><td>Цель <code>go build</code></td><td>Кэш компиляции</td><td>Исполняемый файл</td></tr>
+<tr><td><code>internal/</code></td><td>Для скрытия деталей</td><td>Для скрытия деталей</td></tr>
+<tr><td>Экспортируемый API</td><td>Весь публичный код</td><td>Только CLI/config</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>💡 <strong>Идиома Go</strong>: директория <code>internal/</code> — встроенный механизм инкапсуляции. Пакеты внутри <code>internal/</code> видны только родительскому модулю. Аналог <code>internal</code> в C#, но на уровне файловой системы.</p>
+</blockquote>
+<h4 id="godoc-комментарии-для-публичного-api"><a class="header" href="#godoc-комментарии-для-публичного-api">godoc-комментарии для публичного API</a></h4>
+<p>Go генерирует документацию прямо из комментариев. Правила просты, но их нарушение делает API неудобным.</p>
+<p><strong>Package comment</strong> — описание всего пакета:</p>
+<pre><code class="language-go">// Package mylib предоставляет утилиты для работы с временными рядами.
+// Совместим с форматами Prometheus и OpenTelemetry.
+//
+// Пример использования:
+//
+//	ts := mylib.NewTimeSeries()
+//	ts.Add(time.Now(), 42.0)
+//	fmt.Println(ts.Last())
+package mylib
+</code></pre>
+<p><strong>Exported symbols</strong> — каждый экспортируемый тип, функция, константа:</p>
+<pre><code class="language-go">// Client управляет соединением с сервером метрик.
+// Потокобезопасен — можно использовать из нескольких горутин.
+type Client struct {
+    // содержит только неэкспортированные поля
+}
+
+// NewClient создаёт новый Client с указанным адресом.
+// addr должен быть в формате "host:port".
+// Возвращает ошибку, если соединение не удалось установить за timeout.
+func NewClient(addr string, timeout time.Duration) (*Client, error) {
+    // ...
+}
+
+// Send отправляет метрику на сервер.
+// Метод блокирующий — используйте горутину для асинхронной отправки.
+func (c *Client) Send(name string, value float64) error {
+    // ...
+}
+</code></pre>
+<p><strong>Примеры</strong> в <code>_test.go</code> (отображаются на pkg.go.dev и запускаются как тесты):</p>
+<pre><code class="language-go">// example_test.go
+package mylib_test
+
+import (
+    "fmt"
+    "github.com/username/mylib"
+)
+
+func ExampleNewClient() {
+    client, err := mylib.NewClient("localhost:9090", 5*time.Second)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer client.Close()
+
+    err = client.Send("cpu_usage", 0.75)
+    fmt.Println(err)
+    // Output: &lt;nil&gt;
+}
+</code></pre>
+<p>Сравнение с C#:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>C# XML doc</th><th>Go godoc</th></tr>
+</thead>
+<tbody>
+<tr><td><code>/// &lt;summary&gt;Описание&lt;/summary&gt;</code></td><td><code>// Описание</code> — обычный комментарий перед символом</td></tr>
+<tr><td>Генерация: <code>dotnet build</code> → XML</td><td>Генерация: <code>go doc</code> / pkg.go.dev автоматически</td></tr>
+<tr><td>Отдельный файл .xml</td><td>Встроено в исходник</td></tr>
+<tr><td>Примеры: <code>&lt;example&gt;</code> тег</td><td><code>func ExampleXxx()</code> в <code>_test.go</code></td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="версионирование-через-git-tags"><a class="header" href="#версионирование-через-git-tags">Версионирование через git tags</a></h4>
+<p>Go использует git-теги для определения версий. Никакой команды «publish» нет.</p>
+<pre><code class="language-bash"># Убедиться, что всё готово
+go mod tidy
+go test ./...
+
+# Создать тег (семантическое версионирование обязательно)
+git tag v1.2.3
+git push origin v1.2.3
+
+# Или создать и запушить одной командой
+git tag v1.2.3 &amp;&amp; git push origin v1.2.3
+</code></pre>
+<p><strong>Семантическое версионирование</strong> (SemVer):</p>
+<pre><code>v1.2.3
+│ │ └── patch: исправления ошибок (обратно совместимо)
+│ └──── minor: новый функционал (обратно совместимо)
+└────── major: ломающие изменения
+</code></pre>
+<p>Правила Go:</p>
+<ul>
+<li><code>v0.x.y</code> — нестабильный API, ломающие изменения допустимы без major bump</li>
+<li><code>v1.x.y</code> — стабильный API, ломающие изменения → <code>v2</code></li>
+<li>Нет тега <code>latest</code> как в npm — используется последний тег</li>
+</ul>
+<p><strong>Major version suffix — критически важно для v2+</strong>:</p>
+<pre><code class="language-bash"># ❌ Неправильно: v2 без изменения module path
+git tag v2.0.0  # go get получит этот тег, но импорты сломаются
+
+# ✅ Правильно: v2 требует /v2 в module path
+</code></pre>
+<pre><code class="language-go">// go.mod для v2
+module github.com/username/mylib/v2
+
+go 1.22
+</code></pre>
+<pre><code class="language-go">// Пользователи библиотеки импортируют с /v2
+import "github.com/username/mylib/v2"
+</code></pre>
+<p>Структура репозитория для v2 (два подхода):</p>
+<pre><code class="language-bash"># Подход 1: major branch (рекомендуется для простоты)
+git checkout -b v2
+# Обновить go.mod: module github.com/username/mylib/v2
+
+# Подход 2: поддиректория /v2 (monorepo стиль)
+mylib/
+├── v2/
+│   ├── go.mod   # module github.com/username/mylib/v2
+│   └── ...
+└── go.mod       # module github.com/username/mylib (v1)
+</code></pre>
+<p>Сравнение C# NuGet vs Go:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Действие</th><th>C# / NuGet</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>Подготовка пакета</td><td><code>dotnet pack -c Release</code></td><td><code>go mod tidy &amp;&amp; go test ./...</code></td></tr>
+<tr><td>Версия</td><td><code>&lt;Version&gt;1.2.3&lt;/Version&gt;</code> в .csproj</td><td><code>git tag v1.2.3</code></td></tr>
+<tr><td>Публикация</td><td><code>dotnet nuget push *.nupkg --api-key ...</code></td><td><code>git push origin v1.2.3</code></td></tr>
+<tr><td>Реестр</td><td>nuget.org (централизованный)</td><td>GitHub/GitLab/любой git-хостинг</td></tr>
+<tr><td>Ломающие изменения</td><td>Новый major в .csproj</td><td><code>/v2</code> суффикс в module path + go.mod</td></tr>
+<tr><td>Приватные пакеты</td><td>Private NuGet feed</td><td>GOPRIVATE + приватный репозиторий</td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="pkggodev--автоматическая-индексация"><a class="header" href="#pkggodev--автоматическая-индексация">pkg.go.dev — автоматическая индексация</a></h4>
+<p>pkg.go.dev — официальный портал документации Go-пакетов. Индексация происходит <strong>автоматически</strong> при первом <code>go get</code> или явном запросе.</p>
+<p><strong>Как попасть в индекс</strong>:</p>
+<pre><code class="language-bash"># 1. Репозиторий публичный на GitHub
+# 2. Создать и запушить тег
+git tag v1.0.0 &amp;&amp; git push origin v1.0.0
+
+# 3. Запросить индексацию явно (или подождать, пока кто-то сделает go get)
+curl "https://sum.golang.org/lookup/github.com/username/mylib@v1.0.0"
+# После этого pkg.go.dev обнаружит модуль в течение нескольких минут
+</code></pre>
+<p><strong>Что отображается на pkg.go.dev</strong>:</p>
+<ul>
+<li>Package comment → описание пакета</li>
+<li>Exported types/functions с комментариями → API Reference</li>
+<li><code>Example*</code> функции → раздел Examples</li>
+<li><code>README.md</code> → Overview (если нет package comment)</li>
+</ul>
+<p><strong>Badge для README</strong>:</p>
+<pre><code class="language-markdown">[![Go Reference](https://pkg.go.dev/badge/github.com/username/mylib.svg)](https://pkg.go.dev/github.com/username/mylib)
+</code></pre>
+<h4 id="чеклист-публикации"><a class="header" href="#чеклист-публикации">Чеклист публикации</a></h4>
+<pre><code class="language-bash"># 1. Правильный module path в go.mod
+head -1 go.mod  # module github.com/username/mylib
+
+# 2. Зависимости в порядке
+go mod tidy
+
+# 3. Все тесты проходят
+go test ./...
+
+# 4. Линтер доволен
+golangci-lint run
+
+# 5. LICENSE файл присутствует (MIT, Apache-2.0, и т.д.)
+ls LICENSE
+
+# 6. Package comment есть
+go doc .
+
+# 7. Создать и запушить тег
+git tag v1.0.0
+git push origin v1.0.0
+
+# 8. Проверить на pkg.go.dev (через несколько минут)
+# https://pkg.go.dev/github.com/username/mylib
+</code></pre>
+<h4 id="типичные-ошибки"><a class="header" href="#типичные-ошибки">Типичные ошибки</a></h4>
+<p><strong>Ошибка 1: Неверный module path</strong></p>
+<pre><code class="language-go">// ❌ go.mod с локальным именем
+module mylib
+
+// При go get github.com/username/mylib:
+// go: module mylib: reading https://proxy.golang.org/mylib/@v/list: 404 Not Found
+</code></pre>
+<pre><code class="language-go">// ✅ Правильно
+module github.com/username/mylib
+</code></pre>
+<p><strong>Ошибка 2: v2 без /v2 в module path</strong></p>
+<pre><code class="language-go">// go.mod — забыли добавить /v2
+module github.com/username/mylib  // ❌ для v2
+
+// Пользователь делает: go get github.com/username/mylib@v2.0.0
+// Получает: go: github.com/username/mylib@v2.0.0: invalid version
+</code></pre>
+<pre><code class="language-go">// ✅ Правильно для v2+
+module github.com/username/mylib/v2
+</code></pre>
+<p><strong>Ошибка 3: Публикация без тегов</strong></p>
+<pre><code class="language-bash"># ❌ Только коммиты, тегов нет
+git push origin main
+
+# go get получит pseudo-version вида:
+# github.com/username/mylib v0.0.0-20240315123456-abcdef012345
+# Это работает, но неудобно и нестабильно
+</code></pre>
+<pre><code class="language-bash"># ✅ Всегда создавать теги перед публикацией
+git tag v1.0.0 &amp;&amp; git push origin v1.0.0
+</code></pre>
+<p><strong>Ошибка 4: Приватный репозиторий без GOPRIVATE</strong></p>
+<pre><code class="language-bash"># ❌ go get пытается обратиться к proxy.golang.org
+go get github.com/company/internal-lib
+# verifying github.com/company/internal-lib: github.com/company/internal-lib:
+# reading https://sum.golang.org/lookup/...: 410 Gone
+
+# ✅ Настроить GOPRIVATE
+export GOPRIVATE=github.com/company/*
+go get github.com/company/internal-lib
+</code></pre>
+<h4 id="итоговое-сравнение-nuget-vs-go-modules"><a class="header" href="#итоговое-сравнение-nuget-vs-go-modules">Итоговое сравнение: NuGet vs Go modules</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# / NuGet</th><th>Go modules</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Реестр</strong></td><td>nuget.org (централизованный)</td><td>Любой git-хостинг</td></tr>
+<tr><td><strong>Аутентификация</strong></td><td>API key на nuget.org</td><td>SSH/HTTPS к git</td></tr>
+<tr><td><strong>Публикация</strong></td><td><code>dotnet nuget push</code></td><td><code>git push</code> + тег</td></tr>
+<tr><td><strong>Идентификатор</strong></td><td>PackageId (произвольный)</td><td>module path = URL</td></tr>
+<tr><td><strong>Документация</strong></td><td>XML doc → docs.microsoft.com</td><td>godoc → pkg.go.dev</td></tr>
+<tr><td><strong>Версионирование</strong></td><td>.csproj Version + nuget push</td><td>git tag v1.2.3</td></tr>
+<tr><td><strong>Major версия</strong></td><td>Новый PackageId или пакет</td><td>/v2 суффикс в module path</td></tr>
+<tr><td><strong>Приватные пакеты</strong></td><td>Private NuGet feed</td><td>GOPRIVATE + git auth</td></tr>
+<tr><td><strong>Lock file</strong></td><td>packages.lock.json</td><td>go.sum (хэши)</td></tr>
+<tr><td><strong>Оффлайн</strong></td><td><code>dotnet restore --no-cache</code></td><td><code>GOFLAGS=-mod=vendor</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="go-work--workspaces-go-118"><a class="header" href="#go-work--workspaces-go-118">go work — Workspaces (Go 1.18+)</a></h3>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: <code>go.work</code> — аналог <code>.sln</code> файла в .NET. Позволяет объединить несколько модулей в одно рабочее пространство для локальной разработки без публикации изменений.</p>
+</blockquote>
+<p><strong>Когда нужны workspaces:</strong></p>
+<ul>
+<li>Разрабатываете библиотеку и приложение, использующее её, одновременно</li>
+<li>Монорепозиторий с несколькими Go-модулями</li>
+<li>Нужно протестировать локальные изменения зависимости до публикации нового тега</li>
+</ul>
+<h4 id="инициализация-и-базовое-использование"><a class="header" href="#инициализация-и-базовое-использование">Инициализация и базовое использование</a></h4>
+<pre><code class="language-bash"># Структура: два модуля в одной директории
+workspace/
+├── go.work          # создаётся командой go work init
+├── mylib/
+│   ├── go.mod       # module github.com/username/mylib
+│   └── mylib.go
+└── myapp/
+    ├── go.mod       # module github.com/username/myapp
+    ├── go.sum
+    └── main.go      # import "github.com/username/mylib"
+</code></pre>
+<pre><code class="language-bash"># В корне workspace/
+go work init ./mylib ./myapp
+
+# Добавить ещё один модуль позже
+go work use ./another-module
+
+# Синхронизировать go.sum во всех модулях
+go work sync
+</code></pre>
+<h4 id="структура-gowork"><a class="header" href="#структура-gowork">Структура go.work</a></h4>
+<pre><code>go 1.22
+
+use (
+    ./mylib
+    ./myapp
+)
+
+// replace доступен, но предпочтительнее use
+</code></pre>
+<p><code>go.work</code> переопределяет версии из <code>go.mod</code>: если <code>myapp</code> требует <code>github.com/username/mylib@v1.0.0</code>, а в workspace есть <code>./mylib</code> — используется локальная версия.</p>
+<h4 id="gowork-vs-replace-directive"><a class="header" href="#gowork-vs-replace-directive">go.work vs replace directive</a></h4>
+<p>До Go 1.18 для локальной разработки использовали <code>replace</code> в <code>go.mod</code>:</p>
+<pre><code class="language-go">// go.mod — старый подход (❌ нужно убирать перед коммитом)
+module github.com/username/myapp
+
+require github.com/username/mylib v1.0.0
+
+replace github.com/username/mylib =&gt; ../mylib
+</code></pre>
+<p>С workspaces:</p>
+<pre><code class="language-bash"># ✅ go.work — не трогает go.mod, легко включить/выключить
+go work init ./mylib ./myapp
+
+# Выключить workspace (вернуться к опубликованным версиям)
+export GOWORK=off
+# или
+go build -mod=mod ./...
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th><code>replace</code> в go.mod</th><th><code>go work</code></th></tr>
+</thead>
+<tbody>
+<tr><td>Файл изменений</td><td>go.mod (коммитится!)</td><td>go.work (обычно в .gitignore)</td></tr>
+<tr><td>Область действия</td><td>Один модуль</td><td>Всё workspace</td></tr>
+<tr><td>Откат</td><td>Удалить строку вручную</td><td><code>GOWORK=off</code></td></tr>
+<tr><td>Go version</td><td>Любая</td><td>1.18+</td></tr>
+<tr><td>Команда IDE</td><td>Нет поддержки</td><td>Поддерживается GoLand/VS Code</td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="типичный-workflow-с-workspaces"><a class="header" href="#типичный-workflow-с-workspaces">Типичный workflow с workspaces</a></h4>
+<pre><code class="language-bash"># 1. Клонировать оба репозитория рядом
+git clone https://github.com/username/mylib
+git clone https://github.com/username/myapp
+
+# 2. Создать workspace в родительской директории
+cd ..
+go work init ./mylib ./myapp
+
+# 3. Вносить изменения в mylib — myapp сразу видит их
+cd mylib &amp;&amp; vim mylib.go
+cd ../myapp &amp;&amp; go run .  # использует локальную mylib
+
+# 4. Публикация: добавить тег в mylib
+cd mylib &amp;&amp; git tag v1.1.0 &amp;&amp; git push origin v1.1.0
+
+# 5. Обновить зависимость в myapp
+cd myapp &amp;&amp; go get github.com/username/mylib@v1.1.0
+
+# 6. go.work остаётся для дальнейшей разработки
+</code></pre>
+<h4 id="gitignore-для-gowork"><a class="header" href="#gitignore-для-gowork">.gitignore для go.work</a></h4>
+<p><code>go.work</code> и <code>go.work.sum</code> обычно не коммитятся — это локальное состояние разработчика:</p>
+<pre><code class="language-gitignore"># .gitignore
+go.work
+go.work.sum
+</code></pre>
+<p>Исключение: монорепозитории, где workspace — часть проекта (тогда коммитить).</p>
+<h4 id="сравнение-с-net-solution"><a class="header" href="#сравнение-с-net-solution">Сравнение с .NET Solution</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>.NET (.sln)</th><th>Go (go.work)</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Файл</strong></td><td><code>*.sln</code></td><td><code>go.work</code></td></tr>
+<tr><td><strong>Синтаксис</strong></td><td>XML-подобный</td><td>Go-подобный</td></tr>
+<tr><td><strong>Project references</strong></td><td><code>&lt;ProjectReference&gt;</code> в .csproj</td><td><code>use ./module</code> в go.work</td></tr>
+<tr><td><strong>IDE поддержка</strong></td><td>Visual Studio (нативно)</td><td>GoLand / VS Code (gopls)</td></tr>
+<tr><td><strong>Назначение</strong></td><td>Организация проектов</td><td>Локальная разработка модулей</td></tr>
+<tr><td><strong>Коммитить?</strong></td><td>Да, всегда</td><td>Обычно нет (в .gitignore)</td></tr>
+<tr><td><strong>Частичная сборка</strong></td><td><code>dotnet build myproject.csproj</code></td><td><code>cd myapp &amp;&amp; go build .</code></td></tr>
+</tbody>
+</table>
+</div>
 <hr>
 <h2 id="air--hot-reload-для-разработки"><a class="header" href="#air--hot-reload-для-разработки">air — hot reload для разработки</a></h2>
 <p>air — инструмент для автоматической перезагрузки Go-приложения при изменении файлов. Аналог <code>dotnet watch run</code> для C#.</p>

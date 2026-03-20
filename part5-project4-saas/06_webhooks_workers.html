@@ -1,0 +1,858 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Webhooks и фоновые воркеры - Go для C# разработчиков</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-ecd4aa31.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-0879e167.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Go для C# разработчиков</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part5-project4-saas/06_webhooks_workers.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="webhooks-и-фоновые-воркеры"><a class="header" href="#webhooks-и-фоновые-воркеры">Webhooks и фоновые воркеры</a></h1>
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<blockquote>
+<p><strong>Для C# разработчиков</strong>: В .NET фоновые задачи реализуются через <code>IHostedService</code>, <code>BackgroundService</code>, или Hangfire. В Go — через горутины с явным управлением жизненным циклом: <code>sync.WaitGroup</code>, каналы для сигналов и <code>context.Context</code> для graceful shutdown. Нет магии <code>[DisableConcurrentExecution]</code> — конкурентность управляется через пул горутин и семафоры. Паттерн Outbox для webhook-доставки универсален и не зависит от языка.</p>
+</blockquote>
+<p>Этот раздел охватывает:</p>
+<ul>
+<li><strong>Outbox Pattern</strong> — надёжная доставка webhook-событий без двухфазного коммита</li>
+<li><strong>Webhook Worker</strong> — пул горутин с retry/backoff и dead letter queue</li>
+<li><strong>Background Worker</strong> — очередь задач через Redis Streams</li>
+<li><strong>Graceful Shutdown</strong> — корректное завершение при SIGTERM</li>
+</ul>
+<hr>
+<h2 id="outbox-pattern"><a class="header" href="#outbox-pattern">Outbox Pattern</a></h2>
+<p>Проблема: нужно атомарно сохранить бизнес-данные и отправить webhook-уведомление. Если сначала сохранить, потом отправить — при падении webhook не уйдёт. Если сначала отправить — при падении данные не сохранятся.</p>
+<p>Решение: записываем событие в таблицу <code>outbox_events</code> в той же транзакции, что и бизнес-данные. Отдельный воркер читает события из таблицы и доставляет их.</p>
+<pre class="mermaid">sequenceDiagram
+    participant APP as App Service
+    participant DB as PostgreSQL
+    participant WW as Webhook Worker
+    participant EXT as External Endpoint
+
+    APP-&gt;&gt;DB: BEGIN
+    APP-&gt;&gt;DB: INSERT INTO projects (...)
+    APP-&gt;&gt;DB: INSERT INTO outbox_events (topic='project.created', payload={...})
+    APP-&gt;&gt;DB: COMMIT
+
+    WW-&gt;&gt;DB: SELECT * FROM outbox_events WHERE NOT processed ORDER BY created_at LIMIT 10 FOR UPDATE SKIP LOCKED
+    WW-&gt;&gt;EXT: POST https://tenant-endpoint.com/hooks {event, payload}
+    EXT--&gt;&gt;WW: 200 OK
+    WW-&gt;&gt;DB: UPDATE outbox_events SET processed=true WHERE id=?
+
+    Note over WW,EXT: При ошибке доставки
+    EXT--&gt;&gt;WW: 500 / timeout
+    WW-&gt;&gt;DB: UPDATE outbox_events SET attempts=attempts+1, next_attempt_at=now()+backoff
+</pre>
+
+<hr>
+<h2 id="sql-схема-outbox"><a class="header" href="#sql-схема-outbox">SQL-схема Outbox</a></h2>
+<pre><code class="language-sql">-- Outbox events — записываются транзакционно с бизнес-данными
+CREATE TABLE public.outbox_events (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id       UUID NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE,
+    topic           TEXT NOT NULL,    -- "project.created", "user.invited", etc.
+    payload         JSONB NOT NULL,
+    processed       BOOLEAN NOT NULL DEFAULT false,
+    attempts        INT NOT NULL DEFAULT 0,
+    last_error      TEXT,
+    next_attempt_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- Индексы для polling воркера
+CREATE INDEX ON public.outbox_events(processed, next_attempt_at)
+    WHERE NOT processed;
+
+-- Реестр webhook-подписок тенантов
+CREATE TABLE public.webhook_endpoints (
+    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id   UUID NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE,
+    url         TEXT NOT NULL,
+    secret      TEXT NOT NULL,  -- HMAC-SHA256 для верификации на стороне получателя
+    topics      TEXT[] NOT NULL DEFAULT '{}',  -- пустой = все топики
+    is_active   BOOLEAN NOT NULL DEFAULT true,
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX ON public.webhook_endpoints(tenant_id) WHERE is_active;
+
+-- История доставок для дебага
+CREATE TABLE public.webhook_deliveries (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    outbox_event_id UUID NOT NULL REFERENCES public.outbox_events(id),
+    endpoint_id     UUID NOT NULL REFERENCES public.webhook_endpoints(id),
+    attempt         INT NOT NULL,
+    status_code     INT,
+    response_body   TEXT,
+    duration_ms     INT,
+    delivered_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+</code></pre>
+<hr>
+<h2 id="webhook-worker"><a class="header" href="#webhook-worker">Webhook Worker</a></h2>
+<pre><code class="language-go">package webhook
+
+import (
+    "bytes"
+    "context"
+    "crypto/hmac"
+    "crypto/sha256"
+    "encoding/hex"
+    "encoding/json"
+    "fmt"
+    "log/slog"
+    "math"
+    "net/http"
+    "time"
+
+    "github.com/google/uuid"
+    "github.com/jackc/pgx/v5/pgxpool"
+)
+
+// Worker опрашивает outbox_events и доставляет webhook-уведомления.
+type Worker struct {
+    pool       *pgxpool.Pool
+    httpClient *http.Client
+    concurrency int
+}
+
+func NewWorker(pool *pgxpool.Pool, concurrency int) *Worker {
+    return &amp;Worker{
+        pool: pool,
+        httpClient: &amp;http.Client{
+            Timeout: 10 * time.Second,
+        },
+        concurrency: concurrency,
+    }
+}
+
+// Run запускает воркер и блокирует до отмены контекста.
+func (w *Worker) Run(ctx context.Context) error {
+    // Семафор — ограничивает конкурентность доставки
+    sem := make(chan struct{}, w.concurrency)
+
+    ticker := time.NewTicker(5 * time.Second)
+    defer ticker.Stop()
+
+    slog.Info("webhook worker started", "concurrency", w.concurrency)
+
+    for {
+        select {
+        case &lt;-ctx.Done():
+            // Ждём завершения текущих доставок
+            for i := 0; i &lt; w.concurrency; i++ {
+                sem &lt;- struct{}{}
+            }
+            slog.Info("webhook worker stopped")
+            return ctx.Err()
+
+        case &lt;-ticker.C:
+            events, err := w.fetchPending(ctx)
+            if err != nil {
+                slog.Error("fetch pending events", "err", err)
+                continue
+            }
+
+            for _, event := range events {
+                event := event // захват переменной цикла
+                sem &lt;- struct{}{}
+                go func() {
+                    defer func() { &lt;-sem }()
+                    w.deliver(ctx, event)
+                }()
+            }
+        }
+    }
+}
+
+// fetchPending забирает до 100 необработанных событий с блокировкой.
+// FOR UPDATE SKIP LOCKED предотвращает дублирование при нескольких воркерах.
+func (w *Worker) fetchPending(ctx context.Context) ([]OutboxEvent, error) {
+    rows, err := w.pool.Query(ctx, `
+        SELECT id, tenant_id, topic, payload, attempts
+        FROM public.outbox_events
+        WHERE NOT processed
+          AND next_attempt_at &lt;= now()
+        ORDER BY next_attempt_at
+        LIMIT 100
+        FOR UPDATE SKIP LOCKED
+    `)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    var events []OutboxEvent
+    for rows.Next() {
+        var e OutboxEvent
+        if err := rows.Scan(&amp;e.ID, &amp;e.TenantID, &amp;e.Topic, &amp;e.Payload, &amp;e.Attempts); err != nil {
+            return nil, err
+        }
+        events = append(events, e)
+    }
+    return events, rows.Err()
+}
+
+// deliver доставляет одно событие всем подходящим endpoints тенанта.
+func (w *Worker) deliver(ctx context.Context, event OutboxEvent) {
+    endpoints, err := w.getEndpoints(ctx, event.TenantID, event.Topic)
+    if err != nil {
+        slog.Error("get endpoints", "event_id", event.ID, "err", err)
+        return
+    }
+
+    if len(endpoints) == 0 {
+        // У тенанта нет активных webhook — помечаем как обработанное
+        w.markProcessed(ctx, event.ID)
+        return
+    }
+
+    allDelivered := true
+    for _, ep := range endpoints {
+        if err := w.deliverToEndpoint(ctx, event, ep); err != nil {
+            allDelivered = false
+            slog.Warn("delivery failed", "event_id", event.ID, "endpoint", ep.URL, "err", err)
+        }
+    }
+
+    if allDelivered {
+        w.markProcessed(ctx, event.ID)
+    } else {
+        w.scheduleRetry(ctx, event)
+    }
+}
+
+// deliverToEndpoint отправляет HTTP POST с подписанным payload.
+func (w *Worker) deliverToEndpoint(ctx context.Context, event OutboxEvent, ep WebhookEndpoint) error {
+    body, err := json.Marshal(map[string]any{
+        "id":         event.ID,
+        "topic":      event.Topic,
+        "tenant_id":  event.TenantID,
+        "payload":    event.Payload,
+        "created_at": event.CreatedAt,
+    })
+    if err != nil {
+        return err
+    }
+
+    req, err := http.NewRequestWithContext(ctx, http.MethodPost, ep.URL, bytes.NewReader(body))
+    if err != nil {
+        return err
+    }
+
+    // HMAC-SHA256 подпись — получатель может верифицировать подлинность
+    sig := signPayload(body, ep.Secret)
+    req.Header.Set("Content-Type", "application/json")
+    req.Header.Set("X-Webhook-Signature", "sha256="+sig)
+    req.Header.Set("X-Webhook-Topic", event.Topic)
+    req.Header.Set("X-Webhook-ID", event.ID.String())
+
+    start := time.Now()
+    resp, err := w.httpClient.Do(req)
+    duration := time.Since(start)
+
+    var statusCode int
+    if resp != nil {
+        statusCode = resp.StatusCode
+        resp.Body.Close()
+    }
+
+    // Логируем попытку доставки
+    w.recordDelivery(ctx, event.ID, ep.ID, event.Attempts+1, statusCode, duration)
+
+    if err != nil {
+        return fmt.Errorf("http post: %w", err)
+    }
+    if statusCode &lt; 200 || statusCode &gt;= 300 {
+        return fmt.Errorf("endpoint returned %d", statusCode)
+    }
+    return nil
+}
+
+// signPayload вычисляет HMAC-SHA256 подпись payload.
+func signPayload(payload []byte, secret string) string {
+    mac := hmac.New(sha256.New, []byte(secret))
+    mac.Write(payload)
+    return hex.EncodeToString(mac.Sum(nil))
+}
+
+// scheduleRetry планирует следующую попытку с экспоненциальным backoff.
+// Попытки: 0→1m, 1→2m, 2→4m, 3→8m, ..., max 24h
+// После 10 попыток — Dead Letter Queue.
+func (w *Worker) scheduleRetry(ctx context.Context, event OutboxEvent) {
+    const maxAttempts = 10
+
+    if event.Attempts &gt;= maxAttempts {
+        // Переносим в DLQ — больше не пытаемся доставить
+        w.moveToDLQ(ctx, event)
+        return
+    }
+
+    // Экспоненциальный backoff: 2^attempts минут, max 24 часа
+    backoff := time.Duration(math.Pow(2, float64(event.Attempts))) * time.Minute
+    if backoff &gt; 24*time.Hour {
+        backoff = 24 * time.Hour
+    }
+
+    _, err := w.pool.Exec(ctx, `
+        UPDATE public.outbox_events
+        SET attempts = attempts + 1,
+            next_attempt_at = now() + $1::interval,
+            last_error = $2
+        WHERE id = $3
+    `, backoff.String(), "delivery failed", event.ID)
+    if err != nil {
+        slog.Error("schedule retry", "event_id", event.ID, "err", err)
+    }
+}
+</code></pre>
+<hr>
+<h2 id="background-worker-redis-streams"><a class="header" href="#background-worker-redis-streams">Background Worker: Redis Streams</a></h2>
+<p>Redis Streams — персистентная очередь с consumer groups. Лучше простого LPUSH/RPOP: сообщения не теряются при падении воркера, поддерживает multiple consumers.</p>
+<pre><code class="language-go">package tasks
+
+import (
+    "context"
+    "encoding/json"
+    "fmt"
+    "log/slog"
+
+    "github.com/redis/go-redis/v9"
+)
+
+// TaskType — тип фоновой задачи.
+type TaskType string
+
+const (
+    TaskSendWelcomeEmail  TaskType = "email.welcome"
+    TaskGenerateReport    TaskType = "report.generate"
+    TaskCleanupExpiredData TaskType = "cleanup.expired"
+    TaskExportTenantData  TaskType = "export.tenant_data"
+)
+
+const (
+    streamKey    = "tasks"
+    consumerGroup = "workers"
+)
+
+// Producer публикует задачи в Redis Stream.
+type Producer struct {
+    rdb *redis.Client
+}
+
+func NewProducer(rdb *redis.Client) *Producer {
+    return &amp;Producer{rdb: rdb}
+}
+
+// Enqueue добавляет задачу в очередь.
+func (p *Producer) Enqueue(ctx context.Context, taskType TaskType, payload any) error {
+    data, err := json.Marshal(payload)
+    if err != nil {
+        return err
+    }
+
+    return p.rdb.XAdd(ctx, &amp;redis.XAddArgs{
+        Stream: streamKey,
+        MaxLen: 10000, // ограничиваем размер стрима
+        Values: map[string]any{
+            "type":    string(taskType),
+            "payload": string(data),
+        },
+    }).Err()
+}
+
+// Consumer читает задачи из Redis Stream.
+type Consumer struct {
+    rdb      *redis.Client
+    handlers map[TaskType]HandlerFunc
+    name     string // имя этого consumer instance
+}
+
+type HandlerFunc func(ctx context.Context, payload json.RawMessage) error
+
+func NewConsumer(rdb *redis.Client, name string) *Consumer {
+    return &amp;Consumer{
+        rdb:      rdb,
+        handlers: make(map[TaskType]HandlerFunc),
+        name:     name,
+    }
+}
+
+// Register регистрирует обработчик для типа задачи.
+func (c *Consumer) Register(taskType TaskType, h HandlerFunc) {
+    c.handlers[taskType] = h
+}
+
+// Run запускает чтение из Redis Stream.
+// При старте создаёт consumer group если не существует.
+func (c *Consumer) Run(ctx context.Context) error {
+    // Создаём consumer group (идемпотентно)
+    err := c.rdb.XGroupCreateMkStream(ctx, streamKey, consumerGroup, "0").Err()
+    if err != nil &amp;&amp; err.Error() != "BUSYGROUP Consumer Group name already exists" {
+        return fmt.Errorf("create consumer group: %w", err)
+    }
+
+    slog.Info("background worker started", "consumer", c.name)
+
+    for {
+        if ctx.Err() != nil {
+            return ctx.Err()
+        }
+
+        // Читаем до 10 сообщений, ждём до 5 секунд
+        streams, err := c.rdb.XReadGroup(ctx, &amp;redis.XReadGroupArgs{
+            Group:    consumerGroup,
+            Consumer: c.name,
+            Streams:  []string{streamKey, "&gt;"},
+            Count:    10,
+            Block:    5000, // ms
+        }).Result()
+        if err == redis.Nil {
+            continue // timeout — нет новых сообщений
+        }
+        if err != nil {
+            if ctx.Err() != nil {
+                return ctx.Err()
+            }
+            slog.Error("xreadgroup", "err", err)
+            continue
+        }
+
+        for _, stream := range streams {
+            for _, msg := range stream.Messages {
+                c.process(ctx, msg)
+            }
+        }
+    }
+}
+
+func (c *Consumer) process(ctx context.Context, msg redis.XMessage) {
+    taskTypeStr, _ := msg.Values["type"].(string)
+    payloadStr, _ := msg.Values["payload"].(string)
+
+    handler, ok := c.handlers[TaskType(taskTypeStr)]
+    if !ok {
+        slog.Warn("no handler for task type", "type", taskTypeStr)
+        c.ack(ctx, msg.ID)
+        return
+    }
+
+    if err := handler(ctx, json.RawMessage(payloadStr)); err != nil {
+        slog.Error("task handler failed", "type", taskTypeStr, "msg_id", msg.ID, "err", err)
+        // Не ACK — Streams повторно доставят через XAUTOCLAIM
+        return
+    }
+
+    c.ack(ctx, msg.ID)
+}
+
+func (c *Consumer) ack(ctx context.Context, msgID string) {
+    if err := c.rdb.XAck(ctx, streamKey, consumerGroup, msgID).Err(); err != nil {
+        slog.Error("xack failed", "msg_id", msgID, "err", err)
+    }
+}
+</code></pre>
+<hr>
+<h2 id="обработчики-задач"><a class="header" href="#обработчики-задач">Обработчики задач</a></h2>
+<pre><code class="language-go">package tasks
+
+import (
+    "context"
+    "encoding/json"
+    "fmt"
+    "log/slog"
+    "net/smtp"
+)
+
+// WelcomeEmailPayload — payload задачи отправки welcome-письма.
+type WelcomeEmailPayload struct {
+    TenantID   string `json:"tenant_id"`
+    TenantName string `json:"tenant_name"`
+    UserEmail  string `json:"user_email"`
+    UserName   string `json:"user_name"`
+}
+
+// HandleWelcomeEmail отправляет welcome-письмо новому пользователю.
+func HandleWelcomeEmail(emailSender EmailSender) HandlerFunc {
+    return func(ctx context.Context, payload json.RawMessage) error {
+        var p WelcomeEmailPayload
+        if err := json.Unmarshal(payload, &amp;p); err != nil {
+            return fmt.Errorf("unmarshal payload: %w", err)
+        }
+
+        if err := emailSender.Send(ctx, Email{
+            To:      p.UserEmail,
+            Subject: fmt.Sprintf("Добро пожаловать в %s!", p.TenantName),
+            Body:    renderWelcomeTemplate(p),
+        }); err != nil {
+            return fmt.Errorf("send email to %s: %w", p.UserEmail, err)
+        }
+
+        slog.Info("welcome email sent", "tenant_id", p.TenantID, "to", p.UserEmail)
+        return nil
+    }
+}
+
+// CleanupExpiredData удаляет устаревшие данные тенанта.
+func HandleCleanupExpired(pool *pgxpool.Pool) HandlerFunc {
+    return func(ctx context.Context, payload json.RawMessage) error {
+        var p struct {
+            TenantID string `json:"tenant_id"`
+            Schema   string `json:"schema"`
+        }
+        if err := json.Unmarshal(payload, &amp;p); err != nil {
+            return err
+        }
+
+        // Удаляем audit_log старше 90 дней
+        _, err := pool.Exec(ctx, fmt.Sprintf(`
+            SET search_path TO %s;
+            DELETE FROM audit_log WHERE created_at &lt; now() - interval '90 days'
+        `, p.Schema))
+        if err != nil {
+            return fmt.Errorf("cleanup audit_log for %s: %w", p.TenantID, err)
+        }
+
+        return nil
+    }
+}
+</code></pre>
+<hr>
+<h2 id="graceful-shutdown"><a class="header" href="#graceful-shutdown">Graceful Shutdown</a></h2>
+<pre><code class="language-go">package main
+
+import (
+    "context"
+    "log/slog"
+    "os"
+    "os/signal"
+    "sync"
+    "syscall"
+    "time"
+)
+
+func main() {
+    ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+    defer stop()
+
+    // Инициализация воркеров
+    webhookWorker := webhook.NewWorker(pool, 10)
+    taskConsumer := tasks.NewConsumer(rdb, "worker-1")
+    taskConsumer.Register(tasks.TaskSendWelcomeEmail, tasks.HandleWelcomeEmail(emailSender))
+    taskConsumer.Register(tasks.TaskCleanupExpiredData, tasks.HandleCleanupExpired(pool))
+
+    var wg sync.WaitGroup
+
+    // Запуск webhook worker
+    wg.Add(1)
+    go func() {
+        defer wg.Done()
+        if err := webhookWorker.Run(ctx); err != nil &amp;&amp; err != context.Canceled {
+            slog.Error("webhook worker", "err", err)
+        }
+    }()
+
+    // Запуск background task consumer
+    wg.Add(1)
+    go func() {
+        defer wg.Done()
+        if err := taskConsumer.Run(ctx); err != nil &amp;&amp; err != context.Canceled {
+            slog.Error("task consumer", "err", err)
+        }
+    }()
+
+    // Ждём сигнала завершения
+    &lt;-ctx.Done()
+    slog.Info("shutdown signal received, waiting for workers...")
+
+    // Даём воркерам до 30 секунд на завершение текущих задач
+    done := make(chan struct{})
+    go func() {
+        wg.Wait()
+        close(done)
+    }()
+
+    select {
+    case &lt;-done:
+        slog.Info("workers stopped gracefully")
+    case &lt;-time.After(30 * time.Second):
+        slog.Warn("forced shutdown after timeout")
+    }
+}
+</code></pre>
+<hr>
+<h2 id="верификация-webhook-на-стороне-получателя"><a class="header" href="#верификация-webhook-на-стороне-получателя">Верификация Webhook на стороне получателя</a></h2>
+<p>Документация для клиентов — как верифицировать входящие webhook:</p>
+<pre><code class="language-go">// Пример для клиента — верификация HMAC-SHA256 подписи.
+// Секрет получают при регистрации webhook endpoint.
+func VerifyWebhookSignature(body []byte, signatureHeader, secret string) bool {
+    // Заголовок: "sha256=abc123..."
+    parts := strings.SplitN(signatureHeader, "=", 2)
+    if len(parts) != 2 || parts[0] != "sha256" {
+        return false
+    }
+
+    expected, err := hex.DecodeString(parts[1])
+    if err != nil {
+        return false
+    }
+
+    mac := hmac.New(sha256.New, []byte(secret))
+    mac.Write(body)
+    actual := mac.Sum(nil)
+
+    // Constant-time сравнение — защита от timing attacks
+    return hmac.Equal(expected, actual)
+}
+</code></pre>
+<hr>
+<h2 id="сравнение-с-c"><a class="header" href="#сравнение-с-c">Сравнение с C#</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# / .NET</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>Фоновые задачи</td><td><code>BackgroundService</code>, <code>IHostedService</code></td><td>Горутины + <code>context.Context</code></td></tr>
+<tr><td>Job queue</td><td>Hangfire, MassTransit</td><td>Redis Streams + consumer groups</td></tr>
+<tr><td>Retry policy</td><td>Polly <code>WaitAndRetryAsync</code></td><td>Ручной backoff + <code>pgx</code> update</td></tr>
+<tr><td>Graceful shutdown</td><td><code>IHostApplicationLifetime</code></td><td><code>signal.NotifyContext</code> + <code>sync.WaitGroup</code></td></tr>
+<tr><td>HMAC верификация</td><td><code>HMACSHA256.ComputeHash()</code></td><td><code>crypto/hmac</code> + <code>crypto/sha256</code></td></tr>
+<tr><td>Dead Letter Queue</td><td>Hangfire DLQ / Azure Service Bus DLQ</td><td>Кастомная таблица <code>outbox_dlq</code></td></tr>
+</tbody>
+</table>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part5-project4-saas/05_api_gateway.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part5-project4-saas/07_deployment.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part5-project4-saas/05_api_gateway.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part5-project4-saas/07_deployment.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
