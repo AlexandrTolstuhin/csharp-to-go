@@ -65,6 +65,14 @@
   - [Analytics: TimescaleDB и агрегации](part5-project3-trading/05_analytics_service.md)
   - [Производительность: GC tuning и профилирование](part5-project3-trading/06_performance_tuning.md)
   - [Деплой: Kubernetes и HPA](part5-project3-trading/07_deployment.md)
+- [Проект 4: SaaS Platform](part5-project4-saas/README.md)
+  - [Архитектура и multi-tenancy](part5-project4-saas/01_architecture.md)
+  - [Auth Service: OAuth2 и JWT](part5-project4-saas/02_auth_service.md)
+  - [Tenant Service: онбординг и планы](part5-project4-saas/03_tenant_service.md)
+  - [Billing Service: подписки и Stripe](part5-project4-saas/04_billing_service.md)
+  - [API Gateway: rate limiting и middleware](part5-project4-saas/05_api_gateway.md)
+  - [Webhooks и фоновые воркеры](part5-project4-saas/06_webhooks_workers.md)
+  - [Деплой: Kubernetes и observability](part5-project4-saas/07_deployment.md)
 
 # Часть 6: Лучшие практики
 
