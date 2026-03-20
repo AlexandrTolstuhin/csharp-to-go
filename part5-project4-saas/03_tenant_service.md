@@ -593,9 +593,3 @@ func (h *TenantHandler) Create(w http.ResponseWriter, r *http.Request) {
 | Мягкое удаление | `IsDeleted` + `HasQueryFilter` | `status = 'deleted'` + явные WHERE |
 | Планы и лимиты | Enum + конфиг | JSONB в PostgreSQL |
 | Suspend за неоплату | `IUserLockoutService` | UPDATE status = 'suspended' |
-
----
-
-## Следующий шаг
-
-Tenant Service с онбордингом и планами готов. Следующий раздел — [Billing Service: подписки и Stripe](04_billing_service.md): как интегрировать Stripe Checkout, обрабатывать webhook-события оплаты и вести usage metering.

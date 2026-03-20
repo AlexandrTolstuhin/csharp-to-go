@@ -145,25 +145,3 @@ trading-platform/
 
 > **Почему NATS, а не Kafka?**
 > Kafka — excellent для durability и retention. NATS JetStream — better для low-latency: pub/sub latency порядка 100-300µs vs 1-5ms у Kafka. В trading каждые 100µs на счету.
-
----
-
-## Разделы проекта
-
-1. [Архитектура и доменная модель](01_architecture.md)
-2. [Market Data Service: WebSocket fan-out](02_market_data_service.md)
-3. [Order Matching Engine: lock-free order book](03_order_matching_engine.md)
-4. [Portfolio и Risk сервисы](04_portfolio_risk_service.md)
-5. [Analytics: TimescaleDB и агрегации](05_analytics_service.md)
-6. [Производительность: GC tuning и профилирование](06_performance_tuning.md)
-7. [Деплой: Kubernetes и HPA](07_deployment.md)
-
----
-
-## Предварительные требования
-
-Перед началом убедитесь, что проработали:
-- [Горутины и каналы](../part2-advanced/01_goroutines_channels.md) — fan-out паттерн
-- [Профилирование и оптимизация](../part2-advanced/08_profiling_optimization.md) — pprof
-- [Очереди сообщений](../part4-infrastructure/03_message_queues.md) — NATS основы
-- [Production PostgreSQL](../part4-infrastructure/01_production_postgresql.md) — connection pools

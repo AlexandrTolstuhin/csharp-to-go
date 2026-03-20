@@ -641,9 +641,3 @@ func VerifyWebhookSignature(body []byte, signatureHeader, secret string) bool {
 | Graceful shutdown | `IHostApplicationLifetime` | `signal.NotifyContext` + `sync.WaitGroup` |
 | HMAC верификация | `HMACSHA256.ComputeHash()` | `crypto/hmac` + `crypto/sha256` |
 | Dead Letter Queue | Hangfire DLQ / Azure Service Bus DLQ | Кастомная таблица `outbox_dlq` |
-
----
-
-## Следующий шаг
-
-Webhooks и фоновые воркеры готовы. Последний раздел — [Деплой: Kubernetes и observability](07_deployment.md): Helm-чарты, HPA, Prometheus метрики и distributed tracing для SaaS-платформы.

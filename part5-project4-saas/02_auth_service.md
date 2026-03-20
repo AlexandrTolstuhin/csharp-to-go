@@ -546,9 +546,3 @@ CREATE INDEX ON public.refresh_tokens(expires_at) WHERE NOT revoked;
 | Claims principal | `ClaimsPrincipal` / `HttpContext.User` | `context.Context` с custom key |
 | Refresh rotation | Нет в ASP.NET Identity из коробки | Ручная реализация с GetDel в Redis/PG |
 | PKCE | Встроен в Identity Server / Azure AD B2C | Ручная реализация (~50 строк) |
-
----
-
-## Следующий шаг
-
-Auth Service готов. Следующий раздел — [Tenant Service: онбординг и планы](03_tenant_service.md): как атомарно создавать PostgreSQL-схему, мигрировать её и управлять тарифными планами.

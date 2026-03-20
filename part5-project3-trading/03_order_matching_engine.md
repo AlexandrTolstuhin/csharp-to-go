@@ -801,9 +801,3 @@ trades := ob.Add(order) // блокирует только стакан BTCUSD, 
 | Бенчмаркинг | BenchmarkDotNet | go test -bench |
 
 > **Производительность**: В Go при правильной реализации достигается latency матчинга <5µs на операцию (без сетевого overhead). Это сопоставимо с C# без CLR startup penalty, но с меньшим memory footprint.
-
----
-
-## Следующий шаг
-
-Переходим к [Portfolio и Risk сервисам](04_portfolio_risk_service.md) — реальное время обновление позиций и расчёт риска.

@@ -175,27 +175,3 @@ saas-platform/
 
 > **Почему chi, а не Gin/Echo?**
 > chi строит поверх стандартного `net/http`, возвращает `http.Handler` — все middleware переносимы в любой роутер. Gin и Echo используют собственный `Context`, создавая vendor lock-in. Для SaaS-платформы с несколькими командами переносимость важнее convenience.
-
----
-
-## Разделы проекта
-
-1. [Архитектура и multi-tenancy](01_architecture.md)
-2. [Auth Service: OAuth2 и JWT](02_auth_service.md)
-3. [Tenant Service: онбординг и планы](03_tenant_service.md)
-4. [Billing Service: подписки и Stripe](04_billing_service.md)
-5. [API Gateway: rate limiting и middleware](05_api_gateway.md)
-6. [Webhooks и фоновые воркеры](06_webhooks_workers.md)
-7. [Деплой: Kubernetes и observability](07_deployment.md)
-
----
-
-## Предварительные требования
-
-Перед началом убедитесь, что проработали:
-- [Горутины и каналы](../part2-advanced/01_goroutines_channels.md) — worker pools
-- [Обработка ошибок](../part2-advanced/06_error_handling.md) — паттерны wrap/unwrap
-- [HTTP в Go: веб-серверы](../part3-web-api/01_http_server.md) — middleware chain
-- [Аутентификация и авторизация](../part3-web-api/06_auth.md) — JWT основы
-- [Production PostgreSQL](../part4-infrastructure/01_production_postgresql.md) — pgx, пулы
-- [Кэширование](../part4-infrastructure/02_caching.md) — Redis паттерны

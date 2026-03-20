@@ -863,9 +863,3 @@ var (
 | Drop при переполнении | Блокировка отправителя | Trading: устаревшая котировка хуже пропущенной |
 | Батчинг WebSocket writes | Один write на тик | Снижает syscall count при высоком throughput |
 | JSON с int64 timestamp | time.Time в JSON | Уменьшает размер сообщений, быстрее парсинг |
-
----
-
-## Следующий шаг
-
-Переходим к самой сложной части системы: [Order Matching Engine](03_order_matching_engine.md) — lock-free order book с price-time priority матчингом.

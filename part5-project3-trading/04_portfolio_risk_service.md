@@ -988,9 +988,3 @@ func TestHistoricalVaR(t *testing.T) {
 | Decimal arithmetic | встроенный `decimal` | shopspring/decimal |
 | DB upsert | EF Core `AddOrUpdate` | pgx + `ON CONFLICT DO UPDATE` |
 | Unit testing | xUnit + FluentAssertions | testing + ручные сравнения |
-
----
-
-## Следующий шаг
-
-Переходим к [Analytics Service](05_analytics_service.md) — TimescaleDB гипертаблицы, continuous aggregates и OHLCV запросы.

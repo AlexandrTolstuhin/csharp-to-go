@@ -432,9 +432,3 @@ volumes:
 | DI контейнер | Встроен (`IServiceCollection`) | Нет — зависимости передаются явно |
 | Миграции | EF Core Migrations | golang-migrate, SQL-файлы |
 | Конфигурация | `appsettings.json` + `IOptions<T>` | Переменные окружения, envconfig |
-
----
-
-## Следующий шаг
-
-Доменная модель и механизм изоляции готовы. Следующий раздел — [Auth Service: OAuth2 и JWT](02_auth_service.md): как выдавать токены с tenant-контекстом и верифицировать их во всех сервисах.

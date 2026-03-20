@@ -506,9 +506,3 @@ func (s *Service) ActivateSubscription(ctx context.Context, tenantIDStr, planIDS
 | Идемпотентность | Кастомная таблица / Idempotency Key | Кастомная таблица `processed_stripe_events` |
 | Usage metering | Azure Billing Meters / кастомно | Redis INCR + EXPIRE |
 | Quota enforcement | ASP.NET Middleware / Policy | `func(http.Handler) http.Handler` |
-
----
-
-## Следующий шаг
-
-Billing Service готов. Следующий раздел — [API Gateway: rate limiting и middleware](05_api_gateway.md): как строить middleware-цепочку в Go, реализовывать Redis sliding window rate limiting и маршрутизировать запросы между сервисами.

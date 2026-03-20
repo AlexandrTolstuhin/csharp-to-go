@@ -375,9 +375,3 @@ r.Route("/api/v2", func(r chi.Router) {
 | Request ID | Автоматически в .NET 8 | `middleware.RequestID` (chi) |
 | Reverse proxy | YARP | `net/http/httputil.ReverseProxy` |
 | Structured logging | `ILogger<T>` + Serilog | `log/slog` (stdlib с Go 1.21) |
-
----
-
-## Следующий шаг
-
-API Gateway с rate limiting и middleware-цепочкой готов. Следующий раздел — [Webhooks и фоновые воркеры](06_webhooks_workers.md): надёжная доставка исходящих webhook-уведомлений с retry/backoff и пул горутин для фоновых задач.

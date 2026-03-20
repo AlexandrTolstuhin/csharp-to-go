@@ -601,9 +601,3 @@ volumes:
   nats_data:
   pg_data:
 ```
-
----
-
-## Следующий шаг
-
-Переходим к реализации первого сервиса: [Market Data Service](02_market_data_service.md) — WebSocket сервер с fan-out на тысячи клиентов.

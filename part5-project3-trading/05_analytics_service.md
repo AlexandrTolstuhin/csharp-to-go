@@ -843,9 +843,3 @@ func applyMigrations(ctx context.Context, pool *pgxpool.Pool) error {
 | Знакомость для C# разработчика | Высокая | Высокая | Низкая |
 
 > **Вывод**: TimescaleDB — оптимальный выбор для trading платформы. Получаем SQL гибкость (JOIN с клиентами, ордерами), автоматическое партиционирование, continuous aggregates и сжатие — всё в одной БД через pgx.
-
----
-
-## Следующий шаг
-
-Переходим к [Производительность: GC tuning и профилирование](06_performance_tuning.md) — оптимизация latency trading системы.
