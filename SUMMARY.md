@@ -57,6 +57,14 @@
   - [Payment & Notification](part5-project2-ecommerce/05_payment_notification.md)
   - [API Gateway](part5-project2-ecommerce/06_api_gateway.md)
   - [Деплой](part5-project2-ecommerce/07_deployment.md)
+- [Проект 3: Trading/Fintech Platform](part5-project3-trading/README.md)
+  - [Архитектура и доменная модель](part5-project3-trading/01_architecture.md)
+  - [Market Data Service: WebSocket fan-out](part5-project3-trading/02_market_data_service.md)
+  - [Order Matching Engine: lock-free order book](part5-project3-trading/03_order_matching_engine.md)
+  - [Portfolio и Risk сервисы](part5-project3-trading/04_portfolio_risk_service.md)
+  - [Analytics: TimescaleDB и агрегации](part5-project3-trading/05_analytics_service.md)
+  - [Производительность: GC tuning и профилирование](part5-project3-trading/06_performance_tuning.md)
+  - [Деплой: Kubernetes и HPA](part5-project3-trading/07_deployment.md)
 
 # Часть 6: Лучшие практики
 

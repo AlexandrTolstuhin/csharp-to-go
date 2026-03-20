@@ -1,31 +1,3 @@
-### Проект 3: Trading/Fintech Platform
-**Сложность**: Advanced
-
-**Цель**: High-performance, real-time система
-
-**Компоненты**:
-1. Market Data Service (WebSocket)
-2. Order Matching Engine
-3. Portfolio Service
-4. Risk Service
-5. Analytics Service
-
-**Технологии**:
-- WebSocket + горутины
-- NATS для low-latency
-- TimescaleDB
-- Redis Streams  <!-- TODO: пересмотреть — NATS JetStream покрывает те же сценарии; Redis Streams оправдан только если Redis уже в стеке ради кэша/rate limiting -->
-- Kubernetes + HPA
-
-**Фокус**:
-- Оптимизация latency
-- Lock-free структуры
-- Профилирование и тюнинг GC
-
-**Время**: ~4 недели
-
----
-
 ### Проект 4: SaaS Platform
 **Сложность**: Advanced
 
