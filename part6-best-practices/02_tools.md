@@ -876,6 +876,350 @@ Go MVS (minimal version):
 
 MVS гарантирует воспроизводимость: одинаковые go.mod → одинаковые версии.
 
+### Публикация модуля на GitHub
+
+> 💡 **Для C# разработчиков**: NuGet workflow — `dotnet pack` → `nuget push` → nuget.org. В Go всё проще: нет отдельного реестра, нет команды «publish». Достаточно правильного module path и git-тега. GOPROXY сам скачает модуль с GitHub по URL.
+
+#### Правильный module path
+
+Module path — это одновременно идентификатор модуля и URL, по которому `go get` его скачает.
+
+```bash
+# Создание модуля с правильным путём
+go mod init github.com/username/mylib
+```
+
+```go
+// go.mod
+module github.com/username/mylib
+
+go 1.22
+```
+
+Путь **обязан совпадать** с URL репозитория — иначе `go get github.com/username/mylib` не найдёт модуль.
+
+| C# (NuGet) | Go |
+|---|---|
+| `<PackageId>MyLib</PackageId>` в .csproj | `module github.com/username/mylib` в go.mod |
+| ID может отличаться от пути к репозиторию | Path = URL репозитория |
+| Публикуется на nuget.org | Берётся напрямую с GitHub/GitLab/... |
+
+#### Структура репозитория-библиотеки
+
+Библиотека (пакет без `main`) отличается от бинарного проекта:
+
+```
+mylib/                        # корень репозитория
+├── go.mod                    # module github.com/username/mylib
+├── go.sum
+├── LICENSE                   # обязателен для open source
+├── README.md
+├── doc.go                    # package comment (опционально)
+├── mylib.go                  # основной код пакета
+├── mylib_test.go
+├── internal/                 # приватный код (не экспортируется)
+│   └── helper.go
+└── example/                  # примеры использования (опционально)
+    └── main.go
+```
+
+Сравнение со структурой бинарного проекта:
+
+| Аспект | Библиотека | Бинарный проект |
+|--------|------------|-----------------|
+| `package main` | Нет | Да (в `cmd/`) |
+| Точка входа | Нет | `main()` |
+| Цель `go build` | Кэш компиляции | Исполняемый файл |
+| `internal/` | Для скрытия деталей | Для скрытия деталей |
+| Экспортируемый API | Весь публичный код | Только CLI/config |
+
+> 💡 **Идиома Go**: директория `internal/` — встроенный механизм инкапсуляции. Пакеты внутри `internal/` видны только родительскому модулю. Аналог `internal` в C#, но на уровне файловой системы.
+
+#### godoc-комментарии для публичного API
+
+Go генерирует документацию прямо из комментариев. Правила просты, но их нарушение делает API неудобным.
+
+**Package comment** — описание всего пакета:
+
+```go
+// Package mylib предоставляет утилиты для работы с временными рядами.
+// Совместим с форматами Prometheus и OpenTelemetry.
+//
+// Пример использования:
+//
+//	ts := mylib.NewTimeSeries()
+//	ts.Add(time.Now(), 42.0)
+//	fmt.Println(ts.Last())
+package mylib
+```
+
+**Exported symbols** — каждый экспортируемый тип, функция, константа:
+
+```go
+// Client управляет соединением с сервером метрик.
+// Потокобезопасен — можно использовать из нескольких горутин.
+type Client struct {
+    // содержит только неэкспортированные поля
+}
+
+// NewClient создаёт новый Client с указанным адресом.
+// addr должен быть в формате "host:port".
+// Возвращает ошибку, если соединение не удалось установить за timeout.
+func NewClient(addr string, timeout time.Duration) (*Client, error) {
+    // ...
+}
+
+// Send отправляет метрику на сервер.
+// Метод блокирующий — используйте горутину для асинхронной отправки.
+func (c *Client) Send(name string, value float64) error {
+    // ...
+}
+```
+
+**Примеры** в `_test.go` (отображаются на pkg.go.dev и запускаются как тесты):
+
+```go
+// example_test.go
+package mylib_test
+
+import (
+    "fmt"
+    "github.com/username/mylib"
+)
+
+func ExampleNewClient() {
+    client, err := mylib.NewClient("localhost:9090", 5*time.Second)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer client.Close()
+
+    err = client.Send("cpu_usage", 0.75)
+    fmt.Println(err)
+    // Output: <nil>
+}
+```
+
+Сравнение с C#:
+
+| C# XML doc | Go godoc |
+|---|---|
+| `/// <summary>Описание</summary>` | `// Описание` — обычный комментарий перед символом |
+| Генерация: `dotnet build` → XML | Генерация: `go doc` / pkg.go.dev автоматически |
+| Отдельный файл .xml | Встроено в исходник |
+| Примеры: `<example>` тег | `func ExampleXxx()` в `_test.go` |
+
+#### Версионирование через git tags
+
+Go использует git-теги для определения версий. Никакой команды «publish» нет.
+
+```bash
+# Убедиться, что всё готово
+go mod tidy
+go test ./...
+
+# Создать тег (семантическое версионирование обязательно)
+git tag v1.2.3
+git push origin v1.2.3
+
+# Или создать и запушить одной командой
+git tag v1.2.3 && git push origin v1.2.3
+```
+
+**Семантическое версионирование** (SemVer):
+
+```
+v1.2.3
+│ │ └── patch: исправления ошибок (обратно совместимо)
+│ └──── minor: новый функционал (обратно совместимо)
+└────── major: ломающие изменения
+```
+
+Правила Go:
+- `v0.x.y` — нестабильный API, ломающие изменения допустимы без major bump
+- `v1.x.y` — стабильный API, ломающие изменения → `v2`
+- Нет тега `latest` как в npm — используется последний тег
+
+**Major version suffix — критически важно для v2+**:
+
+```bash
+# ❌ Неправильно: v2 без изменения module path
+git tag v2.0.0  # go get получит этот тег, но импорты сломаются
+
+# ✅ Правильно: v2 требует /v2 в module path
+```
+
+```go
+// go.mod для v2
+module github.com/username/mylib/v2
+
+go 1.22
+```
+
+```go
+// Пользователи библиотеки импортируют с /v2
+import "github.com/username/mylib/v2"
+```
+
+Структура репозитория для v2 (два подхода):
+
+```bash
+# Подход 1: major branch (рекомендуется для простоты)
+git checkout -b v2
+# Обновить go.mod: module github.com/username/mylib/v2
+
+# Подход 2: поддиректория /v2 (monorepo стиль)
+mylib/
+├── v2/
+│   ├── go.mod   # module github.com/username/mylib/v2
+│   └── ...
+└── go.mod       # module github.com/username/mylib (v1)
+```
+
+Сравнение C# NuGet vs Go:
+
+| Действие | C# / NuGet | Go |
+|---|---|---|
+| Подготовка пакета | `dotnet pack -c Release` | `go mod tidy && go test ./...` |
+| Версия | `<Version>1.2.3</Version>` в .csproj | `git tag v1.2.3` |
+| Публикация | `dotnet nuget push *.nupkg --api-key ...` | `git push origin v1.2.3` |
+| Реестр | nuget.org (централизованный) | GitHub/GitLab/любой git-хостинг |
+| Ломающие изменения | Новый major в .csproj | `/v2` суффикс в module path + go.mod |
+| Приватные пакеты | Private NuGet feed | GOPRIVATE + приватный репозиторий |
+
+#### pkg.go.dev — автоматическая индексация
+
+pkg.go.dev — официальный портал документации Go-пакетов. Индексация происходит **автоматически** при первом `go get` или явном запросе.
+
+**Как попасть в индекс**:
+
+```bash
+# 1. Репозиторий публичный на GitHub
+# 2. Создать и запушить тег
+git tag v1.0.0 && git push origin v1.0.0
+
+# 3. Запросить индексацию явно (или подождать, пока кто-то сделает go get)
+curl "https://sum.golang.org/lookup/github.com/username/mylib@v1.0.0"
+# После этого pkg.go.dev обнаружит модуль в течение нескольких минут
+```
+
+**Что отображается на pkg.go.dev**:
+- Package comment → описание пакета
+- Exported types/functions с комментариями → API Reference
+- `Example*` функции → раздел Examples
+- `README.md` → Overview (если нет package comment)
+
+**Badge для README**:
+
+```markdown
+[![Go Reference](https://pkg.go.dev/badge/github.com/username/mylib.svg)](https://pkg.go.dev/github.com/username/mylib)
+```
+
+#### Чеклист публикации
+
+```bash
+# 1. Правильный module path в go.mod
+head -1 go.mod  # module github.com/username/mylib
+
+# 2. Зависимости в порядке
+go mod tidy
+
+# 3. Все тесты проходят
+go test ./...
+
+# 4. Линтер доволен
+golangci-lint run
+
+# 5. LICENSE файл присутствует (MIT, Apache-2.0, и т.д.)
+ls LICENSE
+
+# 6. Package comment есть
+go doc .
+
+# 7. Создать и запушить тег
+git tag v1.0.0
+git push origin v1.0.0
+
+# 8. Проверить на pkg.go.dev (через несколько минут)
+# https://pkg.go.dev/github.com/username/mylib
+```
+
+#### Типичные ошибки
+
+**Ошибка 1: Неверный module path**
+
+```go
+// ❌ go.mod с локальным именем
+module mylib
+
+// При go get github.com/username/mylib:
+// go: module mylib: reading https://proxy.golang.org/mylib/@v/list: 404 Not Found
+```
+
+```go
+// ✅ Правильно
+module github.com/username/mylib
+```
+
+**Ошибка 2: v2 без /v2 в module path**
+
+```go
+// go.mod — забыли добавить /v2
+module github.com/username/mylib  // ❌ для v2
+
+// Пользователь делает: go get github.com/username/mylib@v2.0.0
+// Получает: go: github.com/username/mylib@v2.0.0: invalid version
+```
+
+```go
+// ✅ Правильно для v2+
+module github.com/username/mylib/v2
+```
+
+**Ошибка 3: Публикация без тегов**
+
+```bash
+# ❌ Только коммиты, тегов нет
+git push origin main
+
+# go get получит pseudo-version вида:
+# github.com/username/mylib v0.0.0-20240315123456-abcdef012345
+# Это работает, но неудобно и нестабильно
+```
+
+```bash
+# ✅ Всегда создавать теги перед публикацией
+git tag v1.0.0 && git push origin v1.0.0
+```
+
+**Ошибка 4: Приватный репозиторий без GOPRIVATE**
+
+```bash
+# ❌ go get пытается обратиться к proxy.golang.org
+go get github.com/company/internal-lib
+# verifying github.com/company/internal-lib: github.com/company/internal-lib:
+# reading https://sum.golang.org/lookup/...: 410 Gone
+
+# ✅ Настроить GOPRIVATE
+export GOPRIVATE=github.com/company/*
+go get github.com/company/internal-lib
+```
+
+#### Итоговое сравнение: NuGet vs Go modules
+
+| Аспект | C# / NuGet | Go modules |
+|--------|------------|------------|
+| **Реестр** | nuget.org (централизованный) | Любой git-хостинг |
+| **Аутентификация** | API key на nuget.org | SSH/HTTPS к git |
+| **Публикация** | `dotnet nuget push` | `git push` + тег |
+| **Идентификатор** | PackageId (произвольный) | module path = URL |
+| **Документация** | XML doc → docs.microsoft.com | godoc → pkg.go.dev |
+| **Версионирование** | .csproj Version + nuget push | git tag v1.2.3 |
+| **Major версия** | Новый PackageId или пакет | /v2 суффикс в module path |
+| **Приватные пакеты** | Private NuGet feed | GOPRIVATE + git auth |
+| **Lock file** | packages.lock.json | go.sum (хэши) |
+| **Оффлайн** | `dotnet restore --no-cache` | `GOFLAGS=-mod=vendor` |
+
 ---
 
 ## air — hot reload для разработки
