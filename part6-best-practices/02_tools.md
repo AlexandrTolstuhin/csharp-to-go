@@ -1220,6 +1220,137 @@ go get github.com/company/internal-lib
 | **Lock file** | packages.lock.json | go.sum (хэши) |
 | **Оффлайн** | `dotnet restore --no-cache` | `GOFLAGS=-mod=vendor` |
 
+### go work — Workspaces (Go 1.18+)
+
+> 💡 **Для C# разработчиков**: `go.work` — аналог `.sln` файла в .NET. Позволяет объединить несколько модулей в одно рабочее пространство для локальной разработки без публикации изменений.
+
+**Когда нужны workspaces:**
+- Разрабатываете библиотеку и приложение, использующее её, одновременно
+- Монорепозиторий с несколькими Go-модулями
+- Нужно протестировать локальные изменения зависимости до публикации нового тега
+
+#### Инициализация и базовое использование
+
+```bash
+# Структура: два модуля в одной директории
+workspace/
+├── go.work          # создаётся командой go work init
+├── mylib/
+│   ├── go.mod       # module github.com/username/mylib
+│   └── mylib.go
+└── myapp/
+    ├── go.mod       # module github.com/username/myapp
+    ├── go.sum
+    └── main.go      # import "github.com/username/mylib"
+```
+
+```bash
+# В корне workspace/
+go work init ./mylib ./myapp
+
+# Добавить ещё один модуль позже
+go work use ./another-module
+
+# Синхронизировать go.sum во всех модулях
+go work sync
+```
+
+#### Структура go.work
+
+```
+go 1.22
+
+use (
+    ./mylib
+    ./myapp
+)
+
+// replace доступен, но предпочтительнее use
+```
+
+`go.work` переопределяет версии из `go.mod`: если `myapp` требует `github.com/username/mylib@v1.0.0`, а в workspace есть `./mylib` — используется локальная версия.
+
+#### go.work vs replace directive
+
+До Go 1.18 для локальной разработки использовали `replace` в `go.mod`:
+
+```go
+// go.mod — старый подход (❌ нужно убирать перед коммитом)
+module github.com/username/myapp
+
+require github.com/username/mylib v1.0.0
+
+replace github.com/username/mylib => ../mylib
+```
+
+С workspaces:
+
+```bash
+# ✅ go.work — не трогает go.mod, легко включить/выключить
+go work init ./mylib ./myapp
+
+# Выключить workspace (вернуться к опубликованным версиям)
+export GOWORK=off
+# или
+go build -mod=mod ./...
+```
+
+| Аспект | `replace` в go.mod | `go work` |
+|--------|-------------------|-----------|
+| Файл изменений | go.mod (коммитится!) | go.work (обычно в .gitignore) |
+| Область действия | Один модуль | Всё workspace |
+| Откат | Удалить строку вручную | `GOWORK=off` |
+| Go version | Любая | 1.18+ |
+| Команда IDE | Нет поддержки | Поддерживается GoLand/VS Code |
+
+#### Типичный workflow с workspaces
+
+```bash
+# 1. Клонировать оба репозитория рядом
+git clone https://github.com/username/mylib
+git clone https://github.com/username/myapp
+
+# 2. Создать workspace в родительской директории
+cd ..
+go work init ./mylib ./myapp
+
+# 3. Вносить изменения в mylib — myapp сразу видит их
+cd mylib && vim mylib.go
+cd ../myapp && go run .  # использует локальную mylib
+
+# 4. Публикация: добавить тег в mylib
+cd mylib && git tag v1.1.0 && git push origin v1.1.0
+
+# 5. Обновить зависимость в myapp
+cd myapp && go get github.com/username/mylib@v1.1.0
+
+# 6. go.work остаётся для дальнейшей разработки
+```
+
+#### .gitignore для go.work
+
+`go.work` и `go.work.sum` обычно не коммитятся — это локальное состояние разработчика:
+
+```gitignore
+# .gitignore
+go.work
+go.work.sum
+```
+
+Исключение: монорепозитории, где workspace — часть проекта (тогда коммитить).
+
+#### Сравнение с .NET Solution
+
+| Аспект | .NET (.sln) | Go (go.work) |
+|--------|-------------|--------------|
+| **Файл** | `*.sln` | `go.work` |
+| **Синтаксис** | XML-подобный | Go-подобный |
+| **Project references** | `<ProjectReference>` в .csproj | `use ./module` в go.work |
+| **IDE поддержка** | Visual Studio (нативно) | GoLand / VS Code (gopls) |
+| **Назначение** | Организация проектов | Локальная разработка модулей |
+| **Коммитить?** | Да, всегда | Обычно нет (в .gitignore) |
+| **Частичная сборка** | `dotnet build myproject.csproj` | `cd myapp && go build .` |
+
 ---
 
 ## air — hot reload для разработки
