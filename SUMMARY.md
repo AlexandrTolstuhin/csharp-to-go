@@ -43,6 +43,7 @@
 - [Observability](part4-infrastructure/05_observability.md)
 - [Конфигурация](part4-infrastructure/06_config.md)
 - [Контейнеризация](part4-infrastructure/07_containerization.md)
+- [CLI-приложения](part4-infrastructure/08_cli.md)
 
 # Часть 5: Практические проекты
 
