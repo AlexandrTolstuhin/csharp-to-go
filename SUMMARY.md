@@ -10,6 +10,7 @@
 - [Ключевые отличия от C#](part1-basics/04_key_differences.md)
 - [Дженерики](part1-basics/05_generics.md)
 - [Модули и управление зависимостями](part1-basics/06_modules_dependencies.md)
+- [Строки и Unicode](part1-basics/07_strings_unicode.md)
 
 # Часть 2: Углублённые темы
 
