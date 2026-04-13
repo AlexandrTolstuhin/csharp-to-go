@@ -1,0 +1,1092 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>CLI-приложения - Go для C# разработчиков</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-034476fa.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-99029afd.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Go для C# разработчиков</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part4-infrastructure/08_cli.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="cli-приложения"><a class="header" href="#cli-приложения">CLI-приложения</a></h1>
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: Go — один из самых популярных языков для CLI-инструментов. Docker, Kubernetes (kubectl), Terraform, Hugo, gh (GitHub CLI) — всё написано на Go. Причины: быстрая компиляция в единый бинарник, кросс-компиляция на все платформы, мгновенный запуск (нет runtime). В C# CLI строятся через <code>System.CommandLine</code> (появился недавно) или <code>CommandLineParser</code>. В Go экосистема CLI зрелая и богатая.</p>
+</blockquote>
+<h3 id="что-вы-узнаете"><a class="header" href="#что-вы-узнаете">Что вы узнаете</a></h3>
+<ul>
+<li>Стандартный пакет <code>flag</code> и его ограничения</li>
+<li>Cobra: стандарт индустрии для CLI</li>
+<li>Структура проекта CLI-приложения</li>
+<li>Подкоманды, флаги, аргументы, автодополнение</li>
+<li>Интерактивный ввод и форматированный вывод</li>
+<li>Кросс-компиляция и дистрибуция</li>
+<li><code>go:embed</code> для встраивания ресурсов в бинарник</li>
+</ul>
+<hr>
+<h2 id="сравнительная-таблица-c-vs-go-cli"><a class="header" href="#сравнительная-таблица-c-vs-go-cli">Сравнительная таблица: C# vs Go CLI</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C#</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Стандартная библиотека</strong></td><td><code>System.CommandLine</code> (preview долго был)</td><td><code>flag</code> (минималистичный)</td></tr>
+<tr><td><strong>Основной фреймворк</strong></td><td><code>System.CommandLine</code>, <code>CommandLineParser</code></td><td>Cobra</td></tr>
+<tr><td><strong>Бинарник</strong></td><td>Требует .NET Runtime или self-contained (~60MB)</td><td>Единый бинарник (~5-15MB)</td></tr>
+<tr><td><strong>Запуск</strong></td><td>~100-300ms (JIT / AOT)</td><td>~1-5ms</td></tr>
+<tr><td><strong>Кросс-компиляция</strong></td><td><code>dotnet publish -r linux-x64</code></td><td><code>GOOS=linux go build</code></td></tr>
+<tr><td><strong>Автодополнение</strong></td><td>Ручная настройка</td><td>Cobra генерирует автоматически</td></tr>
+<tr><td><strong>Man pages</strong></td><td>Нет стандартного</td><td>Cobra генерирует</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="стандартный-пакет-flag"><a class="header" href="#стандартный-пакет-flag">Стандартный пакет flag</a></h2>
+<p>Для простых CLI без подкоманд.</p>
+<pre><code class="language-go">package main
+
+import (
+    "flag"
+    "fmt"
+)
+
+func main() {
+    // Определение флагов
+    host := flag.String("host", "localhost", "адрес сервера")
+    port := flag.Int("port", 8080, "порт сервера")
+    verbose := flag.Bool("verbose", false, "подробный вывод")
+
+    // Альтернатива: привязка к существующей переменной
+    var timeout int
+    flag.IntVar(&amp;timeout, "timeout", 30, "таймаут в секундах")
+
+    // Парсинг аргументов
+    flag.Parse()
+
+    // Позиционные аргументы (после флагов)
+    args := flag.Args()
+
+    fmt.Printf("host=%s port=%d verbose=%v timeout=%d args=%v\n",
+        *host, *port, *verbose, timeout, args)
+}
+</code></pre>
+<pre><code class="language-bash"># Использование
+myapp -host 0.0.0.0 -port 9090 -verbose file1.txt file2.txt
+# host=0.0.0.0 port=9090 verbose=true timeout=30 args=[file1.txt file2.txt]
+
+# Справка генерируется автоматически
+myapp -help
+</code></pre>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">// System.CommandLine
+var hostOption = new Option&lt;string&gt;("--host", () =&gt; "localhost", "адрес сервера");
+var portOption = new Option&lt;int&gt;("--port", () =&gt; 8080, "порт сервера");
+
+var rootCommand = new RootCommand("My App");
+rootCommand.AddOption(hostOption);
+rootCommand.AddOption(portOption);
+
+rootCommand.SetHandler((host, port) =&gt;
+{
+    Console.WriteLine($"host={host} port={port}");
+}, hostOption, portOption);
+
+await rootCommand.InvokeAsync(args);
+</code></pre>
+<h3 id="ограничения-flag"><a class="header" href="#ограничения-flag">Ограничения flag</a></h3>
+<ul>
+<li>Нет подкоманд (<code>myapp serve</code>, <code>myapp migrate</code>)</li>
+<li>Только <code>-flag</code> (один дефис), нет <code>--flag</code> (GNU-style)</li>
+<li>Нет коротких флагов (<code>-v</code> = <code>--verbose</code>)</li>
+<li>Нет группировки, валидации, enum-значений</li>
+<li>Нет автодополнения</li>
+</ul>
+<p>Для серьёзных CLI используйте Cobra.</p>
+<hr>
+<h2 id="cobra-стандарт-индустрии"><a class="header" href="#cobra-стандарт-индустрии">Cobra: стандарт индустрии</a></h2>
+<p><a href="https://github.com/spf13/cobra">Cobra</a> — фреймворк для CLI, используемый в kubectl, hugo, gh, docker compose и сотнях других проектов.</p>
+<h3 id="установка"><a class="header" href="#установка">Установка</a></h3>
+<pre><code class="language-bash">go get github.com/spf13/cobra@latest
+
+# Генератор проекта (опционально)
+go install github.com/spf13/cobra-cli@latest
+</code></pre>
+<h3 id="структура-проекта"><a class="header" href="#структура-проекта">Структура проекта</a></h3>
+<pre><code>myctl/
+├── cmd/
+│   ├── root.go         # корневая команда
+│   ├── serve.go        # myctl serve
+│   ├── migrate.go      # myctl migrate
+│   └── version.go      # myctl version
+├── internal/
+│   ├── config/         # конфигурация
+│   └── runner/         # бизнес-логика
+├── main.go
+├── go.mod
+└── go.sum
+</code></pre>
+<h3 id="maingo-точка-входа"><a class="header" href="#maingo-точка-входа">main.go: точка входа</a></h3>
+<pre><code class="language-go">package main
+
+import "github.com/username/myctl/cmd"
+
+func main() {
+    cmd.Execute()
+}
+</code></pre>
+<h3 id="cmdrootgo-корневая-команда"><a class="header" href="#cmdrootgo-корневая-команда">cmd/root.go: корневая команда</a></h3>
+<pre><code class="language-go">package cmd
+
+import (
+    "fmt"
+    "os"
+
+    "github.com/spf13/cobra"
+)
+
+// Глобальные флаги
+var (
+    cfgFile string
+    verbose bool
+)
+
+var rootCmd = &amp;cobra.Command{
+    Use:   "myctl",
+    Short: "Утилита управления сервисом",
+    Long: `myctl — CLI для управления, миграций и мониторинга.
+
+Примеры:
+  myctl serve --port 8080
+  myctl migrate up
+  myctl config show`,
+}
+
+func Execute() {
+    if err := rootCmd.Execute(); err != nil {
+        fmt.Fprintln(os.Stderr, err)
+        os.Exit(1)
+    }
+}
+
+func init() {
+    // Persistent flags — доступны во ВСЕХ подкомандах
+    rootCmd.PersistentFlags().StringVar(&amp;cfgFile, "config", "", "путь к конфигу")
+    rootCmd.PersistentFlags().BoolVarP(&amp;verbose, "verbose", "v", false, "подробный вывод")
+}
+</code></pre>
+<h3 id="cmdservego-подкоманда"><a class="header" href="#cmdservego-подкоманда">cmd/serve.go: подкоманда</a></h3>
+<pre><code class="language-go">package cmd
+
+import (
+    "fmt"
+    "github.com/spf13/cobra"
+)
+
+var (
+    serveHost string
+    servePort int
+)
+
+var serveCmd = &amp;cobra.Command{
+    Use:   "serve",
+    Short: "Запустить HTTP-сервер",
+    Long:  "Запустить HTTP-сервер с указанным адресом и портом",
+    Example: `  myctl serve
+  myctl serve --host 0.0.0.0 --port 9090
+  myctl serve -p 9090`,
+    RunE: func(cmd *cobra.Command, args []string) error {
+        fmt.Printf("Запуск сервера на %s:%d\n", serveHost, servePort)
+        // Здесь реальная логика запуска
+        return nil
+    },
+}
+
+func init() {
+    // Локальные флаги — только для этой команды
+    serveCmd.Flags().StringVar(&amp;serveHost, "host", "localhost", "адрес")
+    serveCmd.Flags().IntVarP(&amp;servePort, "port", "p", 8080, "порт")
+
+    // Регистрация подкоманды
+    rootCmd.AddCommand(serveCmd)
+}
+</code></pre>
+<h3 id="cmdmigratego-вложенные-подкоманды"><a class="header" href="#cmdmigratego-вложенные-подкоманды">cmd/migrate.go: вложенные подкоманды</a></h3>
+<pre><code class="language-go">package cmd
+
+import (
+    "fmt"
+    "github.com/spf13/cobra"
+)
+
+var migrateCmd = &amp;cobra.Command{
+    Use:   "migrate",
+    Short: "Управление миграциями БД",
+}
+
+var migrateUpCmd = &amp;cobra.Command{
+    Use:   "up [steps]",
+    Short: "Применить миграции",
+    Args:  cobra.MaximumNArgs(1), // 0 или 1 аргумент
+    RunE: func(cmd *cobra.Command, args []string) error {
+        steps := "all"
+        if len(args) &gt; 0 {
+            steps = args[0]
+        }
+        fmt.Printf("Применение миграций: %s\n", steps)
+        return nil
+    },
+}
+
+var migrateDownCmd = &amp;cobra.Command{
+    Use:   "down [steps]",
+    Short: "Откатить миграции",
+    Args:  cobra.MaximumNArgs(1),
+    RunE: func(cmd *cobra.Command, args []string) error {
+        steps := "1"
+        if len(args) &gt; 0 {
+            steps = args[0]
+        }
+        fmt.Printf("Откат миграций: %s\n", steps)
+        return nil
+    },
+}
+
+func init() {
+    migrateCmd.AddCommand(migrateUpCmd)
+    migrateCmd.AddCommand(migrateDownCmd)
+    rootCmd.AddCommand(migrateCmd)
+}
+</code></pre>
+<pre><code class="language-bash"># Использование
+myctl migrate up
+myctl migrate up 3
+myctl migrate down 1
+myctl migrate --help
+</code></pre>
+<hr>
+<h2 id="флаги-и-аргументы-детали"><a class="header" href="#флаги-и-аргументы-детали">Флаги и аргументы: детали</a></h2>
+<h3 id="типы-флагов"><a class="header" href="#типы-флагов">Типы флагов</a></h3>
+<pre><code class="language-go">// Persistent — наследуются всеми подкомандами
+cmd.PersistentFlags().StringVar(&amp;cfgFile, "config", "", "конфиг")
+
+// Local — только для текущей команды
+cmd.Flags().IntVarP(&amp;port, "port", "p", 8080, "порт")
+
+// Required — обязательный флаг
+cmd.Flags().StringVar(&amp;name, "name", "", "имя сервиса")
+cmd.MarkFlagRequired("name")
+
+// Deprecated
+cmd.Flags().StringVar(&amp;old, "old-flag", "", "deprecated")
+cmd.Flags().MarkDeprecated("old-flag", "используйте --new-flag")
+
+// Hidden — скрытый (не показывается в help)
+cmd.Flags().BoolVar(&amp;debug, "debug", false, "debug mode")
+cmd.Flags().MarkHidden("debug")
+
+// Enum-подобный с валидацией
+var format string
+cmd.Flags().StringVar(&amp;format, "format", "json", "формат вывода")
+cmd.RegisterFlagCompletionFunc("format", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+    return []string{"json", "yaml", "table"}, cobra.ShellCompDirectiveDefault
+})
+</code></pre>
+<h3 id="валидация-аргументов"><a class="header" href="#валидация-аргументов">Валидация аргументов</a></h3>
+<pre><code class="language-go">// Ровно 1 аргумент
+cmd.Args = cobra.ExactArgs(1)
+
+// От 1 до 3
+cmd.Args = cobra.RangeArgs(1, 3)
+
+// Без аргументов
+cmd.Args = cobra.NoArgs
+
+// Минимум 1
+cmd.Args = cobra.MinimumNArgs(1)
+
+// Пользовательская валидация
+cmd.Args = func(cmd *cobra.Command, args []string) error {
+    for _, arg := range args {
+        if !isValidName(arg) {
+            return fmt.Errorf("невалидное имя: %q", arg)
+        }
+    }
+    return nil
+}
+</code></pre>
+<hr>
+<h2 id="cobra--viper-конфигурация"><a class="header" href="#cobra--viper-конфигурация">Cobra + Viper: конфигурация</a></h2>
+<p>Cobra часто используется вместе с <a href="https://github.com/spf13/viper">Viper</a> для объединения конфигурации из файлов, переменных окружения и флагов CLI.</p>
+<pre><code class="language-go">import (
+    "github.com/spf13/cobra"
+    "github.com/spf13/viper"
+)
+
+func init() {
+    cobra.OnInitialize(initConfig)
+
+    rootCmd.PersistentFlags().StringVar(&amp;cfgFile, "config", "", "конфиг файл")
+    rootCmd.PersistentFlags().IntVar(&amp;port, "port", 8080, "порт")
+
+    // Привязка флага CLI к Viper
+    viper.BindPFlag("port", rootCmd.PersistentFlags().Lookup("port"))
+}
+
+func initConfig() {
+    if cfgFile != "" {
+        viper.SetConfigFile(cfgFile)
+    } else {
+        viper.SetConfigName("config")
+        viper.SetConfigType("yaml")
+        viper.AddConfigPath(".")
+        viper.AddConfigPath("$HOME/.myctl")
+    }
+
+    viper.AutomaticEnv()        // читать переменные окружения
+    viper.SetEnvPrefix("MYCTL") // MYCTL_PORT → port
+
+    if err := viper.ReadInConfig(); err == nil {
+        fmt.Println("Конфиг:", viper.ConfigFileUsed())
+    }
+}
+</code></pre>
+<p>Приоритет значений (от высшего к низшему):</p>
+<ol>
+<li>Флаги CLI (<code>--port 9090</code>)</li>
+<li>Переменные окружения (<code>MYCTL_PORT=9090</code>)</li>
+<li>Файл конфигурации (<code>config.yaml</code>)</li>
+<li>Значения по умолчанию</li>
+</ol>
+<hr>
+<h2 id="автодополнение-shell-completion"><a class="header" href="#автодополнение-shell-completion">Автодополнение (Shell Completion)</a></h2>
+<p>Cobra генерирует скрипты автодополнения для всех популярных оболочек.</p>
+<pre><code class="language-go">// cmd/completion.go
+var completionCmd = &amp;cobra.Command{
+    Use:   "completion [bash|zsh|fish|powershell]",
+    Short: "Генерация скрипта автодополнения",
+    Long: `Загрузка автодополнения:
+
+  # Bash
+  source &lt;(myctl completion bash)
+
+  # Zsh
+  myctl completion zsh &gt; "${fpath[1]}/_myctl"
+
+  # Fish
+  myctl completion fish | source
+
+  # PowerShell
+  myctl completion powershell | Out-String | Invoke-Expression`,
+    Args:      cobra.ExactValidArgs(1),
+    ValidArgs: []string{"bash", "zsh", "fish", "powershell"},
+    RunE: func(cmd *cobra.Command, args []string) error {
+        switch args[0] {
+        case "bash":
+            return rootCmd.GenBashCompletion(os.Stdout)
+        case "zsh":
+            return rootCmd.GenZshCompletion(os.Stdout)
+        case "fish":
+            return rootCmd.GenFishCompletion(os.Stdout, true)
+        case "powershell":
+            return rootCmd.GenPowerShellCompletionWithDesc(os.Stdout)
+        }
+        return nil
+    },
+}
+
+func init() {
+    rootCmd.AddCommand(completionCmd)
+}
+</code></pre>
+<hr>
+<h2 id="интерактивный-ввод-и-вывод"><a class="header" href="#интерактивный-ввод-и-вывод">Интерактивный ввод и вывод</a></h2>
+<h3 id="форматированный-вывод-таблицы"><a class="header" href="#форматированный-вывод-таблицы">Форматированный вывод: таблицы</a></h3>
+<pre><code class="language-go">import "text/tabwriter"
+
+func printTable(users []User) {
+    w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
+    fmt.Fprintln(w, "ID\tИМЯ\tEMAIL\tСТАТУС")
+    fmt.Fprintln(w, "──\t───\t─────\t──────")
+    for _, u := range users {
+        fmt.Fprintf(w, "%d\t%s\t%s\t%s\n", u.ID, u.Name, u.Email, u.Status)
+    }
+    w.Flush()
+}
+
+// Вывод:
+// ID  ИМЯ      EMAIL              СТАТУС
+// ──  ───      ─────              ──────
+// 1   Alice    alice@mail.com     active
+// 2   Bob      bob@mail.com       inactive
+</code></pre>
+<h3 id="вывод-в-jsonyaml"><a class="header" href="#вывод-в-jsonyaml">Вывод в JSON/YAML</a></h3>
+<pre><code class="language-go">import "encoding/json"
+
+func printJSON(v any) error {
+    enc := json.NewEncoder(os.Stdout)
+    enc.SetIndent("", "  ")
+    return enc.Encode(v)
+}
+
+// Выбор формата по флагу
+func printOutput(v any, format string) error {
+    switch format {
+    case "json":
+        return printJSON(v)
+    case "yaml":
+        data, err := yaml.Marshal(v)
+        if err != nil { return err }
+        _, err = os.Stdout.Write(data)
+        return err
+    case "table":
+        printTable(v)
+        return nil
+    default:
+        return fmt.Errorf("неизвестный формат: %s", format)
+    }
+}
+</code></pre>
+<h3 id="прогресс-бар"><a class="header" href="#прогресс-бар">Прогресс-бар</a></h3>
+<pre><code class="language-go">import "github.com/schollz/progressbar/v3"
+
+func downloadFile(url, dest string) error {
+    resp, err := http.Get(url)
+    if err != nil { return err }
+    defer resp.Body.Close()
+
+    f, err := os.Create(dest)
+    if err != nil { return err }
+    defer f.Close()
+
+    bar := progressbar.DefaultBytes(
+        resp.ContentLength,
+        "Загрузка",
+    )
+
+    _, err = io.Copy(io.MultiWriter(f, bar), resp.Body)
+    return err
+}
+</code></pre>
+<h3 id="цветной-вывод"><a class="header" href="#цветной-вывод">Цветной вывод</a></h3>
+<pre><code class="language-go">import "github.com/fatih/color"
+
+// Простой вывод
+color.Red("Ошибка: файл не найден")
+color.Green("Готово!")
+color.Yellow("Предупреждение: устаревший формат")
+
+// Форматированный
+info := color.New(color.FgCyan, color.Bold)
+info.Printf("Версия: %s\n", version)
+
+// Автоматическое отключение цветов при перенаправлении
+// color.NoColor = true (или через os.Getenv("NO_COLOR"))
+</code></pre>
+<h3 id="интерактивные-промпты"><a class="header" href="#интерактивные-промпты">Интерактивные промпты</a></h3>
+<pre><code class="language-go">import "github.com/AlecAivazis/survey/v2"
+
+// Ввод текста
+var name string
+survey.AskOne(&amp;survey.Input{
+    Message: "Имя сервиса:",
+    Default: "my-service",
+}, &amp;name)
+
+// Подтверждение
+var confirm bool
+survey.AskOne(&amp;survey.Confirm{
+    Message: "Удалить все данные?",
+    Default: false,
+}, &amp;confirm)
+
+// Выбор из списка
+var env string
+survey.AskOne(&amp;survey.Select{
+    Message: "Окружение:",
+    Options: []string{"development", "staging", "production"},
+    Default: "development",
+}, &amp;env)
+</code></pre>
+<hr>
+<h2 id="goembed--встраивание-файлов"><a class="header" href="#goembed--встраивание-файлов">go:embed — встраивание файлов</a></h2>
+<p>Директива <code>go:embed</code> (Go 1.16+) позволяет встраивать файлы и директории прямо в бинарник.</p>
+<pre><code class="language-go">import "embed"
+
+// Один файл как строка
+//go:embed version.txt
+var version string
+
+// Один файл как байты
+//go:embed config.default.yaml
+var defaultConfig []byte
+
+// Целая директория
+//go:embed templates/*
+var templates embed.FS
+
+// Несколько паттернов
+//go:embed static/* templates/*
+var assets embed.FS
+
+// Использование embed.FS
+func loadTemplate(name string) (string, error) {
+    data, err := templates.ReadFile("templates/" + name)
+    if err != nil {
+        return "", err
+    }
+    return string(data), nil
+}
+</code></pre>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">// Embedded resources в .csproj
+// &lt;EmbeddedResource Include="templates\**\*" /&gt;
+
+var assembly = Assembly.GetExecutingAssembly();
+using var stream = assembly.GetManifestResourceStream("MyApp.templates.index.html");
+</code></pre>
+<p>В Go <code>//go:embed</code> — одна строка и встроенная файловая система. В C# — конфигурация <code>.csproj</code> + Reflection для доступа.</p>
+<h3 id="типичные-применения-goembed"><a class="header" href="#типичные-применения-goembed">Типичные применения go:embed</a></h3>
+<pre><code class="language-go">// 1. SQL-миграции в бинарнике
+//go:embed migrations/*.sql
+var migrationsFS embed.FS
+
+// 2. Шаблоны HTML
+//go:embed templates/*.html
+var templateFS embed.FS
+
+tmpl, _ := template.ParseFS(templateFS, "templates/*.html")
+
+// 3. Статические файлы для HTTP
+//go:embed static/*
+var staticFS embed.FS
+
+http.Handle("/static/", http.FileServer(http.FS(staticFS)))
+
+// 4. Версия из файла
+//go:embed VERSION
+var version string
+
+var versionCmd = &amp;cobra.Command{
+    Use:   "version",
+    Short: "Показать версию",
+    Run: func(cmd *cobra.Command, args []string) {
+        fmt.Printf("myctl %s\n", strings.TrimSpace(version))
+    },
+}
+</code></pre>
+<hr>
+<h2 id="кросс-компиляция"><a class="header" href="#кросс-компиляция">Кросс-компиляция</a></h2>
+<p>Одно из главных преимуществ Go — сборка бинарников для любой платформы на любой машине.</p>
+<pre><code class="language-bash"># Linux (amd64)
+GOOS=linux GOARCH=amd64 go build -o myctl-linux-amd64
+
+# Linux (ARM64 — Raspberry Pi, AWS Graviton)
+GOOS=linux GOARCH=arm64 go build -o myctl-linux-arm64
+
+# macOS (Apple Silicon)
+GOOS=darwin GOARCH=arm64 go build -o myctl-darwin-arm64
+
+# Windows
+GOOS=windows GOARCH=amd64 go build -o myctl-windows-amd64.exe
+
+# Без CGO (чистый Go — статическая линковка)
+CGO_ENABLED=0 GOOS=linux go build -o myctl-linux-static
+</code></pre>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-bash">dotnet publish -r linux-x64 --self-contained  # ~60-80MB бинарник
+dotnet publish -r linux-x64 /p:PublishAot=true # AOT: ~10-30MB, но ограничения
+</code></pre>
+<h3 id="скрипт-релиза"><a class="header" href="#скрипт-релиза">Скрипт релиза</a></h3>
+<pre><code class="language-bash">#!/bin/bash
+VERSION=$(git describe --tags --always)
+LDFLAGS="-s -w -X main.version=${VERSION}"
+
+for GOOS in linux darwin windows; do
+    for GOARCH in amd64 arm64; do
+        output="myctl-${GOOS}-${GOARCH}"
+        if [ "$GOOS" = "windows" ]; then
+            output="${output}.exe"
+        fi
+        echo "Сборка: ${output}"
+        GOOS=$GOOS GOARCH=$GOARCH go build -ldflags "$LDFLAGS" -o "dist/${output}" .
+    done
+done
+</code></pre>
+<h3 id="ldflags-внедрение-переменных-при-сборке"><a class="header" href="#ldflags-внедрение-переменных-при-сборке">ldflags: внедрение переменных при сборке</a></h3>
+<pre><code class="language-go">// main.go
+package main
+
+var (
+    version = "dev"      // переопределяется при сборке
+    commit  = "unknown"
+    date    = "unknown"
+)
+</code></pre>
+<pre><code class="language-bash">go build -ldflags "-X main.version=1.2.3 -X main.commit=$(git rev-parse HEAD) -X main.date=$(date -u +%Y-%m-%dT%H:%M:%SZ)" -o myctl
+</code></pre>
+<pre><code class="language-bash"># -s -w — убрать отладочные символы (уменьшает бинарник на ~30%)
+go build -ldflags "-s -w" -o myctl
+</code></pre>
+<hr>
+<h2 id="goreleaser-автоматизация-релизов"><a class="header" href="#goreleaser-автоматизация-релизов">Goreleaser: автоматизация релизов</a></h2>
+<p><a href="https://goreleaser.com">Goreleaser</a> автоматизирует сборку, подпись и публикацию CLI-инструментов.</p>
+<pre><code class="language-yaml"># .goreleaser.yml
+version: 2
+project_name: myctl
+
+builds:
+  - main: .
+    binary: myctl
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+
+archives:
+  - formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+
+brews:
+  - repository:
+      owner: username
+      name: homebrew-tap
+    homepage: https://github.com/username/myctl
+    description: "Утилита управления сервисом"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+</code></pre>
+<pre><code class="language-bash"># Локальная сборка (без публикации)
+goreleaser release --snapshot --clean
+
+# Релиз при пуше тега
+git tag v1.0.0
+git push origin v1.0.0
+# GitHub Actions запустит goreleaser
+</code></pre>
+<hr>
+<h2 id="тестирование-cli"><a class="header" href="#тестирование-cli">Тестирование CLI</a></h2>
+<pre><code class="language-go">func TestServeCommand(t *testing.T) {
+    // Создаём новую корневую команду для изоляции
+    cmd := newRootCmd()
+
+    // Захватываем stdout
+    var buf bytes.Buffer
+    cmd.SetOut(&amp;buf)
+    cmd.SetErr(&amp;buf)
+
+    // Устанавливаем аргументы
+    cmd.SetArgs([]string{"serve", "--port", "9090"})
+
+    // Выполняем
+    err := cmd.Execute()
+    if err != nil {
+        t.Fatalf("ошибка выполнения: %v", err)
+    }
+
+    output := buf.String()
+    if !strings.Contains(output, "9090") {
+        t.Errorf("ожидалось упоминание порта 9090, получено: %s", output)
+    }
+}
+
+func TestMigrateUpArgs(t *testing.T) {
+    cmd := newRootCmd()
+    cmd.SetArgs([]string{"migrate", "up", "3"})
+
+    err := cmd.Execute()
+    if err != nil {
+        t.Fatalf("ошибка: %v", err)
+    }
+}
+
+func TestInvalidCommand(t *testing.T) {
+    cmd := newRootCmd()
+    cmd.SetArgs([]string{"nonexistent"})
+
+    err := cmd.Execute()
+    if err == nil {
+        t.Fatal("ожидалась ошибка для несуществующей команды")
+    }
+}
+</code></pre>
+<hr>
+<h2 id="практический-пример-dbctl"><a class="header" href="#практический-пример-dbctl">Практический пример: dbctl</a></h2>
+<p>Минимальный CLI для управления базой данных:</p>
+<details>
+<summary>Полный код dbctl</summary>
+<pre><code class="language-go">package main
+
+import (
+    "embed"
+    "fmt"
+    "os"
+    "strings"
+    "text/tabwriter"
+
+    "github.com/spf13/cobra"
+)
+
+//go:embed VERSION
+var version string
+
+var (
+    dsn     string
+    verbose bool
+)
+
+func main() {
+    if err := rootCmd.Execute(); err != nil {
+        os.Exit(1)
+    }
+}
+
+var rootCmd = &amp;cobra.Command{
+    Use:   "dbctl",
+    Short: "Утилита управления базой данных",
+}
+
+var statusCmd = &amp;cobra.Command{
+    Use:   "status",
+    Short: "Показать статус подключения",
+    RunE: func(cmd *cobra.Command, args []string) error {
+        fmt.Fprintf(cmd.OutOrStdout(), "DSN: %s\n", dsn)
+        fmt.Fprintf(cmd.OutOrStdout(), "Статус: подключено\n")
+        return nil
+    },
+}
+
+var tablesCmd = &amp;cobra.Command{
+    Use:   "tables",
+    Short: "Список таблиц",
+    RunE: func(cmd *cobra.Command, args []string) error {
+        // Пример вывода — в реальности запрос к БД
+        tables := []struct {
+            Name  string
+            Rows  int
+            Size  string
+        }{
+            {"users", 15420, "2.1 MB"},
+            {"orders", 89301, "12.4 MB"},
+            {"products", 3200, "0.8 MB"},
+        }
+
+        w := tabwriter.NewWriter(cmd.OutOrStdout(), 0, 0, 2, ' ', 0)
+        fmt.Fprintln(w, "ТАБЛИЦА\tСТРОК\tРАЗМЕР")
+        fmt.Fprintln(w, "───────\t─────\t──────")
+        for _, t := range tables {
+            fmt.Fprintf(w, "%s\t%d\t%s\n", t.Name, t.Rows, t.Size)
+        }
+        return w.Flush()
+    },
+}
+
+var migrateCmd = &amp;cobra.Command{
+    Use:   "migrate",
+    Short: "Управление миграциями",
+}
+
+var migrateUpCmd = &amp;cobra.Command{
+    Use:   "up",
+    Short: "Применить миграции",
+    RunE: func(cmd *cobra.Command, args []string) error {
+        fmt.Fprintln(cmd.OutOrStdout(), "Применение миграций...")
+        fmt.Fprintln(cmd.OutOrStdout(), "  001_create_users.sql  OK")
+        fmt.Fprintln(cmd.OutOrStdout(), "  002_create_orders.sql OK")
+        fmt.Fprintln(cmd.OutOrStdout(), "Готово: 2 миграции применены")
+        return nil
+    },
+}
+
+var versionCmd = &amp;cobra.Command{
+    Use:   "version",
+    Short: "Версия программы",
+    Run: func(cmd *cobra.Command, args []string) {
+        fmt.Fprintf(cmd.OutOrStdout(), "dbctl %s\n", strings.TrimSpace(version))
+    },
+}
+
+func init() {
+    rootCmd.PersistentFlags().StringVar(&amp;dsn, "dsn", "", "строка подключения к БД")
+    rootCmd.PersistentFlags().BoolVarP(&amp;verbose, "verbose", "v", false, "подробный вывод")
+
+    rootCmd.MarkPersistentFlagRequired("dsn")
+
+    migrateCmd.AddCommand(migrateUpCmd)
+    rootCmd.AddCommand(statusCmd, tablesCmd, migrateCmd, versionCmd)
+}
+</code></pre>
+</details>
+<pre><code class="language-bash"># Использование
+dbctl --dsn "postgres://localhost/mydb" status
+dbctl --dsn "postgres://localhost/mydb" tables
+dbctl --dsn "postgres://localhost/mydb" migrate up
+dbctl version
+dbctl --help
+</code></pre>
+<hr>
+<h2 id="шпаргалка-экосистема-cli-в-go"><a class="header" href="#шпаргалка-экосистема-cli-в-go">Шпаргалка: экосистема CLI в Go</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Задача</th><th>Пакет / инструмент</th></tr>
+</thead>
+<tbody>
+<tr><td>Парсинг флагов (простой)</td><td><code>flag</code> (stdlib)</td></tr>
+<tr><td>CLI-фреймворк</td><td><a href="https://github.com/spf13/cobra">Cobra</a></td></tr>
+<tr><td>Конфигурация</td><td><a href="https://github.com/spf13/viper">Viper</a></td></tr>
+<tr><td>Прогресс-бар</td><td><a href="https://github.com/schollz/progressbar">progressbar</a></td></tr>
+<tr><td>Цвета</td><td><a href="https://github.com/fatih/color">color</a></td></tr>
+<tr><td>Интерактивные промпты</td><td><a href="https://github.com/AlecAivazis/survey">survey</a></td></tr>
+<tr><td>TUI (терминальный UI)</td><td><a href="https://github.com/charmbracelet/bubbletea">bubbletea</a></td></tr>
+<tr><td>Таблицы</td><td><code>text/tabwriter</code> (stdlib), <a href="https://github.com/olekukonez/tablewriter">tablewriter</a></td></tr>
+<tr><td>Логирование CLI</td><td><a href="https://pkg.go.dev/log/slog">slog</a> (stdlib)</td></tr>
+<tr><td>Кросс-компиляция + релиз</td><td><a href="https://goreleaser.com">Goreleaser</a></td></tr>
+<tr><td>Встраивание файлов</td><td><code>go:embed</code> (stdlib)</td></tr>
+</tbody>
+</table>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part4-infrastructure/07_containerization.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part5-project1-url-shortener/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part4-infrastructure/07_containerization.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part5-project1-url-shortener/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,1149 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>io.Reader и io.Writer - Go для C# разработчиков</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-034476fa.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-99029afd.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Go для C# разработчиков</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part2-advanced/10_io_reader_writer.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="ioreader-и-iowriter-потоковая-обработка-данных"><a class="header" href="#ioreader-и-iowriter-потоковая-обработка-данных">io.Reader и io.Writer: потоковая обработка данных</a></h1>
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В C# абстракция потоков строится на <code>System.IO.Stream</code> — абстрактном классе с десятками методов (<code>Read</code>, <code>Write</code>, <code>Seek</code>, <code>Flush</code>, <code>CopyTo</code>, <code>Length</code>, свойства <code>CanRead</code>, <code>CanWrite</code>, <code>CanSeek</code>…). В Go вся потоковая модель строится на <strong>двух интерфейсах по одному методу</strong>: <code>io.Reader</code> и <code>io.Writer</code>. Эта минималистичность — не ограничение, а сила: любая структура, реализующая один метод, автоматически совместима со всей экосистемой Go.</p>
+</blockquote>
+<h3 id="что-вы-узнаете"><a class="header" href="#что-вы-узнаете">Что вы узнаете</a></h3>
+<ul>
+<li><code>io.Reader</code> и <code>io.Writer</code>: контракт и семантика</li>
+<li>Композиция потоков: <code>io.TeeReader</code>, <code>io.MultiWriter</code>, <code>io.Pipe</code></li>
+<li><code>bufio</code>: буферизированный I/O и сканирование</li>
+<li>Потоковая обработка JSON, CSV и бинарных данных</li>
+<li>Паттерны: обёртки, декораторы, middleware для потоков</li>
+<li>Типичные ошибки C# разработчиков при работе с I/O в Go</li>
+<li>Производительность: аллокации, буферы, <code>sync.Pool</code></li>
+</ul>
+<hr>
+<h2 id="сравнительная-таблица-net-stream-vs-go-io"><a class="header" href="#сравнительная-таблица-net-stream-vs-go-io">Сравнительная таблица: .NET Stream vs Go io</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# (System.IO)</th><th>Go (io)</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Базовая абстракция</strong></td><td><code>Stream</code> (абстрактный класс, ~30 методов)</td><td><code>io.Reader</code> / <code>io.Writer</code> (по 1 методу)</td></tr>
+<tr><td><strong>Тип реализации</strong></td><td>Наследование</td><td>Утиная типизация (implicit interfaces)</td></tr>
+<tr><td><strong>Буферизация</strong></td><td><code>BufferedStream</code></td><td><code>bufio.Reader</code> / <code>bufio.Writer</code></td></tr>
+<tr><td><strong>Копирование</strong></td><td><code>stream.CopyTo(dst)</code></td><td><code>io.Copy(dst, src)</code></td></tr>
+<tr><td><strong>Ограничение чтения</strong></td><td>Ручная реализация</td><td><code>io.LimitReader</code></td></tr>
+<tr><td><strong>Чтение целиком</strong></td><td><code>stream.ReadToEnd()</code> / <code>BinaryReader</code></td><td><code>io.ReadAll</code></td></tr>
+<tr><td><strong>Pipe</strong></td><td><code>System.IO.Pipes</code> (OS-level)</td><td><code>io.Pipe()</code> (in-memory, goroutine-safe)</td></tr>
+<tr><td><strong>Декорирование</strong></td><td>Наследование / <code>DelegatingStream</code></td><td>Обёртка структурой</td></tr>
+<tr><td><strong>Закрытие</strong></td><td><code>IDisposable</code> + <code>using</code></td><td><code>io.Closer</code> + <code>defer</code></td></tr>
+<tr><td><strong>Позиционирование</strong></td><td><code>Stream.Seek()</code></td><td><code>io.Seeker</code> (отдельный интерфейс)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="ioreader-контракт"><a class="header" href="#ioreader-контракт">io.Reader: контракт</a></h2>
+<pre><code class="language-go">type Reader interface {
+    Read(p []byte) (n int, err error)
+}
+</code></pre>
+<p>Контракт <code>Read</code> прост, но содержит важные нюансы:</p>
+<ol>
+<li>Читает <strong>до</strong> <code>len(p)</code> байт в <code>p</code></li>
+<li>Возвращает количество прочитанных байт <code>n</code> (0 &lt;= n &lt;= len(p))</li>
+<li>Возвращает <code>io.EOF</code> когда данные закончились</li>
+<li><strong>Может вернуть <code>n &gt; 0</code> и <code>io.EOF</code> одновременно</strong> — это валидное поведение</li>
+<li>Не должен оставлять <code>p</code> частично заполненным без причины</li>
+</ol>
+<h3 id="c-streamread-vs-go-ioreader"><a class="header" href="#c-streamread-vs-go-ioreader">C# Stream.Read vs Go io.Reader</a></h3>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">// Stream.Read может вернуть меньше байт, чем запрошено
+byte[] buffer = new byte[4096];
+int bytesRead = stream.Read(buffer, 0, buffer.Length);
+// bytesRead может быть от 0 до 4096
+// 0 означает конец потока
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">// io.Reader.Read — аналогичная семантика, но конец потока — io.EOF
+buf := make([]byte, 4096)
+n, err := reader.Read(buf)
+// n может быть от 0 до 4096
+// err == io.EOF означает конец потока
+// Важно: СНАЧАЛА обработать buf[:n], ПОТОМ проверить err
+</code></pre>
+<h3 id="главная-ловушка-порядок-обработки-n-и-err"><a class="header" href="#главная-ловушка-порядок-обработки-n-и-err">Главная ловушка: порядок обработки n и err</a></h3>
+<pre><code class="language-go">// ❌ Неправильно: теряем последнюю порцию данных
+n, err := reader.Read(buf)
+if err != nil {
+    return err // n байт данных потеряны!
+}
+process(buf[:n])
+
+// ✅ Правильно: обрабатываем данные ДО проверки ошибки
+n, err := reader.Read(buf)
+if n &gt; 0 {
+    process(buf[:n])
+}
+if err != nil {
+    if err == io.EOF {
+        break // нормальное завершение
+    }
+    return err
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: в C# <code>Stream.Read</code> возвращает 0 при конце потока, нет отдельного сигнала об ошибке. В Go конец данных и ошибка — два независимых значения, и они могут прийти одновременно. Это фундаментальное отличие, которое вызывает баги у новичков.</p>
+</blockquote>
+<hr>
+<h2 id="iowriter-контракт"><a class="header" href="#iowriter-контракт">io.Writer: контракт</a></h2>
+<pre><code class="language-go">type Writer interface {
+    Write(p []byte) (n int, err error)
+}
+</code></pre>
+<p>Контракт <code>Write</code>:</p>
+<ol>
+<li>Записывает данные из <code>p</code></li>
+<li>Возвращает количество записанных байт <code>n</code> (0 &lt;= n &lt;= len(p))</li>
+<li><strong>Если <code>n &lt; len(p)</code> — обязана вернуть ненулевую ошибку</strong></li>
+<li>Не должна модифицировать <code>p</code> (даже временно)</li>
+</ol>
+<pre><code class="language-go">// Запись в io.Writer
+data := []byte("hello, world")
+n, err := writer.Write(data)
+if err != nil {
+    return fmt.Errorf("запись: %w", err)
+}
+// n == len(data) гарантировано, если err == nil
+</code></pre>
+<h3 id="стандартные-реализации"><a class="header" href="#стандартные-реализации">Стандартные реализации</a></h3>
+<pre><code class="language-go">// Файл
+f, _ := os.Create("output.txt")
+defer f.Close()
+f.Write([]byte("данные"))
+
+// Буфер в памяти
+var buf bytes.Buffer
+buf.Write([]byte("данные"))
+fmt.Println(buf.String()) // "данные"
+
+// HTTP response
+func handler(w http.ResponseWriter, r *http.Request) {
+    w.Write([]byte("ответ")) // w реализует io.Writer
+}
+
+// Хеш-функция
+h := sha256.New() // hash.Hash реализует io.Writer
+h.Write([]byte("данные"))
+sum := h.Sum(nil)
+
+// /dev/null
+io.Discard.Write([]byte("в никуда"))
+</code></pre>
+<hr>
+<h2 id="композиция-сила-маленьких-интерфейсов"><a class="header" href="#композиция-сила-маленьких-интерфейсов">Композиция: сила маленьких интерфейсов</a></h2>
+<h3 id="составные-интерфейсы-в-стандартной-библиотеке"><a class="header" href="#составные-интерфейсы-в-стандартной-библиотеке">Составные интерфейсы в стандартной библиотеке</a></h3>
+<pre><code class="language-go">// io пакет определяет составные интерфейсы через embedding
+type ReadWriter interface {
+    Reader
+    Writer
+}
+
+type ReadCloser interface {
+    Reader
+    Closer
+}
+
+type WriteCloser interface {
+    Writer
+    Closer
+}
+
+type ReadWriteCloser interface {
+    Reader
+    Writer
+    Closer
+}
+
+type ReadSeeker interface {
+    Reader
+    Seeker
+}
+</code></pre>
+<p>В C# всё это — один класс <code>Stream</code> с флагами <code>CanRead</code>, <code>CanSeek</code>. В Go — явная композиция: если функция принимает <code>io.ReadSeeker</code>, она гарантированно получает и чтение, и позиционирование.</p>
+<h3 id="iocopy-универсальное-копирование"><a class="header" href="#iocopy-универсальное-копирование">io.Copy: универсальное копирование</a></h3>
+<pre><code class="language-go">// Копирование из Reader в Writer
+n, err := io.Copy(dst, src)
+</code></pre>
+<p><code>io.Copy</code> — рабочая лошадка Go I/O. Использует буфер 32KB по умолчанию.</p>
+<p><strong>C#</strong>:</p>
+<pre><code class="language-csharp">await source.CopyToAsync(destination);
+// или с указанием размера буфера
+await source.CopyToAsync(destination, bufferSize: 81920);
+</code></pre>
+<p><strong>Go</strong>:</p>
+<pre><code class="language-go">// Стандартный буфер 32KB
+io.Copy(dst, src)
+
+// Свой буфер
+buf := make([]byte, 64*1024) // 64KB
+io.CopyBuffer(dst, src, buf)
+
+// Копирование ровно N байт
+io.CopyN(dst, src, 1024) // ровно 1024 байта
+</code></pre>
+<p><strong>Оптимизация</strong>: если <code>src</code> реализует <code>io.WriterTo</code> или <code>dst</code> реализует <code>io.ReaderFrom</code>, <code>io.Copy</code> вызывает их напрямую, минуя промежуточный буфер. Например, <code>*os.File</code> реализует <code>ReadFrom</code> через <code>sendfile</code> syscall — копирование файлов без выхода из kernel space.</p>
+<pre><code class="language-go">// Под капотом io.Copy проверяет:
+// 1. dst.(io.ReaderFrom) → dst.ReadFrom(src) — zero-copy если возможно
+// 2. src.(io.WriterTo) → src.WriteTo(dst) — прямая запись
+// 3. Fallback: буфер 32KB + цикл Read/Write
+</code></pre>
+<h3 id="ioteereader-чтение-с-дублированием"><a class="header" href="#ioteereader-чтение-с-дублированием">io.TeeReader: чтение с дублированием</a></h3>
+<pre><code class="language-go">// Читаем body HTTP-ответа и параллельно считаем хеш
+resp, _ := http.Get("https://example.com/file.tar.gz")
+defer resp.Body.Close()
+
+h := sha256.New()
+body := io.TeeReader(resp.Body, h) // каждый Read из body дублируется в h
+
+// Сохраняем файл — данные ОДНОВРЕМЕННО пишутся в хеш
+f, _ := os.Create("file.tar.gz")
+defer f.Close()
+io.Copy(f, body)
+
+fmt.Printf("SHA-256: %x\n", h.Sum(nil))
+</code></pre>
+<p><strong>C# аналог</strong> потребовал бы <code>CryptoStream</code> или ручного дублирования:</p>
+<pre><code class="language-csharp">using var sha256 = SHA256.Create();
+using var cryptoStream = new CryptoStream(fileStream, sha256, CryptoStreamMode.Write);
+await responseStream.CopyToAsync(cryptoStream);
+byte[] hash = sha256.Hash;
+</code></pre>
+<h3 id="iomultiwriter-запись-в-несколько-потоков"><a class="header" href="#iomultiwriter-запись-в-несколько-потоков">io.MultiWriter: запись в несколько потоков</a></h3>
+<pre><code class="language-go">// Логируем в файл и в stdout одновременно
+logFile, _ := os.Create("app.log")
+defer logFile.Close()
+
+multi := io.MultiWriter(os.Stdout, logFile)
+fmt.Fprintln(multi, "сообщение идёт в оба места")
+
+// Более сложный пример: файл + хеш + счётчик байт
+h := sha256.New()
+counter := &amp;CountWriter{}
+w := io.MultiWriter(f, h, counter)
+io.Copy(w, src) // данные пишутся во все три Writer
+</code></pre>
+<h3 id="iomultireader-последовательное-чтение"><a class="header" href="#iomultireader-последовательное-чтение">io.MultiReader: последовательное чтение</a></h3>
+<pre><code class="language-go">// Конкатенация нескольких источников
+header := strings.NewReader("HEADER\n")
+body := bytes.NewReader(bodyData)
+footer := strings.NewReader("\nFOOTER")
+
+combined := io.MultiReader(header, body, footer)
+io.Copy(os.Stdout, combined) // читает последовательно: header → body → footer
+</code></pre>
+<h3 id="iopipe-синхронный-канал-между-reader-и-writer"><a class="header" href="#iopipe-синхронный-канал-между-reader-и-writer">io.Pipe: синхронный канал между Reader и Writer</a></h3>
+<pre><code class="language-go">// io.Pipe создаёт пару (Reader, Writer) — запись в PipeWriter
+// блокируется до чтения из PipeReader. Горутино-безопасен.
+
+pr, pw := io.Pipe()
+
+// Горутина-писатель
+go func() {
+    defer pw.Close()
+    json.NewEncoder(pw).Encode(largeData) // пишем JSON прямо в pipe
+}()
+
+// Горутина-читатель (или основная горутина)
+req, _ := http.NewRequest("POST", url, pr) // pipe как body запроса
+resp, _ := http.DefaultClient.Do(req)
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: <code>io.Pipe</code> — аналог <code>System.IO.Pipelines</code> (<code>PipeReader</code>/<code>PipeWriter</code>), но проще. Нет back-pressure и memory pooling, зато нулевая церемония: создал пару, передал в горутины, готово.</p>
+</blockquote>
+<p><strong>Типичные сценарии для io.Pipe:</strong></p>
+<ul>
+<li>Потоковая отправка JSON/XML по HTTP без буферизации в памяти</li>
+<li>Трансформация данных на лету между горутинами</li>
+<li>Тестирование: имитация потокового ввода</li>
+</ul>
+<hr>
+<h2 id="iolimitreader-и-iosectionreader"><a class="header" href="#iolimitreader-и-iosectionreader">io.LimitReader и io.SectionReader</a></h2>
+<h3 id="limitreader-защита-от-бесконечного-чтения"><a class="header" href="#limitreader-защита-от-бесконечного-чтения">LimitReader: защита от бесконечного чтения</a></h3>
+<pre><code class="language-go">// Ограничиваем чтение тела запроса до 1MB
+// Защита от атак с огромным body
+body := io.LimitReader(r.Body, 1&lt;&lt;20) // 1MB
+data, err := io.ReadAll(body)
+</code></pre>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">// В ASP.NET Core — через конфигурацию
+services.Configure&lt;KestrelServerOptions&gt;(options =&gt;
+{
+    options.Limits.MaxRequestBodySize = 1_048_576; // 1MB
+});
+</code></pre>
+<p>В Go защита — явная и на уровне I/O, а не конфигурации фреймворка.</p>
+<h3 id="sectionreader-чтение-фрагмента"><a class="header" href="#sectionreader-чтение-фрагмента">SectionReader: чтение фрагмента</a></h3>
+<pre><code class="language-go">// Чтение 100 байт начиная с позиции 500
+// Полезно для range-запросов, работы с архивами
+section := io.NewSectionReader(file, 500, 100)
+data, _ := io.ReadAll(section) // ровно 100 байт (или меньше, если файл короче)
+</code></pre>
+<hr>
+<h2 id="bufio-буферизированный-io"><a class="header" href="#bufio-буферизированный-io">bufio: буферизированный I/O</a></h2>
+<p>Прямое использование <code>io.Reader.Read</code> неэффективно для мелких чтений — каждый вызов может приводить к syscall. <code>bufio</code> добавляет буфер, уменьшая количество системных вызовов.</p>
+<h3 id="bufioreader"><a class="header" href="#bufioreader">bufio.Reader</a></h3>
+<pre><code class="language-go">// Оборачиваем любой io.Reader в буферизированный
+br := bufio.NewReader(file)           // буфер 4096 байт по умолчанию
+br = bufio.NewReaderSize(file, 64*1024) // буфер 64KB
+
+// Методы чтения
+line, err := br.ReadString('\n') // до разделителя (включая его)
+b, err := br.ReadByte()          // один байт
+bytes, err := br.ReadBytes('\n') // []byte до разделителя
+n := br.Buffered()               // сколько байт в буфере
+_ = br.UnreadByte()              // вернуть байт в буфер
+data, _ := br.Peek(10)           // подсмотреть 10 байт, не продвигая позицию
+</code></pre>
+<h3 id="bufioscanner-построчное-чтение"><a class="header" href="#bufioscanner-построчное-чтение">bufio.Scanner: построчное чтение</a></h3>
+<pre><code class="language-go">// Чтение файла построчно — идиоматичный Go
+scanner := bufio.NewScanner(file)
+for scanner.Scan() {
+    line := scanner.Text() // строка без \n
+    fmt.Println(line)
+}
+if err := scanner.Err(); err != nil {
+    log.Fatal(err)
+}
+</code></pre>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-csharp">// StreamReader.ReadLine()
+using var reader = new StreamReader(file);
+while (reader.ReadLine() is { } line)
+{
+    Console.WriteLine(line);
+}
+</code></pre>
+<p><strong>Настройка Scanner</strong>: по умолчанию максимальная длина строки — 64KB. Для больших строк:</p>
+<pre><code class="language-go">scanner := bufio.NewScanner(file)
+scanner.Buffer(make([]byte, 0), 10*1024*1024) // до 10MB на строку
+</code></pre>
+<p><strong>Пользовательские split-функции</strong>:</p>
+<pre><code class="language-go">// Встроенные: ScanLines, ScanWords, ScanBytes, ScanRunes
+
+// Чтение по словам
+scanner := bufio.NewScanner(strings.NewReader("hello world foo"))
+scanner.Split(bufio.ScanWords)
+for scanner.Scan() {
+    fmt.Println(scanner.Text()) // "hello", "world", "foo"
+}
+
+// Пользовательский split: чтение записей, разделённых \0
+scanner.Split(func(data []byte, atEOF bool) (advance int, token []byte, err error) {
+    if i := bytes.IndexByte(data, 0); i &gt;= 0 {
+        return i + 1, data[:i], nil
+    }
+    if atEOF &amp;&amp; len(data) &gt; 0 {
+        return len(data), data, nil
+    }
+    return 0, nil, nil // запросить больше данных
+})
+</code></pre>
+<h3 id="bufiowriter"><a class="header" href="#bufiowriter">bufio.Writer</a></h3>
+<pre><code class="language-go">bw := bufio.NewWriter(file)
+defer bw.Flush() // обязательно: без Flush данные останутся в буфере
+
+bw.WriteString("строка\n")
+bw.Write([]byte{0x01, 0x02, 0x03})
+bw.WriteByte('\n')
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: <code>bufio.Writer</code> — аналог <code>BufferedStream</code>, но с важным отличием: <code>Flush()</code> надо вызывать <strong>явно</strong>. В C# <code>using</code> + <code>Dispose</code> обычно делают flush автоматически. В Go <code>defer bw.Flush()</code> — обязательный паттерн.</p>
+</blockquote>
+<hr>
+<h2 id="практические-паттерны"><a class="header" href="#практические-паттерны">Практические паттерны</a></h2>
+<h3 id="паттерн-1-обёртка-декоратор-counting-writer"><a class="header" href="#паттерн-1-обёртка-декоратор-counting-writer">Паттерн 1: обёртка-декоратор (Counting Writer)</a></h3>
+<pre><code class="language-go">// Считаем количество записанных байт
+type CountWriter struct {
+    W     io.Writer
+    Count int64
+}
+
+func (cw *CountWriter) Write(p []byte) (int, error) {
+    n, err := cw.W.Write(p)
+    cw.Count += int64(n)
+    return n, err
+}
+
+// Использование
+cw := &amp;CountWriter{W: file}
+io.Copy(cw, src)
+fmt.Printf("Записано: %d байт\n", cw.Count)
+</code></pre>
+<p><strong>C# аналог</strong> — наследование от <code>Stream</code> (переопределить ~5 методов + свойства):</p>
+<pre><code class="language-csharp">class CountingStream : Stream
+{
+    private readonly Stream _inner;
+    public long BytesWritten { get; private set; }
+
+    public override void Write(byte[] buffer, int offset, int count)
+    {
+        _inner.Write(buffer, offset, count);
+        BytesWritten += count;
+    }
+
+    // + CanRead, CanWrite, CanSeek, Length, Position, Flush, Read, Seek...
+}
+</code></pre>
+<p>В Go декоратор — <strong>3 строки кода</strong>. В C# — целый класс с десятком обязательных переопределений.</p>
+<h3 id="паттерн-2-progress-reader"><a class="header" href="#паттерн-2-progress-reader">Паттерн 2: Progress Reader</a></h3>
+<pre><code class="language-go">// Отображение прогресса загрузки
+type ProgressReader struct {
+    R         io.Reader
+    Total     int64
+    Current   int64
+    OnProgress func(current, total int64)
+}
+
+func (pr *ProgressReader) Read(p []byte) (int, error) {
+    n, err := pr.R.Read(p)
+    pr.Current += int64(n)
+    if pr.OnProgress != nil {
+        pr.OnProgress(pr.Current, pr.Total)
+    }
+    return n, err
+}
+
+// Использование: загрузка файла с прогрессом
+resp, _ := http.Get(url)
+defer resp.Body.Close()
+
+pr := &amp;ProgressReader{
+    R:     resp.Body,
+    Total: resp.ContentLength,
+    OnProgress: func(current, total int64) {
+        fmt.Printf("\r%d / %d (%.1f%%)", current, total, float64(current)/float64(total)*100)
+    },
+}
+io.Copy(file, pr)
+</code></pre>
+<h3 id="паттерн-3-потоковый-json-без-загрузки-в-память"><a class="header" href="#паттерн-3-потоковый-json-без-загрузки-в-память">Паттерн 3: потоковый JSON без загрузки в память</a></h3>
+<pre><code class="language-go">// ❌ Загрузка всего JSON в память
+data, _ := io.ReadAll(resp.Body) // весь файл в RAM
+var users []User
+json.Unmarshal(data, &amp;users)
+
+// ✅ Потоковый декодер: читает и парсит по одному объекту
+dec := json.NewDecoder(resp.Body)
+
+// Пропускаем начало массива '['
+dec.Token()
+
+for dec.More() {
+    var user User
+    if err := dec.Decode(&amp;user); err != nil {
+        return err
+    }
+    processUser(user) // обрабатываем по одному, не держим весь массив
+}
+</code></pre>
+<p><strong>C# аналог</strong> — <code>System.Text.Json.Utf8JsonReader</code> или <code>JsonSerializer.DeserializeAsyncEnumerable</code>:</p>
+<pre><code class="language-csharp">// .NET 6+: потоковая десериализация
+await foreach (var user in JsonSerializer.DeserializeAsyncEnumerable&lt;User&gt;(stream))
+{
+    ProcessUser(user);
+}
+</code></pre>
+<h3 id="паттерн-4-потоковая-запись-json"><a class="header" href="#паттерн-4-потоковая-запись-json">Паттерн 4: потоковая запись JSON</a></h3>
+<pre><code class="language-go">// Кодируем JSON прямо в Writer, без промежуточного []byte
+enc := json.NewEncoder(w) // w — любой io.Writer: файл, HTTP response, pipe
+enc.SetIndent("", "  ")
+
+for _, user := range users {
+    if err := enc.Encode(user); err != nil {
+        return err
+    }
+}
+</code></pre>
+<h3 id="паттерн-5-http-response-как-iowriter"><a class="header" href="#паттерн-5-http-response-как-iowriter">Паттерн 5: HTTP response как io.Writer</a></h3>
+<pre><code class="language-go">func downloadHandler(w http.ResponseWriter, r *http.Request) {
+    file, _ := os.Open("report.csv")
+    defer file.Close()
+
+    w.Header().Set("Content-Type", "text/csv")
+    w.Header().Set("Content-Disposition", "attachment; filename=report.csv")
+
+    // Файл → HTTP response без буферизации в памяти
+    io.Copy(w, file) // http.ResponseWriter реализует io.Writer
+}
+</code></pre>
+<h3 id="паттерн-6-iopipe-для-потоковой-отправки"><a class="header" href="#паттерн-6-iopipe-для-потоковой-отправки">Паттерн 6: io.Pipe для потоковой отправки</a></h3>
+<pre><code class="language-go">// Отправляем большой JSON по HTTP без сериализации в []byte
+func sendLargePayload(ctx context.Context, url string, data any) error {
+    pr, pw := io.Pipe()
+
+    go func() {
+        defer pw.Close()
+        // Если Encode вернёт ошибку, pw.Close закроет pipe
+        // и http.Client получит ошибку чтения из pr
+        if err := json.NewEncoder(pw).Encode(data); err != nil {
+            pw.CloseWithError(err) // передаём ошибку читателю
+        }
+    }()
+
+    req, err := http.NewRequestWithContext(ctx, "POST", url, pr)
+    if err != nil {
+        return err
+    }
+    req.Header.Set("Content-Type", "application/json")
+
+    resp, err := http.DefaultClient.Do(req)
+    if err != nil {
+        return err
+    }
+    defer resp.Body.Close()
+
+    if resp.StatusCode &gt;= 400 {
+        body, _ := io.ReadAll(resp.Body)
+        return fmt.Errorf("HTTP %d: %s", resp.StatusCode, body)
+    }
+    return nil
+}
+</code></pre>
+<hr>
+<h2 id="strings-bytes-os-стандартные-реализации"><a class="header" href="#strings-bytes-os-стандартные-реализации">strings, bytes, os: стандартные реализации</a></h2>
+<h3 id="создание-reader-из-данных-в-памяти"><a class="header" href="#создание-reader-из-данных-в-памяти">Создание Reader из данных в памяти</a></h3>
+<pre><code class="language-go">// Из строки
+r := strings.NewReader("hello, world")
+
+// Из байтового слайса
+r := bytes.NewReader(data)
+
+// Из буфера (можно и читать, и писать)
+var buf bytes.Buffer
+buf.WriteString("hello")
+r := &amp;buf // *bytes.Buffer реализует и Reader, и Writer
+</code></pre>
+<h3 id="ioreadall-чтение-всего-содержимого"><a class="header" href="#ioreadall-чтение-всего-содержимого">io.ReadAll: чтение всего содержимого</a></h3>
+<pre><code class="language-go">// Осторожно: загружает ВЕСЬ контент в память
+data, err := io.ReadAll(reader)
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: <code>io.ReadAll</code> — аналог <code>StreamReader.ReadToEnd()</code> или <code>BinaryReader.ReadBytes()</code>. Используйте только когда уверены в размере данных. Для больших файлов — <code>io.Copy</code> или <code>bufio.Scanner</code>.</p>
+</blockquote>
+<h3 id="ionopcloser-добавление-closer-к-reader"><a class="header" href="#ionopcloser-добавление-closer-к-reader">io.NopCloser: добавление Closer к Reader</a></h3>
+<pre><code class="language-go">// Оборачиваем io.Reader в io.ReadCloser с пустым Close()
+// Полезно для тестов и адаптации интерфейсов
+rc := io.NopCloser(strings.NewReader("test data"))
+defer rc.Close() // ничего не делает, но удовлетворяет интерфейс
+</code></pre>
+<hr>
+<h2 id="написание-своих-reader-и-writer"><a class="header" href="#написание-своих-reader-и-writer">Написание своих Reader и Writer</a></h2>
+<h3 id="правила-реализации"><a class="header" href="#правила-реализации">Правила реализации</a></h3>
+<pre><code class="language-go">// Reader: обязательные контрактные условия
+type MyReader struct { /* ... */ }
+
+func (r *MyReader) Read(p []byte) (n int, err error) {
+    if len(p) == 0 {
+        return 0, nil // пустой буфер — не ошибка
+    }
+    // 1. Читаем данные в p
+    // 2. Возвращаем n &gt; 0 если что-то прочитали
+    // 3. Возвращаем io.EOF когда данных больше нет
+    // 4. Можно вернуть n &gt; 0 И io.EOF одновременно
+    // 5. НЕ возвращаем io.EOF преждевременно
+    return n, err
+}
+
+// Writer: обязательные контрактные условия
+type MyWriter struct { /* ... */ }
+
+func (w *MyWriter) Write(p []byte) (n int, err error) {
+    // 1. Пишем данные из p
+    // 2. Если n &lt; len(p) — ОБЯЗАНЫ вернуть err != nil
+    // 3. НЕ модифицируем p (даже временно)
+    return n, err
+}
+</code></pre>
+<h3 id="пример-reader-с-ограничением-скорости"><a class="header" href="#пример-reader-с-ограничением-скорости">Пример: Reader с ограничением скорости</a></h3>
+<pre><code class="language-go">// RateLimitedReader ограничивает скорость чтения
+type RateLimitedReader struct {
+    R         io.Reader
+    BytesPerSec int
+    last      time.Time
+    read      int
+}
+
+func (r *RateLimitedReader) Read(p []byte) (int, error) {
+    now := time.Now()
+
+    // Если с прошлого вызова прошло меньше секунды и лимит достигнут — ждём
+    if !r.last.IsZero() &amp;&amp; now.Sub(r.last) &lt; time.Second &amp;&amp; r.read &gt;= r.BytesPerSec {
+        time.Sleep(time.Second - now.Sub(r.last))
+        r.read = 0
+        r.last = time.Now()
+    }
+    if r.last.IsZero() || now.Sub(r.last) &gt;= time.Second {
+        r.read = 0
+        r.last = now
+    }
+
+    // Ограничиваем размер чтения оставшимся лимитом
+    limit := r.BytesPerSec - r.read
+    if limit &lt;= 0 {
+        limit = r.BytesPerSec
+    }
+    if len(p) &gt; limit {
+        p = p[:limit]
+    }
+
+    n, err := r.R.Read(p)
+    r.read += n
+    return n, err
+}
+</code></pre>
+<hr>
+<h2 id="типичные-ошибки-c-разработчиков"><a class="header" href="#типичные-ошибки-c-разработчиков">Типичные ошибки C# разработчиков</a></h2>
+<h3 id="1-забытый-defer-close"><a class="header" href="#1-забытый-defer-close">1. Забытый defer Close</a></h3>
+<pre><code class="language-go">// ❌ Утечка файлового дескриптора
+func readFile(path string) ([]byte, error) {
+    f, err := os.Open(path)
+    if err != nil {
+        return nil, err
+    }
+    // Если ReadAll вернёт ошибку — f не закроется
+    return io.ReadAll(f)
+}
+
+// ✅ defer сразу после проверки ошибки
+func readFile(path string) ([]byte, error) {
+    f, err := os.Open(path)
+    if err != nil {
+        return nil, err
+    }
+    defer f.Close()
+    return io.ReadAll(f)
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: <code>defer f.Close()</code> — аналог <code>using</code>. Разница: <code>defer</code> выполняется при выходе из функции, а не при выходе из блока. Нет аналога <code>using</code> с блочным scope — если нужно закрыть ресурс до конца функции, вызывайте <code>Close()</code> явно.</p>
+</blockquote>
+<h3 id="2-игнорирование-n-при-read"><a class="header" href="#2-игнорирование-n-при-read">2. Игнорирование n при Read</a></h3>
+<pre><code class="language-go">// ❌ Обработка полного буфера, хотя прочитано меньше
+n, _ := reader.Read(buf)
+process(buf) // buf может быть заполнен не полностью!
+
+// ✅ Обрабатываем ровно прочитанное
+n, err := reader.Read(buf)
+process(buf[:n])
+</code></pre>
+<h3 id="3-использование-readall-для-больших-файлов"><a class="header" href="#3-использование-readall-для-больших-файлов">3. Использование ReadAll для больших файлов</a></h3>
+<pre><code class="language-go">// ❌ 2GB файл загружается целиком в память
+data, _ := io.ReadAll(hugeFile)
+
+// ✅ Потоковая обработка
+scanner := bufio.NewScanner(hugeFile)
+for scanner.Scan() {
+    processLine(scanner.Text())
+}
+</code></pre>
+<h3 id="4-забытый-flush-для-bufiowriter"><a class="header" href="#4-забытый-flush-для-bufiowriter">4. Забытый Flush для bufio.Writer</a></h3>
+<pre><code class="language-go">// ❌ Данные остались в буфере — файл пустой или неполный
+bw := bufio.NewWriter(file)
+bw.WriteString("важные данные")
+file.Close()
+
+// ✅ Flush перед закрытием
+bw := bufio.NewWriter(file)
+bw.WriteString("важные данные")
+bw.Flush() // записываем буфер на диск
+file.Close()
+
+// ✅✅ Идиоматично: defer в правильном порядке
+bw := bufio.NewWriter(file)
+defer func() {
+    bw.Flush()
+    file.Close()
+}()
+</code></pre>
+<h3 id="5-повторное-чтение-из-reader"><a class="header" href="#5-повторное-чтение-из-reader">5. Повторное чтение из Reader</a></h3>
+<pre><code class="language-go">// ❌ Reader — одноразовый, второе чтение вернёт пустоту
+data1, _ := io.ReadAll(resp.Body) // прочитали всё
+data2, _ := io.ReadAll(resp.Body) // data2 == []byte{} — пусто!
+
+// ✅ Вариант 1: сохранить в буфер и создать новый Reader
+data, _ := io.ReadAll(resp.Body)
+r1 := bytes.NewReader(data)
+r2 := bytes.NewReader(data)
+
+// ✅ Вариант 2: TeeReader для одновременного чтения и сохранения
+var buf bytes.Buffer
+tee := io.TeeReader(resp.Body, &amp;buf)
+process(tee)               // основная обработка
+secondPass(bytes.NewReader(buf.Bytes())) // повторное чтение из буфера
+
+// ✅ Вариант 3: io.Seeker (если поддерживается)
+file.Seek(0, io.SeekStart) // перемотка в начало — работает для файлов
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: в C# <code>Stream.Position = 0</code> перематывает поток (если <code>CanSeek == true</code>). В Go <code>io.Reader</code> — <strong>forward-only</strong> по умолчанию. Позиционирование — отдельный интерфейс <code>io.Seeker</code>, и не все Reader его реализуют.</p>
+</blockquote>
+<hr>
+<h2 id="производительность"><a class="header" href="#производительность">Производительность</a></h2>
+<h3 id="аллокации-при-работе-с-io"><a class="header" href="#аллокации-при-работе-с-io">Аллокации при работе с io</a></h3>
+<pre><code class="language-go">// ❌ Аллокация буфера на каждый вызов
+func processChunks(r io.Reader) error {
+    for {
+        buf := make([]byte, 4096) // аллокация на каждой итерации
+        n, err := r.Read(buf)
+        if n &gt; 0 {
+            process(buf[:n])
+        }
+        if err != nil {
+            if err == io.EOF { return nil }
+            return err
+        }
+    }
+}
+
+// ✅ Один буфер на весь цикл
+func processChunks(r io.Reader) error {
+    buf := make([]byte, 4096) // одна аллокация
+    for {
+        n, err := r.Read(buf)
+        if n &gt; 0 {
+            process(buf[:n])
+        }
+        if err != nil {
+            if err == io.EOF { return nil }
+            return err
+        }
+    }
+}
+</code></pre>
+<h3 id="syncpool-для-буферов"><a class="header" href="#syncpool-для-буферов">sync.Pool для буферов</a></h3>
+<pre><code class="language-go">var bufPool = sync.Pool{
+    New: func() any {
+        buf := make([]byte, 32*1024)
+        return &amp;buf
+    },
+}
+
+func copyWithPool(dst io.Writer, src io.Reader) (int64, error) {
+    bufp := bufPool.Get().(*[]byte)
+    defer bufPool.Put(bufp)
+    return io.CopyBuffer(dst, src, *bufp)
+}
+</code></pre>
+<h3 id="бенчмарк-буферизированное-vs-прямое-чтение"><a class="header" href="#бенчмарк-буферизированное-vs-прямое-чтение">Бенчмарк: буферизированное vs прямое чтение</a></h3>
+<pre><code class="language-go">func BenchmarkDirectRead(b *testing.B) {
+    data := bytes.Repeat([]byte("a"), 1&lt;&lt;20) // 1MB
+    for b.Loop() {
+        r := bytes.NewReader(data)
+        buf := make([]byte, 1) // побайтовое чтение
+        for {
+            _, err := r.Read(buf)
+            if err == io.EOF { break }
+        }
+    }
+}
+
+func BenchmarkBufioRead(b *testing.B) {
+    data := bytes.Repeat([]byte("a"), 1&lt;&lt;20)
+    for b.Loop() {
+        r := bufio.NewReader(bytes.NewReader(data))
+        for {
+            _, err := r.ReadByte()
+            if err == io.EOF { break }
+        }
+    }
+}
+
+// Результат (типичный):
+// BenchmarkDirectRead-8    38    31_000_000 ns/op    0 B/op    0 allocs/op
+// BenchmarkBufioRead-8    610     1_900_000 ns/op    4096 B/op    1 allocs/op
+//
+// bufio быстрее в ~16x при побайтовом чтении за счёт уменьшения
+// количества вызовов нижележащего Reader
+</code></pre>
+<h3 id="таблица-когда-какой-подход"><a class="header" href="#таблица-когда-какой-подход">Таблица: когда какой подход</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Сценарий</th><th>Подход</th><th>Почему</th></tr>
+</thead>
+<tbody>
+<tr><td>Побайтовое чтение</td><td><code>bufio.Reader</code></td><td>Минимизация syscall</td></tr>
+<tr><td>Построчное чтение</td><td><code>bufio.Scanner</code></td><td>Удобный API, автоматическое разбиение</td></tr>
+<tr><td>Копирование файлов</td><td><code>io.Copy</code></td><td>Zero-copy через sendfile</td></tr>
+<tr><td>Чтение маленьких файлов (&lt;1MB)</td><td><code>os.ReadFile</code></td><td>Один вызов, простой код</td></tr>
+<tr><td>Потоковый JSON</td><td><code>json.NewDecoder</code></td><td>Не загружает всё в память</td></tr>
+<tr><td>Мелкие записи</td><td><code>bufio.Writer</code></td><td>Группировка в большие write</td></tr>
+<tr><td>Горячий путь, высокий RPS</td><td><code>sync.Pool</code> для буферов</td><td>Уменьшение GC pressure</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="практический-пример-обработка-csv-с-прогрессом"><a class="header" href="#практический-пример-обработка-csv-с-прогрессом">Практический пример: обработка CSV с прогрессом</a></h2>
+<p>Комплексный пример, объединяющий несколько паттернов:</p>
+<pre><code class="language-go">package main
+
+import (
+    "bufio"
+    "encoding/csv"
+    "fmt"
+    "io"
+    "os"
+    "strconv"
+)
+
+// CountReader считает прочитанные байты
+type CountReader struct {
+    R     io.Reader
+    Count int64
+}
+
+func (cr *CountReader) Read(p []byte) (int, error) {
+    n, err := cr.R.Read(p)
+    cr.Count += int64(n)
+    return n, err
+}
+
+func processLargeCSV(path string) error {
+    f, err := os.Open(path)
+    if err != nil {
+        return fmt.Errorf("открытие файла: %w", err)
+    }
+    defer f.Close()
+
+    // Размер файла для прогресса
+    stat, err := f.Stat()
+    if err != nil {
+        return fmt.Errorf("stat: %w", err)
+    }
+    total := stat.Size()
+
+    // Цепочка: File → CountReader → bufio → csv.Reader
+    cr := &amp;CountReader{R: f}
+    br := bufio.NewReaderSize(cr, 64*1024) // буфер 64KB
+    csvr := csv.NewReader(br)
+
+    // Пропускаем заголовок
+    header, err := csvr.Read()
+    if err != nil {
+        return fmt.Errorf("заголовок: %w", err)
+    }
+    fmt.Printf("Колонки: %v\n", header)
+
+    var (
+        lineCount int
+        sumAmount float64
+    )
+
+    for {
+        record, err := csvr.Read()
+        if err == io.EOF {
+            break
+        }
+        if err != nil {
+            return fmt.Errorf("строка %d: %w", lineCount+1, err)
+        }
+
+        lineCount++
+
+        // Обработка: предположим, сумма в 3-й колонке
+        if len(record) &gt; 2 {
+            if amount, err := strconv.ParseFloat(record[2], 64); err == nil {
+                sumAmount += amount
+            }
+        }
+
+        // Прогресс каждые 100_000 строк
+        if lineCount%100_000 == 0 {
+            pct := float64(cr.Count) / float64(total) * 100
+            fmt.Printf("\r  Обработано: %d строк (%.1f%%)", lineCount, pct)
+        }
+    }
+
+    fmt.Printf("\r  Итого: %d строк, сумма: %.2f\n", lineCount, sumAmount)
+    return nil
+}
+</code></pre>
+<hr>
+<h2 id="шпаргалка-ключевые-функции-io"><a class="header" href="#шпаргалка-ключевые-функции-io">Шпаргалка: ключевые функции io</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Функция</th><th>Описание</th><th>Аналог в C#</th></tr>
+</thead>
+<tbody>
+<tr><td><code>io.Copy(dst, src)</code></td><td>Копирование потока</td><td><code>Stream.CopyTo()</code></td></tr>
+<tr><td><code>io.CopyN(dst, src, n)</code></td><td>Копирование N байт</td><td><code>Read</code> в цикле до N</td></tr>
+<tr><td><code>io.CopyBuffer(dst, src, buf)</code></td><td>Копирование с указанным буфером</td><td><code>CopyTo(dst, bufferSize)</code></td></tr>
+<tr><td><code>io.ReadAll(r)</code></td><td>Чтение всего</td><td><code>StreamReader.ReadToEnd()</code></td></tr>
+<tr><td><code>io.ReadFull(r, buf)</code></td><td>Чтение ровно len(buf) байт</td><td><code>BinaryReader.ReadBytes()</code></td></tr>
+<tr><td><code>io.WriteString(w, s)</code></td><td>Запись строки</td><td><code>StreamWriter.Write(s)</code></td></tr>
+<tr><td><code>io.LimitReader(r, n)</code></td><td>Ограничение размера</td><td>нет прямого аналога</td></tr>
+<tr><td><code>io.TeeReader(r, w)</code></td><td>Дублирование чтения</td><td><code>CryptoStream</code> (частично)</td></tr>
+<tr><td><code>io.MultiReader(r...)</code></td><td>Конкатенация Reader</td><td><code>ConcatStream</code> (нет в stdlib)</td></tr>
+<tr><td><code>io.MultiWriter(w...)</code></td><td>Разветвление Writer</td><td>нет прямого аналога</td></tr>
+<tr><td><code>io.Pipe()</code></td><td>In-memory pipe</td><td><code>System.IO.Pipelines</code></td></tr>
+<tr><td><code>io.NopCloser(r)</code></td><td>Reader → ReadCloser</td><td>нет прямого аналога</td></tr>
+<tr><td><code>io.Discard</code></td><td>/dev/null Writer</td><td><code>Stream.Null</code></td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="итоги"><a class="header" href="#итоги">Итоги</a></h2>
+<p>Модель I/O в Go построена на принципе <strong>минимальных интерфейсов</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Принцип</th><th>C#</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>Базовая единица</td><td><code>Stream</code> (монолит)</td><td><code>io.Reader</code> / <code>io.Writer</code> (атомы)</td></tr>
+<tr><td>Расширение</td><td>Наследование + override</td><td>Композиция обёрток</td></tr>
+<tr><td>Декорирование</td><td><code>DelegatingStream</code> + 10 методов</td><td>Обёртка + 1 метод</td></tr>
+<tr><td>Буферизация</td><td><code>BufferedStream</code></td><td><code>bufio.Reader</code> / <code>bufio.Writer</code></td></tr>
+<tr><td>Закрытие</td><td><code>IDisposable</code> + <code>using</code></td><td><code>io.Closer</code> + <code>defer</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>Главное преимущество Go подхода — <strong>лёгкость создания обёрток</strong>. Реализация одного метода <code>Read</code> или <code>Write</code> даёт совместимость со всей экосистемой: <code>io.Copy</code>, <code>json.Decoder</code>, <code>gzip.Writer</code>, <code>http.ResponseWriter</code> и сотнями других.</p>
+<p>Главный риск — нарушение контракта: забыть обработать <code>n &gt; 0</code> при <code>err != nil</code>, забыть <code>Flush()</code>, забыть <code>defer Close()</code>. В C# многие из этих проблем решаются <code>using</code> и <code>Stream.Dispose()</code>, но в Go ответственность явно на разработчике.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part2-advanced/09_reflection.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part3-web-api/01_http_server.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part2-advanced/09_reflection.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part3-web-api/01_http_server.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,721 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Модули и управление зависимостями - Go для C# разработчиков</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Комплексный курс по изучению Go для опытного C# разработчика">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-034476fa.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-99029afd.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Go для C# разработчиков</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/AlexandrTolstuhin/csharp-to-go/edit/master/./part1-basics/06_modules_dependencies.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="модули-и-управление-зависимостями"><a class="header" href="#модули-и-управление-зависимостями">Модули и управление зависимостями</a></h1>
+<hr>
+<h2 id="введение"><a class="header" href="#введение">Введение</a></h2>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: В .NET управление зависимостями строится на NuGet — централизованном реестре пакетов. Файл <code>.csproj</code> описывает зависимости, <code>dotnet restore</code> скачивает их. В Go нет центрального реестра. Модули загружаются напрямую из Git-репозиториев по URL, версионирование привязано к Git-тегам, а прокси-серверы обеспечивают кеширование и доступность. Это принципиально другая модель, и она влияет на структуру проектов, версионирование и публикацию библиотек.</p>
+</blockquote>
+<h3 id="что-вы-узнаете"><a class="header" href="#что-вы-узнаете">Что вы узнаете</a></h3>
+<ul>
+<li>Модульная система Go: <code>go.mod</code>, <code>go.sum</code> и их роль</li>
+<li>Семантическое версионирование и Major Version Suffix</li>
+<li>Управление зависимостями: <code>go get</code>, <code>go mod tidy</code>, <code>go mod vendor</code></li>
+<li>Директивы <code>replace</code>, <code>retract</code>, <code>exclude</code></li>
+<li>Workspace mode (<code>go work</code>) для мультимодульных проектов</li>
+<li>Приватные модули и <code>GOPRIVATE</code></li>
+<li>Прокси и зеркала: <code>GOPROXY</code>, <code>GONOSUMCHECK</code></li>
+</ul>
+<hr>
+<h2 id="сравнительная-таблица-nuget-vs-go-modules"><a class="header" href="#сравнительная-таблица-nuget-vs-go-modules">Сравнительная таблица: NuGet vs Go Modules</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Аспект</th><th>C# (NuGet)</th><th>Go (Modules)</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Реестр</strong></td><td>nuget.org (централизованный)</td><td>Нет реестра, загрузка из VCS (GitHub, GitLab…)</td></tr>
+<tr><td><strong>Файл зависимостей</strong></td><td><code>.csproj</code> / <code>packages.config</code></td><td><code>go.mod</code></td></tr>
+<tr><td><strong>Lock-файл</strong></td><td><code>packages.lock.json</code> (опциональный)</td><td><code>go.sum</code> (обязательный)</td></tr>
+<tr><td><strong>Установка</strong></td><td><code>dotnet add package Foo</code></td><td><code>go get example.com/foo</code></td></tr>
+<tr><td><strong>Очистка</strong></td><td><code>dotnet restore</code></td><td><code>go mod tidy</code></td></tr>
+<tr><td><strong>Vendoring</strong></td><td>Нет стандартного</td><td><code>go mod vendor</code></td></tr>
+<tr><td><strong>Версионирование</strong></td><td>SemVer (мажорные ломают совместимость)</td><td>SemVer + Major Version Suffix в пути</td></tr>
+<tr><td><strong>Публикация</strong></td><td><code>dotnet nuget push</code></td><td><code>git tag v1.2.3 &amp;&amp; git push --tags</code></td></tr>
+<tr><td><strong>Приватные пакеты</strong></td><td>NuGet feed + auth</td><td><code>GOPRIVATE</code> + Git credentials</td></tr>
+<tr><td><strong>Мультипроект</strong></td><td><code>.sln</code> (solution)</td><td><code>go.work</code> (workspace)</td></tr>
+<tr><td><strong>Кеш</strong></td><td><code>~/.nuget/packages</code></td><td><code>$GOPATH/pkg/mod</code> (по умолчанию <code>~/go/pkg/mod</code>)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="gomod-анатомия-файла"><a class="header" href="#gomod-анатомия-файла">go.mod: анатомия файла</a></h2>
+<pre><code>module github.com/username/myapp
+
+go 1.26
+
+require (
+    github.com/go-chi/chi/v5 v5.2.1
+    github.com/jackc/pgx/v5 v5.7.4
+    go.uber.org/zap v1.27.0
+)
+
+require (
+    // indirect — транзитивные зависимости (зависимости зависимостей)
+    github.com/jackc/pgpassfile v1.0.0 // indirect
+    github.com/jackc/pgservicefile v0.0.0-20240725223059-51e0843b621d // indirect
+    go.uber.org/multierr v1.11.0 // indirect
+)
+</code></pre>
+<h3 id="поля-gomod"><a class="header" href="#поля-gomod">Поля go.mod</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Поле</th><th>Описание</th><th>Аналог в C#</th></tr>
+</thead>
+<tbody>
+<tr><td><code>module</code></td><td>Путь модуля (import path)</td><td><code>&lt;RootNamespace&gt;</code> + <code>&lt;PackageId&gt;</code></td></tr>
+<tr><td><code>go</code></td><td>Минимальная версия Go</td><td><code>&lt;TargetFramework&gt;</code></td></tr>
+<tr><td><code>require</code></td><td>Прямые зависимости</td><td><code>&lt;PackageReference&gt;</code></td></tr>
+<tr><td><code>require // indirect</code></td><td>Транзитивные зависимости</td><td>Авто-resolved в NuGet</td></tr>
+<tr><td><code>replace</code></td><td>Замена модуля (локальный путь или форк)</td><td>Нет прямого аналога</td></tr>
+<tr><td><code>exclude</code></td><td>Исключение версии</td><td>Нет прямого аналога</td></tr>
+<tr><td><code>retract</code></td><td>Пометка своей версии как отозванной</td><td><code>dotnet nuget delete</code> (но не аналог)</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="путь-модуля-это-важно"><a class="header" href="#путь-модуля-это-важно">Путь модуля: это важно</a></h3>
+<pre><code>module github.com/username/myapp
+</code></pre>
+<p>Путь модуля — это <strong>уникальный идентификатор</strong> и одновременно <strong>URL</strong>, откуда Go будет скачивать код. В C# имя пакета и его расположение — разные вещи (пакет <code>Newtonsoft.Json</code> лежит на nuget.org). В Go — одно и то же.</p>
+<pre><code class="language-go">// Путь модуля определяет import path для всех пакетов внутри
+import "github.com/username/myapp/internal/service"
+//      ^^^^^^^^^^^^^^^^^^^^^^^^^ - путь модуля
+//                                 ^^^^^^^^^^^^^^^^ - пакет внутри модуля
+</code></pre>
+<hr>
+<h2 id="gosum-контрольные-суммы"><a class="header" href="#gosum-контрольные-суммы">go.sum: контрольные суммы</a></h2>
+<p><code>go.sum</code> — файл с хешами всех зависимостей (прямых и транзитивных). Гарантирует, что при повторной загрузке код не изменился.</p>
+<pre><code>github.com/go-chi/chi/v5 v5.2.1 h1:KOIHODQj5PL...
+github.com/go-chi/chi/v5 v5.2.1/go.mod h1:DslCQbL2O...
+</code></pre>
+<p>Каждая строка содержит:</p>
+<ul>
+<li>Путь модуля + версия</li>
+<li>Хеш содержимого (<code>h1:...</code> — SHA-256 в base64)</li>
+</ul>
+<p><strong>Обязательно коммитить <code>go.sum</code> в Git</strong> — это эквивалент lock-файла.</p>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: в .NET <code>packages.lock.json</code> опционален и часто игнорируется. В Go <code>go.sum</code> генерируется автоматически и <strong>обязателен</strong> — без него сборка непредсказуема.</p>
+</blockquote>
+<hr>
+<h2 id="команды-ежедневная-работа"><a class="header" href="#команды-ежедневная-работа">Команды: ежедневная работа</a></h2>
+<h3 id="go-get-добавление-и-обновление-зависимостей"><a class="header" href="#go-get-добавление-и-обновление-зависимостей">go get: добавление и обновление зависимостей</a></h3>
+<pre><code class="language-bash"># Добавить зависимость (последняя версия)
+go get github.com/go-chi/chi/v5
+
+# Конкретная версия
+go get github.com/go-chi/chi/v5@v5.2.1
+
+# Последняя минорная версия
+go get github.com/go-chi/chi/v5@v5
+
+# Обновить до последнего патча
+go get -u=patch github.com/go-chi/chi/v5
+
+# Обновить зависимость и все транзитивные
+go get -u github.com/go-chi/chi/v5
+
+# Удалить зависимость
+go get github.com/go-chi/chi/v5@none
+</code></pre>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-bash">dotnet add package Newtonsoft.Json --version 13.0.1
+dotnet remove package Newtonsoft.Json
+</code></pre>
+<h3 id="go-mod-tidy-очистка"><a class="header" href="#go-mod-tidy-очистка">go mod tidy: очистка</a></h3>
+<pre><code class="language-bash"># Добавляет недостающие и удаляет неиспользуемые зависимости
+go mod tidy
+</code></pre>
+<p>Запускайте после каждого изменения import-ов. Аналог <code>dotnet restore</code>, но умнее — сам убирает мусор.</p>
+<h3 id="go-mod-download-скачивание-в-кеш"><a class="header" href="#go-mod-download-скачивание-в-кеш">go mod download: скачивание в кеш</a></h3>
+<pre><code class="language-bash"># Скачать все зависимости в $GOPATH/pkg/mod
+go mod download
+
+# Полезно в Docker для кеширования слоя зависимостей
+# (аналог dotnet restore в отдельном слое)
+</code></pre>
+<h3 id="go-mod-graph-дерево-зависимостей"><a class="header" href="#go-mod-graph-дерево-зависимостей">go mod graph: дерево зависимостей</a></h3>
+<pre><code class="language-bash"># Показать граф зависимостей
+go mod graph
+
+# Найти, кто тянет конкретную зависимость
+go mod graph | grep pgx
+</code></pre>
+<p><strong>C# аналог</strong>: <code>dotnet list package --include-transitive</code></p>
+<h3 id="go-mod-why-зачем-нужна-зависимость"><a class="header" href="#go-mod-why-зачем-нужна-зависимость">go mod why: зачем нужна зависимость</a></h3>
+<pre><code class="language-bash"># Показать цепочку зависимостей до модуля
+go mod why github.com/jackc/pgpassfile
+# github.com/username/myapp
+# github.com/jackc/pgx/v5
+# github.com/jackc/pgpassfile
+</code></pre>
+<hr>
+<h2 id="семантическое-версионирование-semver"><a class="header" href="#семантическое-версионирование-semver">Семантическое версионирование (SemVer)</a></h2>
+<p>Go строго следует SemVer: <code>vMAJOR.MINOR.PATCH</code></p>
+<pre><code>v1.2.3
+│ │ └── PATCH: исправления багов, обратно совместимые
+│ └──── MINOR: новая функциональность, обратно совместимая
+└────── MAJOR: ломающие изменения
+</code></pre>
+<h3 id="major-version-suffix-главное-отличие-от-nuget"><a class="header" href="#major-version-suffix-главное-отличие-от-nuget">Major Version Suffix: главное отличие от NuGet</a></h3>
+<p>В Go <strong>мажорная версия &gt;= 2 кодируется в пути модуля</strong>:</p>
+<pre><code>// v0 и v1 — обычный путь
+github.com/go-chi/chi          // v0.x.x или v1.x.x
+
+// v2+ — суффикс /v2, /v3 и т.д.
+github.com/go-chi/chi/v5       // v5.x.x
+github.com/jackc/pgx/v5        // v5.x.x
+</code></pre>
+<p>Это означает, что <strong>v1 и v5 — разные модули</strong> и могут использоваться одновременно:</p>
+<pre><code class="language-go">import (
+    chi_v1 "github.com/go-chi/chi"     // v1 (legacy)
+    chi_v5 "github.com/go-chi/chi/v5"  // v5 (актуальная)
+)
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: в NuGet обновление с <code>Newtonsoft.Json 12.x</code> на <code>13.x</code> — просто смена версии в <code>.csproj</code>. В Go переход с <code>chi</code> на <code>chi/v5</code> — это <strong>смена всех import path</strong> в коде. Поэтому мажорные обновления в Go — более осознанное действие.</p>
+</blockquote>
+<h3 id="pre-release-и-псевдо-версии"><a class="header" href="#pre-release-и-псевдо-версии">Pre-release и псевдо-версии</a></h3>
+<pre><code class="language-bash"># Pre-release тег
+go get example.com/foo@v1.2.3-beta.1
+
+# Псевдо-версия (конкретный коммит без тега)
+go get example.com/foo@v0.0.0-20240101120000-abcdef123456
+#                        │           │              │
+#                        │           │              └── хеш коммита (12 символов)
+#                        │           └── timestamp коммита (UTC)
+#                        └── версия-заглушка
+
+# По хешу коммита (Go сам сгенерирует псевдо-версию)
+go get example.com/foo@abc1234
+</code></pre>
+<hr>
+<h2 id="директива-replace-локальная-разработка-и-форки"><a class="header" href="#директива-replace-локальная-разработка-и-форки">Директива replace: локальная разработка и форки</a></h2>
+<h3 id="работа-с-локальным-модулем"><a class="header" href="#работа-с-локальным-модулем">Работа с локальным модулем</a></h3>
+<pre><code>// go.mod
+module github.com/username/myapp
+
+require github.com/username/mylib v1.2.3
+
+// Подменяем на локальную копию для разработки
+replace github.com/username/mylib =&gt; ../mylib
+</code></pre>
+<p>Локальный путь должен содержать <code>go.mod</code>.</p>
+<p><strong>C# аналог</strong>: <code>&lt;ProjectReference&gt;</code> вместо <code>&lt;PackageReference&gt;</code> — но в Go это не требует изменения кода, только <code>go.mod</code>.</p>
+<h3 id="использование-форка"><a class="header" href="#использование-форка">Использование форка</a></h3>
+<pre><code>// Подменяем оригинальный модуль на свой форк
+replace github.com/original/lib =&gt; github.com/myfork/lib v1.2.3-patched
+</code></pre>
+<p>Import path в коде <strong>не меняется</strong> — replace прозрачна для кода:</p>
+<pre><code class="language-go">import "github.com/original/lib" // код использует оригинальный путь
+// но Go подставит github.com/myfork/lib при сборке
+</code></pre>
+<h3 id="фиксация-уязвимой-версии-транзитивной-зависимости"><a class="header" href="#фиксация-уязвимой-версии-транзитивной-зависимости">Фиксация уязвимой версии транзитивной зависимости</a></h3>
+<pre><code>// Транзитивная зависимость foo v1.2.3 содержит CVE
+// Принудительно обновляем до v1.2.4
+replace github.com/vulnerable/foo v1.2.3 =&gt; github.com/vulnerable/foo v1.2.4
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: в NuGet аналог — <code>&lt;PackageReference&gt;</code> с <code>PrivateAssets</code> и ручная фиксация версии транзитивной зависимости. В Go — одна строка <code>replace</code>.</p>
+</blockquote>
+<hr>
+<h2 id="директива-retract-отзыв-своих-версий"><a class="header" href="#директива-retract-отзыв-своих-версий">Директива retract: отзыв своих версий</a></h2>
+<p>Если вы опубликовали сломанную версию своей библиотеки:</p>
+<pre><code>// go.mod вашей библиотеки
+module github.com/username/mylib
+
+go 1.26
+
+// Отзываем сломанную версию
+retract (
+    v1.3.0 // содержит data race в Cache.Get
+    [v1.1.0, v1.2.0] // диапазон сломанных версий
+)
+</code></pre>
+<p>После <code>retract</code> пользователи, запускающие <code>go get -u</code>, не получат отозванную версию. Но те, кто уже используют её — продолжат работать (в отличие от <code>dotnet nuget delete</code>, который удаляет пакет).</p>
+<hr>
+<h2 id="директива-exclude"><a class="header" href="#директива-exclude">Директива exclude</a></h2>
+<pre><code>// Запрещаем использование конкретной версии
+exclude github.com/buggy/lib v1.5.0
+</code></pre>
+<p>Используется редко. Обычно <code>replace</code> более гибок.</p>
+<hr>
+<h2 id="vendoring-зависимости-в-репозитории"><a class="header" href="#vendoring-зависимости-в-репозитории">Vendoring: зависимости в репозитории</a></h2>
+<pre><code class="language-bash"># Копировать все зависимости в vendor/
+go mod vendor
+
+# Сборка из vendor (без обращения к сети)
+go build -mod=vendor ./...
+</code></pre>
+<p><strong>Когда использовать vendor:</strong></p>
+<ul>
+<li>CI/CD без доступа к интернету</li>
+<li>Аудит зависимостей (весь код в репозитории)</li>
+<li>Защита от удаления зависимости автором (left-pad problem)</li>
+</ul>
+<p><strong>Когда НЕ использовать:</strong></p>
+<ul>
+<li>Обычная разработка (прокси <code>proxy.golang.org</code> кеширует модули)</li>
+<li>Маленькие проекты</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: в NuGet нет стандартного vendoring. Ближайший аналог — коммит папки <code>packages/</code> в репозиторий, что считается антипаттерном. В Go vendor — официально поддерживаемый механизм.</p>
+</blockquote>
+<hr>
+<h2 id="go-workspace-мультимодульные-проекты"><a class="header" href="#go-workspace-мультимодульные-проекты">Go Workspace: мультимодульные проекты</a></h2>
+<p>Для проектов с несколькими модулями в одном репозитории (monorepo):</p>
+<pre><code class="language-bash"># Создать workspace
+go work init ./api ./worker ./shared
+
+# Добавить модуль в workspace
+go work use ./new-service
+</code></pre>
+<p>Генерирует <code>go.work</code>:</p>
+<pre><code>go 1.26
+
+use (
+    ./api
+    ./worker
+    ./shared
+)
+</code></pre>
+<h3 id="когда-использовать-workspace"><a class="header" href="#когда-использовать-workspace">Когда использовать workspace</a></h3>
+<pre><code>myproject/
+├── go.work           # workspace file
+├── api/
+│   ├── go.mod        # module github.com/user/myproject/api
+│   └── main.go
+├── worker/
+│   ├── go.mod        # module github.com/user/myproject/worker
+│   └── main.go
+└── shared/
+    ├── go.mod        # module github.com/user/myproject/shared
+    └── models.go
+</code></pre>
+<p>Без <code>go.work</code> каждый модуль потребовал бы <code>replace ../shared</code> в <code>go.mod</code>. С workspace все модули видят друг друга автоматически.</p>
+<p><strong>C# аналог</strong>: <code>.sln</code> файл, который объединяет несколько <code>.csproj</code>.</p>
+<blockquote>
+<p><strong>Не коммитить <code>go.work</code></strong> в репозиторий библиотеки — он нужен только для локальной разработки. Для приложений (не библиотек) — можно коммитить.</p>
+</blockquote>
+<hr>
+<h2 id="приватные-модули"><a class="header" href="#приватные-модули">Приватные модули</a></h2>
+<h3 id="настройка-goprivate"><a class="header" href="#настройка-goprivate">Настройка GOPRIVATE</a></h3>
+<pre><code class="language-bash"># Модули, которые НЕ должны проходить через прокси и checksum DB
+export GOPRIVATE="github.com/mycompany/*,gitlab.internal.com/*"
+
+# Или в конфиге Go (персистентно)
+go env -w GOPRIVATE="github.com/mycompany/*"
+</code></pre>
+<h3 id="git-credentials"><a class="header" href="#git-credentials">Git credentials</a></h3>
+<pre><code class="language-bash"># HTTPS (через .netrc или credential helper)
+git config --global url."https://oauth2:${TOKEN}@github.com/mycompany/".insteadOf "https://github.com/mycompany/"
+
+# SSH
+git config --global url."git@github.com:mycompany/".insteadOf "https://github.com/mycompany/"
+</code></pre>
+<p><strong>C# аналог</strong>: настройка приватного NuGet feed в <code>nuget.config</code> с credentials.</p>
+<hr>
+<h2 id="прокси-и-зеркала"><a class="header" href="#прокси-и-зеркала">Прокси и зеркала</a></h2>
+<h3 id="как-работает-загрузка-модулей"><a class="header" href="#как-работает-загрузка-модулей">Как работает загрузка модулей</a></h3>
+<pre class="mermaid">graph LR
+    A[go get] --&gt; B{GOPROXY}
+    B --&gt; C[proxy.golang.org]
+    C --&gt; D{Найден?}
+    D --&gt;|Да| E[Скачать + проверить checksum]
+    D --&gt;|Нет| F[direct: обращение к VCS]
+    E --&gt; G[sum.golang.org: проверка хеша]
+    G --&gt; H[Сохранить в $GOPATH/pkg/mod]
+    F --&gt; H
+</pre>
+
+<h3 id="переменные-окружения"><a class="header" href="#переменные-окружения">Переменные окружения</a></h3>
+<pre><code class="language-bash"># Прокси (по умолчанию: proxy.golang.org)
+GOPROXY=https://proxy.golang.org,direct
+
+# Приватные модули (обходят прокси и checksum DB)
+GOPRIVATE=github.com/mycompany/*
+
+# Отключить checksum DB для определённых модулей
+GONOSUMCHECK=github.com/mycompany/*
+
+# Запретить прямое обращение к VCS (только через прокси)
+GONOSUMDB=...
+
+# Корпоративный прокси
+GOPROXY=https://goproxy.mycompany.com,https://proxy.golang.org,direct
+</code></pre>
+<h3 id="зачем-нужен-прокси"><a class="header" href="#зачем-нужен-прокси">Зачем нужен прокси</a></h3>
+<ol>
+<li><strong>Скорость</strong> — кеширует модули рядом с вами</li>
+<li><strong>Доступность</strong> — автор удалил репозиторий, но прокси сохранил копию</li>
+<li><strong>Иммутабельность</strong> — опубликованная версия не может измениться</li>
+<li><strong>Безопасность</strong> — <code>sum.golang.org</code> проверяет хеши (supply chain protection)</li>
+</ol>
+<hr>
+<h2 id="публикация-своего-модуля"><a class="header" href="#публикация-своего-модуля">Публикация своего модуля</a></h2>
+<h3 id="пошаговый-процесс"><a class="header" href="#пошаговый-процесс">Пошаговый процесс</a></h3>
+<pre><code class="language-bash"># 1. Инициализировать модуль с правильным путём
+go mod init github.com/username/mylib
+
+# 2. Написать код, тесты
+# 3. Убедиться, что всё работает
+go test ./...
+go vet ./...
+
+# 4. Тегировать версию
+git tag v1.0.0
+git push origin v1.0.0
+
+# 5. Готово! Пользователи могут: go get github.com/username/mylib@v1.0.0
+</code></pre>
+<h3 id="публикация-мажорной-версии-v2"><a class="header" href="#публикация-мажорной-версии-v2">Публикация мажорной версии (v2+)</a></h3>
+<p>Два подхода:</p>
+<p><strong>Подход 1: отдельная директория</strong> (рекомендуется для библиотек):</p>
+<pre><code>mylib/
+├── go.mod          # module github.com/username/mylib (v0/v1)
+├── lib.go
+└── v2/
+    ├── go.mod      # module github.com/username/mylib/v2
+    └── lib.go
+</code></pre>
+<p><strong>Подход 2: ветка major</strong> (проще для приложений):</p>
+<pre><code class="language-bash"># В go.mod меняем путь модуля
+# module github.com/username/mylib/v2
+
+# Обновляем все внутренние import
+# Тегируем: git tag v2.0.0
+</code></pre>
+<blockquote>
+<p>💡 <strong>Для C# разработчиков</strong>: в NuGet публикация — <code>dotnet pack</code> + <code>dotnet nuget push</code> + API key. В Go публикация — просто <code>git tag</code> + <code>git push</code>. Прокси подхватит автоматически. Никаких API ключей, никакой сборки пакета.</p>
+</blockquote>
+<hr>
+<h2 id="типичные-ошибки-c-разработчиков"><a class="header" href="#типичные-ошибки-c-разработчиков">Типичные ошибки C# разработчиков</a></h2>
+<h3 id="1-зависимость-без-версии"><a class="header" href="#1-зависимость-без-версии">1. Зависимость без версии</a></h3>
+<pre><code class="language-bash"># ❌ Без версии — непредсказуемо
+go get github.com/some/lib
+
+# ✅ Явная версия
+go get github.com/some/lib@v1.2.3
+</code></pre>
+<h3 id="2-забытый-go-mod-tidy"><a class="header" href="#2-забытый-go-mod-tidy">2. Забытый go mod tidy</a></h3>
+<pre><code class="language-bash"># ❌ Добавили import, но не обновили go.mod
+# Сборка упадёт: "missing go.sum entry"
+
+# ✅ После изменения import — всегда
+go mod tidy
+</code></pre>
+<h3 id="3-replace-в-gomod-библиотеки"><a class="header" href="#3-replace-в-gomod-библиотеки">3. replace в go.mod библиотеки</a></h3>
+<pre><code>// ❌ replace в библиотеке ИГНОРИРУЕТСЯ при импорте другими модулями
+// Работает только в go.mod основного приложения (main module)
+module github.com/username/mylib
+
+replace github.com/foo/bar =&gt; ../bar // не будет работать у пользователей!
+</code></pre>
+<h3 id="4-коммит-gowork-в-библиотеку"><a class="header" href="#4-коммит-gowork-в-библиотеку">4. Коммит go.work в библиотеку</a></h3>
+<pre><code class="language-bash"># ❌ go.work в репозитории библиотеки
+# Пользователи получат ошибки при go get
+
+# ✅ Добавить go.work в .gitignore
+echo "go.work" &gt;&gt; .gitignore
+echo "go.work.sum" &gt;&gt; .gitignore
+</code></pre>
+<h3 id="5-игнорирование-gosum"><a class="header" href="#5-игнорирование-gosum">5. Игнорирование go.sum</a></h3>
+<pre><code class="language-bash"># ❌ go.sum в .gitignore
+# Сборка будет недетерминированной
+
+# ✅ Всегда коммитить go.sum
+git add go.sum
+</code></pre>
+<hr>
+<h2 id="практика-dockerfile-с-кешированием-зависимостей"><a class="header" href="#практика-dockerfile-с-кешированием-зависимостей">Практика: Dockerfile с кешированием зависимостей</a></h2>
+<pre><code class="language-dockerfile">FROM golang:1.26-alpine AS builder
+
+WORKDIR /app
+
+# Слой 1: зависимости (кешируется, пока go.mod/go.sum не изменятся)
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Слой 2: сборка (пересобирается при изменении кода)
+COPY . .
+RUN CGO_ENABLED=0 go build -o /app/server ./cmd/server
+
+FROM alpine:3.21
+COPY --from=builder /app/server /server
+ENTRYPOINT ["/server"]
+</code></pre>
+<p><strong>C# аналог</strong>:</p>
+<pre><code class="language-dockerfile">FROM mcr.microsoft.com/dotnet/sdk:9.0 AS builder
+WORKDIR /app
+COPY *.csproj ./
+RUN dotnet restore          # аналог go mod download
+COPY . .
+RUN dotnet publish -c Release -o /out
+</code></pre>
+<p>Та же стратегия: сначала зависимости (кешируются Docker), потом код.</p>
+<hr>
+<h2 id="шпаргалка-команд"><a class="header" href="#шпаргалка-команд">Шпаргалка команд</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Команда</th><th>Описание</th><th>C# аналог</th></tr>
+</thead>
+<tbody>
+<tr><td><code>go mod init &lt;path&gt;</code></td><td>Создать модуль</td><td><code>dotnet new</code></td></tr>
+<tr><td><code>go get &lt;pkg&gt;@&lt;ver&gt;</code></td><td>Добавить/обновить зависимость</td><td><code>dotnet add package</code></td></tr>
+<tr><td><code>go get &lt;pkg&gt;@none</code></td><td>Удалить зависимость</td><td><code>dotnet remove package</code></td></tr>
+<tr><td><code>go mod tidy</code></td><td>Синхронизировать зависимости</td><td><code>dotnet restore</code> (частично)</td></tr>
+<tr><td><code>go mod download</code></td><td>Скачать зависимости в кеш</td><td><code>dotnet restore</code></td></tr>
+<tr><td><code>go mod vendor</code></td><td>Вендорить зависимости</td><td>нет аналога</td></tr>
+<tr><td><code>go mod graph</code></td><td>Граф зависимостей</td><td><code>dotnet list package --include-transitive</code></td></tr>
+<tr><td><code>go mod why &lt;pkg&gt;</code></td><td>Зачем нужна зависимость</td><td>нет аналога</td></tr>
+<tr><td><code>go mod verify</code></td><td>Проверить целостность</td><td>нет аналога</td></tr>
+<tr><td><code>go work init</code></td><td>Создать workspace</td><td>Создать <code>.sln</code></td></tr>
+<tr><td><code>go work use &lt;dir&gt;</code></td><td>Добавить модуль в workspace</td><td><code>dotnet sln add</code></td></tr>
+<tr><td><code>go clean -modcache</code></td><td>Очистить кеш модулей</td><td><code>dotnet nuget locals all --clear</code></td></tr>
+<tr><td><code>go list -m all</code></td><td>Все зависимости (прямые + транзитивные)</td><td><code>dotnet list package --include-transitive</code></td></tr>
+<tr><td><code>go list -m -u all</code></td><td>Доступные обновления</td><td><code>dotnet list package --outdated</code></td></tr>
+</tbody>
+</table>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part1-basics/05_generics.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../part1-basics/07_strings_unicode.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part1-basics/05_generics.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../part1-basics/07_strings_unicode.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-ccf746f1.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
