@@ -21,6 +21,7 @@
 - [Тестирование и бенчмаркинг](part2-advanced/07_testing_benchmarking.md)
 - [Профилирование и оптимизация](part2-advanced/08_profiling_optimization.md)
 - [Reflection](part2-advanced/09_reflection.md)
+- [io.Reader и io.Writer](part2-advanced/10_io_reader_writer.md)
 
 # Часть 3: Web API
 
